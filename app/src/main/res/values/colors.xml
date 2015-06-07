@@ -1,7 +1,7 @@
 <resources>
 
-    <color name="myPrimaryColor">#2196F3</color>
-    <color name="myPrimaryDarkColor">#1976D2</color>
+    <color name="myPrimaryColor">#03a9f4</color>
+    <color name="myPrimaryDarkColor">#0288d1</color>
     <color name="myAccentColor">#FF4081</color>
     <color name="myDrawerBackground">#F1F1F1</color>
     <color name="myBackgroundColor">#F1F1F1</color>
