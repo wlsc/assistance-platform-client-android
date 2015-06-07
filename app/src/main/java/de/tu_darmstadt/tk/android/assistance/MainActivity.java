@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import de.tu_darmstadt.tk.android.assistance.callback.NavigationDrawerCallbacks;
 import de.tu_darmstadt.tk.android.assistance.view.fragment.NavigationDrawerFragment;
@@ -24,13 +25,18 @@ public class MainActivity extends AppCompatActivity
     private Toolbar mToolbar;
     private Handler uiThreadHandler = new Handler();
     private final MainActivity mainThis = this;
+    private SplashScreenView splashView;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        hideSystemUI();
+
         // init splash screen view
-        SplashScreenView splashView = new SplashScreenView(this);
+        if(splashView == null) {
+            splashView = new SplashScreenView(this);
+        }
 
         // Set an event handler on the SplashView object, so that as soon
         // as it completes drawing we are
@@ -57,6 +63,8 @@ public class MainActivity extends AppCompatActivity
      * @param savedInstanceState
      */
     public void launchMainView(MainActivity mainActivity, Bundle savedInstanceState) {
+
+        showSystemUI();
 
         setContentView(R.layout.activity_main);
 
@@ -111,5 +119,26 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void hideSystemUI() {
+        // Set the IMMERSIVE flag.
+        // Set the content to appear under the system bars so that the content
+        // doesn't resize when the system bars hide and show.
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+    }
 
+    // This snippet shows the system bars. It does this by removing all the flags
+    // except for the ones that make the content appear under the system bars.
+    private void showSystemUI() {
+
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
 }

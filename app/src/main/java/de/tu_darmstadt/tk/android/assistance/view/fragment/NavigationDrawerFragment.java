@@ -75,6 +75,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -159,7 +160,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
      */
     public void setup(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
 
-        mFragmentContainerView = getActivity().findViewById(fragmentId);
+        mFragmentContainerView = getActivity().findViewById(R.id.fragment_drawer);
         mDrawerLayout = drawerLayout;
 
         mDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.myPrimaryDarkColor));

@@ -1,60 +1,57 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center_horizontal"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical">
 
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:layout_marginTop="90dp"
-        android:layout_marginBottom="30dp"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:text="@string/app_name"
-        android:visibility="invisible">
-    </TextView>
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/kraki_transparent"
-            />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="2dp">
-
-        <TextView  android:id="@+id/tvHeading"
+        <TextView
             android:layout_width="fill_parent"
-            android:layout_height="371dp"
-            android:paddingTop="20dp"
-            android:paddingLeft="20dp"
-            android:gravity="center_horizontal"
-            android:textSize="26sp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="90dp"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:text="@string/splashScreenLoading"
-            android:textColor="#CCC"
-            android:background="@color/splashScreenBackground"
-            />
+            android:visibility="invisible"></TextView>
 
-    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/kraki_transparent_l" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="2dp">
+
+            <TextView
+                android:id="@+id/tvHeading"
+                android:layout_width="fill_parent"
+                android:layout_height="371dp"
+                android:background="@color/splashScreenBackground"
+                android:gravity="center_horizontal"
+                android:paddingLeft="20dp"
+                android:paddingTop="20dp"
+                android:text="@string/splashScreenLoading"
+                android:textColor="#CCC"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
