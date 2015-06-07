@@ -1,0 +1,17 @@
+<resources>
+
+    <color name="myPrimaryColor">#2196F3</color>
+    <color name="myPrimaryDarkColor">#1976D2</color>
+    <color name="myAccentColor">#FF4081</color>
+    <color name="myDrawerBackground">#F1F1F1</color>
+    <color name="myBackgroundColor">#F1F1F1</color>
+    <color name="myTextPrimaryColor">#212121</color>
+    <color name="myNavigationColor">#000</color>
+
+    <!-- Splash Screen -->
+    <color name="splashScreenBackground">#F1F1F1</color>
+
+    <drawable name="pressed_gray">#0c000000</drawable>
+    <drawable name="selected_gray">#cc9fd700</drawable>
+
+</resources>

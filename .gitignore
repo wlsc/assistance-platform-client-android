@@ -11,11 +11,14 @@
 # Generated files
 bin/
 gen/
+**/bin/
+**/gen/
 
 # Gradle files
 .gradle/
 build/
-/*/build/
+**/build/
+LiveSDK/src/build
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -25,3 +28,34 @@ proguard/
 
 # Log Files
 *.log
+
+# Idea non-crucial project fileS
+*.iws﻿
+*.iml
+**/.idea/workspace.xml
+**/.idea/libraries
+
+# Signing files
+.signing/
+
+# Android NDK
+*.o
+*.o.d
+*_g
+*.a
+*.so
+*.pinfo
+*.gcno
+*.bar
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ETC
+/captures
