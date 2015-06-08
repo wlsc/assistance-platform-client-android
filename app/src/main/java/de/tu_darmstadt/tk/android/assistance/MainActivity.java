@@ -1,5 +1,6 @@
 package de.tu_darmstadt.tk.android.assistance;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // first -> load splash screen
         hideSystemUI();
 
         // init splash screen view
@@ -54,16 +56,19 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        // show splash screen
         setContentView(splashView);
     }
 
     /**
-     * Launch main activity
+     * Setup main activity
+     *
      * @param mainActivity
      * @param savedInstanceState
      */
     public void launchMainView(MainActivity mainActivity, Bundle savedInstanceState) {
 
+        checkForLogin();
         showSystemUI();
 
         setContentView(R.layout.activity_main);
@@ -75,6 +80,12 @@ public class MainActivity extends AppCompatActivity
 
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
         mNavigationDrawerFragment.setUserData("Wladimir Schmidt", "wlsc.dev@gmail.com", BitmapFactory.decodeResource(getResources(), R.drawable.avatar));
+    }
+
+    private void checkForLogin() {
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     @Override

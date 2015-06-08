@@ -22,7 +22,6 @@
             android:layout_height="match_parent"
             android:clickable="true" />
 
-        <!-- android:layout_marginTop="?android:attr/actionBarSize"-->
         <fragment
             android:id="@+id/fragment_drawer"
             android:name="de.tu_darmstadt.tk.android.assistance.view.fragment.NavigationDrawerFragment"
@@ -30,5 +29,6 @@
             android:layout_width="@dimen/navigation_drawer_width"
             android:layout_height="match_parent"
             android:layout_gravity="start" />
+
     </android.support.v4.widget.DrawerLayout>
 </RelativeLayout>
