@@ -28,10 +28,14 @@
     <color name="myNavigationColor">#000</color>
 
     <color name="green700">#388e3c</color>
+    <color name="teal300">#4db6ac</color>
     <color name="teal700">#00796b</color>
 
-    <!-- Splash Screen -->
+    <!-- SPLASH VIEW -->
     <color name="splashScreenBackground">#F1F1F1</color>
+
+    <!-- LOGIN VIEW -->
+    <color name="social_round">#AEBAC8</color>
 
     <drawable name="pressed_gray">#0c000000</drawable>
     <drawable name="selected_gray">#cc9fd700</drawable>

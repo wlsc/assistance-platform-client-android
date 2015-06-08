@@ -12,7 +12,7 @@ import de.tu_darmstadt.tk.android.assistance.R;
  * Created by Wladimir Schmidt (wlsc.dev@gmail.com) on 06.06.2015.
  *
  */
-public class SplashScreenView extends LinearLayout {
+public class SplashView extends LinearLayout {
 
     public interface SplashScreenEvent {
         void onSplashDrawComplete();
@@ -20,7 +20,7 @@ public class SplashScreenView extends LinearLayout {
 
     private SplashScreenEvent splashScreenEvent = null;
 
-    public SplashScreenView(Context context) {
+    public SplashView(Context context) {
         super(context);
 
         setWillNotDraw(true);

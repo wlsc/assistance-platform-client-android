@@ -13,7 +13,7 @@ import android.view.View;
 
 import de.tu_darmstadt.tk.android.assistance.callback.NavigationDrawerCallbacks;
 import de.tu_darmstadt.tk.android.assistance.view.fragment.NavigationDrawerFragment;
-import de.tu_darmstadt.tk.android.assistance.view.SplashScreenView;
+import de.tu_darmstadt.tk.android.assistance.view.SplashView;
 
 
 public class MainActivity extends AppCompatActivity
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity
     private Toolbar mToolbar;
     private Handler uiThreadHandler = new Handler();
     private final MainActivity mainThis = this;
-    private SplashScreenView splashView;
+    private SplashView splashView;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -37,14 +37,14 @@ public class MainActivity extends AppCompatActivity
 
         // init splash screen view
         if(splashView == null) {
-            splashView = new SplashScreenView(this);
+            splashView = new SplashView(this);
         }
 
         // Set an event handler on the SplashView object, so that as soon
         // as it completes drawing we are
         // informed.  In response to that cue, we will *then* put up the main view,
         // replacing the content view of the main activity with that main view.
-        splashView.setSplashScreenEvent(new SplashScreenView.SplashScreenEvent() {
+        splashView.setSplashScreenEvent(new SplashView.SplashScreenEvent() {
             @Override
             public void onSplashDrawComplete() {
                 uiThreadHandler.post(new Runnable() {

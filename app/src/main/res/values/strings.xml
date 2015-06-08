@@ -18,6 +18,8 @@
     <string name="login_prompt_email">Email</string>
     <string name="login_prompt_password">Password</string>
     <string name="login_action_sign_in">LOG IN</string>
+    <string name="login_register_here">No account yet? Register here.</string>
+    <string name="login_forgot_password">Forgot password? Reset it!</string>
 
     <!-- ERROR MESSAGES -->
     <string name="error_invalid_email">This email address is invalid</string>
