@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 
 
 /**
- *  Item for navigation drawer
+ * Item for navigation drawer
  */
 public class NavigationDrawerItem {
 

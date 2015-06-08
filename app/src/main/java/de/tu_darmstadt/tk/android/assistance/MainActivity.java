@@ -12,20 +12,20 @@ import android.view.MenuItem;
 import android.view.View;
 
 import de.tu_darmstadt.tk.android.assistance.callback.NavigationDrawerCallbacks;
-import de.tu_darmstadt.tk.android.assistance.view.fragment.NavigationDrawerFragment;
 import de.tu_darmstadt.tk.android.assistance.view.SplashView;
+import de.tu_darmstadt.tk.android.assistance.view.fragment.NavigationDrawerFragment;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerCallbacks {
 
+    private final MainActivity mainThis = this;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Toolbar mToolbar;
     private Handler uiThreadHandler = new Handler();
-    private final MainActivity mainThis = this;
     private SplashView splashView;
 
     @Override
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         hideSystemUI();
 
         // init splash screen view
-        if(splashView == null) {
+        if (splashView == null) {
             splashView = new SplashView(this);
         }
 
@@ -123,9 +123,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -9,9 +9,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.callback.NavigationDrawerCallbacks;
 import de.tu_darmstadt.tk.android.assistance.view.NavigationDrawerItem;
-import de.tu_darmstadt.tk.android.assistance.R;
 
 
 /**

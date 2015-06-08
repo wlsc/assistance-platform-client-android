@@ -20,7 +20,10 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +31,8 @@ import java.util.List;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, OnClickListener,
+        TextView.OnEditorActionListener {
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -39,6 +43,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private TextView registerLink;
+    private TextView resetPassLink;
+    private Button mEmailSignInButton;
+
+    // SOCIAL buttons
+    private ImageButton ibFacebookLogo;
+    private ImageButton ibGooglePlusLogo;
+    private ImageButton ibLiveLogo;
+    private ImageButton ibTwitterLogo;
+    private ImageButton ibGithubLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,28 +65,33 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mPasswordView.setOnEditorActionListener(this);
 
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.email || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+        mEmailSignInButton = (Button) findViewById(R.id.sign_in_button);
+        mEmailSignInButton.setOnClickListener(this);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        registerLink = (TextView) findViewById(R.id.tvRegister);
+        registerLink.setOnClickListener(this);
+
+        resetPassLink = (TextView) findViewById(R.id.tvPasswordReset);
+        resetPassLink.setOnClickListener(this);
+
+        // SOCIAL init
+        ibFacebookLogo = (ImageButton) findViewById(R.id.ibFacebookLogo);
+        ibGooglePlusLogo = (ImageButton) findViewById(R.id.ibGooglePlusLogo);
+        ibLiveLogo = (ImageButton) findViewById(R.id.ibLiveLogo);
+        ibTwitterLogo = (ImageButton) findViewById(R.id.ibTwitterLogo);
+        ibGithubLogo = (ImageButton) findViewById(R.id.ibGithubLogo);
+
+        ibFacebookLogo.setOnClickListener(this);
+        ibGooglePlusLogo.setOnClickListener(this);
+        ibLiveLogo.setOnClickListener(this);
+        ibTwitterLogo.setOnClickListener(this);
+        ibGithubLogo.setOnClickListener(this);
+
     }
 
     private void populateAutoComplete() {
@@ -209,6 +228,79 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    /**
+     * Called when a view has been clicked.
+     *
+     * @param v The view that was clicked.
+     */
+    @Override
+    public void onClick(View v) {
+
+        // determine what was clicked
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                attemptLogin();
+                break;
+
+            case R.id.tvRegister:
+                Toast.makeText(this, "tbd", Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(this, LoginActivity.class);
+//                startActivity(intent);
+                break;
+
+            case R.id.tvPasswordReset:
+                Toast.makeText(this, "tbd", Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(this, LoginActivity.class);
+//                startActivity(intent);
+                break;
+
+            case R.id.ibFacebookLogo:
+                Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.ibGooglePlusLogo:
+                Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.ibLiveLogo:
+                Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.ibTwitterLogo:
+                Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.ibGithubLogo:
+                Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    /**
+     * Called when an action is being performed.
+     *
+     * @param v        The view that was clicked.
+     * @param actionId Identifier of the action.  This will be either the
+     *                 identifier you supplied, or {@link EditorInfo#IME_NULL
+     *                 EditorInfo.IME_NULL} if being called due to the enter key
+     *                 being pressed.
+     * @param event    If triggered by an enter key, this is the event;
+     *                 otherwise, this is null.
+     * @return Return true if you have consumed the action, else false.
+     */
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+        switch (actionId) {
+            case R.id.email:
+            case EditorInfo.IME_NULL:
+                attemptLogin();
+                return true;
+        }
+
+        return false;
+    }
+
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -228,10 +320,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private ScrollView loginForm;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
+
+            if (loginForm == null) {
+                loginForm = ((ScrollView) findViewById(R.id.login_form));
+            }
         }
 
         @Override
@@ -253,6 +350,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
+            loginForm.setVisibility(View.VISIBLE);
 
             if (success) {
                 finish();
@@ -263,9 +361,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loginForm.setVisibility(View.GONE);
+        }
+
+        @Override
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+            loginForm.setVisibility(View.VISIBLE);
         }
     }
 }

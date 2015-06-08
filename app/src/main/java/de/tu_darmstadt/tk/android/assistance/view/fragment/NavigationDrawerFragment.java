@@ -18,11 +18,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +33,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.tu_darmstadt.tk.android.assistance.view.NavigationDrawerItem;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.adapter.NavigationDrawerAdapter;
 import de.tu_darmstadt.tk.android.assistance.callback.NavigationDrawerCallbacks;
+import de.tu_darmstadt.tk.android.assistance.view.NavigationDrawerItem;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -134,11 +135,11 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         Drawable item2 = null;
         Drawable item3 = null;
 
-        if(Build.VERSION.SDK_INT > 20){
+        if (Build.VERSION.SDK_INT > 20) {
             item1 = getResources().getDrawable(R.drawable.ic_menu_check, null);
             item2 = getResources().getDrawable(R.drawable.ic_menu_check, null);
             item3 = getResources().getDrawable(R.drawable.ic_menu_check, null);
-        }else{
+        } else {
             item1 = getResources().getDrawable(R.drawable.ic_menu_check);
             item2 = getResources().getDrawable(R.drawable.ic_menu_check);
             item3 = getResources().getDrawable(R.drawable.ic_menu_check);
@@ -179,7 +180,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
 
-                if (!isAdded()){
+                if (!isAdded()) {
                     return;
                 }
 
@@ -264,8 +265,12 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
         ImageView avatarContainer = (ImageView) mFragmentContainerView.findViewById(R.id.imgAvatar);
 
-        ((TextView) mFragmentContainerView.findViewById(R.id.txtUserEmail)).setText(email);
-        ((TextView) mFragmentContainerView.findViewById(R.id.txtUsername)).setText(user);
+        TextView txtUserEmail = ((TextView) mFragmentContainerView.findViewById(R.id.txtUserEmail));
+        txtUserEmail.setText(email);
+        txtUserEmail.setMovementMethod(LinkMovementMethod.getInstance());
+
+        TextView txtUsername = ((TextView) mFragmentContainerView.findViewById(R.id.txtUsername));
+        txtUsername.setText(user);
 
         avatarContainer.setImageDrawable(new RoundImage(avatar));
     }

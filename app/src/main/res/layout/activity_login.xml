@@ -15,8 +15,8 @@
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal|center_vertical"
         android:visibility="gone" />
 
     <ScrollView
@@ -55,7 +55,8 @@
                 android:hint="@string/login_prompt_email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:text="test@test.de" />
 
             <EditText
                 android:id="@+id/password"
@@ -64,7 +65,8 @@
                 android:hint="@string/login_prompt_password"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:text="test12345" />
 
             <Button
                 android:id="@+id/sign_in_button"
@@ -142,17 +144,19 @@
                     android:id="@+id/tvRegister"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="@string/login_register_here"
-                    android:textSize="20sp"
-                    android:layout_gravity="center" />
+                    android:textSize="20sp" />
 
                 <TextView
-                    android:id="@+id/tvPasswordLost"
+                    android:id="@+id/tvPasswordReset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="sans-serif"
                     android:text="@string/login_forgot_password"
-                    android:textSize="20sp"
-                    android:layout_gravity="center" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
