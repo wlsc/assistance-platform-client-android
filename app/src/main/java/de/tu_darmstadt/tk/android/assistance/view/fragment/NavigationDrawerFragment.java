@@ -159,7 +159,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      * @param toolbar      The Toolbar of the activity.
      */
-    public void setup(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
+    public void setup(int fragmentId, DrawerLayout drawerLayout, final Toolbar toolbar) {
 
         mFragmentContainerView = getActivity().findViewById(R.id.fragment_drawer);
         mDrawerLayout = drawerLayout;
@@ -191,8 +191,14 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
                     sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
                 }
 
-                // this calls then onPrepareOptionsMenu()
                 getActivity().invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if(slideOffset < 0.4){
+                    toolbar.setAlpha(1-slideOffset);
+                }
             }
         };
 

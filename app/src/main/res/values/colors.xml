@@ -35,7 +35,8 @@
     <color name="splashScreenBackground">#F1F1F1</color>
 
     <!-- LOGIN VIEW -->
-    <color name="social_round">#AEBAC8</color>
+    <color name="login_header">#778290</color>
+    <color name="login_social_round">#AEBAC8</color>
 
     <drawable name="pressed_gray">#0c000000</drawable>
     <drawable name="selected_gray">#cc9fd700</drawable>

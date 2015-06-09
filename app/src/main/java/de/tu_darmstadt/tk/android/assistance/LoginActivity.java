@@ -142,7 +142,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (cancel) {
             focusView.requestFocus();
         } else {
-            showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
@@ -164,6 +163,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void showProgress(final boolean show) {
 
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        ScrollView loginForm = ((ScrollView) findViewById(R.id.login_form));
+
+        if (show) {
+            loginForm.setVisibility(View.GONE);
+        } else {
+            loginForm.setVisibility(View.VISIBLE);
+        }
 
         mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         mLoginFormView.animate().setDuration(shortAnimTime).alpha(
@@ -320,15 +326,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
-        private ScrollView loginForm;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
+        }
 
-            if (loginForm == null) {
-                loginForm = ((ScrollView) findViewById(R.id.login_form));
-            }
+        @Override
+        protected void onPreExecute() {
+            showProgress(true);
         }
 
         @Override
@@ -350,7 +356,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-            loginForm.setVisibility(View.VISIBLE);
 
             if (success) {
                 finish();
@@ -361,16 +366,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            loginForm.setVisibility(View.GONE);
-        }
-
-        @Override
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
-            loginForm.setVisibility(View.VISIBLE);
         }
     }
 }
