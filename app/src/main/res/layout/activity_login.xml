@@ -19,6 +19,7 @@
         android:layout_gravity="center_horizontal|center_vertical"
         android:visibility="gone" />
 
+    <!-- Login form -->
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
