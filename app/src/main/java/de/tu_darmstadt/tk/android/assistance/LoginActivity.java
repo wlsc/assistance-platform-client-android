@@ -14,8 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -28,70 +26,57 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnEditorAction;
+
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, OnClickListener,
-        TextView.OnEditorActionListener {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
 
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
-    private TextView registerLink;
-    private TextView resetPassLink;
-    private Button mEmailSignInButton;
+    @InjectView(R.id.email)
+    protected AutoCompleteTextView mEmailView;
+    @InjectView(R.id.password)
+    protected EditText mPasswordView;
+    @InjectView(R.id.login_progress)
+    protected View mProgressView;
+    @InjectView(R.id.login_form)
+    protected ScrollView mLoginFormView;
+    @InjectView(R.id.tvRegister)
+    protected TextView registerLink;
+    @InjectView(R.id.tvPasswordReset)
+    protected TextView resetPassLink;
+    @InjectView(R.id.sign_in_button)
+    protected Button mEmailSignInButton;
 
     // SOCIAL buttons
-    private ImageButton ibFacebookLogo;
-    private ImageButton ibGooglePlusLogo;
-    private ImageButton ibLiveLogo;
-    private ImageButton ibTwitterLogo;
-    private ImageButton ibGithubLogo;
+    @InjectView(R.id.ibFacebookLogo)
+    protected ImageButton ibFacebookLogo;
+    @InjectView(R.id.ibGooglePlusLogo)
+    protected ImageButton ibGooglePlusLogo;
+    @InjectView(R.id.ibLiveLogo)
+    protected ImageButton ibLiveLogo;
+    @InjectView(R.id.ibTwitterLogo)
+    protected ImageButton ibTwitterLogo;
+    @InjectView(R.id.ibGithubLogo)
+    protected ImageButton ibGithubLogo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_login);
 
-        // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        ButterKnife.inject(this);
+
         populateAutoComplete();
-
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(this);
-
-        mEmailSignInButton = (Button) findViewById(R.id.sign_in_button);
-        mEmailSignInButton.setOnClickListener(this);
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-
-        registerLink = (TextView) findViewById(R.id.tvRegister);
-        registerLink.setOnClickListener(this);
-
-        resetPassLink = (TextView) findViewById(R.id.tvPasswordReset);
-        resetPassLink.setOnClickListener(this);
-
-        // SOCIAL init
-        ibFacebookLogo = (ImageButton) findViewById(R.id.ibFacebookLogo);
-        ibGooglePlusLogo = (ImageButton) findViewById(R.id.ibGooglePlusLogo);
-        ibLiveLogo = (ImageButton) findViewById(R.id.ibLiveLogo);
-        ibTwitterLogo = (ImageButton) findViewById(R.id.ibTwitterLogo);
-        ibGithubLogo = (ImageButton) findViewById(R.id.ibGithubLogo);
-
-        ibFacebookLogo.setOnClickListener(this);
-        ibGooglePlusLogo.setOnClickListener(this);
-        ibLiveLogo.setOnClickListener(this);
-        ibTwitterLogo.setOnClickListener(this);
-        ibGithubLogo.setOnClickListener(this);
-
     }
 
     private void populateAutoComplete() {
@@ -163,15 +148,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void showProgress(final boolean show) {
 
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-        ScrollView loginForm = ((ScrollView) findViewById(R.id.login_form));
-
-        if (show) {
-            loginForm.setVisibility(View.GONE);
-        } else {
-            loginForm.setVisibility(View.VISIBLE);
-        }
 
         mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+
         mLoginFormView.animate().setDuration(shortAnimTime).alpha(
                 show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
             @Override
@@ -234,79 +213,55 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
-    /**
-     * Called when a view has been clicked.
-     *
-     * @param v The view that was clicked.
-     */
-    @Override
-    public void onClick(View v) {
-
-        // determine what was clicked
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                attemptLogin();
-                break;
-
-            case R.id.tvRegister:
-                Toast.makeText(this, "tbd", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(this, LoginActivity.class);
-//                startActivity(intent);
-                break;
-
-            case R.id.tvPasswordReset:
-                Toast.makeText(this, "tbd", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(this, LoginActivity.class);
-//                startActivity(intent);
-                break;
-
-            case R.id.ibFacebookLogo:
-                Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.ibGooglePlusLogo:
-                Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.ibLiveLogo:
-                Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.ibTwitterLogo:
-                Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.ibGithubLogo:
-                Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
-                break;
-        }
+    @OnClick(R.id.sign_in_button)
+    protected void onUserSignin() {
+        attemptLogin();
     }
 
-    /**
-     * Called when an action is being performed.
-     *
-     * @param v        The view that was clicked.
-     * @param actionId Identifier of the action.  This will be either the
-     *                 identifier you supplied, or {@link EditorInfo#IME_NULL
-     *                 EditorInfo.IME_NULL} if being called due to the enter key
-     *                 being pressed.
-     * @param event    If triggered by an enter key, this is the event;
-     *                 otherwise, this is null.
-     * @return Return true if you have consumed the action, else false.
-     */
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
-        switch (actionId) {
-            case R.id.email:
-            case EditorInfo.IME_NULL:
-                attemptLogin();
-                return true;
-        }
-
-        return false;
+    @OnClick(R.id.tvRegister)
+    protected void onRegisterPressed() {
+        Toast.makeText(this, "tbd", Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(this, LoginActivity.class);
+//                startActivity(intent);
     }
 
+    @OnClick(R.id.tvPasswordReset)
+    protected void onPasswordResetPressed() {
+        Toast.makeText(this, "tbd", Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(this, LoginActivity.class);
+//                startActivity(intent);
+    }
+
+    @OnClick(R.id.ibFacebookLogo)
+    protected void onFacebookLogoPressed() {
+        Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.ibGooglePlusLogo)
+    protected void onGooglePlusLogoPressed() {
+        Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.ibLiveLogo)
+    protected void onLiveLogoPressed() {
+        Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.ibTwitterLogo)
+    protected void onTwitterLogoPressed() {
+        Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.ibGithubLogo)
+    protected void onGithubLogoPressed() {
+        Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnEditorAction(R.id.email)
+    protected boolean onEditorAction(KeyEvent key) {
+        attemptLogin();
+        return true;
+    }
 
     private interface ProfileQuery {
         String[] PROJECTION = {
