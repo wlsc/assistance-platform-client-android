@@ -40,5 +40,6 @@ dependencies {
     //compile 'com.google.android.gms:play-services:7.5.0'
 
     compile 'com.jakewharton:butterknife:6.1.0'
+    compile 'org.metawidget:metawidget-parent:4.1'
     compile group: 'com.google.guava', name: 'guava', version: '18.0'
 }
