@@ -54,6 +54,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
      */
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
+    public static final double DRAWER_SLIDER_THRESHOLD = 0.4;
+
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
@@ -126,7 +128,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         selectItem(position);
     }
 
-    @TargetApi(20)
+    @TargetApi(Build.VERSION_CODES.KITKAT_WATCH)
     public List<NavigationDrawerItem> getMenu() {
 
         List<NavigationDrawerItem> items = new ArrayList<NavigationDrawerItem>();
@@ -135,7 +137,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         Drawable item2 = null;
         Drawable item3 = null;
 
-        if (Build.VERSION.SDK_INT > 20) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
             item1 = getResources().getDrawable(R.drawable.ic_menu_check, null);
             item2 = getResources().getDrawable(R.drawable.ic_menu_check, null);
             item3 = getResources().getDrawable(R.drawable.ic_menu_check, null);
@@ -171,7 +173,10 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                if (!isAdded()) return;
+
+                if (!isAdded()){
+                    return;
+                }
 
                 getActivity().invalidateOptionsMenu();
             }
@@ -196,7 +201,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
-                if(slideOffset < 0.4){
+                if(slideOffset < DRAWER_SLIDER_THRESHOLD){
                     toolbar.setAlpha(1-slideOffset);
                 }
             }

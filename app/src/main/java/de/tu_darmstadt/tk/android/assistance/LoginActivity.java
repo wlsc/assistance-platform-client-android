@@ -36,6 +36,8 @@ import butterknife.OnEditorAction;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    public static final int PASSWORD_MIN_LENGTH = 4;
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -56,7 +58,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @InjectView(R.id.sign_in_button)
     protected Button mEmailSignInButton;
 
-    // SOCIAL buttons
+    // SOCIAL BUTTONS
     @InjectView(R.id.ibFacebookLogo)
     protected ImageButton ibFacebookLogo;
     @InjectView(R.id.ibGooglePlusLogo)
@@ -89,7 +91,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    public void attemptLogin() {
+    private void attemptLogin() {
 
         if (mAuthTask != null) {
             return;
@@ -139,13 +141,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > PASSWORD_MIN_LENGTH;
     }
 
     /**
      * Shows the progress UI and hides the login form.
      */
-    public void showProgress(final boolean show) {
+    private void showProgress(final boolean show) {
 
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
