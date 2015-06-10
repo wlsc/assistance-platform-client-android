@@ -32,9 +32,7 @@ proguard/
 # Idea non-crucial project fileS
 *.iws﻿
 *.iml
-findbugs-idea.xml
-misc.xml
-qaplug_profiles.xml
+.idea
 **/.idea/workspace.xml
 **/.idea/libraries
 
