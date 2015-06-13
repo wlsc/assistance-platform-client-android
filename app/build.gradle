@@ -29,17 +29,20 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
-
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:support-v4:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
-    //compile 'com.google.android.gms:play-services:7.5.0'
 
     compile 'com.jakewharton:butterknife:6.1.0'
+
     compile 'org.metawidget:metawidget-parent:4.1'
+
     compile group: 'com.google.guava', name: 'guava', version: '18.0'
+
+    compile project(":krakenSDK")
 }

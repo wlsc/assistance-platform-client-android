@@ -1,1 +1,6 @@
 include ':app'
+include ':krakenSDK', ':krakenSDK:facebookSDK', ':krakenSDK:liveSDK'
+
+project(':krakenSDK').projectDir = new File(settingsDir, '../client_android_krakensdk/Kraken.MeSDK/')
+project(':krakenSDK:facebookSDK').projectDir = new File(settingsDir, '../client_android_krakensdk/Kraken.MeSDK/libs/facebookSDK')
+project(':krakenSDK:liveSDK').projectDir = new File(settingsDir, '../client_android_krakensdk/Kraken.MeSDK/libs/LiveSDK/src')
