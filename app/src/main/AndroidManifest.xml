@@ -39,8 +39,20 @@
             android:name=".ModuleListActivity"
             android:label="@string/module_list_title" />
         <activity
-            android:name=".BaseActivity"
-            android:label="@string/title_activity_basic" >
+            android:name=".RegisterActivity"
+            android:label="@string/register_activity_title"
+            android:parentActivityName=".LoginActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.tu_darmstadt.tk.android.assistance.LoginActivity" />
+        </activity>
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:label="@string/reset_password_activity_title"
+            android:parentActivityName=".LoginActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.tu_darmstadt.tk.android.assistance.LoginActivity" />
         </activity>
     </application>
 

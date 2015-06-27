@@ -79,9 +79,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         ButterKnife.inject(this);
 
         populateAutoComplete();
-
-        Intent intent = new Intent(this, ModuleListActivity.class);
-        startActivity(intent);
     }
 
     private void populateAutoComplete() {
@@ -215,16 +212,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @OnClick(R.id.tvRegister)
     protected void onRegisterPressed() {
-        Toast.makeText(this, "tbd", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(this, LoginActivity.class);
-//                startActivity(intent);
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.tvPasswordReset)
     protected void onPasswordResetPressed() {
-        Toast.makeText(this, "tbd", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(this, LoginActivity.class);
-//                startActivity(intent);
+        Intent intent = new Intent(this, ResetPasswordActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.ibFacebookLogo)
@@ -309,6 +304,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
                 finish();
+                loadModuleActivity();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -320,6 +316,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    private void loadModuleActivity() {
+        Intent intent = new Intent(this, ModuleListActivity.class);
+        startActivity(intent);
     }
 }
 
