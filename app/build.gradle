@@ -43,13 +43,17 @@ dependencies {
 
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:cardview-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
 
     compile 'com.jakewharton:butterknife:6.1.0'
 
-    compile 'org.metawidget:metawidget-parent:4.1'
+    //Core card library
+    compile 'com.github.gabrielemariotti.cards:cardslib-core:2.1.0'
+    compile 'com.github.gabrielemariotti.cards:cardslib-cards:2.1.0'
+    compile 'com.github.gabrielemariotti.cards:cardslib-recyclerview:2.1.0'
 
-    compile group: 'com.google.guava', name: 'guava', version: '18.0'
+    compile 'org.metawidget:metawidget-parent:4.1'
 
     compile project(":krakenSDK")
 }

@@ -36,7 +36,7 @@ import java.util.List;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.adapter.NavigationDrawerAdapter;
 import de.tu_darmstadt.tk.android.assistance.callback.NavigationDrawerCallbacks;
-import de.tu_darmstadt.tk.android.assistance.view.NavigationDrawerItem;
+import de.tu_darmstadt.tk.android.assistance.models.items.NavigationDrawerItem;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -225,6 +225,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     }
 
     private void selectItem(int position) {
+
         mCurrentSelectedPosition = position;
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);

@@ -11,7 +11,7 @@
     <!-- SPLASH SCREEN -->
     <string name="splash_loading">LOADING</string>
     <string name="splash_logo_description">Kraken Logo</string>
-    <string name="copyright_year">Telecooperation\nTU Darmstadt\n2015</string>
+    <string name="splash_copyright_year">Telecooperation\nTU Darmstadt\n2015</string>
 
     <!-- LOGIN SCREEN -->
     <string name="login_header">WELCOME BACK!</string>
@@ -22,10 +22,14 @@
     <string name="login_register_here"><a href="#">No account yet? Register!</a></string>
     <string name="login_forgot_password"><a href="#">Forgot your password?</a></string>
 
+    <!-- Modules list -->
+    <string name="module_list_title">List of available modules</string>
+
     <!-- ERROR MESSAGES -->
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="title_activity_basic">BasicActivity</string>
 
 </resources>
