@@ -31,6 +31,7 @@ android {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE.txt'
     }
 
     lintOptions {
@@ -54,6 +55,8 @@ dependencies {
     compile 'com.github.gabrielemariotti.cards:cardslib-recyclerview:2.1.0'
 
     compile 'org.metawidget:metawidget-parent:4.1'
+
+    compile 'javax.mail:javax.mail-api:1.5.4'
 
     compile project(":krakenSDK")
 }
