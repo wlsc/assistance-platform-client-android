@@ -1,76 +1,33 @@
 package de.tu_darmstadt.tk.android.assistance.activities;
 
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.callback.NavigationDrawerCallbacks;
-import de.tu_darmstadt.tk.android.assistance.view.SplashView;
-import de.tu_darmstadt.tk.android.assistance.view.fragment.NavigationDrawerFragment;
+import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
+import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
+import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
 
 
+/**
+ * Main user's place
+ */
 public class MainActivity extends BaseActivity
         implements NavigationDrawerCallbacks {
 
-    private final MainActivity mainThis = this;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Toolbar mToolbar;
-    private Handler uiThreadHandler = new Handler();
-    private SplashView splashView;
 
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // first -> load splash screen
-        hideSystemUI();
-
-        // init splash screen view
-        if (splashView == null) {
-            splashView = new SplashView(this);
-        }
-
-        // Set an event handler on the SplashView object, so that as soon
-        // as it completes drawing we are
-        // informed.  In response to that cue, we will *then* put up the main view,
-        // replacing the content view of the main activity with that main view.
-        splashView.setSplashScreenEvent(new SplashView.SplashScreenEvent() {
-            @Override
-            public void onSplashDrawComplete() {
-                uiThreadHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        launchMainView(mainThis, savedInstanceState);
-                    }
-                });
-            }
-        });
-
-        // show splash screen
-        setContentView(splashView);
-    }
-
-    /**
-     * Setup main activity
-     *
-     * @param mainActivity
-     * @param savedInstanceState
-     */
-    public void launchMainView(MainActivity mainActivity, Bundle savedInstanceState) {
-
-        checkForLogin();
-        showSystemUI();
-
         setContentView(R.layout.activity_main);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
@@ -80,12 +37,6 @@ public class MainActivity extends BaseActivity
 
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
         mNavigationDrawerFragment.setUserData("Wladimir Schmidt", "wlsc.dev@gmail.com", BitmapFactory.decodeResource(getResources(), R.drawable.avatar));
-    }
-
-    private void checkForLogin() {
-
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -129,28 +80,5 @@ public class MainActivity extends BaseActivity
 //        }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void hideSystemUI() {
-        // Set the IMMERSIVE flag.
-        // Set the content to appear under the system bars so that the content
-        // doesn't resize when the system bars hide and show.
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
-    }
-
-    // This snippet shows the system bars. It does this by removing all the flags
-    // except for the ones that make the content appear under the system bars.
-    private void showSystemUI() {
-
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 }

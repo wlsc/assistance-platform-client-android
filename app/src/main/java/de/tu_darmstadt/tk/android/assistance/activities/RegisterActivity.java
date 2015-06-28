@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
+import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.RegistrationRequest;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.RegistrationResponse;
@@ -170,9 +171,15 @@ public class RegisterActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Shows login screen if registration was successful
+     *
+     * @param registrationResponse
+     */
     private void showLoginScreen(RegistrationResponse registrationResponse) {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.putExtra("user_id", registrationResponse.getUserId());
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 }

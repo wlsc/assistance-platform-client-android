@@ -1,4 +1,4 @@
-package de.tu_darmstadt.tk.android.assistance.view;
+package de.tu_darmstadt.tk.android.assistance.views;
 
 import android.content.Context;
 import android.graphics.Canvas;

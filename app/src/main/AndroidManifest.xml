@@ -54,10 +54,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.LoginActivity" />
         </activity>
-        <activity
-            android:name=".activities.BaseActivity"
-            android:label="@string/title_activity_base" >
-        </activity>
     </application>
 
 </manifest>

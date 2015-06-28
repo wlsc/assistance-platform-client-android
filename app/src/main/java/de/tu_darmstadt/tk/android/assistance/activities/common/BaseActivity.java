@@ -1,4 +1,4 @@
-package de.tu_darmstadt.tk.android.assistance.activities;
+package de.tu_darmstadt.tk.android.assistance.activities.common;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

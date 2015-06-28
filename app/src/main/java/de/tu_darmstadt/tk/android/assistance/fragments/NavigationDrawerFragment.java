@@ -1,4 +1,4 @@
-package de.tu_darmstadt.tk.android.assistance.view.fragment;
+package de.tu_darmstadt.tk.android.assistance.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -35,8 +35,9 @@ import java.util.List;
 
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.adapter.NavigationDrawerAdapter;
-import de.tu_darmstadt.tk.android.assistance.callback.NavigationDrawerCallbacks;
+import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
 import de.tu_darmstadt.tk.android.assistance.models.items.NavigationDrawerHolder;
+import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -47,14 +48,6 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
      * Remember the position of the selected item.
      */
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
-
-    /**
-     * Per the design guidelines, you should show the drawer on launch until the user manually
-     * expands it. This shared preference tracks this.
-     */
-    private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
-
-    public static final double DRAWER_SLIDER_THRESHOLD = 0.4;
 
     /**
      * A pointer to the current callbacks instance (the Activity).
@@ -82,7 +75,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+        mUserLearnedDrawer = sp.getBoolean(Constants.PREF_USER_LEARNED_DRAWER, false);
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
@@ -193,7 +186,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
                     mUserLearnedDrawer = true;
                     SharedPreferences sp = PreferenceManager
                             .getDefaultSharedPreferences(getActivity());
-                    sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
+                    sp.edit().putBoolean(Constants.PREF_USER_LEARNED_DRAWER, true).apply();
                 }
 
                 getActivity().invalidateOptionsMenu();
@@ -201,7 +194,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
-                if(slideOffset < DRAWER_SLIDER_THRESHOLD){
+                if(slideOffset < Constants.DRAWER_SLIDER_THRESHOLD){
                     toolbar.setAlpha(1-slideOffset);
                 }
             }
