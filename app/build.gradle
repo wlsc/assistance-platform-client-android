@@ -56,7 +56,5 @@ dependencies {
 
     compile 'org.metawidget:metawidget-parent:4.1'
 
-    compile 'javax.mail:javax.mail-api:1.5.4'
-
     compile project(":krakenSDK")
 }

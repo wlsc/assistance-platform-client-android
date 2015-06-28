@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 /**
  * Created by Wladimir Schmidt on 17.06.2015.
  */
-public class ModuleListItem {
+public class ModuleListHolder {
 
     private Drawable mLogo;
     private String mTitle;

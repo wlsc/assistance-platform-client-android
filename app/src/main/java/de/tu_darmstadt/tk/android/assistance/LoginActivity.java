@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import de.tu_darmstadt.tk.android.assistance.utils.Util;
 
 /**
@@ -77,6 +78,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
 
         ButterKnife.inject(this);
+
+        if(savedInstanceState != null){
+            Long userId = savedInstanceState.getLong("user_id");
+            if(userId != null){
+                Toaster.showLong(this, R.string.register_successful);
+            }
+        }
 
         populateAutoComplete();
     }

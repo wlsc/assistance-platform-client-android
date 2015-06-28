@@ -2,6 +2,9 @@ package de.tu_darmstadt.tk.android.assistance.services;
 
 import java.util.HashMap;
 
+import de.tu_darmstadt.tk.android.assistance.models.http.request.RegistrationRequest;
+import de.tu_darmstadt.tk.android.assistance.models.http.response.RegistrationResponse;
+import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.POST;
 
@@ -10,10 +13,6 @@ import retrofit.http.POST;
  */
 public interface RegistrationService {
 
-    public String EMAIL_FIELD = "email";
-
-    public String PASSWORD_FIELD = "password";
-
-    @POST("/register")
-    Long registerUser(@Body HashMap<String, String> body);
+    @POST("/users/register")
+    public void registerUser(@Body RegistrationRequest body, Callback<RegistrationResponse> callback);
 }

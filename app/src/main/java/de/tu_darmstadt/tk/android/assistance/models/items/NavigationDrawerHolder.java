@@ -5,14 +5,14 @@ import android.graphics.drawable.Drawable;
 
 
 /**
- * Item for navigation drawer
+ * Holder for navigation drawer
  */
-public class NavigationDrawerItem {
+public class NavigationDrawerHolder {
 
     private String mText;
     private Drawable mDrawable;
 
-    public NavigationDrawerItem(String text, Drawable drawable) {
+    public NavigationDrawerHolder(String text, Drawable drawable) {
         mText = text;
         mDrawable = drawable;
     }

@@ -1,9 +1,9 @@
 package de.tu_darmstadt.tk.android.assistance.services;
 
-import com.squareup.okhttp.OkHttpClient;
-
-import de.tu_darmstadt.tk.android.assistance.utils.Util;
+import de.tu_darmstadt.tk.android.assistance.Config;
+import de.tu_darmstadt.tk.android.assistance.httpclient.UntrustedOkHttpClient;
 import retrofit.RestAdapter;
+import retrofit.android.AndroidLog;
 import retrofit.client.OkClient;
 
 /**
@@ -17,8 +17,12 @@ public class ServiceGenerator {
     public static <T> T createService(Class<T> serviceClass) {
 
         RestAdapter.Builder builder = new RestAdapter.Builder()
-                .setEndpoint(Util.ASSISTANCE_URL)
-                .setClient(new OkClient(new OkHttpClient()));
+                // enabling log traces
+                .setLogLevel(RestAdapter.LogLevel.FULL).setLog(new AndroidLog("HTTP_CLIENT"))
+                        // custom error handler
+//                .setErrorHandler(new CustomErrorHandler(context))
+                .setEndpoint(Config.ASSISTANCE_URL)
+                .setClient(new OkClient(new UntrustedOkHttpClient().getUnsafeOkHttpClient()));
 
         RestAdapter adapter = builder.build();
 

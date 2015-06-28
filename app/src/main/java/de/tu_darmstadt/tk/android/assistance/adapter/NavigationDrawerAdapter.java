@@ -11,7 +11,7 @@ import java.util.List;
 
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.callback.NavigationDrawerCallbacks;
-import de.tu_darmstadt.tk.android.assistance.models.items.NavigationDrawerItem;
+import de.tu_darmstadt.tk.android.assistance.models.items.NavigationDrawerHolder;
 
 
 /**
@@ -19,12 +19,12 @@ import de.tu_darmstadt.tk.android.assistance.models.items.NavigationDrawerItem;
  */
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDrawerAdapter.ViewHolder> {
 
-    private List<NavigationDrawerItem> mData;
+    private List<NavigationDrawerHolder> mData;
     private NavigationDrawerCallbacks mNavigationDrawerCallbacks;
     private View mSelectedView;
     private int mSelectedPosition;
 
-    public NavigationDrawerAdapter(List<NavigationDrawerItem> data) {
+    public NavigationDrawerAdapter(List<NavigationDrawerHolder> data) {
         mData = data;
     }
 

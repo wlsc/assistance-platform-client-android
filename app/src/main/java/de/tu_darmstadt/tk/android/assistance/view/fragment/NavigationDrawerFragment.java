@@ -36,7 +36,7 @@ import java.util.List;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.adapter.NavigationDrawerAdapter;
 import de.tu_darmstadt.tk.android.assistance.callback.NavigationDrawerCallbacks;
-import de.tu_darmstadt.tk.android.assistance.models.items.NavigationDrawerItem;
+import de.tu_darmstadt.tk.android.assistance.models.items.NavigationDrawerHolder;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -103,7 +103,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mDrawerList.setLayoutManager(layoutManager);
         mDrawerList.setHasFixedSize(true);
 
-        final List<NavigationDrawerItem> navigationItems = getMenu();
+        final List<NavigationDrawerHolder> navigationItems = getMenu();
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(navigationItems);
         adapter.setNavigationDrawerCallbacks(this);
         mDrawerList.setAdapter(adapter);
@@ -129,9 +129,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT_WATCH)
-    public List<NavigationDrawerItem> getMenu() {
+    public List<NavigationDrawerHolder> getMenu() {
 
-        List<NavigationDrawerItem> items = new ArrayList<NavigationDrawerItem>();
+        List<NavigationDrawerHolder> items = new ArrayList<NavigationDrawerHolder>();
 
         Drawable item1 = null;
         Drawable item2 = null;
@@ -147,9 +147,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             item3 = getResources().getDrawable(R.drawable.ic_menu_check);
         }
 
-        items.add(new NavigationDrawerItem("item 1", item1));
-        items.add(new NavigationDrawerItem("item 2", item2));
-        items.add(new NavigationDrawerItem("item 3", item3));
+        items.add(new NavigationDrawerHolder("item 1", item1));
+        items.add(new NavigationDrawerHolder("item 2", item2));
+        items.add(new NavigationDrawerHolder("item 3", item3));
 
         return items;
     }

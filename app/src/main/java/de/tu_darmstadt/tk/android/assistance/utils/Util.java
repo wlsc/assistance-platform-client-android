@@ -1,22 +1,19 @@
 package de.tu_darmstadt.tk.android.assistance.utils;
 
+import android.content.Context;
 import android.text.TextUtils;
-import android.widget.ScrollView;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
+import de.tu_darmstadt.tk.android.assistance.Config;
 
 /**
  * Created by Wladimir Schmidt (wlsc.dev@gmail.com) on 07.06.2015.
  */
 public class Util {
-
-    public static final String ASSISTANCE_URL = "https://130.83.163.115";
-
-    public static final int PASSWORD_MIN_LENGTH = 4;
 
     /**
      *  Email validation for user input
@@ -35,7 +32,7 @@ public class Util {
      * @return
      */
     public static boolean isPasswordLengthValid(String password) {
-        return password.length() > PASSWORD_MIN_LENGTH;
+        return password.length() > Config.PASSWORD_MIN_LENGTH;
     }
 
     /**
@@ -79,5 +76,16 @@ public class Util {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Hides soft keyboard
+     *
+     * @param context
+     * @param currentFocus
+     */
+    public static void hideKeyboard(Context context, View currentFocus){
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
     }
 }

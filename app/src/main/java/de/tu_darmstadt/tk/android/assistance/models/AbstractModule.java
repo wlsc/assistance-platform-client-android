@@ -9,12 +9,18 @@ import java.util.Set;
 public abstract class AbstractModule {
 
     enum STATE {
-      ON, OFF
-    };
+        ONLINE,
+        OFFLINE,
+        POSTPONED
+    }
+
+    ;
 
     private long id;
 
     private long domainId;
+
+    private String modulePackage;
 
     private String title;
 
@@ -32,9 +38,12 @@ public abstract class AbstractModule {
 
     private Set<AbstractSensor> sensorsRequired;
 
+    private STATE state;
+
     public AbstractModule() {
-        this. id = -1;
+        this.id = -1;
         this.domainId = -1;
+        this.modulePackage = "";
         this.title = "";
         this.logo = "";
         this.moduleUrl = "";
@@ -43,6 +52,7 @@ public abstract class AbstractModule {
         this.copyright = "";
         this.sensors = new HashSet<>();
         this.sensorsRequired = new HashSet<>();
+        this.state = STATE.ONLINE;
     }
 
     public Set<AbstractSensor> getSensorsRequired() {
@@ -123,5 +133,21 @@ public abstract class AbstractModule {
 
     public void setSensors(Set<AbstractSensor> sensors) {
         this.sensors = sensors;
+    }
+
+    public STATE getState() {
+        return state;
+    }
+
+    public void setState(STATE state) {
+        this.state = state;
+    }
+
+    public String getModulePackage() {
+        return modulePackage;
+    }
+
+    public void setModulePackage(String modulePackage) {
+        this.modulePackage = modulePackage;
     }
 }
