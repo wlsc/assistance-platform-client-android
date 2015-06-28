@@ -13,27 +13,7 @@ import de.tu_darmstadt.tk.android.assistance.Config;
 /**
  * Created by Wladimir Schmidt (wlsc.dev@gmail.com) on 07.06.2015.
  */
-public class Util {
-
-    /**
-     *  Email validation for user input
-     *
-     * @param target
-     * @return
-     */
-    public final static boolean isValidEmail(CharSequence target) {
-        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-    }
-
-    /**
-     * Password length test
-     *
-     * @param password
-     * @return
-     */
-    public static boolean isPasswordLengthValid(String password) {
-        return password.length() > Config.PASSWORD_MIN_LENGTH;
-    }
+public class Utils {
 
     /**
      * Generates SHA256 hash in HEX of a given string
@@ -87,5 +67,16 @@ public class Util {
     public static void hideKeyboard(Context context, View currentFocus){
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+    }
+
+    /**
+     * Shows soft keyboard
+     *
+     * @param context
+     * @param currentFocus
+     */
+    public static void showKeyboard(Context context, View currentFocus){
+        InputMethodManager inputMethodManager=(InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInputFromWindow(currentFocus.getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
     }
 }

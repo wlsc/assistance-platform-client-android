@@ -1,4 +1,4 @@
-package de.tu_darmstadt.tk.android.assistance;
+package de.tu_darmstadt.tk.android.assistance.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -11,8 +11,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -31,18 +31,24 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import de.tu_darmstadt.tk.android.assistance.R;
+import de.tu_darmstadt.tk.android.assistance.models.http.request.LoginRequest;
+import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
+import de.tu_darmstadt.tk.android.assistance.models.http.response.LoginResponse;
+import de.tu_darmstadt.tk.android.assistance.services.LoginService;
+import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
+import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
-import de.tu_darmstadt.tk.android.assistance.utils.Util;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseActivity implements LoaderCallbacks<Cursor> {
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
+    private String TAG = LoginActivity.class.getName();
 
     @InjectView(R.id.email)
     protected AutoCompleteTextView mEmailView;
@@ -57,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @InjectView(R.id.tvPasswordReset)
     protected TextView resetPassLink;
     @InjectView(R.id.sign_in_button)
-    protected Button mEmailSignInButton;
+    protected Button mLoginButton;
 
     // SOCIAL BUTTONS
     @InjectView(R.id.ibFacebookLogo)
@@ -79,9 +85,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         ButterKnife.inject(this);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             Long userId = savedInstanceState.getLong("user_id");
-            if(userId != null){
+            if (userId != null) {
                 Toaster.showLong(this, R.string.register_successful);
             }
         }
@@ -101,9 +107,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void attemptLogin() {
 
-        if (mAuthTask != null) {
-            return;
-        }
+        // disable button to reduce flood of requests
+        mLoginButton.setEnabled(false);
 
         // Reset errors.
         mEmailView.setError(null);
@@ -113,32 +118,85 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
+        boolean isAnyErrors = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !Util.isPasswordLengthValid(password)) {
+        // check for password
+        if (!TextUtils.isEmpty(password) && !InputValidation.isPasswordLengthValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
-            cancel = true;
+            isAnyErrors = true;
         }
 
-        // Check for a valid email address.
+        // check for email address
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
-            cancel = true;
-        } else if (!Util.isValidEmail(email)) {
+            isAnyErrors = true;
+        } else if (!InputValidation.isValidEmail(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
-            cancel = true;
+            isAnyErrors = true;
         }
 
-        if (cancel) {
+        if (isAnyErrors) {
+            // enables login button
+            mLoginButton.setEnabled(true);
             focusView.requestFocus();
         } else {
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            doRegisterUser(email, password);
+        }
+    }
+
+    private void doRegisterUser(String email, String password) {
+
+        showProgress(true);
+
+        // forming a login request
+        LoginRequest request = new LoginRequest();
+        request.setUserEmail(email);
+        request.setPassword(password);
+
+        // calling api service
+        LoginService service = ServiceGenerator.createService(LoginService.class);
+        service.loginUser(request, new Callback<LoginResponse>() {
+
+            @Override
+            public void success(LoginResponse apiResponse, Response response) {
+                showNextScreen(apiResponse);
+                Log.d(TAG, "User token received: " + apiResponse.getUserToken());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                // enables login button
+                mLoginButton.setEnabled(true);
+
+                ErrorResponse errorResponse = (ErrorResponse) error.getBodyAs(ErrorResponse.class);
+                errorResponse.setStatusCode(error.getResponse().getStatus());
+
+                handleError(errorResponse, TAG);
+            }
+        });
+    }
+
+    /**
+     * Loads next user screen
+     *
+     * @param apiResponse
+     */
+    private void showNextScreen(LoginResponse apiResponse) {
+        String token = apiResponse.getUserToken();
+
+        if (InputValidation.isUserTokenValid(token)) {
+            Log.d(TAG, "Token is valid. Proceeding with login...");
+
+            showProgress(false);
+            loadModuleListActivity();
+        } else {
+            Toaster.showLong(this, R.string.error_user_token_not_valid);
+            Log.d(TAG, "Token is INVALID.");
         }
     }
 
@@ -214,7 +272,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     @OnClick(R.id.sign_in_button)
-    protected void onUserSignin() {
+    protected void onUserLogin() {
         attemptLogin();
     }
 
@@ -272,62 +330,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
+     * Disables back button for user
+     * and starts module list activity
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            showProgress(true);
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-                loadModuleActivity();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
-
-    private void loadModuleActivity() {
+    private void loadModuleListActivity() {
         Intent intent = new Intent(this, ModuleListActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 }

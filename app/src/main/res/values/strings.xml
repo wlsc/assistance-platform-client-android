@@ -51,5 +51,9 @@
     <string name="error_no_response">No response received</string>
     <string name="error_general_http_parse">Something is wrong</string>
     <string name="error_unknown">Unknown error</string>
+    <string name="error_user_token_not_valid">User token is not valid</string>
+    <string name="title_activity_base">BaseActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 
 </resources>

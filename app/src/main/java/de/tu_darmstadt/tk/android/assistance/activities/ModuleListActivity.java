@@ -1,10 +1,9 @@
-package de.tu_darmstadt.tk.android.assistance;
+package de.tu_darmstadt.tk.android.assistance.activities;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.callback.NavigationDrawerCallbacks;
 import de.tu_darmstadt.tk.android.assistance.view.fragment.NavigationDrawerFragment;
 import it.gmariotti.cardslib.library.internal.Card;
@@ -21,7 +21,7 @@ import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
 
-public class ModuleListActivity extends AppCompatActivity implements NavigationDrawerCallbacks {
+public class ModuleListActivity extends BaseActivity implements NavigationDrawerCallbacks {
 
     @InjectView(R.id.module_list)
     protected CardListView listView;
@@ -64,7 +64,7 @@ public class ModuleListActivity extends AppCompatActivity implements NavigationD
 
         ArrayList<Card> cards = new ArrayList<Card>();
 
-        for (int i = 0; i<2; i++) {
+        for (int i = 0; i < 2; i++) {
             // Create a Card
             Card card = new Card(this);
             // Create a CardHeader

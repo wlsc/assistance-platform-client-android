@@ -1,11 +1,12 @@
-package de.tu_darmstadt.tk.android.assistance;
+package de.tu_darmstadt.tk.android.assistance.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class ResetPasswordActivity extends AppCompatActivity {
+import de.tu_darmstadt.tk.android.assistance.R;
+
+public class ResetPasswordActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

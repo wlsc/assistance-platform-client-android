@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="de.tu_darmstadt.tk.android.assistance.LoginActivity">
+    tools:context="de.tu_darmstadt.tk.android.assistance.activities.LoginActivity">
 
     <!-- Login progress -->
     <ProgressBar
@@ -58,7 +58,7 @@
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="test@test.de" />
+                android:text="test@test.com" />
 
             <EditText
                 android:id="@+id/password"

@@ -1,22 +1,22 @@
-package de.tu_darmstadt.tk.android.assistance;
+package de.tu_darmstadt.tk.android.assistance.activities;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.callback.NavigationDrawerCallbacks;
 import de.tu_darmstadt.tk.android.assistance.view.SplashView;
 import de.tu_darmstadt.tk.android.assistance.view.fragment.NavigationDrawerFragment;
 
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationDrawerCallbacks {
 
     private final MainActivity mainThis = this;
