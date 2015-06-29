@@ -29,8 +29,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.tu_darmstadt.tk.android.assistance.R;
@@ -59,31 +59,31 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     private Handler uiThreadHandler = new Handler();
     private SplashView splashView;
 
-    @InjectView(R.id.email)
+    @Bind(R.id.email)
     protected AutoCompleteTextView mEmailView;
-    @InjectView(R.id.password)
+    @Bind(R.id.password)
     protected EditText mPasswordView;
-    @InjectView(R.id.login_progress)
+    @Bind(R.id.login_progress)
     protected View mProgressView;
-    @InjectView(R.id.login_form)
+    @Bind(R.id.login_form)
     protected ScrollView mLoginFormView;
-    @InjectView(R.id.tvRegister)
+    @Bind(R.id.tvRegister)
     protected TextView registerLink;
-    @InjectView(R.id.tvPasswordReset)
+    @Bind(R.id.tvPasswordReset)
     protected TextView resetPassLink;
-    @InjectView(R.id.sign_in_button)
+    @Bind(R.id.sign_in_button)
     protected Button mLoginButton;
 
     // SOCIAL BUTTONS
-    @InjectView(R.id.ibFacebookLogo)
+    @Bind(R.id.ibFacebookLogo)
     protected ImageButton ibFacebookLogo;
-    @InjectView(R.id.ibGooglePlusLogo)
+    @Bind(R.id.ibGooglePlusLogo)
     protected ImageButton ibGooglePlusLogo;
-    @InjectView(R.id.ibLiveLogo)
+    @Bind(R.id.ibLiveLogo)
     protected ImageButton ibLiveLogo;
-    @InjectView(R.id.ibTwitterLogo)
+    @Bind(R.id.ibTwitterLogo)
     protected ImageButton ibTwitterLogo;
-    @InjectView(R.id.ibGithubLogo)
+    @Bind(R.id.ibGithubLogo)
     protected ImageButton ibGithubLogo;
 
 
@@ -137,7 +137,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
 
         setContentView(R.layout.activity_login);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         if (savedInstanceState != null) {
             Long userId = savedInstanceState.getLong("user_id");
@@ -149,6 +149,9 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         populateAutoComplete();
     }
 
+    /**
+     * Get user's emails
+     */
     private void populateAutoComplete() {
         getLoaderManager().initLoader(0, null, this);
     }
@@ -438,6 +441,12 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ButterKnife.unbind(this);
     }
 }
 

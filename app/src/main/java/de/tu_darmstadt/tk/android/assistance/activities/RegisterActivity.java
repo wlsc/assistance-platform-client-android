@@ -9,8 +9,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
@@ -29,16 +29,16 @@ public class RegisterActivity extends BaseActivity {
 
     private String TAG = RegisterActivity.class.getName();
 
-    @InjectView(R.id.register_email)
+    @Bind(R.id.register_email)
     protected EditText etUserEmail;
 
-    @InjectView(R.id.register_password1)
+    @Bind(R.id.register_password1)
     protected EditText etUserPassword1;
 
-    @InjectView(R.id.register_password2)
+    @Bind(R.id.register_password2)
     protected EditText etUserPassword2;
 
-    @InjectView(R.id.sign_up_button)
+    @Bind(R.id.sign_up_button)
     protected Button bSignUp;
 
     @Override
@@ -46,7 +46,7 @@ public class RegisterActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     /**
@@ -181,5 +181,11 @@ public class RegisterActivity extends BaseActivity {
         intent.putExtra("user_id", registrationResponse.getUserId());
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ButterKnife.unbind(this);
     }
 }

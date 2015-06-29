@@ -52,7 +52,7 @@
     </RelativeLayout>
 
     <View
-        android:id="@+id/separator"
+        android:id="@+id/separatorBeforeList"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/navigationHeader"
@@ -63,9 +63,17 @@
         android:id="@+id/drawerList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/separator"
+        android:layout_below="@+id/separatorBeforeList"
         android:background="@color/myDrawerBackground"
         android:clickable="true"
         android:scrollbars="vertical" />
+
+    <View
+        android:id="@+id/separatorAfterList"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/navigationHeader"
+        android:layout_marginBottom="8dp"
+        android:background="#1f000000" />
 
 </RelativeLayout>

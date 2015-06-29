@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
 import de.tu_darmstadt.tk.android.assistance.models.items.NavigationDrawerHolder;
@@ -97,11 +99,14 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView textView;
+
+        @Bind(R.id.item_name)
+        protected TextView textView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView.findViewById(R.id.item_name);
+
+            ButterKnife.bind(this, itemView);
         }
     }
 }

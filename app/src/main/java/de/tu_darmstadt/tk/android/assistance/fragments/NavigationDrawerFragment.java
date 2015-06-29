@@ -33,6 +33,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.adapter.NavigationDrawerAdapter;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
@@ -60,7 +62,10 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private ActionBarDrawerToggle mActionBarDrawerToggle;
 
     private DrawerLayout mDrawerLayout;
-    private RecyclerView mDrawerList;
+
+    @Bind(R.id.drawerList)
+    protected RecyclerView mDrawerList;
+
     private View mFragmentContainerView;
 
     private int mCurrentSelectedPosition = 0;
@@ -88,7 +93,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-        mDrawerList = (RecyclerView) view.findViewById(R.id.drawerList);
+
+        ButterKnife.bind(this, view);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -96,7 +102,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mDrawerList.setLayoutManager(layoutManager);
         mDrawerList.setHasFixedSize(true);
 
-        final List<NavigationDrawerHolder> navigationItems = getMenu();
+        List<NavigationDrawerHolder> navigationItems = getMenu();
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(navigationItems);
         adapter.setNavigationDrawerCallbacks(this);
         mDrawerList.setAdapter(adapter);
@@ -156,6 +162,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
      */
     public void setup(int fragmentId, DrawerLayout drawerLayout, final Toolbar toolbar) {
 
+        ButterKnife.bind(getActivity());
+
         mFragmentContainerView = getActivity().findViewById(R.id.fragment_drawer);
         mDrawerLayout = drawerLayout;
 
@@ -167,7 +175,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
 
-                if (!isAdded()){
+                if (!isAdded()) {
                     return;
                 }
 
@@ -194,8 +202,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
-                if(slideOffset < Constants.DRAWER_SLIDER_THRESHOLD){
-                    toolbar.setAlpha(1-slideOffset);
+                if (slideOffset < Constants.DRAWER_SLIDER_THRESHOLD) {
+                    toolbar.setAlpha(1 - slideOffset);
                 }
             }
         };
@@ -268,20 +276,20 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     public void setUserData(String user, String email, Bitmap avatar) {
 
-        ImageView avatarContainer = (ImageView) mFragmentContainerView.findViewById(R.id.imgAvatar);
+        ImageView avatarContainer = ButterKnife.findById(mFragmentContainerView, R.id.imgAvatar);
 
-        TextView txtUserEmail = ((TextView) mFragmentContainerView.findViewById(R.id.txtUserEmail));
+        TextView txtUserEmail = ButterKnife.findById(mFragmentContainerView, R.id.txtUserEmail);
         txtUserEmail.setText(email);
         txtUserEmail.setMovementMethod(LinkMovementMethod.getInstance());
 
-        TextView txtUsername = ((TextView) mFragmentContainerView.findViewById(R.id.txtUsername));
+        TextView txtUsername = ButterKnife.findById(mFragmentContainerView, R.id.txtUsername);
         txtUsername.setText(user);
 
         avatarContainer.setImageDrawable(new RoundImage(avatar));
     }
 
     public View getGoogleDrawer() {
-        return mFragmentContainerView.findViewById(R.id.googleDrawer);
+        return ButterKnife.findById(mFragmentContainerView, R.id.googleDrawer);
     }
 
     /**
@@ -370,5 +378,11 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             return mBitmap;
         }
 
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ButterKnife.unbind(this);
     }
 }

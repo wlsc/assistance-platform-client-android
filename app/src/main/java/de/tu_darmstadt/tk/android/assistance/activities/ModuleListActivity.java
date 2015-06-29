@@ -10,8 +10,8 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
@@ -24,10 +24,10 @@ import it.gmariotti.cardslib.library.view.CardListView;
 
 public class ModuleListActivity extends BaseActivity implements NavigationDrawerCallbacks {
 
-    @InjectView(R.id.module_list)
+    @Bind(R.id.module_list)
     protected CardListView listView;
 
-    @InjectView(R.id.module_list_swipe_refresh_layout)
+    @Bind(R.id.module_list_swipe_refresh_layout)
     protected SwipeRefreshLayout swipeRefreshLayout;
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -38,7 +38,7 @@ public class ModuleListActivity extends BaseActivity implements NavigationDrawer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_module_list);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mToolbar);
@@ -111,5 +111,11 @@ public class ModuleListActivity extends BaseActivity implements NavigationDrawer
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // drawer item was select
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ButterKnife.unbind(this);
     }
 }
