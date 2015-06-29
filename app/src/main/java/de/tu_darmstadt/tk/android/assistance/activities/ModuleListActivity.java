@@ -43,9 +43,11 @@ public class ModuleListActivity extends BaseActivity implements NavigationDrawer
         mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mToolbar);
 
+        DrawerLayout drawerLayout = ButterKnife.findById(this, R.id.drawer);
+
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
 
-        mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
+        mNavigationDrawerFragment.setup(R.id.fragment_drawer, drawerLayout, mToolbar);
         mNavigationDrawerFragment.setUserData("Wladimir Schmidt", "wlsc.dev@gmail.com", BitmapFactory.decodeResource(getResources(), R.drawable.avatar));
 
         swipeRefreshLayout.setColorSchemeResources(
@@ -88,24 +90,6 @@ public class ModuleListActivity extends BaseActivity implements NavigationDrawer
             listView.setAdapter(mCardArrayAdapter);
         }
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_module_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
