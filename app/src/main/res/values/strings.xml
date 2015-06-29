@@ -4,9 +4,18 @@
     <string name="app_name">Assistance</string>
     <string name="action_settings">Settings</string>
 
+    <!-- SETTINGS SCREEN -->
+    <string name="settings_activity_title">Settings</string>
+    <string name="settings_header_application_title">Application</string>
+    <string name="settings_header_user_profile_title">Account</string>
+    <string name="settings_header_about_device_title">Your device</string>
+    <string name="settings_header_development_title">Development</string>
+    <string name="settings_header_about_title">About</string>
+
     <!-- NAVIGATION DRAWER -->
     <string name="drawer_open">Menu opened</string>
     <string name="drawer_close">Menu closed</string>
+    <string name="drawer_settings">Settings</string>
 
     <!-- SPLASH SCREEN -->
     <string name="splash_loading">LOADING</string>

@@ -68,12 +68,4 @@
         android:clickable="true"
         android:scrollbars="vertical" />
 
-    <View
-        android:id="@+id/separatorAfterList"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/navigationHeader"
-        android:layout_marginBottom="8dp"
-        android:background="#1f000000" />
-
 </RelativeLayout>

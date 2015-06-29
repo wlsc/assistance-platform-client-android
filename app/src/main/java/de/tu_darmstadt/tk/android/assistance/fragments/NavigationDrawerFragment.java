@@ -3,6 +3,7 @@ package de.tu_darmstadt.tk.android.assistance.fragments;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -36,6 +37,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
+import de.tu_darmstadt.tk.android.assistance.activities.MainActivity;
+import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
 import de.tu_darmstadt.tk.android.assistance.adapter.NavigationDrawerAdapter;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
 import de.tu_darmstadt.tk.android.assistance.models.items.NavigationDrawerHolder;
@@ -137,20 +140,24 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         Drawable item1 = null;
         Drawable item2 = null;
         Drawable item3 = null;
+        Drawable settingsIcon = null;
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
             item1 = getResources().getDrawable(R.drawable.ic_menu_check, null);
             item2 = getResources().getDrawable(R.drawable.ic_menu_check, null);
             item3 = getResources().getDrawable(R.drawable.ic_menu_check, null);
+            settingsIcon = getResources().getDrawable(R.drawable.ic_settings_black_48dp, null);
         } else {
             item1 = getResources().getDrawable(R.drawable.ic_menu_check);
             item2 = getResources().getDrawable(R.drawable.ic_menu_check);
             item3 = getResources().getDrawable(R.drawable.ic_menu_check);
+            settingsIcon = getResources().getDrawable(R.drawable.ic_settings_black_48dp);
         }
 
         items.add(new NavigationDrawerHolder("item 1", item1));
         items.add(new NavigationDrawerHolder("item 2", item2));
         items.add(new NavigationDrawerHolder("item 3", item3));
+        items.add(new NavigationDrawerHolder(getString(R.string.drawer_settings), settingsIcon));
 
         return items;
     }
@@ -228,6 +235,12 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     }
 
     private void selectItem(int position) {
+
+        if(position == 3){
+            Intent intent = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(intent);
+            return;
+        }
 
         mCurrentSelectedPosition = position;
         if (mDrawerLayout != null) {

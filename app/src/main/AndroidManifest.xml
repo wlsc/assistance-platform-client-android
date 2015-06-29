@@ -19,7 +19,6 @@
         <activity
             android:name=".activities.MainActivity"
             android:theme="@style/AppTheme" >
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.LoginActivity" />
@@ -27,16 +26,13 @@
         <activity
             android:name=".activities.LoginActivity"
             android:windowSoftInputMode="stateHidden" >
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity
-            android:name=".activities.ModuleListActivity" />
+        <activity android:name=".activities.ModuleListActivity" />
         <activity
             android:name=".activities.RegisterActivity"
             android:parentActivityName=".activities.LoginActivity" >
@@ -51,6 +47,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.LoginActivity" />
         </activity>
+        <activity
+            android:name=".activities.SettingsActivity" />
     </application>
 
 </manifest>
