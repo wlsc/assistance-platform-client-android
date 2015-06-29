@@ -46,6 +46,8 @@ import de.tu_darmstadt.tk.android.assistance.utils.Constants;
  */
 public class NavigationDrawerFragment extends Fragment implements NavigationDrawerCallbacks {
 
+    private String TAG = NavigationDrawerFragment.class.getName();
+
     /**
      * Remember the position of the selected item.
      */

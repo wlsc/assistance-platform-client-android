@@ -4,8 +4,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -21,13 +19,14 @@ import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
 public class MainActivity extends BaseActivity
         implements NavigationDrawerCallbacks {
 
+    private String TAG = MainActivity.class.getName();
+
+    @Bind(R.id.toolbar_actionbar)
+    protected Toolbar mToolbar;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-
-    @Bind(R.id.toolbar_actionbar)
-    protected Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

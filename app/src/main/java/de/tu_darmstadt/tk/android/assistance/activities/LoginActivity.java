@@ -55,37 +55,45 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
 
     private String TAG = LoginActivity.class.getName();
 
-    private final LoginActivity mainThis = this;
-    private Handler uiThreadHandler = new Handler();
-    private SplashView splashView;
-
     @Bind(R.id.email)
     protected AutoCompleteTextView mEmailView;
+
     @Bind(R.id.password)
     protected EditText mPasswordView;
+
     @Bind(R.id.login_progress)
     protected View mProgressView;
+
     @Bind(R.id.login_form)
     protected ScrollView mLoginFormView;
+
     @Bind(R.id.tvRegister)
     protected TextView registerLink;
+
     @Bind(R.id.tvPasswordReset)
     protected TextView resetPassLink;
+
     @Bind(R.id.sign_in_button)
     protected Button mLoginButton;
 
     // SOCIAL BUTTONS
     @Bind(R.id.ibFacebookLogo)
     protected ImageButton ibFacebookLogo;
+
     @Bind(R.id.ibGooglePlusLogo)
     protected ImageButton ibGooglePlusLogo;
+
     @Bind(R.id.ibLiveLogo)
     protected ImageButton ibLiveLogo;
+
     @Bind(R.id.ibTwitterLogo)
     protected ImageButton ibTwitterLogo;
+
     @Bind(R.id.ibGithubLogo)
     protected ImageButton ibGithubLogo;
 
+    private Handler uiThreadHandler = new Handler();
+    private SplashView splashView;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -93,8 +101,11 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
 
         String userToken = getUserToken();
         if (userToken != null && !userToken.isEmpty()) {
+            Log.d(TAG, "User token found. Launching main activity!");
             loadMainActivity();
             return;
+        } else {
+            Log.d(TAG, "User token NOT found");
         }
 
         // first -> load splash screen
@@ -115,7 +126,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                 uiThreadHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        launchMainView(mainThis, savedInstanceState);
+                        launchMainView(savedInstanceState);
                     }
                 });
             }
@@ -128,10 +139,9 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     /**
      * Setup main activity
      *
-     * @param activity
      * @param savedInstanceState
      */
-    public void launchMainView(LoginActivity activity, Bundle savedInstanceState) {
+    public void launchMainView(Bundle savedInstanceState) {
 
         showSystemUI();
 
@@ -165,7 +175,9 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     private void attemptLogin() {
 
         // disable button to reduce flood of requests
-        mLoginButton.setEnabled(false);
+        if (mLoginButton != null) {
+            mLoginButton.setEnabled(false);
+        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -198,7 +210,9 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
 
         if (isAnyErrors) {
             // enables login button
-            mLoginButton.setEnabled(true);
+            if (mLoginButton != null) {
+                mLoginButton.setEnabled(true);
+            }
             focusView.requestFocus();
         } else {
             doRegisterUser(email, password);
@@ -228,7 +242,9 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
             public void failure(RetrofitError error) {
 
                 // enables login button
-                mLoginButton.setEnabled(true);
+                if (mLoginButton != null) {
+                    mLoginButton.setEnabled(true);
+                }
 
                 ErrorResponse errorResponse = (ErrorResponse) error.getBodyAs(ErrorResponse.class);
                 errorResponse.setStatusCode(error.getResponse().getStatus());
@@ -399,16 +415,6 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         return true;
     }
 
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
     /**
      * Disables back button for user
      * and starts main activity
@@ -417,6 +423,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        finish();
     }
 
     private void hideSystemUI() {
@@ -447,6 +454,16 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     protected void onStop() {
         super.onStop();
         ButterKnife.unbind(this);
+    }
+
+    private interface ProfileQuery {
+        String[] PROJECTION = {
+                ContactsContract.CommonDataKinds.Email.ADDRESS,
+                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
+        };
+
+        int ADDRESS = 0;
+        int IS_PRIMARY = 1;
     }
 }
 
