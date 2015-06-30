@@ -52,7 +52,7 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
 
         ButterKnife.bind(this);
 
-        String userEmail = getUserEmail();
+        mUserEmail = getUserEmail();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mToolbar);
@@ -62,7 +62,7 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
 
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, drawerLayout, mToolbar);
-        mNavigationDrawerFragment.setUserData("Wladimir Schmidt", userEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
+        mNavigationDrawerFragment.setUserData("Wladimir Schmidt", mUserEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
 
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.swipe_refresh_progress_1,
@@ -70,6 +70,7 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
                 R.color.swipe_refresh_progress_3);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
             @Override
             public void onRefresh() {
                 requestAvailableModules();
@@ -162,6 +163,10 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
 
                 CardHeader header = new CardHeader(this);
 
+                Log.d(TAG, "Module content");
+                Log.d(TAG, "Title: " + module.getTitle());
+                Log.d(TAG, "Short description: " + module.getDescriptionShort());
+
                 header.setTitle(module.getTitle());
                 card.setTitle(module.getDescriptionShort());
                 card.addCardHeader(header);
@@ -171,8 +176,10 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
                 String logoUrl = module.getLogo();
 
                 if (logoUrl != null && !logoUrl.isEmpty()) {
+                    Log.d(TAG, "Logo URL: " + logoUrl);
                     thumb.setUrlResource(logoUrl);
                 } else {
+                    Log.d(TAG, "Logo URL: NO LOGO");
                     thumb.setDrawableResource(R.drawable.no_user_pic);
                 }
 

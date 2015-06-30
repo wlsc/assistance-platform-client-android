@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity
 
         ButterKnife.bind(this);
 
-        String userEmail = getUserEmail();
+        mUserEmail = getUserEmail();
 
         setSupportActionBar(mToolbar);
 
@@ -49,7 +49,7 @@ public class MainActivity extends BaseActivity
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
 
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, drawerLayout, mToolbar);
-        mNavigationDrawerFragment.setUserData("Wladimir Schmidt", userEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
+        mNavigationDrawerFragment.setUserData("Wladimir Schmidt", mUserEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
     }
 
     @Override
