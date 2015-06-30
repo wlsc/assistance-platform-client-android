@@ -73,4 +73,16 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         return userEmail;
     }
+
+    /**
+     * Returns user token saved in SharedPreferences
+     *
+     * @return
+     */
+    protected String getUserToken() {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        String userToken = sp.getString(Constants.PREF_USER_TOKEN, "");
+        return userToken;
+    }
 }

@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -14,13 +16,23 @@ import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
 import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
+import de.tu_darmstadt.tk.android.assistance.models.http.response.AvailableModuleResponse;
+import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
+import de.tu_darmstadt.tk.android.assistance.services.AvailableModulesService;
+import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
+import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class AvailableModulesActivity extends BaseActivity implements NavigationDrawerCallbacks {
+
+    private String TAG = AvailableModulesActivity.class.getName();
 
     @Bind(R.id.module_list)
     protected CardListView mModuleList;
@@ -60,41 +72,123 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mSwipeRefreshLayout.setRefreshing(false);
+                requestAvailableModules();
             }
         });
 
-        int listImages[] = new int[]{R.drawable.no_user_pic, R.drawable.no_user_pic};
+        mSwipeRefreshLayout.setRefreshing(true);
 
-        ArrayList<Card> cards = new ArrayList<Card>();
+        requestAvailableModules();
+    }
 
-        for (int i = 0; i < 2; i++) {
-            Card card = new Card(this);
+    /**
+     * Request available modules service
+     */
+    private void requestAvailableModules() {
 
-            CardHeader header = new CardHeader(this);
+        String userToken = getUserToken();
 
-            header.setTitle("Module " + i);
-            card.setTitle("Sample module title");
-            card.addCardHeader(header);
+        // calling api service
+        AvailableModulesService service = ServiceGenerator.createService(AvailableModulesService.class);
+        service.getAvailableModules(userToken, new Callback<List<AvailableModuleResponse>>() {
+            /**
+             * Successful HTTP response.
+             *
+             * @param availableModuleResponses
+             * @param response
+             */
+            @Override
+            public void success(List<AvailableModuleResponse> availableModuleResponses, Response response) {
 
-            CardThumbnail thumb = new CardThumbnail(this);
-            thumb.setDrawableResource(listImages[i]);
-            card.addCardThumbnail(thumb);
+                populateAvailableModuleList(availableModuleResponses);
 
-            cards.add(card);
+                mSwipeRefreshLayout.setRefreshing(false);
+
+                Log.d(TAG, "successfully received available modules! size: " + availableModuleResponses.size());
+            }
+
+            /**
+             * Unsuccessful HTTP response due to network failure, non-2XX status code, or unexpected
+             * exception.
+             *
+             * @param error
+             */
+            @Override
+            public void failure(RetrofitError error) {
+
+                mSwipeRefreshLayout.setRefreshing(false);
+
+                Response response = error.getResponse();
+
+                if (response != null) {
+
+                    int httpCode = response.getStatus();
+
+                    switch (httpCode) {
+                        case 400:
+                            ErrorResponse errorResponse = (ErrorResponse) error.getBodyAs(ErrorResponse.class);
+                            errorResponse.setStatusCode(httpCode);
+
+                            handleError(errorResponse, TAG);
+                            break;
+                        case 404:
+                            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+                            break;
+                    }
+                } else {
+                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+                }
+            }
+        });
+    }
+
+    /**
+     * Show available modules to user
+     *
+     * @param availableModuleResponses
+     */
+    private void populateAvailableModuleList(List<AvailableModuleResponse> availableModuleResponses) {
+
+        if (availableModuleResponses != null && !availableModuleResponses.isEmpty()) {
+
+            ArrayList<Card> cards = new ArrayList<Card>();
+
+            for (AvailableModuleResponse module : availableModuleResponses) {
+
+                Card card = new Card(this);
+
+                CardHeader header = new CardHeader(this);
+
+                header.setTitle(module.getTitle());
+                card.setTitle(module.getDescriptionShort());
+                card.addCardHeader(header);
+
+                CardThumbnail thumb = new CardThumbnail(this);
+
+                String logoUrl = module.getLogo();
+
+                if (logoUrl != null && !logoUrl.isEmpty()) {
+                    thumb.setUrlResource(logoUrl);
+                } else {
+                    thumb.setDrawableResource(R.drawable.no_user_pic);
+                }
+
+                card.addCardThumbnail(thumb);
+
+                cards.add(card);
+            }
+
+            CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, cards);
+
+            if (mModuleList != null) {
+                mModuleList.setAdapter(mCardArrayAdapter);
+            }
         }
-
-        CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, cards);
-
-        if (mModuleList != null) {
-            mModuleList.setAdapter(mCardArrayAdapter);
-        }
-
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // drawer item was select
+
     }
 
     @Override

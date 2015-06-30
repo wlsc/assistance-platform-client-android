@@ -109,4 +109,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
             ButterKnife.bind(this, itemView);
         }
     }
+
+    public NavigationDrawerHolder getDataItem(int position) {
+        return mData.get(position);
+    }
 }

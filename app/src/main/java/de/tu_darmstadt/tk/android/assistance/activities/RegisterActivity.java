@@ -19,6 +19,7 @@ import de.tu_darmstadt.tk.android.assistance.services.RegistrationService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
+import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import de.tu_darmstadt.tk.android.assistance.utils.Utils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -141,10 +142,26 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void failure(RetrofitError error) {
 
-                ErrorResponse errorResponse = (ErrorResponse) error.getBodyAs(ErrorResponse.class);
-                errorResponse.setStatusCode(error.getResponse().getStatus());
+                Response response = error.getResponse();
 
-                handleError(errorResponse, TAG);
+                if (response != null) {
+
+                    int httpCode = response.getStatus();
+
+                    switch (httpCode) {
+                        case 400:
+                            ErrorResponse errorResponse = (ErrorResponse) error.getBodyAs(ErrorResponse.class);
+                            errorResponse.setStatusCode(httpCode);
+
+                            handleError(errorResponse, TAG);
+                            break;
+                        case 404:
+                            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+                            break;
+                    }
+                } else {
+                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+                }
             }
         });
     }

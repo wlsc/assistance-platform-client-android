@@ -251,10 +251,26 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                     mLoginButton.setEnabled(true);
                 }
 
-                ErrorResponse errorResponse = (ErrorResponse) error.getBodyAs(ErrorResponse.class);
-                errorResponse.setStatusCode(error.getResponse().getStatus());
+                Response response = error.getResponse();
 
-                handleError(errorResponse, TAG);
+                if (response != null) {
+
+                    int httpCode = response.getStatus();
+
+                    switch (httpCode) {
+                        case 400:
+                            ErrorResponse errorResponse = (ErrorResponse) error.getBodyAs(ErrorResponse.class);
+                            errorResponse.setStatusCode(httpCode);
+
+                            handleError(errorResponse, TAG);
+                            break;
+                        case 404:
+                            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+                            break;
+                    }
+                } else {
+                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+                }
             }
         });
     }
@@ -293,17 +309,6 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                 .putString(Constants.PREF_USER_TOKEN, token)
                 .putString(Constants.PREF_USER_EMAIL, email)
                 .apply();
-    }
-
-    /**
-     * Returns user token saved in SharedPreferences
-     *
-     * @return
-     */
-    private String getUserToken() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        String userToken = sp.getString(Constants.PREF_USER_TOKEN, "");
-        return userToken;
     }
 
     /**

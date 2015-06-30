@@ -88,4 +88,7 @@ public class MainActivity extends BaseActivity
         ButterKnife.unbind(this);
     }
 
+    public Toolbar getToolbar() {
+        return mToolbar;
+    }
 }

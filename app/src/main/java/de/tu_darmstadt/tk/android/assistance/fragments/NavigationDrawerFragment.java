@@ -38,8 +38,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
 import de.tu_darmstadt.tk.android.assistance.activities.AvailableModulesActivity;
+import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
 import de.tu_darmstadt.tk.android.assistance.adapter.NavigationDrawerAdapter;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
@@ -105,10 +105,14 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mDrawerList.setHasFixedSize(true);
 
         List<NavigationDrawerHolder> navigationItems = getMenu();
+
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(navigationItems);
         adapter.setNavigationDrawerCallbacks(this);
+
         mDrawerList.setAdapter(adapter);
+
         selectItem(mCurrentSelectedPosition);
+
         return view;
     }
 
@@ -227,6 +231,11 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
     }
 
+    /**
+     * Selects item on position
+     *
+     * @param position
+     */
     private void selectItem(int position) {
 
         mCurrentSelectedPosition = position;
@@ -310,13 +319,13 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     }
 
     @OnClick(R.id.available_modules)
-    protected void onAvailableModulesClicked(){
+    protected void onAvailableModulesClicked() {
         Intent intent = new Intent(getActivity(), AvailableModulesActivity.class);
         startActivity(intent);
     }
 
     @OnClick(R.id.settings)
-    protected void onSettingsClicked(){
+    protected void onSettingsClicked() {
         Intent intent = new Intent(getActivity(), SettingsActivity.class);
         startActivityForResult(intent, R.id.logout_settings);
     }
