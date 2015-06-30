@@ -8,8 +8,8 @@
     <!-- SETTINGS SCREEN -->
     <string name="settings_activity_title">Settings</string>
     <string name="settings_header_application_title">Application</string>
-    <string name="settings_header_user_profile_title">Account</string>
-    <string name="settings_header_about_device_title">Your device</string>
+    <string name="settings_header_user_profile_title">Profile</string>
+    <string name="settings_header_user_device_title">Your device</string>
     <string name="settings_header_development_title">Development</string>
     <string name="settings_header_about_title">About</string>
     <string name="settings_header_logout_title">Log out</string>

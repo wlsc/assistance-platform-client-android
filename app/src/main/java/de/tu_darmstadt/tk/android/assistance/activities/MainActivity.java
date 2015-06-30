@@ -2,6 +2,7 @@ package de.tu_darmstadt.tk.android.assistance.activities;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 
@@ -11,6 +12,8 @@ import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
 import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
+import de.tu_darmstadt.tk.android.assistance.utils.Constants;
+import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 
 
 /**
@@ -59,7 +62,23 @@ public class MainActivity extends BaseActivity
         if (mNavigationDrawerFragment.isDrawerOpen()) {
             mNavigationDrawerFragment.closeDrawer();
         } else {
-            super.onBackPressed();
+
+            if (mBackButtonPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+
+            mBackButtonPressedOnce = true;
+
+            Toaster.showLong(this, R.string.action_back_button_pressed_once);
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    mBackButtonPressedOnce = false;
+                }
+            }, Constants.BACK_BUTTON_DELAY_MILLIS);
         }
     }
 

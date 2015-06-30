@@ -20,7 +20,7 @@
         android:id="@+id/about_settings"
         android:fragment="de.tu_darmstadt.tk.android.assistance.fragments.settings.UserDeviceInfoSettingsFragment"
         android:icon="@drawable/ic_perm_device_information_black_48dp"
-        android:title="@string/settings_header_about_device_title" />
+        android:title="@string/settings_header_user_device_title" />
 
     <!-- Data Usage -->
     <!--<header

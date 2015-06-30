@@ -108,4 +108,9 @@ public class SettingsActivity extends PreferenceActivity {
         setResult(R.id.logout_settings);
         finish();
     }
+
+    public Toolbar getToolBar() {
+        return mToolBar;
+    }
+
 }
