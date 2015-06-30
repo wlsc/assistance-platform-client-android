@@ -23,20 +23,24 @@ import it.gmariotti.cardslib.library.view.CardListView;
 public class ModuleListActivity extends BaseActivity implements NavigationDrawerCallbacks {
 
     @Bind(R.id.module_list)
-    protected CardListView listView;
+    protected CardListView mModuleList;
 
     @Bind(R.id.module_list_swipe_refresh_layout)
-    protected SwipeRefreshLayout swipeRefreshLayout;
+    protected SwipeRefreshLayout mSwipeRefreshLayout;
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Toolbar mToolbar;
+    private String mUserEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_module_list);
+        setTitle(R.string.module_list_activity_title);
 
         ButterKnife.bind(this);
+
+        String userEmail = getUserEmail();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mToolbar);
@@ -46,17 +50,17 @@ public class ModuleListActivity extends BaseActivity implements NavigationDrawer
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
 
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, drawerLayout, mToolbar);
-        mNavigationDrawerFragment.setUserData("Wladimir Schmidt", "wlsc.dev@gmail.com", BitmapFactory.decodeResource(getResources(), R.drawable.avatar));
+        mNavigationDrawerFragment.setUserData("Wladimir Schmidt", userEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
 
-        swipeRefreshLayout.setColorSchemeResources(
+        mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.swipe_refresh_progress_1,
                 R.color.swipe_refresh_progress_2,
                 R.color.swipe_refresh_progress_3);
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(false);
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -84,8 +88,8 @@ public class ModuleListActivity extends BaseActivity implements NavigationDrawer
 
         CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, cards);
 
-        if (listView != null) {
-            listView.setAdapter(mCardArrayAdapter);
+        if (mModuleList != null) {
+            mModuleList.setAdapter(mCardArrayAdapter);
         }
 
     }

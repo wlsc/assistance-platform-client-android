@@ -53,10 +53,10 @@ import retrofit.client.Response;
  */
 public class LoginActivity extends BaseActivity implements LoaderCallbacks<Cursor> {
 
-    private String TAG = LoginActivity.class.getName();
+    private final String TAG = LoginActivity.class.getName();
 
     @Bind(R.id.email)
-    protected AutoCompleteTextView mEmailView;
+    protected AutoCompleteTextView mEmailTextView;
 
     @Bind(R.id.password)
     protected EditText mPasswordView;
@@ -68,32 +68,35 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     protected ScrollView mLoginFormView;
 
     @Bind(R.id.tvRegister)
-    protected TextView registerLink;
+    protected TextView mRegisterLink;
 
     @Bind(R.id.tvPasswordReset)
-    protected TextView resetPassLink;
+    protected TextView mResetPassLink;
 
     @Bind(R.id.sign_in_button)
     protected Button mLoginButton;
 
     // SOCIAL BUTTONS
     @Bind(R.id.ibFacebookLogo)
-    protected ImageButton ibFacebookLogo;
+    protected ImageButton mFacebookLogo;
 
     @Bind(R.id.ibGooglePlusLogo)
-    protected ImageButton ibGooglePlusLogo;
+    protected ImageButton mGooglePlusLogo;
 
     @Bind(R.id.ibLiveLogo)
-    protected ImageButton ibLiveLogo;
+    protected ImageButton mLiveLogo;
 
     @Bind(R.id.ibTwitterLogo)
-    protected ImageButton ibTwitterLogo;
+    protected ImageButton mTwitterLogo;
 
     @Bind(R.id.ibGithubLogo)
-    protected ImageButton ibGithubLogo;
+    protected ImageButton mGithubLogo;
 
     private Handler uiThreadHandler = new Handler();
-    private SplashView splashView;
+    private SplashView mSplashView;
+
+    private String email;
+    private String password;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -112,15 +115,15 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         hideSystemUI();
 
         // init splash screen view
-        if (splashView == null) {
-            splashView = new SplashView(this);
+        if (mSplashView == null) {
+            mSplashView = new SplashView(this);
         }
 
         // Set an event handler on the SplashView object, so that as soon
         // as it completes drawing we are
         // informed.  In response to that cue, we will *then* put up the main view,
         // replacing the content view of the main activity with that main view.
-        splashView.setSplashScreenEvent(new SplashView.SplashScreenEvent() {
+        mSplashView.setSplashScreenEvent(new SplashView.SplashScreenEvent() {
             @Override
             public void onSplashDrawComplete() {
                 uiThreadHandler.post(new Runnable() {
@@ -133,7 +136,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         });
 
         // show splash screen
-        setContentView(splashView);
+        setContentView(mSplashView);
     }
 
     /**
@@ -146,12 +149,14 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         showSystemUI();
 
         setContentView(R.layout.activity_login);
+        setTitle(R.string.login_activity_title);
 
         ButterKnife.bind(this);
 
-        if (savedInstanceState != null) {
-            Long userId = savedInstanceState.getLong("user_id");
-            if (userId != null) {
+        Intent intent = getIntent();
+        if (intent != null) {
+            Long userId = intent.getLongExtra("user_id", -1);
+            if (userId != -1) {
                 Toaster.showLong(this, R.string.register_successful);
             }
         }
@@ -180,12 +185,12 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         }
 
         // Reset errors.
-        mEmailView.setError(null);
+        mEmailTextView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        email = mEmailTextView.getText().toString();
+        password = mPasswordView.getText().toString();
 
         boolean isAnyErrors = false;
         View focusView = null;
@@ -199,12 +204,12 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
 
         // check for email address
         if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+            mEmailTextView.setError(getString(R.string.error_field_required));
+            focusView = mEmailTextView;
             isAnyErrors = true;
         } else if (!InputValidation.isValidEmail(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
+            mEmailTextView.setError(getString(R.string.error_invalid_email));
+            focusView = mEmailTextView;
             isAnyErrors = true;
         }
 
@@ -215,11 +220,11 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
             }
             focusView.requestFocus();
         } else {
-            doRegisterUser(email, password);
+            doLogin();
         }
     }
 
-    private void doRegisterUser(String email, String password) {
+    private void doLogin() {
 
         showProgress(true);
 
@@ -234,7 +239,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
 
             @Override
             public void success(LoginResponse apiResponse, Response response) {
-                saveLoginAndShowNextScreen(apiResponse);
+                saveLoginGoNext(apiResponse);
                 Log.d(TAG, "User token received: " + apiResponse.getUserToken());
             }
 
@@ -259,14 +264,14 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
      *
      * @param apiResponse
      */
-    private void saveLoginAndShowNextScreen(LoginResponse apiResponse) {
+    private void saveLoginGoNext(LoginResponse apiResponse) {
         String token = apiResponse.getUserToken();
 
         if (InputValidation.isUserTokenValid(token)) {
             Log.d(TAG, "Token is valid. Proceeding with login...");
 
             showProgress(false);
-            saveUserToken(token);
+            saveUserData(token);
             loadMainActivity();
 
         } else {
@@ -280,9 +285,14 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
      *
      * @param token
      */
-    private void saveUserToken(String token) {
+    private void saveUserData(String token) {
+
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        sp.edit().putString(Constants.PREF_USER_TOKEN, token).apply();
+
+        sp.edit()
+                .putString(Constants.PREF_USER_TOKEN, token)
+                .putString(Constants.PREF_USER_EMAIL, email)
+                .apply();
     }
 
     /**
@@ -364,7 +374,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                 new ArrayAdapter<String>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
-        mEmailView.setAdapter(adapter);
+        mEmailTextView.setAdapter(adapter);
     }
 
     @OnClick(R.id.sign_in_button)
@@ -420,6 +430,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
      * and starts main activity
      */
     private void loadMainActivity() {
+
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -448,6 +459,27 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (mBackButtonPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        mBackButtonPressedOnce = true;
+
+        Toaster.showLong(this, R.string.action_back_button_pressed_once);
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                mBackButtonPressedOnce = false;
+            }
+        }, Constants.BACK_BUTTON_DELAY_MILLIS);
     }
 
     @Override

@@ -19,21 +19,25 @@ import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
 public class MainActivity extends BaseActivity
         implements NavigationDrawerCallbacks {
 
-    private String TAG = MainActivity.class.getName();
-
     @Bind(R.id.toolbar_actionbar)
     protected Toolbar mToolbar;
+    private String TAG = MainActivity.class.getName();
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
+    private String mUserEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle(R.string.main_activity_title);
 
         ButterKnife.bind(this);
+
+        String userEmail = getUserEmail();
 
         setSupportActionBar(mToolbar);
 
@@ -42,7 +46,7 @@ public class MainActivity extends BaseActivity
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
 
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, drawerLayout, mToolbar);
-        mNavigationDrawerFragment.setUserData("Wladimir Schmidt", "wlsc.dev@gmail.com", BitmapFactory.decodeResource(getResources(), R.drawable.avatar));
+        mNavigationDrawerFragment.setUserData("Wladimir Schmidt", userEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
     }
 
     @Override
@@ -64,4 +68,5 @@ public class MainActivity extends BaseActivity
         super.onStop();
         ButterKnife.unbind(this);
     }
+
 }

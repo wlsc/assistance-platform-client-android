@@ -17,6 +17,7 @@ import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.RegistrationResponse;
 import de.tu_darmstadt.tk.android.assistance.services.RegistrationService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
+import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
 import de.tu_darmstadt.tk.android.assistance.utils.Utils;
 import retrofit.Callback;
@@ -25,24 +26,21 @@ import retrofit.client.Response;
 
 public class RegisterActivity extends BaseActivity {
 
-    private String TAG = RegisterActivity.class.getName();
-
     @Bind(R.id.register_email)
-    protected EditText etUserEmail;
-
+    protected EditText mUserEmail;
     @Bind(R.id.register_password1)
-    protected EditText etUserPassword1;
-
+    protected EditText mUserPassword1;
     @Bind(R.id.register_password2)
-    protected EditText etUserPassword2;
-
+    protected EditText mUserPassword2;
     @Bind(R.id.sign_up_button)
-    protected Button bSignUp;
+    protected Button mSignUp;
+    private String TAG = RegisterActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        setTitle(R.string.register_activity_title);
 
         ButterKnife.bind(this);
     }
@@ -53,9 +51,9 @@ public class RegisterActivity extends BaseActivity {
     @OnClick(R.id.sign_up_button)
     protected void onUserSignUp() {
 
-        String email = etUserEmail.getText().toString().trim();
-        String password1 = etUserPassword1.getText().toString();
-        String password2 = etUserPassword2.getText().toString();
+        String email = mUserEmail.getText().toString().trim();
+        String password1 = mUserPassword1.getText().toString();
+        String password2 = mUserPassword2.getText().toString();
 
         if (isInputOK(email, password1, password2)) {
             doRegisterUser(email, password1);
@@ -70,48 +68,48 @@ public class RegisterActivity extends BaseActivity {
     private boolean isInputOK(String email, String password1, String password2) {
 
         // reset all errors
-        etUserEmail.setError(null);
-        etUserPassword1.setError(null);
-        etUserPassword2.setError(null);
+        mUserEmail.setError(null);
+        mUserPassword1.setError(null);
+        mUserPassword2.setError(null);
 
         // EMPTY FIELDS CHECK
         if (TextUtils.isEmpty(email)) {
-            etUserEmail.setError(getString(R.string.error_field_required));
-            etUserEmail.requestFocus();
+            mUserEmail.setError(getString(R.string.error_field_required));
+            mUserEmail.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(password1)) {
-            etUserPassword1.setError(getString(R.string.error_field_required));
-            etUserPassword1.requestFocus();
+            mUserPassword1.setError(getString(R.string.error_field_required));
+            mUserPassword1.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(password2)) {
-            etUserPassword2.setError(getString(R.string.error_field_required));
-            etUserPassword2.requestFocus();
+            mUserPassword2.setError(getString(R.string.error_field_required));
+            mUserPassword2.requestFocus();
             return false;
         }
 
         // NOT VALID EMAIL
         if (!InputValidation.isValidEmail(email)) {
-            etUserEmail.setError(getString(R.string.error_invalid_email));
-            etUserEmail.requestFocus();
+            mUserEmail.setError(getString(R.string.error_invalid_email));
+            mUserEmail.requestFocus();
             return false;
         }
 
         // NOT EQUAL PASSWORDS
         if (!password1.equals(password2)) {
-            etUserPassword1.setError(getString(R.string.error_not_same_passwords));
-            etUserPassword2.setError(getString(R.string.error_not_same_passwords));
+            mUserPassword1.setError(getString(R.string.error_not_same_passwords));
+            mUserPassword2.setError(getString(R.string.error_not_same_passwords));
             return false;
         }
 
         // NOT VALID LENGTH
         if (!InputValidation.isPasswordLengthValid(password1)) {
-            etUserPassword1.setError(getString(R.string.error_invalid_password));
-            etUserPassword2.setError(getString(R.string.error_invalid_password));
-            etUserPassword1.requestFocus();
+            mUserPassword1.setError(getString(R.string.error_invalid_password));
+            mUserPassword2.setError(getString(R.string.error_invalid_password));
+            mUserPassword1.requestFocus();
             return false;
         }
 
@@ -158,7 +156,7 @@ public class RegisterActivity extends BaseActivity {
      */
     private void showLoginScreen(RegistrationResponse registrationResponse) {
         Intent intent = new Intent(this, LoginActivity.class);
-        intent.putExtra("user_id", registrationResponse.getUserId());
+        intent.putExtra(Constants.INTENT_USER_ID, registrationResponse.getUserId());
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

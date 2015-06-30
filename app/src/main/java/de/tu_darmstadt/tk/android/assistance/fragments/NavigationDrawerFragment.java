@@ -37,7 +37,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.activities.MainActivity;
+import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
 import de.tu_darmstadt.tk.android.assistance.adapter.NavigationDrawerAdapter;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
@@ -50,11 +50,6 @@ import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 public class NavigationDrawerFragment extends Fragment implements NavigationDrawerCallbacks {
 
     private String TAG = NavigationDrawerFragment.class.getName();
-
-    /**
-     * Remember the position of the selected item.
-     */
-    private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
 
     /**
      * A pointer to the current callbacks instance (the Activity).
@@ -88,7 +83,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mUserLearnedDrawer = sp.getBoolean(Constants.PREF_USER_LEARNED_DRAWER, false);
 
         if (savedInstanceState != null) {
-            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+            mCurrentSelectedPosition = savedInstanceState.getInt(Constants.STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
     }
@@ -236,9 +231,10 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     private void selectItem(int position) {
 
-        if(position == 3){
+        if (position == 3) {
+
             Intent intent = new Intent(getActivity(), SettingsActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, R.id.logout_settings);
             return;
         }
 
@@ -261,6 +257,21 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) {
+            case R.id.logout_settings:
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                getActivity().finish();
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
+        }
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
@@ -280,7 +291,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
+        outState.putInt(Constants.STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
 
     @Override
@@ -289,7 +300,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mActionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    public void setUserData(String user, String email, Bitmap avatar) {
+    public void setUserData(String user, String email, Bitmap userPic) {
 
         ImageView avatarContainer = ButterKnife.findById(mFragmentContainerView, R.id.imgAvatar);
 
@@ -300,7 +311,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         TextView txtUsername = ButterKnife.findById(mFragmentContainerView, R.id.txtUsername);
         txtUsername.setText(user);
 
-        avatarContainer.setImageDrawable(new RoundImage(avatar));
+        avatarContainer.setImageDrawable(new RoundImage(userPic));
     }
 
     public View getGoogleDrawer() {
@@ -318,6 +329,11 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         private final int mBitmapWidth;
         private final int mBitmapHeight;
 
+        /**
+         * Round ups an image
+         *
+         * @param bitmap
+         */
         public RoundImage(Bitmap bitmap) {
 
             mBitmap = bitmap;

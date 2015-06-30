@@ -1,8 +1,9 @@
 <resources>
 
-    <!-- GENERAL -->
+    <!-- COMMON -->
     <string name="app_name">Assistance</string>
     <string name="action_settings">Settings</string>
+    <string name="action_back_button_pressed_once">Please press back button again to exit</string>
 
     <!-- SETTINGS SCREEN -->
     <string name="settings_activity_title">Settings</string>
@@ -11,6 +12,7 @@
     <string name="settings_header_about_device_title">Your device</string>
     <string name="settings_header_development_title">Development</string>
     <string name="settings_header_about_title">About</string>
+    <string name="settings_header_logout_title">Log out</string>
 
     <!-- NAVIGATION DRAWER -->
     <string name="drawer_open">Menu opened</string>
@@ -22,9 +24,12 @@
     <string name="splash_logo_description">Kraken Logo</string>
     <string name="splash_copyright_year">Telecooperation\nTU Darmstadt\n2015</string>
 
+    <!-- MAIN SCREEN -->
+    <string name="main_activity_title">Module name</string>
+
     <!-- LOGIN SCREEN -->
     <string name="login_header">WELCOME BACK!</string>
-    <string name="login_title_activity_login">SIGN IN</string>
+    <string name="login_activity_title">SIGN IN</string>
     <string name="login_prompt_email">Email</string>
     <string name="login_prompt_password">Password</string>
     <string name="login_action_sign_in">LOG IN</string>
@@ -47,7 +52,7 @@
     <string name="reset_action_reset_password">RESET IT</string>
 
     <!-- MODULE LIST SCREEN -->
-    <string name="module_list_title">List of available modules</string>
+    <string name="module_list_activity_title">Available modules</string>
 
     <!-- ERROR MESSAGES -->
     <string name="error_invalid_email">This email address is invalid</string>

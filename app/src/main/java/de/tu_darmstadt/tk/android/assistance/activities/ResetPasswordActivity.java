@@ -11,5 +11,7 @@ public class ResetPasswordActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
+        setTitle(R.string.reset_password_activity_title);
+
     }
 }

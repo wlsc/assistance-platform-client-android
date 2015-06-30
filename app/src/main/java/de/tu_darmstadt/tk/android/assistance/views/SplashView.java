@@ -13,7 +13,7 @@ import de.tu_darmstadt.tk.android.assistance.R;
  */
 public class SplashView extends LinearLayout {
 
-    private SplashScreenEvent splashScreenEvent = null;
+    private SplashScreenEvent mSplashScreenEvent = null;
 
     public SplashView(Context context) {
         super(context);
@@ -33,13 +33,13 @@ public class SplashView extends LinearLayout {
     }
 
     private void fireSplashDrawCompleteEvent() {
-        if (this.splashScreenEvent != null) {
-            this.splashScreenEvent.onSplashDrawComplete();
+        if (this.mSplashScreenEvent != null) {
+            this.mSplashScreenEvent.onSplashDrawComplete();
         }
     }
 
     public void setSplashScreenEvent(SplashScreenEvent event) {
-        splashScreenEvent = event;
+        mSplashScreenEvent = event;
     }
 
     public interface SplashScreenEvent {

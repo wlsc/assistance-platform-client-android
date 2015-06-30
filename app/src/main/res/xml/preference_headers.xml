@@ -50,4 +50,10 @@
         android:icon="@drawable/ic_info_outline_black_48dp"
         android:title="@string/settings_header_about_title" />
 
+    <!-- Log out -->
+    <header
+        android:id="@+id/logout_settings"
+        android:icon="@drawable/ic_exit_to_app_black_48dp"
+        android:title="@string/settings_header_logout_title" />
+
 </preference-headers>

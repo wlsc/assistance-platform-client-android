@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <include
+    <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         layout="@layout/toolbar_default"
         android:layout_width="match_parent"

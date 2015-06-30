@@ -1,7 +1,9 @@
 package de.tu_darmstadt.tk.android.assistance.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
+import de.tu_darmstadt.tk.android.assistance.fragments.settings.ApplicationAboutSettingsFragment;
+import de.tu_darmstadt.tk.android.assistance.fragments.settings.ApplicationSettingsFragment;
+import de.tu_darmstadt.tk.android.assistance.fragments.settings.DevelopmentSettingsFragment;
+import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserDeviceInfoSettingsFragment;
+import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserProfileSettingsFragment;
+import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 
 /**
  * Core user settings activity
@@ -36,17 +44,68 @@ public class SettingsActivity extends PreferenceActivity {
 
         ButterKnife.bind(this, toolbarContainer);
 
+        setTitle(R.string.settings_activity_title);
+
         mToolBar.setTitle(getTitle());
         mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
     }
 
     @OnClick(R.id.toolbar)
-    protected void onToolbarBackClicked(){
+    protected void onBackClicked() {
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
         finish();
     }
 
     @Override
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.preference_headers, target);
+    }
+
+    @Override
+    protected boolean isValidFragment(String fragmentName) {
+
+        boolean isFragmentKnown = false;
+
+        /**
+         * Preventing fragment injection vulnerability
+         */
+        if (ApplicationAboutSettingsFragment.class.getName().equals(fragmentName) ||
+                ApplicationSettingsFragment.class.getName().equals(fragmentName) ||
+                DevelopmentSettingsFragment.class.getName().equals(fragmentName) ||
+                UserDeviceInfoSettingsFragment.class.getName().equals(fragmentName) ||
+                UserProfileSettingsFragment.class.getName().equals(fragmentName)) {
+
+            isFragmentKnown = true;
+        }
+
+        return isFragmentKnown;
+    }
+
+    @Override
+    public void onHeaderClick(Header header, int position) {
+        super.onHeaderClick(header, position);
+
+        if (header.id == R.id.logout_settings) {
+            doLogout();
+        }
+    }
+
+    /**
+     * Reset user token/email and log him out
+     */
+    private void doLogout() {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sp.edit()
+                .remove(Constants.PREF_USER_TOKEN)
+                .remove(Constants.PREF_USER_EMAIL)
+                .apply();
+
+        setResult(R.id.logout_settings);
+        finish();
     }
 }
