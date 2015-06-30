@@ -36,6 +36,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
@@ -135,24 +136,20 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         Drawable item1 = null;
         Drawable item2 = null;
         Drawable item3 = null;
-        Drawable settingsIcon = null;
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
             item1 = getResources().getDrawable(R.drawable.ic_menu_check, null);
             item2 = getResources().getDrawable(R.drawable.ic_menu_check, null);
             item3 = getResources().getDrawable(R.drawable.ic_menu_check, null);
-            settingsIcon = getResources().getDrawable(R.drawable.ic_settings_black_48dp, null);
         } else {
             item1 = getResources().getDrawable(R.drawable.ic_menu_check);
             item2 = getResources().getDrawable(R.drawable.ic_menu_check);
             item3 = getResources().getDrawable(R.drawable.ic_menu_check);
-            settingsIcon = getResources().getDrawable(R.drawable.ic_settings_black_48dp);
         }
 
         items.add(new NavigationDrawerHolder("item 1", item1));
         items.add(new NavigationDrawerHolder("item 2", item2));
         items.add(new NavigationDrawerHolder("item 3", item3));
-        items.add(new NavigationDrawerHolder(getString(R.string.drawer_settings), settingsIcon));
 
         return items;
     }
@@ -230,13 +227,6 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     }
 
     private void selectItem(int position) {
-
-        if (position == 3) {
-
-            Intent intent = new Intent(getActivity(), SettingsActivity.class);
-            startActivityForResult(intent, R.id.logout_settings);
-            return;
-        }
 
         mCurrentSelectedPosition = position;
         if (mDrawerLayout != null) {
@@ -316,6 +306,12 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     public View getGoogleDrawer() {
         return ButterKnife.findById(mFragmentContainerView, R.id.googleDrawer);
+    }
+
+    @OnClick(R.id.settings)
+    protected void onSettingsClicked(){
+        Intent intent = new Intent(getActivity(), SettingsActivity.class);
+        startActivityForResult(intent, R.id.logout_settings);
     }
 
     /**
