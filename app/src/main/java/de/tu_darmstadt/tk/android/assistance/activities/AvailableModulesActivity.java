@@ -20,7 +20,7 @@ import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
 
-public class ModuleListActivity extends BaseActivity implements NavigationDrawerCallbacks {
+public class AvailableModulesActivity extends BaseActivity implements NavigationDrawerCallbacks {
 
     @Bind(R.id.module_list)
     protected CardListView mModuleList;
@@ -35,7 +35,7 @@ public class ModuleListActivity extends BaseActivity implements NavigationDrawer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_module_list);
+        setContentView(R.layout.activity_available_modules);
         setTitle(R.string.module_list_activity_title);
 
         ButterKnife.bind(this);
@@ -64,19 +64,17 @@ public class ModuleListActivity extends BaseActivity implements NavigationDrawer
             }
         });
 
-        int listImages[] = new int[]{R.drawable.avatar, R.drawable.avatar,
-                R.drawable.avatar, R.drawable.avatar, R.drawable.avatar};
+        int listImages[] = new int[]{R.drawable.no_user_pic, R.drawable.no_user_pic};
 
         ArrayList<Card> cards = new ArrayList<Card>();
 
         for (int i = 0; i < 2; i++) {
-            // Create a Card
             Card card = new Card(this);
-            // Create a CardHeader
+
             CardHeader header = new CardHeader(this);
-            // Add Header to card
-            header.setTitle("Angry bird: " + i);
-            card.setTitle("sample title");
+
+            header.setTitle("Module " + i);
+            card.setTitle("Sample module title");
             card.addCardHeader(header);
 
             CardThumbnail thumb = new CardThumbnail(this);

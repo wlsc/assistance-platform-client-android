@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.ModuleListActivity" />
+            android:name=".activities.AvailableModulesActivity" />
         <activity
             android:name=".activities.RegisterActivity"
             android:parentActivityName=".activities.LoginActivity">

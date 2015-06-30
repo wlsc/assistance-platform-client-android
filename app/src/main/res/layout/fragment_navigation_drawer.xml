@@ -80,7 +80,23 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="48dp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/available_modules"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:drawableLeft="@drawable/ic_list_black_48dp"
+                    android:drawablePadding="15sp"
+                    android:drawableStart="@drawable/ic_list_black_48dp"
+                    android:gravity="start|center_vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingStart="10dp"
+                    android:text="@string/drawer_available_modules"
+                    android:textColor="@color/myTextPrimaryColor"
+                    android:textSize="14sp" />
 
                 <Button
                     android:id="@+id/settings"
@@ -91,9 +107,9 @@
                     android:drawablePadding="15sp"
                     android:drawableStart="@drawable/ic_settings_black_48dp"
                     android:gravity="start|center_vertical"
-                    android:text="@string/settings"
                     android:paddingLeft="10dp"
                     android:paddingStart="10dp"
+                    android:text="@string/drawer_settings"
                     android:textColor="@color/myTextPrimaryColor"
                     android:textSize="14sp" />
 

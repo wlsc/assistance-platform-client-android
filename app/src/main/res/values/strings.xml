@@ -2,7 +2,6 @@
 
     <!-- COMMON -->
     <string name="app_name">Assistance</string>
-    <string name="action_settings">Settings</string>
     <string name="action_back_button_pressed_once">Please press back button again to exit</string>
 
     <!-- SETTINGS SCREEN -->
@@ -17,6 +16,7 @@
     <!-- NAVIGATION DRAWER -->
     <string name="drawer_open">Menu opened</string>
     <string name="drawer_close">Menu closed</string>
+    <string name="drawer_available_modules">Available modules</string>
     <string name="drawer_settings">Settings</string>
 
     <!-- SPLASH SCREEN -->

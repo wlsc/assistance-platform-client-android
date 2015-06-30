@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
+import de.tu_darmstadt.tk.android.assistance.activities.AvailableModulesActivity;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
 import de.tu_darmstadt.tk.android.assistance.adapter.NavigationDrawerAdapter;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
@@ -306,6 +307,12 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     public View getGoogleDrawer() {
         return ButterKnife.findById(mFragmentContainerView, R.id.googleDrawer);
+    }
+
+    @OnClick(R.id.available_modules)
+    protected void onAvailableModulesClicked(){
+        Intent intent = new Intent(getActivity(), AvailableModulesActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.settings)
