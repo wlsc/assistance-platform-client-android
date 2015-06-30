@@ -134,6 +134,9 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
                         case 404:
                             Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
                             break;
+                        case 503:
+                            Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
+                            break;
                     }
                 } else {
                     Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
