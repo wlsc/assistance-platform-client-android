@@ -5,15 +5,17 @@ import android.text.TextUtils;
 import de.tu_darmstadt.tk.android.assistance.Config;
 
 /**
- *  Validates various types of user's input
- *
+ * Validates various types of user's input
+ * <p/>
  * Created by Wladimir Schmidt on 28.06.2015.
  */
 public class InputValidation {
 
+    private InputValidation() {
+    }
 
     /**
-     *  Email validation for user input
+     * Email validation for user input
      *
      * @param target
      * @return
@@ -38,9 +40,9 @@ public class InputValidation {
      * @param token
      * @return
      */
-    public static boolean isUserTokenValid(String token){
+    public static boolean isUserTokenValid(String token) {
 
-        if(token != null && !token.trim().isEmpty()){
+        if (token != null && !token.trim().isEmpty()) {
             return true;
         }
 

@@ -5,6 +5,9 @@ package de.tu_darmstadt.tk.android.assistance.utils;
  */
 public class Constants {
 
+    private Constants() {
+    }
+
     /**
      * COMMON
      */
@@ -38,7 +41,7 @@ public class Constants {
     public static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
     /**
-     *  INTENT CONSTANTS
+     * INTENT CONSTANTS
      */
 
     public static final String INTENT_USER_ID = "user_id";

@@ -5,8 +5,11 @@ package de.tu_darmstadt.tk.android.assistance;
  */
 public class Config {
 
+    private Config() {
+    }
+
     /**
-     *  Set it to false when compiling for release
+     * Set it to false when compiling for release
      */
     public static final boolean DEVELOPER_MODE_ENABLED = true;
 

@@ -6,21 +6,21 @@ import java.util.Map;
 /**
  * HTTP error codes
  * More info: https://github.com/Telecooperation/server_platform_assistance/wiki/API#client-erorrs
- *
+ * <p/>
  * Created by Wladimir Schmidt on 28.06.2015.
  */
 public class HttpErrorCode {
 
-    private static final Map<Integer, ErrorCode> codeMap = new HashMap<>();
+    private static final Map<Integer, ErrorCode> CODE_MAP = new HashMap<>();
 
     static {
         for (ErrorCode type : ErrorCode.values()) {
-            codeMap.put(type.getCode(), type);
+            CODE_MAP.put(type.getCode(), type);
         }
     }
 
     public static ErrorCode fromCode(int code) {
-        return codeMap.get(code);
+        return CODE_MAP.get(code);
     }
 
     public enum ErrorCode {
@@ -39,5 +39,8 @@ public class HttpErrorCode {
         public int getCode() {
             return code;
         }
+    }
+
+    private HttpErrorCode() {
     }
 }

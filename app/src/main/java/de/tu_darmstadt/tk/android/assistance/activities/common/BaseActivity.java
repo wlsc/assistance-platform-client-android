@@ -82,7 +82,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected String getUserToken() {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        String userToken = sp.getString(Constants.PREF_USER_TOKEN, "");
-        return userToken;
+        return sp.getString(Constants.PREF_USER_TOKEN, "");
     }
 }
