@@ -27,6 +27,8 @@ import de.tu_darmstadt.tk.android.assistance.utils.Constants;
  */
 public class SettingsActivity extends PreferenceActivity {
 
+    private static final String TAG = SettingsActivity.class.getSimpleName();
+
     @Bind(R.id.toolbar)
     protected Toolbar mToolBar;
 

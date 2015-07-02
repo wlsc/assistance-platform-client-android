@@ -32,7 +32,7 @@ import retrofit.client.Response;
 
 public class AvailableModulesActivity extends BaseActivity implements NavigationDrawerCallbacks {
 
-    private String TAG = AvailableModulesActivity.class.getName();
+    private String TAG = AvailableModulesActivity.class.getSimpleName();
 
     @Bind(R.id.module_list)
     protected CardListView mModuleList;
@@ -119,29 +119,7 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
 
                 mSwipeRefreshLayout.setRefreshing(false);
 
-                Response response = error.getResponse();
-
-                if (response != null) {
-
-                    int httpCode = response.getStatus();
-
-                    switch (httpCode) {
-                        case 400:
-                            ErrorResponse errorResponse = (ErrorResponse) error.getBodyAs(ErrorResponse.class);
-                            errorResponse.setStatusCode(httpCode);
-
-                            handleError(errorResponse, TAG);
-                            break;
-                        case 404:
-                            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
-                            break;
-                        case 503:
-                            Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
-                            break;
-                    }
-                } else {
-                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
-                }
+                showErrorMessages(TAG, error);
             }
         });
     }

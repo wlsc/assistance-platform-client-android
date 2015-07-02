@@ -35,7 +35,7 @@ public class RegisterActivity extends BaseActivity {
     protected EditText mUserPassword2;
     @Bind(R.id.sign_up_button)
     protected Button mSignUp;
-    private String TAG = RegisterActivity.class.getName();
+    private String TAG = RegisterActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,30 +141,7 @@ public class RegisterActivity extends BaseActivity {
 
             @Override
             public void failure(RetrofitError error) {
-
-                Response response = error.getResponse();
-
-                if (response != null) {
-
-                    int httpCode = response.getStatus();
-
-                    switch (httpCode) {
-                        case 400:
-                            ErrorResponse errorResponse = (ErrorResponse) error.getBodyAs(ErrorResponse.class);
-                            errorResponse.setStatusCode(httpCode);
-
-                            handleError(errorResponse, TAG);
-                            break;
-                        case 404:
-                            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
-                            break;
-                        case 503:
-                            Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
-                            break;
-                    }
-                } else {
-                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
-                }
+                showErrorMessages(TAG, error);
             }
         });
     }

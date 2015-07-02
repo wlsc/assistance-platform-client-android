@@ -12,6 +12,8 @@ import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import de.tu_darmstadt.tk.android.assistance.utils.Utils;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Base activity for common stuff
@@ -32,32 +34,41 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * Processes error response from server
      *
-     * @param errorResponse
+     * @param TAG
+     * @param retrofitError
      */
-    protected void handleError(ErrorResponse errorResponse, String TAG) {
+    protected void showErrorMessages(String TAG, RetrofitError retrofitError) {
 
-        Integer apiResponseCode = errorResponse.getCode();
-        String apiMessage = errorResponse.getMessage();
-        int httpResponseCode = errorResponse.getStatusCode();
-        HttpErrorCode.ErrorCode apiErrorType = HttpErrorCode.fromCode(apiResponseCode);
+        Response response = retrofitError.getResponse();
 
-        Log.d(TAG, "Response status: " + httpResponseCode);
-        Log.d(TAG, "Response code: " + apiResponseCode);
-        Log.d(TAG, "Response message: " + apiMessage);
+        if (response != null) {
 
-        if (httpResponseCode == 400) {
+            int httpCode = response.getStatus();
 
-            switch (apiErrorType) {
+            switch (httpCode) {
+                case 400:
+                    ErrorResponse errorResponse = (ErrorResponse) retrofitError.getBodyAs(ErrorResponse.class);
+                    errorResponse.setStatusCode(httpCode);
 
-                case EMAIL_ALREADY_EXISTS:
-                    Toaster.showLong(this, R.string.error_email_exists);
+                    Integer apiResponseCode = errorResponse.getCode();
+                    String apiMessage = errorResponse.getMessage();
+                    int httpResponseCode = errorResponse.getStatusCode();
+                    HttpErrorCode.ErrorCode apiErrorType = HttpErrorCode.fromCode(apiResponseCode);
+
+                    Log.d(TAG, "Response status: " + httpResponseCode);
+                    Log.d(TAG, "Response code: " + apiResponseCode);
+                    Log.d(TAG, "Response message: " + apiMessage);
+
                     break;
-                default:
-                    Toaster.showLong(this, R.string.error_unknown);
+                case 404:
+                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+                    break;
+                case 503:
+                    Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
                     break;
             }
-
-            Utils.showKeyboard(getApplicationContext(), getCurrentFocus());
+        } else {
+            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
         }
     }
 

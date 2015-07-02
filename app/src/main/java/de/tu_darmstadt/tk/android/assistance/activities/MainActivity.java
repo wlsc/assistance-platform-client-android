@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,7 +25,7 @@ public class MainActivity extends BaseActivity
 
     @Bind(R.id.toolbar_actionbar)
     protected Toolbar mToolbar;
-    private String TAG = MainActivity.class.getName();
+    private String TAG = MainActivity.class.getSimpleName();
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -86,6 +87,7 @@ public class MainActivity extends BaseActivity
     protected void onStop() {
         super.onStop();
         ButterKnife.unbind(this);
+        Log.d(TAG, "onStop -> unbound resources");
     }
 
     public Toolbar getToolbar() {

@@ -51,7 +51,7 @@ import de.tu_darmstadt.tk.android.assistance.utils.Constants;
  */
 public class NavigationDrawerFragment extends Fragment implements NavigationDrawerCallbacks {
 
-    private String TAG = NavigationDrawerFragment.class.getName();
+    private String TAG = NavigationDrawerFragment.class.getSimpleName();
 
     /**
      * A pointer to the current callbacks instance (the Activity).

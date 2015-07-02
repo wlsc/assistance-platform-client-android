@@ -12,4 +12,14 @@ public class ResetPasswordRequest {
     @Expose
     private String email;
 
+    public ResetPasswordRequest() {
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

@@ -50,6 +50,7 @@
     <string name="reset_header">RESET YOUR PASSWORD</string>
     <string name="reset_email">Email</string>
     <string name="reset_action_reset_password">RESET IT</string>
+    <string name="reset_successful_reset">Your password was reset. Check your email!</string>
 
     <!-- MODULE LIST SCREEN -->
     <string name="module_list_activity_title">Available modules</string>

@@ -53,7 +53,7 @@ import retrofit.client.Response;
  */
 public class LoginActivity extends BaseActivity implements LoaderCallbacks<Cursor> {
 
-    private final String TAG = LoginActivity.class.getName();
+    private final String TAG = LoginActivity.class.getSimpleName();
 
     @Bind(R.id.email)
     protected AutoCompleteTextView mEmailTextView;
@@ -251,29 +251,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                     mLoginButton.setEnabled(true);
                 }
 
-                Response response = error.getResponse();
-
-                if (response != null) {
-
-                    int httpCode = response.getStatus();
-
-                    switch (httpCode) {
-                        case 400:
-                            ErrorResponse errorResponse = (ErrorResponse) error.getBodyAs(ErrorResponse.class);
-                            errorResponse.setStatusCode(httpCode);
-
-                            handleError(errorResponse, TAG);
-                            break;
-                        case 404:
-                            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
-                            break;
-                        case 503:
-                            Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
-                            break;
-                    }
-                } else {
-                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
-                }
+                showErrorMessages(TAG, error);
             }
         });
     }

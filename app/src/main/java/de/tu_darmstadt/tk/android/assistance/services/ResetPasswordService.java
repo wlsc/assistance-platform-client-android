@@ -10,7 +10,7 @@ import retrofit.http.POST;
 /**
  * Created by Wladimir Schmidt on 01.07.2015.
  */
-public interface PasswordResetService {
+public interface ResetPasswordService {
 
     @POST("/users/password")
     void resetUserPassword(@Body ResetPasswordRequest body, Callback<Void> callback);
