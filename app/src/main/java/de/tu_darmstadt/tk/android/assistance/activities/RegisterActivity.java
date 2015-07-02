@@ -157,8 +157,9 @@ public class RegisterActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         ButterKnife.unbind(this);
+        Log.d(TAG, "onDestroy -> unbound resources");
     }
 }

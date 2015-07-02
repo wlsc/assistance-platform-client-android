@@ -84,10 +84,10 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         ButterKnife.unbind(this);
-        Log.d(TAG, "onStop -> unbound resources");
+        Log.d(TAG, "onDestroy -> unbound resources");
     }
 
     public Toolbar getToolbar() {

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -94,6 +95,13 @@ public class SettingsActivity extends PreferenceActivity {
         if (header.id == R.id.logout_settings) {
             doLogout();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+        Log.d(TAG, "onDestroy -> unbound resources");
     }
 
     /**
