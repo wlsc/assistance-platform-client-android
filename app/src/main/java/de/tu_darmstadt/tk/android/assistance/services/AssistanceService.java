@@ -10,7 +10,7 @@ import retrofit.http.Header;
 /**
  * Created by Wladimir Schmidt on 30.06.2015.
  */
-public interface AvailableModulesService {
+public interface AssistanceService {
 
     @GET("/assistance/list")
     void getAvailableModules(@Header("X-AUTH-TOKEN") String userToken, Callback<List<AvailableModuleResponse>> callback);

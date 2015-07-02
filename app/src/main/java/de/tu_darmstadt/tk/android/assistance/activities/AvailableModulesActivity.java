@@ -17,10 +17,8 @@ import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
 import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.AvailableModuleResponse;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
-import de.tu_darmstadt.tk.android.assistance.services.AvailableModulesService;
+import de.tu_darmstadt.tk.android.assistance.services.AssistanceService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
-import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
@@ -91,7 +89,7 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
         String userToken = getUserToken();
 
         // calling api service
-        AvailableModulesService service = ServiceGenerator.createService(AvailableModulesService.class);
+        AssistanceService service = ServiceGenerator.createService(AssistanceService.class);
         service.getAvailableModules(userToken, new Callback<List<AvailableModuleResponse>>() {
             /**
              * Successful HTTP response.

@@ -12,8 +12,8 @@ import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.ResetPasswordRequest;
-import de.tu_darmstadt.tk.android.assistance.services.ResetPasswordService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
+import de.tu_darmstadt.tk.android.assistance.services.UserService;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import retrofit.Callback;
@@ -70,7 +70,7 @@ public class ResetPasswordActivity extends BaseActivity {
         ResetPasswordRequest request = new ResetPasswordRequest();
         request.setEmail(mUserEmail);
 
-        ResetPasswordService service = ServiceGenerator.createService(ResetPasswordService.class);
+        UserService service = ServiceGenerator.createService(UserService.class);
         service.resetUserPassword(request, new Callback<Void>() {
 
             @Override

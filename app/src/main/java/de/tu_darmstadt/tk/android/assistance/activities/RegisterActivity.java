@@ -13,13 +13,11 @@ import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.RegistrationRequest;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.RegistrationResponse;
-import de.tu_darmstadt.tk.android.assistance.services.RegistrationService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
+import de.tu_darmstadt.tk.android.assistance.services.UserService;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
-import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import de.tu_darmstadt.tk.android.assistance.utils.Utils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -130,7 +128,7 @@ public class RegisterActivity extends BaseActivity {
         request.setPassword(passwordHashed);
 
         // calling api service
-        RegistrationService service = ServiceGenerator.createService(RegistrationService.class);
+        UserService service = ServiceGenerator.createService(UserService.class);
         service.registerUser(request, new Callback<RegistrationResponse>() {
 
             @Override

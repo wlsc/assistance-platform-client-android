@@ -36,9 +36,8 @@ import butterknife.OnEditorAction;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.LoginRequest;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.LoginResponse;
-import de.tu_darmstadt.tk.android.assistance.services.LoginService;
+import de.tu_darmstadt.tk.android.assistance.services.UserService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
@@ -234,7 +233,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         request.setPassword(password);
 
         // calling api service
-        LoginService service = ServiceGenerator.createService(LoginService.class);
+        UserService service = ServiceGenerator.createService(UserService.class);
         service.loginUser(request, new Callback<LoginResponse>() {
 
             @Override
