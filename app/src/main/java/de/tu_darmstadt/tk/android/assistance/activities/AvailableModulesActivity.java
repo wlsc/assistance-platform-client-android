@@ -65,9 +65,10 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
         mNavigationDrawerFragment.setUserData("Wladimir Schmidt", mUserEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
 
         mSwipeRefreshLayout.setColorSchemeResources(
-                R.color.swipe_refresh_progress_1,
-                R.color.swipe_refresh_progress_2,
-                R.color.swipe_refresh_progress_3);
+                android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 

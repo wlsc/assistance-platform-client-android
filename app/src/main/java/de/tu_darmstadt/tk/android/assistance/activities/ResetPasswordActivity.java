@@ -11,9 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
-import de.tu_darmstadt.tk.android.assistance.models.http.HttpErrorCode;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.ResetPasswordRequest;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ResetPasswordService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
@@ -42,8 +40,14 @@ public class ResetPasswordActivity extends BaseActivity {
         ButterKnife.bind(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
+
     @OnClick(R.id.reset_button)
-    void onResetPasswordButtonClicked(){
+    void onResetPasswordButtonClicked() {
 
         mUserEmailEditText.setError(null);
 
@@ -55,7 +59,7 @@ public class ResetPasswordActivity extends BaseActivity {
             return;
         }
 
-        if(!InputValidation.isValidEmail(mUserEmail)){
+        if (!InputValidation.isValidEmail(mUserEmail)) {
             mUserEmailEditText.setError(getString(R.string.error_invalid_email));
             mUserEmailEditText.requestFocus();
             return;
@@ -71,7 +75,7 @@ public class ResetPasswordActivity extends BaseActivity {
 
             @Override
             public void success(Void aVoid, Response response) {
-                if(response.getStatus() == 200){
+                if (response.getStatus() == 200) {
                     Toaster.showLong(getApplicationContext(), R.string.reset_successful_reset);
                 }
             }
@@ -81,11 +85,5 @@ public class ResetPasswordActivity extends BaseActivity {
                 showErrorMessages(TAG, error);
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
     }
 }
