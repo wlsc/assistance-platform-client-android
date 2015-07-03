@@ -7,11 +7,17 @@
     <!-- SETTINGS SCREEN -->
     <string name="settings_activity_title">Settings</string>
     <string name="settings_header_application_title">Application</string>
+    <string name="settings_header_application_summary">Common application settings</string>
     <string name="settings_header_user_profile_title">Profile</string>
+    <string name="settings_header_user_profile_summary">Edit your profile</string>
     <string name="settings_header_user_device_title">Your device</string>
+    <string name="settings_header_user_device_summary">Mobile device information</string>
     <string name="settings_header_development_title">Development</string>
+    <string name="settings_header_development_summary">Development settings</string>
     <string name="settings_header_about_title">About</string>
+    <string name="settings_header_about_summary">About the app and used licenses</string>
     <string name="settings_header_logout_title">Log out</string>
+    <string name="settings_header_logout_summary">Switch to another account</string>
 
     <!-- NAVIGATION DRAWER -->
     <string name="drawer_open">Menu opened</string>
@@ -54,6 +60,15 @@
 
     <!-- MODULE LIST SCREEN -->
     <string name="module_list_activity_title">Available modules</string>
+
+    <!-- USER PROFILE SCREEN -->
+    <string name="user_profile_firstname">Firstname</string>
+    <string name="user_profile_lastname">Lastname</string>
+    <string name="user_profile_account_google">Google account</string>
+    <string name="user_profile_account_facebook">Facebook account</string>
+    <string name="user_profile_account_live">Windows Live account</string>
+    <string name="user_profile_account_twitter">Twitter account</string>
+    <string name="user_profile_account_github">Github account</string>
 
     <!-- ERROR MESSAGES -->
     <string name="error_invalid_email">This email address is invalid</string>

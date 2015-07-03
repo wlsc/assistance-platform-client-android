@@ -2,13 +2,16 @@ package de.tu_darmstadt.tk.android.assistance.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import java.util.List;
 
@@ -55,12 +58,26 @@ public class SettingsActivity extends PreferenceActivity {
 
     @OnClick(R.id.toolbar)
     protected void onBackClicked() {
+        onBackFromFragment();
         finish();
     }
 
     @Override
     public void onBackPressed() {
+        onBackFromFragment();
         finish();
+    }
+
+    private void onBackFromFragment() {
+
+    }
+
+    @Override
+    public boolean onPreferenceStartFragment(PreferenceFragment caller, Preference pref) {
+
+        
+
+        return true;
     }
 
     @Override
