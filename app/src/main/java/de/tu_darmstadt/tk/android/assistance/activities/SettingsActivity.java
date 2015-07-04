@@ -1,6 +1,10 @@
 package de.tu_darmstadt.tk.android.assistance.activities;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -8,9 +12,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 import butterknife.Bind;
@@ -22,7 +29,9 @@ import de.tu_darmstadt.tk.android.assistance.fragments.settings.ApplicationSetti
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.DevelopmentSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserDeviceInfoSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserProfileSettingsFragment;
+import de.tu_darmstadt.tk.android.assistance.models.RoundImage;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
+import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 
 /**
  * Core user settings activity
@@ -115,6 +124,37 @@ public class SettingsActivity extends PreferenceActivity {
 
         if (header.id == R.id.logout_settings) {
             doLogout();
+        }
+    }
+
+    /*
+    *   Starts intent to pick some image
+     */
+    public void pickImage() {
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, R.id.userPhoto);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == R.id.userPhoto && resultCode == Activity.RESULT_OK) {
+            if (data == null) {
+                Toaster.showLong(this, R.string.error_select_new_user_photo);
+                return;
+            }
+
+            try {
+                InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(data.getData());
+                Bitmap newUserPhoto = BitmapFactory.decodeStream(inputStream, null, null);
+                ImageView image = ButterKnife.findById(this, R.id.userPhoto);
+                image.setImageDrawable(new RoundImage(newUserPhoto));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 

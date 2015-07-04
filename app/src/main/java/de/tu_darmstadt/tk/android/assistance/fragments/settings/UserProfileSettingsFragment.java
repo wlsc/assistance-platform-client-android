@@ -20,6 +20,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
 import de.tu_darmstadt.tk.android.assistance.models.RoundImage;
@@ -105,6 +106,12 @@ public class UserProfileSettingsFragment extends Fragment {
 
 
         return view;
+    }
+
+    @OnClick(R.id.userPhoto)
+    protected void onUserPhotoClicked(){
+        Log.e(TAG, "wtf it works!");
+        ((SettingsActivity) getActivity()).pickImage();
     }
 
     /*

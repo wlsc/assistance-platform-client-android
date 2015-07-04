@@ -84,5 +84,6 @@
     <string name="error_general_http_parse">Something is wrong</string>
     <string name="error_unknown">Unknown error</string>
     <string name="error_user_token_not_valid">User token is not valid</string>
+    <string name="error_select_new_user_photo">Error occurred while selecting user's photo!</string>
 
 </resources>
