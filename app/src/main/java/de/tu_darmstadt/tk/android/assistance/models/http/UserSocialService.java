@@ -1,4 +1,4 @@
-package de.tu_darmstadt.tk.android.assistance.models.http.response;
+package de.tu_darmstadt.tk.android.assistance.models.http;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -7,6 +7,12 @@ import com.google.gson.annotations.SerializedName;
  * Created by Wladimir Schmidt on 02.07.2015.
  */
 public class UserSocialService {
+
+    public static final String TYPE_GOOGLE = "Google";
+    public static final String TYPE_FACEBOOK = "Facebook";
+    public static final String TYPE_LIVE = "Live";
+    public static final String TYPE_TWITTER = "Twitter";
+    public static final String TYPE_GITHUB = "Github";
 
     @SerializedName("name")
     @Expose

@@ -42,6 +42,7 @@ import de.tu_darmstadt.tk.android.assistance.services.UserService;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
+import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 import de.tu_darmstadt.tk.android.assistance.views.SplashView;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -101,7 +102,8 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String userToken = getUserToken();
+        String userToken = UserUtils.getUserToken(getApplicationContext());
+
         if (userToken != null && !userToken.isEmpty()) {
             Log.d(TAG, "User token found. Launching main activity!");
             loadMainActivity();

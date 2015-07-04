@@ -15,6 +15,7 @@ import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks
 import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
+import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 
 
 /**
@@ -41,7 +42,7 @@ public class MainActivity extends BaseActivity
 
         ButterKnife.bind(this);
 
-        mUserEmail = getUserEmail();
+        mUserEmail = UserUtils.getUserEmail(getApplicationContext());
 
         setSupportActionBar(mToolbar);
 

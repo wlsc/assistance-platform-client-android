@@ -25,15 +25,19 @@ import retrofit.client.Response;
 
 public class RegisterActivity extends BaseActivity {
 
+    private String TAG = RegisterActivity.class.getSimpleName();
+
     @Bind(R.id.register_email)
     protected EditText mUserEmail;
+
     @Bind(R.id.register_password1)
     protected EditText mUserPassword1;
+
     @Bind(R.id.register_password2)
     protected EditText mUserPassword2;
+
     @Bind(R.id.sign_up_button)
     protected Button mSignUp;
-    private String TAG = RegisterActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -19,6 +19,7 @@ import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.AvailableModuleResponse;
 import de.tu_darmstadt.tk.android.assistance.services.AssistanceService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
+import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
@@ -50,7 +51,7 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
 
         ButterKnife.bind(this);
 
-        mUserEmail = getUserEmail();
+        mUserEmail = UserUtils.getUserEmail(getApplicationContext());
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mToolbar);
@@ -86,7 +87,7 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
      */
     private void requestAvailableModules() {
 
-        String userToken = getUserToken();
+        String userToken = UserUtils.getUserToken(getApplicationContext());
 
         // calling api service
         AssistanceService service = ServiceGenerator.createService(AssistanceService.class);

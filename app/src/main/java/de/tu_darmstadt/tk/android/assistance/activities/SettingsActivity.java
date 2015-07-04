@@ -2,9 +2,7 @@ package de.tu_darmstadt.tk.android.assistance.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -33,6 +31,14 @@ public class SettingsActivity extends PreferenceActivity {
 
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
+    private final String[] VALID_FRAGMENTS = {
+            ApplicationAboutSettingsFragment.class.getName(),
+            ApplicationSettingsFragment.class.getName(),
+            DevelopmentSettingsFragment.class.getName(),
+            UserDeviceInfoSettingsFragment.class.getName(),
+            UserProfileSettingsFragment.class.getName()
+    };
+
     @Bind(R.id.toolbar)
     protected Toolbar mToolBar;
 
@@ -54,6 +60,12 @@ public class SettingsActivity extends PreferenceActivity {
 
         mToolBar.setTitle(getTitle());
         mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+
+//        if (hasHeaders()) {
+//            Button button = new Button(this);
+//            button.setText("LOG OUT");
+//            setListFooter(button);
+//        }
     }
 
     @OnClick(R.id.toolbar)
@@ -73,14 +85,6 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
     @Override
-    public boolean onPreferenceStartFragment(PreferenceFragment caller, Preference pref) {
-
-        
-
-        return true;
-    }
-
-    @Override
     public void onBuildHeaders(List<Header> headers) {
         loadHeadersFromResource(R.xml.preference_headers, headers);
     }
@@ -88,21 +92,21 @@ public class SettingsActivity extends PreferenceActivity {
     @Override
     protected boolean isValidFragment(String fragmentName) {
 
-        boolean isFragmentKnown = false;
-
         /**
          * Preventing fragment injection vulnerability
          */
-        if (ApplicationAboutSettingsFragment.class.getName().equals(fragmentName) ||
-                ApplicationSettingsFragment.class.getName().equals(fragmentName) ||
-                DevelopmentSettingsFragment.class.getName().equals(fragmentName) ||
-                UserDeviceInfoSettingsFragment.class.getName().equals(fragmentName) ||
-                UserProfileSettingsFragment.class.getName().equals(fragmentName)) {
-
-            isFragmentKnown = true;
+        for (String validFragmentName : VALID_FRAGMENTS) {
+            if (validFragmentName.equals(fragmentName)) {
+                return true;
+            }
         }
 
-        return isFragmentKnown;
+        return false;
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
     }
 
     @Override

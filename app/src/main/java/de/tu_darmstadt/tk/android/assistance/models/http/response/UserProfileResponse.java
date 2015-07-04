@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import de.tu_darmstadt.tk.android.assistance.models.http.UserSocialService;
+
 /**
  * Created by Wladimir Schmidt on 02.07.2015.
  */

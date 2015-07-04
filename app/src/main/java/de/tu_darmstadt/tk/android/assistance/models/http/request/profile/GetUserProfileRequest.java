@@ -1,4 +1,4 @@
-package de.tu_darmstadt.tk.android.assistance.models.http.request;
+package de.tu_darmstadt.tk.android.assistance.models.http.request.profile;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Wladimir Schmidt on 02.07.2015.
  */
-public class UserProfileRequest {
+public class GetUserProfileRequest {
 
     @SerializedName("token")
     @Expose
@@ -16,7 +16,7 @@ public class UserProfileRequest {
     @Expose
     private String typeOfRequest;
 
-    public UserProfileRequest() {
+    public GetUserProfileRequest() {
     }
 
     public String getUserToken() {

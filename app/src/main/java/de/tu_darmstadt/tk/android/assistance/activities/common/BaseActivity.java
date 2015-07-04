@@ -1,17 +1,13 @@
 package de.tu_darmstadt.tk.android.assistance.activities.common;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.models.http.HttpErrorCode;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
-import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
-import de.tu_darmstadt.tk.android.assistance.utils.Utils;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -70,29 +66,5 @@ public abstract class BaseActivity extends AppCompatActivity {
         } else {
             Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
         }
-    }
-
-    /**
-     * Returns user email saved in SharedPreferences
-     *
-     * @return
-     */
-    protected String getUserEmail() {
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        String userEmail = sp.getString(Constants.PREF_USER_EMAIL, "");
-
-        return userEmail;
-    }
-
-    /**
-     * Returns user token saved in SharedPreferences
-     *
-     * @return
-     */
-    protected String getUserToken() {
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        return sp.getString(Constants.PREF_USER_TOKEN, "");
     }
 }
