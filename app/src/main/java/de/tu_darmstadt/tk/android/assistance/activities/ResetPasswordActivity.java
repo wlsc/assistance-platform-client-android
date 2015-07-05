@@ -10,7 +10,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
+import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.ResetPasswordRequest;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
@@ -20,7 +20,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class ResetPasswordActivity extends BaseActivity {
+public class ResetPasswordActivity extends DrawerActivity {
 
     private static final String TAG = ResetPasswordActivity.class.getSimpleName();
 

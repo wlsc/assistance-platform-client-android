@@ -1,87 +1,74 @@
 package de.tu_darmstadt.tk.android.assistance.activities;
 
-import android.graphics.BitmapFactory;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
+import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
-import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
-import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 
 
 /**
  * Main user's place
  */
-public class MainActivity extends BaseActivity
-        implements NavigationDrawerCallbacks {
+public class MainActivity extends DrawerActivity {
+
+    private String TAG = MainActivity.class.getSimpleName();
 
     @Bind(R.id.toolbar_actionbar)
     protected Toolbar mToolbar;
-    private String TAG = MainActivity.class.getSimpleName();
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
-    private NavigationDrawerFragment mNavigationDrawerFragment;
-
-    private String mUserEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        setTitle(R.string.main_activity_title);
 
-        ButterKnife.bind(this);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View contentView = inflater.inflate(R.layout.activity_main, null, false);
 
-        mUserEmail = UserUtils.getUserEmail(getApplicationContext());
+        drawerLayout.addView(contentView, 0);
+
+        ButterKnife.bind(this, contentView);
 
         setSupportActionBar(mToolbar);
+        setTitle(R.string.main_activity_title);
 
-        DrawerLayout drawerLayout = ButterKnife.findById(this, R.id.drawer);
-
-        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
-
-        mNavigationDrawerFragment.setup(R.id.fragment_drawer, drawerLayout, mToolbar);
-        mNavigationDrawerFragment.setUserData("Wladimir Schmidt", mUserEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
+        setupDrawer(mToolbar);
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // drawer item was select
+
     }
 
     @Override
     public void onBackPressed() {
-        if (mNavigationDrawerFragment.isDrawerOpen()) {
-            mNavigationDrawerFragment.closeDrawer();
-        } else {
 
-            if (mBackButtonPressedOnce) {
-                super.onBackPressed();
-                return;
-            }
-
-            mBackButtonPressedOnce = true;
-
-            Toaster.showLong(this, R.string.action_back_button_pressed_once);
-
-            new Handler().postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-                    mBackButtonPressedOnce = false;
-                }
-            }, Constants.BACK_BUTTON_DELAY_MILLIS);
+        if (mBackButtonPressedOnce) {
+            super.onBackPressed();
+            return;
         }
+
+        mBackButtonPressedOnce = true;
+
+        Toaster.showLong(this, R.string.action_back_button_pressed_once);
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                mBackButtonPressedOnce = false;
+            }
+        }, Constants.BACK_BUTTON_DELAY_MILLIS);
     }
 
     @Override

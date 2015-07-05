@@ -34,7 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
+import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.LoginRequest;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.LoginResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
@@ -51,7 +51,7 @@ import retrofit.client.Response;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends BaseActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends DrawerActivity implements LoaderCallbacks<Cursor> {
 
     private final String TAG = LoginActivity.class.getSimpleName();
 

@@ -1,30 +1,59 @@
 package de.tu_darmstadt.tk.android.assistance.activities.common;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
+import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
+import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
 import de.tu_darmstadt.tk.android.assistance.models.http.HttpErrorCode;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
+import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
  * Base activity for common stuff
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class DrawerActivity extends AppCompatActivity implements NavigationDrawerCallbacks {
 
     protected boolean mBackButtonPressedOnce;
 
-    public BaseActivity() {
+    /**
+     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
+     */
+    protected NavigationDrawerFragment mNavigationDrawerFragment;
+
+    protected DrawerLayout drawerLayout;
+
+    protected String mUserEmail;
+
+    public DrawerActivity() {
         this.mBackButtonPressedOnce = false;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_drawer);
+
+        mUserEmail = UserUtils.getUserEmail(getApplicationContext());
+
+        drawerLayout = ButterKnife.findById(this, R.id.drawer);
+    }
+
+    protected void setupDrawer(Toolbar mToolbar) {
+
+        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+        mNavigationDrawerFragment.setup(R.id.fragment_drawer, drawerLayout, mToolbar);
+        mNavigationDrawerFragment.setUserData("Wladimir Schmidt", mUserEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
     }
 
     /**
@@ -66,5 +95,18 @@ public abstract class BaseActivity extends AppCompatActivity {
         } else {
             Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mNavigationDrawerFragment.isDrawerOpen()) {
+            mNavigationDrawerFragment.closeDrawer();
+        }else{
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
     }
 }

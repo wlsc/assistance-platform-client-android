@@ -1,11 +1,14 @@
 package de.tu_darmstadt.tk.android.assistance.activities;
 
+import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +16,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.activities.common.BaseActivity;
+import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
 import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.AvailableModuleResponse;
@@ -29,9 +32,12 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class AvailableModulesActivity extends BaseActivity implements NavigationDrawerCallbacks {
+public class AvailableModulesActivity extends DrawerActivity implements NavigationDrawerCallbacks {
 
     private String TAG = AvailableModulesActivity.class.getSimpleName();
+
+    @Bind(R.id.toolbar_actionbar)
+    protected Toolbar mToolbar;
 
     @Bind(R.id.module_list)
     protected CardListView mModuleList;
@@ -39,29 +45,23 @@ public class AvailableModulesActivity extends BaseActivity implements Navigation
     @Bind(R.id.module_list_swipe_refresh_layout)
     protected SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private NavigationDrawerFragment mNavigationDrawerFragment;
-    private Toolbar mToolbar;
-    private String mUserEmail;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_available_modules);
+
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View contentView = inflater.inflate(R.layout.activity_available_modules, null, false);
+
+        drawerLayout.addView(contentView, 0);
+
+        ButterKnife.bind(this, contentView);
+
+        ButterKnife.findById(this, R.id.available_modules).setVisibility(View.GONE);
+
+        setSupportActionBar(mToolbar);
         setTitle(R.string.module_list_activity_title);
 
-        ButterKnife.bind(this);
-
-        mUserEmail = UserUtils.getUserEmail(getApplicationContext());
-
-        mToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
-        setSupportActionBar(mToolbar);
-
-        DrawerLayout drawerLayout = ButterKnife.findById(this, R.id.drawer);
-
-        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
-
-        mNavigationDrawerFragment.setup(R.id.fragment_drawer, drawerLayout, mToolbar);
-        mNavigationDrawerFragment.setUserData("Wladimir Schmidt", mUserEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
+        setupDrawer(mToolbar);
 
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_bright,
