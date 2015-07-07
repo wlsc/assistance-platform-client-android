@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
@@ -11,11 +12,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="de.tu_darmstadt.tk.android.assistance.activities.RegisterActivity">
 
-    <ImageView
+    <com.pkmmte.view.CircularImageView
         android:id="@+id/userPhoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop" />
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:scaleType="centerCrop"
+        app:border="true"
+        app:border_color="#EEEEEE"
+        app:border_width="2dp"
+        app:selector="true"
+        app:selector_stroke_color="@color/myPrimaryColor100"
+        app:selector_stroke_width="1dp" />
 
     <ScrollView
         android:layout_width="fill_parent"

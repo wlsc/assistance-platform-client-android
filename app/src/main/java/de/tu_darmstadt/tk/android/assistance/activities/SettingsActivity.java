@@ -3,8 +3,7 @@ package de.tu_darmstadt.tk.android.assistance.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -12,9 +11,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
+import com.pkmmte.view.CircularImageView;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -29,9 +29,9 @@ import de.tu_darmstadt.tk.android.assistance.fragments.settings.ApplicationSetti
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.DevelopmentSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserDeviceInfoSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserProfileSettingsFragment;
-import de.tu_darmstadt.tk.android.assistance.models.RoundImage;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
+import de.tu_darmstadt.tk.android.assistance.utils.Utils;
 
 /**
  * Core user settings activity
@@ -147,11 +147,14 @@ public class SettingsActivity extends PreferenceActivity {
                 return;
             }
 
+            // process selected image and show it to user
             try {
                 InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(data.getData());
-                Bitmap newUserPhoto = BitmapFactory.decodeStream(inputStream, null, null);
-                ImageView image = ButterKnife.findById(this, R.id.userPhoto);
-                image.setImageDrawable(new RoundImage(newUserPhoto));
+
+                Utils.saveFile("assistance/user/img", inputStream);
+
+                CircularImageView image = ButterKnife.findById(this, R.id.userPhoto);
+                image.setImageDrawable(Drawable.createFromStream(inputStream, "user_pic"));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }

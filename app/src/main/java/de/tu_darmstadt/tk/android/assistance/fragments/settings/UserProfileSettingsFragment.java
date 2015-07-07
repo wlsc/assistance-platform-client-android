@@ -1,10 +1,9 @@
 package de.tu_darmstadt.tk.android.assistance.fragments.settings;
 
 import android.app.Fragment;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,7 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
+
+import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
-import de.tu_darmstadt.tk.android.assistance.models.RoundImage;
 import de.tu_darmstadt.tk.android.assistance.models.http.UserSocialService;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.profile.UpdateUserProfileRequest;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.profile.UserProfile;
@@ -46,7 +45,7 @@ public class UserProfileSettingsFragment extends Fragment {
     private Toolbar mParentToolbar;
 
     @Bind(R.id.userPhoto)
-    protected ImageView userPhotoView;
+    protected CircularImageView userPhotoView;
 
     @Bind(R.id.firstname)
     protected EditText firstnameText;
@@ -85,8 +84,7 @@ public class UserProfileSettingsFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
-        Bitmap userPhotoBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic);
-        userPhotoView.setImageDrawable(new RoundImage(userPhotoBitmap));
+        userPhotoView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_user_pic));
 
         view.setFocusableInTouchMode(true);
         view.setOnKeyListener(new View.OnKeyListener() {
@@ -109,8 +107,8 @@ public class UserProfileSettingsFragment extends Fragment {
     }
 
     @OnClick(R.id.userPhoto)
-    protected void onUserPhotoClicked(){
-        Log.e(TAG, "wtf it works!");
+    protected void onUserPhotoClicked() {
+        Log.d(TAG, "User clicked selection of an image");
         ((SettingsActivity) getActivity()).pickImage();
     }
 

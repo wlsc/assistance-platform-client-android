@@ -20,9 +20,9 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,6 @@ import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
 import de.tu_darmstadt.tk.android.assistance.adapter.NavigationDrawerAdapter;
 import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
-import de.tu_darmstadt.tk.android.assistance.models.RoundImage;
 import de.tu_darmstadt.tk.android.assistance.models.items.NavigationDrawerHolder;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 
@@ -296,7 +295,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     public void setUserData(String user, String email, Bitmap userPic) {
 
-        ImageView avatarContainer = ButterKnife.findById(mFragmentContainerView, R.id.imgAvatar);
+        CircularImageView avatarContainer = ButterKnife.findById(mFragmentContainerView, R.id.imgAvatar);
 
         TextView txtUserEmail = ButterKnife.findById(mFragmentContainerView, R.id.txtUserEmail);
         txtUserEmail.setText(email);
@@ -304,8 +303,6 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
         TextView txtUsername = ButterKnife.findById(mFragmentContainerView, R.id.txtUsername);
         txtUsername.setText(user);
-
-        avatarContainer.setImageDrawable(new RoundImage(userPic));
     }
 
     public View getGoogleDrawer() {

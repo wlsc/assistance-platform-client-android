@@ -1,11 +1,21 @@
 package de.tu_darmstadt.tk.android.assistance.utils;
 
 import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Wladimir Schmidt (wlsc.dev@gmail.com) on 07.06.2015.
@@ -78,5 +88,37 @@ public class Utils {
     public static void showKeyboard(Context context, View currentFocus) {
         InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInputFromWindow(currentFocus.getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+    }
+
+    /**
+     * Saves given stream to file
+     *
+     * @param dirPath
+     * @param inputStream
+     */
+    public static void saveFile(String dirPath, InputStream inputStream) {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault());
+        String currentTimeStamp = format.format(new Date());
+
+        File imagesFolder = new File(Environment.getExternalStorageDirectory(), dirPath);
+        imagesFolder.mkdirs();
+
+        File imageFile = new File(imagesFolder, "assi_" + currentTimeStamp + ".png");
+
+        OutputStream out = null;
+        try {
+            out = new BufferedOutputStream(new FileOutputStream(imageFile));
+        } catch (IOException e) {
+            Log.e("saveFile", "Cannot save file to system!");
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    Log.e("saveFile", "Cannot close file!");
+                }
+            }
+        }
     }
 }
