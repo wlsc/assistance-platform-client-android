@@ -7,12 +7,12 @@ import android.graphics.drawable.Drawable;
 /**
  * Holder for navigation drawer
  */
-public class NavigationDrawerHolder {
+public class DrawerItem {
 
     private String mText;
     private Drawable mDrawable;
 
-    public NavigationDrawerHolder(String text, Drawable drawable) {
+    public DrawerItem(String text, Drawable drawable) {
         mText = text;
         mDrawable = drawable;
     }

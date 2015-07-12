@@ -34,22 +34,22 @@ import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.AvailableModulesActivity;
 import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
-import de.tu_darmstadt.tk.android.assistance.adapter.NavigationDrawerAdapter;
-import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
-import de.tu_darmstadt.tk.android.assistance.models.items.NavigationDrawerHolder;
+import de.tu_darmstadt.tk.android.assistance.adapter.DrawerAdapter;
+import de.tu_darmstadt.tk.android.assistance.callbacks.DrawerCallback;
+import de.tu_darmstadt.tk.android.assistance.models.items.DrawerItem;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  */
-public class NavigationDrawerFragment extends Fragment implements NavigationDrawerCallbacks {
+public class DrawerFragment extends Fragment implements DrawerCallback {
 
-    private String TAG = NavigationDrawerFragment.class.getSimpleName();
+    private String TAG = DrawerFragment.class.getSimpleName();
 
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
-    private NavigationDrawerCallbacks mCallbacks;
+    private DrawerCallback mCallbacks;
 
     /**
      * Helper component that ties the action bar to the navigation drawer.
@@ -87,7 +87,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        View view = inflater.inflate(R.layout.fragment_drawer, container, false);
 
         ButterKnife.bind(this, view);
 
@@ -97,9 +97,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mDrawerList.setLayoutManager(layoutManager);
         mDrawerList.setHasFixedSize(true);
 
-        List<NavigationDrawerHolder> navigationItems = getMenu();
+        List<DrawerItem> navigationItems = getMenu();
 
-        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(navigationItems);
+        DrawerAdapter adapter = new DrawerAdapter(navigationItems);
         adapter.setNavigationDrawerCallbacks(this);
 
         mDrawerList.setAdapter(adapter);
@@ -127,9 +127,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT_WATCH)
-    public List<NavigationDrawerHolder> getMenu() {
+    public List<DrawerItem> getMenu() {
 
-        List<NavigationDrawerHolder> items = new ArrayList<NavigationDrawerHolder>();
+        List<DrawerItem> items = new ArrayList<DrawerItem>();
 
         Drawable item1 = null;
         Drawable item2 = null;
@@ -145,9 +145,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             item3 = getResources().getDrawable(R.drawable.ic_menu_check);
         }
 
-        items.add(new NavigationDrawerHolder("item 1", item1));
-        items.add(new NavigationDrawerHolder("item 2", item2));
-        items.add(new NavigationDrawerHolder("item 3", item3));
+        items.add(new DrawerItem("item 1", item1));
+        items.add(new DrawerItem("item 2", item2));
+        items.add(new DrawerItem("item 3", item3));
 
         return items;
     }
@@ -238,7 +238,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         if (mCallbacks != null) {
             mCallbacks.onNavigationDrawerItemSelected(position);
         }
-        ((NavigationDrawerAdapter) mDrawerList.getAdapter()).selectPosition(position);
+        ((DrawerAdapter) mDrawerList.getAdapter()).selectPosition(position);
     }
 
     public void openDrawer() {
@@ -269,9 +269,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         super.onAttach(activity);
 
         try {
-            mCallbacks = (NavigationDrawerCallbacks) activity;
+            mCallbacks = (DrawerCallback) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException("Activity must implement NavigationDrawerCallbacks!");
+            throw new ClassCastException("Activity must implement DrawerCallback!");
         }
     }
 

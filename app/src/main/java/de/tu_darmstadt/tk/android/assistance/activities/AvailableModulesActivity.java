@@ -1,9 +1,7 @@
 package de.tu_darmstadt.tk.android.assistance.activities;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,8 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
-import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
-import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
+import de.tu_darmstadt.tk.android.assistance.callbacks.DrawerCallback;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.AvailableModuleResponse;
 import de.tu_darmstadt.tk.android.assistance.services.AssistanceService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
@@ -32,7 +29,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class AvailableModulesActivity extends DrawerActivity implements NavigationDrawerCallbacks {
+public class AvailableModulesActivity extends DrawerActivity implements DrawerCallback {
 
     private String TAG = AvailableModulesActivity.class.getSimpleName();
 

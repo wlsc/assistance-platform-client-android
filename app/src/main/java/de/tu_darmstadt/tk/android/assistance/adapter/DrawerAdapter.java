@@ -12,36 +12,36 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
-import de.tu_darmstadt.tk.android.assistance.models.items.NavigationDrawerHolder;
+import de.tu_darmstadt.tk.android.assistance.callbacks.DrawerCallback;
+import de.tu_darmstadt.tk.android.assistance.models.items.DrawerItem;
 
 
 /**
  *  Navigation recycler view adapter to manage content
  */
-public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDrawerAdapter.ViewHolder> {
+public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder> {
 
-    private List<NavigationDrawerHolder> mData;
-    private NavigationDrawerCallbacks mNavigationDrawerCallbacks;
+    private List<DrawerItem> mData;
+    private DrawerCallback mDrawerCallback;
     private View mSelectedView;
     private int mSelectedPosition;
 
-    public NavigationDrawerAdapter(List<NavigationDrawerHolder> data) {
+    public DrawerAdapter(List<DrawerItem> data) {
         mData = data;
     }
 
-    public NavigationDrawerCallbacks getNavigationDrawerCallbacks() {
-        return mNavigationDrawerCallbacks;
+    public DrawerCallback getNavigationDrawerCallbacks() {
+        return mDrawerCallback;
     }
 
-    public void setNavigationDrawerCallbacks(NavigationDrawerCallbacks navigationDrawerCallbacks) {
-        mNavigationDrawerCallbacks = navigationDrawerCallbacks;
+    public void setNavigationDrawerCallbacks(DrawerCallback drawerCallback) {
+        mDrawerCallback = drawerCallback;
     }
 
     @Override
-    public NavigationDrawerAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public DrawerAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
 
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.drawer_row, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.drawer_item, viewGroup, false);
 
         final ViewHolder viewHolder = new ViewHolder(v);
 
@@ -58,8 +58,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
                                                        v.setSelected(true);
 
                                                        mSelectedView = v;
-                                                       if (mNavigationDrawerCallbacks != null) {
-                                                           mNavigationDrawerCallbacks.onNavigationDrawerItemSelected(viewHolder.getAdapterPosition());
+                                                       if (mDrawerCallback != null) {
+                                                           mDrawerCallback.onNavigationDrawerItemSelected(viewHolder.getAdapterPosition());
                                                        }
                                                    }
                                                }
@@ -71,7 +71,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
     @Override
-    public void onBindViewHolder(NavigationDrawerAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(DrawerAdapter.ViewHolder viewHolder, int i) {
 
         viewHolder.textView.setText(mData.get(i).getText());
         viewHolder.textView.setCompoundDrawablesWithIntrinsicBounds(mData.get(i).getDrawable(), null, null, null);
@@ -110,7 +110,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         }
     }
 
-    public NavigationDrawerHolder getDataItem(int position) {
+    public DrawerItem getDataItem(int position) {
         return mData.get(position);
     }
 }

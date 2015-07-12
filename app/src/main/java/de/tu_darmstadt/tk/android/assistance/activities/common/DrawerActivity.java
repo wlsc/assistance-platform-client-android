@@ -9,8 +9,8 @@ import android.util.Log;
 
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.callbacks.NavigationDrawerCallbacks;
-import de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment;
+import de.tu_darmstadt.tk.android.assistance.callbacks.DrawerCallback;
+import de.tu_darmstadt.tk.android.assistance.fragments.DrawerFragment;
 import de.tu_darmstadt.tk.android.assistance.models.http.HttpErrorCode;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
@@ -21,14 +21,14 @@ import retrofit.client.Response;
 /**
  * Base activity for common stuff
  */
-public abstract class DrawerActivity extends AppCompatActivity implements NavigationDrawerCallbacks {
+public abstract class DrawerActivity extends AppCompatActivity implements DrawerCallback {
 
     protected boolean mBackButtonPressedOnce;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
-    protected NavigationDrawerFragment mNavigationDrawerFragment;
+    protected DrawerFragment mDrawerFragment;
 
     protected DrawerLayout drawerLayout;
 
@@ -51,9 +51,9 @@ public abstract class DrawerActivity extends AppCompatActivity implements Naviga
 
     protected void setupDrawer(Toolbar mToolbar) {
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
-        mNavigationDrawerFragment.setup(R.id.fragment_drawer, drawerLayout, mToolbar);
-        mNavigationDrawerFragment.setUserData("Wladimir Schmidt", mUserEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
+        mDrawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+        mDrawerFragment.setup(R.id.fragment_drawer, drawerLayout, mToolbar);
+        mDrawerFragment.setUserData("Wladimir Schmidt", mUserEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
     }
 
     /**
@@ -99,8 +99,8 @@ public abstract class DrawerActivity extends AppCompatActivity implements Naviga
 
     @Override
     public void onBackPressed() {
-        if (mNavigationDrawerFragment.isDrawerOpen()) {
-            mNavigationDrawerFragment.closeDrawer();
+        if (mDrawerFragment.isDrawerOpen()) {
+            mDrawerFragment.closeDrawer();
         }else{
             super.onBackPressed();
         }

@@ -14,11 +14,11 @@
 
     <fragment
         android:id="@+id/fragment_drawer"
-        android:name="de.tu_darmstadt.tk.android.assistance.fragments.NavigationDrawerFragment"
+        android:name="de.tu_darmstadt.tk.android.assistance.fragments.DrawerFragment"
         layout="@layout/fragment_navigation_drawer"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        tools:layout="@layout/fragment_navigation_drawer" />
+        tools:layout="@layout/fragment_drawer" />
 
 </android.support.v4.widget.DrawerLayout>
