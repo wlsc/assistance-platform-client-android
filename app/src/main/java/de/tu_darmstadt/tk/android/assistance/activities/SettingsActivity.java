@@ -2,11 +2,9 @@ package de.tu_darmstadt.tk.android.assistance.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -29,9 +27,9 @@ import de.tu_darmstadt.tk.android.assistance.fragments.settings.ApplicationSetti
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.DevelopmentSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserDeviceInfoSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserProfileSettingsFragment;
-import de.tu_darmstadt.tk.android.assistance.utils.Constants;
+import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
+import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
-import de.tu_darmstadt.tk.android.assistance.utils.Utils;
 
 /**
  * Core user settings activity
@@ -151,7 +149,7 @@ public class SettingsActivity extends PreferenceActivity {
             try {
                 InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(data.getData());
 
-                Utils.saveFile("assistance/user/img", inputStream);
+                CommonUtils.saveFile("assistance/user/img", inputStream);
 
                 CircularImageView image = ButterKnife.findById(this, R.id.userPhoto);
                 image.setImageDrawable(Drawable.createFromStream(inputStream, "user_pic"));
@@ -173,11 +171,7 @@ public class SettingsActivity extends PreferenceActivity {
      */
     private void doLogout() {
 
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        sp.edit()
-                .remove(Constants.PREF_USER_TOKEN)
-                .remove(Constants.PREF_USER_EMAIL)
-                .apply();
+        PreferencesUtils.clearUserCredentials(this);
 
         setResult(R.id.logout_settings);
         finish();

@@ -1,8 +1,6 @@
 package de.tu_darmstadt.tk.android.assistance.utils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 /**
  * Created by Wladimir Schmidt on 04.07.2015.
@@ -15,9 +13,7 @@ public class UserUtils {
      * @return
      */
     public static String getUserEmail(Context context) {
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(Constants.PREF_USER_EMAIL, "");
+        return PreferencesUtils.readFromPreferences(context, Constants.PREF_USER_EMAIL, "");
     }
 
     /**
@@ -26,9 +22,7 @@ public class UserUtils {
      * @return
      */
     public static String getUserToken(Context context) {
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(Constants.PREF_USER_TOKEN, "");
+        return PreferencesUtils.readFromPreferences(context, Constants.PREF_USER_TOKEN, "");
     }
 
 }

@@ -18,7 +18,7 @@ import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
-import de.tu_darmstadt.tk.android.assistance.utils.Utils;
+import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -116,14 +116,14 @@ public class RegisterActivity extends DrawerActivity {
             return false;
         }
 
-        Utils.hideKeyboard(getApplicationContext(), getCurrentFocus());
+        CommonUtils.hideKeyboard(getApplicationContext(), getCurrentFocus());
 
         return true;
     }
 
     private void doRegisterUser(String email, String password) {
 
-//        String passwordHashed = Utils.generateSHA256(password);
+//        String passwordHashed = CommonUtils.generateSHA256(password);
         String passwordHashed = password;
 
         // forming a login request

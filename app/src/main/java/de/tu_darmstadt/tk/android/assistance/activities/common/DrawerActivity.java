@@ -1,5 +1,6 @@
 package de.tu_darmstadt.tk.android.assistance.activities.common;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -9,10 +10,12 @@ import android.util.Log;
 
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
+import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
 import de.tu_darmstadt.tk.android.assistance.callbacks.DrawerCallback;
 import de.tu_darmstadt.tk.android.assistance.fragments.DrawerFragment;
 import de.tu_darmstadt.tk.android.assistance.models.http.HttpErrorCode;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
+import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 import retrofit.RetrofitError;
@@ -85,11 +88,22 @@ public abstract class DrawerActivity extends AppCompatActivity implements Drawer
                     Log.d(TAG, "Response message: " + apiMessage);
 
                     break;
+                case 401:
+                    Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+                    PreferencesUtils.clearUserCredentials(getApplicationContext());
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                    break;
                 case 404:
                     Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
                     break;
                 case 503:
                     Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
+                    break;
+                default:
+                    Toaster.showLong(getApplicationContext(), R.string.error_unknown);
                     break;
             }
         } else {
@@ -101,7 +115,7 @@ public abstract class DrawerActivity extends AppCompatActivity implements Drawer
     public void onBackPressed() {
         if (mDrawerFragment.isDrawerOpen()) {
             mDrawerFragment.closeDrawer();
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
