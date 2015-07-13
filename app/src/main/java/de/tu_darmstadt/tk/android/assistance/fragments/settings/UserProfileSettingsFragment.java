@@ -25,7 +25,6 @@ import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
 import de.tu_darmstadt.tk.android.assistance.models.http.UserSocialService;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.profile.UpdateUserProfileRequest;
-import de.tu_darmstadt.tk.android.assistance.models.http.request.profile.UserProfile;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
@@ -112,24 +111,23 @@ public class UserProfileSettingsFragment extends Fragment {
         ((SettingsActivity) getActivity()).pickImage();
     }
 
-    /*
-    *   Saves user profile -> send request to server
+    /**
+     * Saves user profile -> send request to server
      */
     @DebugLog
     private void updateUserProfile() {
 
         Log.d(TAG, "updateUserProfile() invoked");
 
-        UpdateUserProfileRequest request = new UpdateUserProfileRequest();
-        request.setUserToken(UserUtils.getUserToken(getActivity().getApplicationContext()));
+        String userToken = UserUtils.getUserToken(getActivity().getApplicationContext());
 
-        UserProfile userProfile = new UserProfile();
+        UpdateUserProfileRequest request = new UpdateUserProfileRequest();
 
         String firstname = firstnameText.getText().toString().trim();
         String lastname = lastnameText.getText().toString().trim();
 
-        userProfile.setFirstname(firstname);
-        userProfile.setLastname(lastname);
+        request.setFirstname(firstname);
+        request.setLastname(lastname);
 
         List<UserSocialService> socialServices = new ArrayList<>();
 
@@ -228,12 +226,13 @@ public class UserProfileSettingsFragment extends Fragment {
             socialServices.add(githubService);
         }
 
-        userProfile.setServices(socialServices);
-        request.setUserProfile(userProfile);
+        request.setServices(socialServices);
 
-        // SEND UPDATE TO SERVER
+        /**
+         * SEND UPDATED USER PROFILE TO SERVER
+         */
         UserService userService = ServiceGenerator.createService(UserService.class);
-        userService.updateUserProfile(request, new Callback<Void>() {
+        userService.updateUserProfile(userToken, request, new Callback<Void>() {
 
             @Override
             public void success(Void aVoid, Response response) {

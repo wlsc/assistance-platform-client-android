@@ -10,6 +10,8 @@ import de.tu_darmstadt.tk.android.assistance.models.http.response.RegistrationRe
 import de.tu_darmstadt.tk.android.assistance.models.http.response.UserProfileResponse;
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.GET;
+import retrofit.http.Header;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 
@@ -19,17 +21,29 @@ import retrofit.http.PUT;
 public interface UserService {
 
     @POST("/users/register")
-    void registerUser(@Body RegistrationRequest body, Callback<RegistrationResponse> callback);
+    void registerUser(@Body RegistrationRequest body,
+                      Callback<RegistrationResponse> callback);
 
     @POST("/users/login")
-    void loginUser(@Body LoginRequest body, Callback<LoginResponse> callback);
+    void loginUser(@Body LoginRequest body,
+                   Callback<LoginResponse> callback);
 
     @POST("/users/password")
-    void resetUserPassword(@Body ResetPasswordRequest body, Callback<Void> callback);
+    void resetUserPassword(@Body ResetPasswordRequest body,
+                           Callback<Void> callback);
 
-    @POST("/users/profile")
-    void getUserProfile(@Body GetUserProfileRequest body, Callback<UserProfileResponse> callback);
+    @GET("/users/my_profile/short")
+    void getUserProfileShort(@Header("X-AUTH-TOKEN") String userToken,
+                             @Body GetUserProfileRequest body,
+                             Callback<UserProfileResponse> callback);
 
-    @PUT("/users/profile")
-    void updateUserProfile(@Body UpdateUserProfileRequest body, Callback<Void> callback);
+    @GET("/users/my_profile/long")
+    void getUserProfileFull(@Header("X-AUTH-TOKEN") String userToken,
+                            @Body GetUserProfileRequest body,
+                            Callback<UserProfileResponse> callback);
+
+    @PUT("/users/my_profile")
+    void updateUserProfile(@Header("X-AUTH-TOKEN") String userToken,
+                           @Body UpdateUserProfileRequest body,
+                           Callback<Void> callback);
 }
