@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.FrameLayout;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
@@ -25,9 +26,11 @@ import retrofit.client.Response;
 /**
  * Base activity for common stuff
  */
-public abstract class DrawerActivity extends AppCompatActivity implements DrawerCallback {
+public class DrawerActivity extends AppCompatActivity implements DrawerCallback {
 
     protected boolean mBackButtonPressedOnce;
+
+    protected Toolbar mToolbar;
 
     protected FrameLayout frameLayout;
 
@@ -46,10 +49,15 @@ public abstract class DrawerActivity extends AppCompatActivity implements Drawer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_base);
 
+        mToolbar = ButterKnife.findById(this, R.id.toolbar_actionbar);
+
         mUserEmail = UserUtils.getUserEmail(getApplicationContext());
 
         frameLayout = ButterKnife.findById(this, R.id.container_frame);
         drawerLayout = ButterKnife.findById(this, R.id.drawer_layout);
+
+        setSupportActionBar(mToolbar);
+        setupDrawer(mToolbar);
     }
 
     protected void setupDrawer(Toolbar mToolbar) {

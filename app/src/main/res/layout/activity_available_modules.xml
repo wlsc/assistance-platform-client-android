@@ -8,12 +8,6 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <include
-        android:id="@+id/toolbar_actionbar"
-        layout="@layout/toolbar_default"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/module_list_swipe_refresh_layout"
         android:layout_width="match_parent"

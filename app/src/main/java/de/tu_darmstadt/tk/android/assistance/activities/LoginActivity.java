@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -34,13 +35,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
+import de.tu_darmstadt.tk.android.assistance.models.http.HttpErrorCode;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.LoginRequest;
+import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.LoginResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
+import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 import de.tu_darmstadt.tk.android.assistance.views.SplashView;
@@ -51,9 +54,11 @@ import retrofit.client.Response;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends DrawerActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     private final String TAG = LoginActivity.class.getSimpleName();
+
+    private boolean mBackButtonPressedOnce;
 
     @Bind(R.id.email)
     protected AutoCompleteTextView mEmailTextView;
@@ -484,6 +489,58 @@ public class LoginActivity extends DrawerActivity implements LoaderCallbacks<Cur
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
+    }
+
+    /**
+     * Processes error response from server
+     *
+     * @param TAG
+     * @param retrofitError
+     */
+    protected void showErrorMessages(String TAG, RetrofitError retrofitError) {
+
+        Response response = retrofitError.getResponse();
+
+        if (response != null) {
+
+            int httpCode = response.getStatus();
+
+            switch (httpCode) {
+                case 400:
+                    ErrorResponse errorResponse = (ErrorResponse) retrofitError.getBodyAs(ErrorResponse.class);
+                    errorResponse.setStatusCode(httpCode);
+
+                    Integer apiResponseCode = errorResponse.getCode();
+                    String apiMessage = errorResponse.getMessage();
+                    int httpResponseCode = errorResponse.getStatusCode();
+                    HttpErrorCode.ErrorCode apiErrorType = HttpErrorCode.fromCode(apiResponseCode);
+
+                    Log.d(TAG, "Response status: " + httpResponseCode);
+                    Log.d(TAG, "Response code: " + apiResponseCode);
+                    Log.d(TAG, "Response message: " + apiMessage);
+
+                    break;
+                case 401:
+                    Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+                    PreferencesUtils.clearUserCredentials(getApplicationContext());
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                    break;
+                case 404:
+                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+                    break;
+                case 503:
+                    Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
+                    break;
+                default:
+                    Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+                    break;
+            }
+        } else {
+            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+        }
     }
 }
 

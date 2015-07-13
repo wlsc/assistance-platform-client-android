@@ -5,10 +5,4 @@
     android:background="@color/myBackgroundColor"
     android:fitsSystemWindows="true">
 
-    <include
-        android:id="@+id/toolbar_actionbar"
-        layout="@layout/toolbar_default"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
 </RelativeLayout>

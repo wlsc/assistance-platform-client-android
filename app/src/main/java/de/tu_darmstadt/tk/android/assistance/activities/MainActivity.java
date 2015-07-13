@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
@@ -21,21 +19,13 @@ public class MainActivity extends DrawerActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
 
-    @Bind(R.id.toolbar_actionbar)
-    protected Toolbar mToolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View contentView = getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
+        getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
 
-        ButterKnife.bind(this, contentView);
-
-        setSupportActionBar(mToolbar);
         setTitle(R.string.main_activity_title);
-
-        setupDrawer(mToolbar);
     }
 
     @Override
