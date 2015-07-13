@@ -29,10 +29,13 @@ public class Constants {
      */
 
     /**
+     * User login related data
      * Token received from server to access client's and server's content
      */
     public static final String PREF_USER_TOKEN = "user_token";
     public static final String PREF_USER_EMAIL = "user_email";
+    public static final String PREF_USER_FIRSTNAME = "user_firstname";
+    public static final String PREF_USER_LASTNAME = "user_lastname";
 
     /**
      * Per the design guidelines, you should show the drawer on launch until the user manually

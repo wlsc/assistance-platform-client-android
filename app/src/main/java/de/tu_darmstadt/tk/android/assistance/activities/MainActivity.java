@@ -34,7 +34,15 @@ public class MainActivity extends DrawerActivity {
 
         setTitle(R.string.main_activity_title);
 
-        requestUserProfile();
+        // if user data was not cached, request new
+        String userFirstname = PreferencesUtils.readFromPreferences(getApplicationContext(), Constants.PREF_USER_FIRSTNAME, "");
+        String userLastname = PreferencesUtils.readFromPreferences(getApplicationContext(), Constants.PREF_USER_LASTNAME, "");
+
+        if (userFirstname.isEmpty() || userLastname.isEmpty()) {
+            requestUserProfile();
+        } else {
+            updateUserDrawerInfo(userFirstname, userLastname);
+        }
     }
 
     /**
@@ -50,11 +58,18 @@ public class MainActivity extends DrawerActivity {
             @Override
             public void success(UserProfileResponse userProfileResponse, Response response) {
 
+                String firstname = userProfileResponse.getFirstname();
+                String lastname = userProfileResponse.getLastname();
+
+                PreferencesUtils.saveToPreferences(getApplicationContext(), Constants.PREF_USER_FIRSTNAME, firstname);
+                PreferencesUtils.saveToPreferences(getApplicationContext(), Constants.PREF_USER_LASTNAME, lastname);
+
+                updateUserDrawerInfo(firstname, lastname);
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                showErrorMessages(TAG, error);
             }
         });
     }

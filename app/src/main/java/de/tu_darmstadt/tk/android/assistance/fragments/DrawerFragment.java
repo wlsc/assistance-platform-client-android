@@ -67,10 +67,18 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
+    @Bind(R.id.imgAvatar)
+    protected CircularImageView userAvatar;
+
+    @Bind(R.id.txtUserEmail)
+    protected TextView txtUserEmail;
+
+    @Bind(R.id.txtUsername)
+    protected TextView txtUsername;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
@@ -132,22 +140,14 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
         List<DrawerItem> items = new ArrayList<DrawerItem>();
 
         Drawable item1 = null;
-        Drawable item2 = null;
-        Drawable item3 = null;
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
             item1 = getResources().getDrawable(R.drawable.ic_menu_check, null);
-            item2 = getResources().getDrawable(R.drawable.ic_menu_check, null);
-            item3 = getResources().getDrawable(R.drawable.ic_menu_check, null);
         } else {
             item1 = getResources().getDrawable(R.drawable.ic_menu_check);
-            item2 = getResources().getDrawable(R.drawable.ic_menu_check);
-            item3 = getResources().getDrawable(R.drawable.ic_menu_check);
         }
 
         items.add(new DrawerItem("item 1", item1));
-        items.add(new DrawerItem("item 2", item2));
-        items.add(new DrawerItem("item 3", item3));
 
         return items;
     }
@@ -222,6 +222,8 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
         });
 
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
+
+        ButterKnife.bind(this, mFragmentContainerView);
     }
 
     /**
@@ -293,15 +295,17 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
         mActionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    public void setUserData(String user, String email, Bitmap userPic) {
+    /**
+     * Updates user data
+     *
+     * @param user
+     * @param email
+     * @param userPic
+     */
+    public void updateUserData(String user, String email, Bitmap userPic) {
 
-        CircularImageView avatarContainer = ButterKnife.findById(mFragmentContainerView, R.id.imgAvatar);
-
-        TextView txtUserEmail = ButterKnife.findById(mFragmentContainerView, R.id.txtUserEmail);
         txtUserEmail.setText(email);
         txtUserEmail.setMovementMethod(LinkMovementMethod.getInstance());
-
-        TextView txtUsername = ButterKnife.findById(mFragmentContainerView, R.id.txtUsername);
         txtUsername.setText(user);
     }
 

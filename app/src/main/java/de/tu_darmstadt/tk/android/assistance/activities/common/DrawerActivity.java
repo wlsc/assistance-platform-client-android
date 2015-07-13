@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.FrameLayout;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
@@ -60,11 +59,11 @@ public class DrawerActivity extends AppCompatActivity implements DrawerCallback 
         setupDrawer(mToolbar);
     }
 
+
     protected void setupDrawer(Toolbar mToolbar) {
 
         mDrawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.drawer_fragment);
         mDrawerFragment.setup(R.id.drawer_fragment, drawerLayout, mToolbar);
-        mDrawerFragment.setUserData("Wladimir Schmidt", mUserEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
     }
 
     /**
@@ -130,5 +129,18 @@ public class DrawerActivity extends AppCompatActivity implements DrawerCallback 
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+    }
+
+    /**
+     * Updates user information in drawer
+     *
+     * @param userFirstname
+     * @param userLastname
+     */
+    protected void updateUserDrawerInfo(String userFirstname, String userLastname) {
+
+        if (mDrawerFragment != null) {
+            mDrawerFragment.updateUserData(userFirstname + " " + userLastname, mUserEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
+        }
     }
 }

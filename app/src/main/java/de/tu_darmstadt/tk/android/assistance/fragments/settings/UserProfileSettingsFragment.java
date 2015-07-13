@@ -85,6 +85,8 @@ public class UserProfileSettingsFragment extends Fragment {
 
         userPhotoView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_user_pic));
 
+        view.setClickable(true);
+        view.setFocusable(true);
         view.setFocusableInTouchMode(true);
         view.setOnKeyListener(new View.OnKeyListener() {
 
@@ -92,8 +94,8 @@ public class UserProfileSettingsFragment extends Fragment {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
                 if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    Log.d(TAG, "User pressed back and profile is updating...");
                     updateUserProfile();
-                    getActivity().finish();
                     return true;
                 }
 
@@ -237,11 +239,13 @@ public class UserProfileSettingsFragment extends Fragment {
             @Override
             public void success(Void aVoid, Response response) {
 
+                Log.d(TAG, "Successfully updated user profile!");
+                getActivity().finish();
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                Log.d(TAG, "Failed while updating user profile");
             }
         });
     }
