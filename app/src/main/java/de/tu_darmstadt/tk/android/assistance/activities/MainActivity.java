@@ -1,11 +1,9 @@
 package de.tu_darmstadt.tk.android.assistance.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import butterknife.Bind;
@@ -17,7 +15,7 @@ import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 
 
 /**
- * Main user's place
+ * User home
  */
 public class MainActivity extends DrawerActivity {
 
@@ -30,10 +28,7 @@ public class MainActivity extends DrawerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View contentView = inflater.inflate(R.layout.activity_main, null, false);
-
-        drawerLayout.addView(contentView, 0);
+        View contentView = getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
 
         ButterKnife.bind(this, contentView);
 

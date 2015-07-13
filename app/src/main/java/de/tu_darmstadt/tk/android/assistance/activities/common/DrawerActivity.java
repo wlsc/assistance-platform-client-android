@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
@@ -28,9 +29,8 @@ public abstract class DrawerActivity extends AppCompatActivity implements Drawer
 
     protected boolean mBackButtonPressedOnce;
 
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
+    protected FrameLayout frameLayout;
+
     protected DrawerFragment mDrawerFragment;
 
     protected DrawerLayout drawerLayout;
@@ -44,18 +44,18 @@ public abstract class DrawerActivity extends AppCompatActivity implements Drawer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_drawer);
+        setContentView(R.layout.drawer_base);
 
         mUserEmail = UserUtils.getUserEmail(getApplicationContext());
 
-        drawerLayout = ButterKnife.findById(this, R.id.drawer);
+        frameLayout = ButterKnife.findById(this, R.id.container_frame);
+        drawerLayout = ButterKnife.findById(this, R.id.drawer_layout);
     }
 
     protected void setupDrawer(Toolbar mToolbar) {
 
-        mDrawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
-        mDrawerFragment.setup(R.id.fragment_drawer, drawerLayout, mToolbar);
+        mDrawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.drawer_fragment);
+        mDrawerFragment.setup(R.id.drawer_fragment, drawerLayout, mToolbar);
         mDrawerFragment.setUserData("Wladimir Schmidt", mUserEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
     }
 

@@ -163,7 +163,7 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
 
         ButterKnife.bind(getActivity());
 
-        mFragmentContainerView = getActivity().findViewById(R.id.fragment_drawer);
+        mFragmentContainerView = getActivity().findViewById(R.id.drawer_fragment);
         mDrawerLayout = drawerLayout;
 
         mDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.myPrimaryColor700));
@@ -312,7 +312,9 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
     @OnClick(R.id.available_modules)
     protected void onAvailableModulesClicked() {
         Intent intent = new Intent(getActivity(), AvailableModulesActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        getActivity().finish();
     }
 
     @OnClick(R.id.settings)
