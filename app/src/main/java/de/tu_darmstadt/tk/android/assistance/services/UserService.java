@@ -31,15 +31,15 @@ public interface UserService {
     void resetUserPassword(@Body ResetPasswordRequest body,
                            Callback<Void> callback);
 
-    @GET("/users/my_profile/short")
+    @GET("/users/profile/short")
     void getUserProfileShort(@Header("X-AUTH-TOKEN") String userToken,
                              Callback<UserProfileResponse> callback);
 
-    @GET("/users/my_profile/long")
+    @GET("/users/profile/long")
     void getUserProfileFull(@Header("X-AUTH-TOKEN") String userToken,
                             Callback<UserProfileResponse> callback);
 
-    @PUT("/users/my_profile")
+    @PUT("/users/profile")
     void updateUserProfile(@Header("X-AUTH-TOKEN") String userToken,
                            @Body UpdateUserProfileRequest body,
                            Callback<Void> callback);
