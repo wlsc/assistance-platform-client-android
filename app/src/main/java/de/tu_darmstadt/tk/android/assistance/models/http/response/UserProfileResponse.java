@@ -12,23 +12,23 @@ import de.tu_darmstadt.tk.android.assistance.models.http.UserSocialService;
  */
 public class UserProfileResponse {
 
-    @SerializedName("firstname")
+    @SerializedName("firstName")
     @Expose
     private String firstname;
 
-    @SerializedName("lastname")
+    @SerializedName("lastName")
     @Expose
     private String lastname;
 
-    @SerializedName("primary_email")
+    @SerializedName("email")
     @Expose
     private String primaryEmail;
 
-    @SerializedName("last_login")
+    @SerializedName("lastLogin")
     @Expose
     private Long lastLogin;
 
-    @SerializedName("joined_since")
+    @SerializedName("joinedSince")
     @Expose
     private Long joinedSince;
 
