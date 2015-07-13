@@ -3,7 +3,6 @@ package de.tu_darmstadt.tk.android.assistance.services;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.LoginRequest;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.RegistrationRequest;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.ResetPasswordRequest;
-import de.tu_darmstadt.tk.android.assistance.models.http.request.profile.GetUserProfileRequest;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.profile.UpdateUserProfileRequest;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.LoginResponse;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.RegistrationResponse;
@@ -34,12 +33,10 @@ public interface UserService {
 
     @GET("/users/my_profile/short")
     void getUserProfileShort(@Header("X-AUTH-TOKEN") String userToken,
-                             @Body GetUserProfileRequest body,
                              Callback<UserProfileResponse> callback);
 
     @GET("/users/my_profile/long")
     void getUserProfileFull(@Header("X-AUTH-TOKEN") String userToken,
-                            @Body GetUserProfileRequest body,
                             Callback<UserProfileResponse> callback);
 
     @PUT("/users/my_profile")

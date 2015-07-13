@@ -230,16 +230,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    /**
+     * Login procedure
+     */
     private void doLogin() {
 
         showProgress(true);
 
-        // forming a login request
+        /**
+         * Forming a login request
+         */
         LoginRequest request = new LoginRequest();
         request.setUserEmail(email);
         request.setPassword(password);
 
-        // calling api service
+        /**
+         * Logging in the user
+         */
         UserService service = ServiceGenerator.createService(UserService.class);
         service.loginUser(request, new Callback<LoginResponse>() {
 
@@ -274,9 +281,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Log.d(TAG, "Token is valid. Proceeding with login...");
 
             showProgress(false);
-            saveUserData(token);
+            saveLoginData(token);
             loadMainActivity();
-
         } else {
             Toaster.showLong(this, R.string.error_user_token_not_valid);
             Log.d(TAG, "Token is INVALID.");
@@ -284,18 +290,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * Saves token into SharedPreferences
+     * Saves user data needed for successful login into SharedPreferences
      *
      * @param token
      */
-    private void saveUserData(String token) {
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-
-        sp.edit()
-                .putString(Constants.PREF_USER_TOKEN, token)
-                .putString(Constants.PREF_USER_EMAIL, email)
-                .apply();
+    private void saveLoginData(String token) {
+        PreferencesUtils.saveToPreferences(getApplicationContext(), Constants.PREF_USER_TOKEN, token);
+        PreferencesUtils.saveToPreferences(getApplicationContext(), Constants.PREF_USER_EMAIL, email);
     }
 
     /**

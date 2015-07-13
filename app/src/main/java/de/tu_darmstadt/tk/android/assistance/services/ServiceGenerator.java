@@ -18,9 +18,8 @@ public class ServiceGenerator {
 
         RestAdapter.Builder builder = new RestAdapter.Builder()
                 // enabling log traces
-                .setLogLevel(RestAdapter.LogLevel.FULL).setLog(new AndroidLog("HTTP_CLIENT"))
-                        // custom error handler
-//                .setErrorHandler(new CustomErrorHandler(context))
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLog(new AndroidLog("HTTP_CLIENT"))
                 .setEndpoint(Config.ASSISTANCE_URL)
                 .setClient(new OkClient(new UntrustedOkHttpClient().getUnsafeOkHttpClient()));
 

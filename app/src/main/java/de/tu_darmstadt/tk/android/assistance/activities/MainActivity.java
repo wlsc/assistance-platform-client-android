@@ -8,8 +8,15 @@ import android.util.Log;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
+import de.tu_darmstadt.tk.android.assistance.models.http.response.UserProfileResponse;
+import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
+import de.tu_darmstadt.tk.android.assistance.services.UserService;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
+import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 /**
@@ -26,6 +33,30 @@ public class MainActivity extends DrawerActivity {
         getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
 
         setTitle(R.string.main_activity_title);
+
+        requestUserProfile();
+    }
+
+    /**
+     * Requests user profile information
+     */
+    private void requestUserProfile() {
+
+        String userToken = PreferencesUtils.readFromPreferences(getApplicationContext(), Constants.PREF_USER_TOKEN, "");
+
+        UserService userservice = ServiceGenerator.createService(UserService.class);
+        userservice.getUserProfileShort(userToken, new Callback<UserProfileResponse>() {
+
+            @Override
+            public void success(UserProfileResponse userProfileResponse, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
     }
 
     @Override
