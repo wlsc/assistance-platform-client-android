@@ -1,4 +1,4 @@
-package de.tu_darmstadt.tk.android.assistance.models.http.request.profile;
+package de.tu_darmstadt.tk.android.assistance.models.http.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
