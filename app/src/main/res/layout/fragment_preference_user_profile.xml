@@ -12,10 +12,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="de.tu_darmstadt.tk.android.assistance.activities.RegisterActivity">
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="5dp">
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -175,6 +176,6 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>
