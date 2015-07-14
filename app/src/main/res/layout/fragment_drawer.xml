@@ -9,7 +9,7 @@
         android:id="@+id/navigationHeader"
         android:layout_width="match_parent"
         android:layout_height="168dp"
-        android:background="@drawable/wallpaper"
+        android:background="@color/myPrimaryColor"
         android:paddingTop="24dp">
 
 

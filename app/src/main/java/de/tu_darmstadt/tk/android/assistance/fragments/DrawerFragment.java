@@ -4,13 +4,11 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,6 +36,7 @@ import de.tu_darmstadt.tk.android.assistance.adapter.DrawerAdapter;
 import de.tu_darmstadt.tk.android.assistance.callbacks.DrawerCallback;
 import de.tu_darmstadt.tk.android.assistance.models.items.DrawerItem;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
+import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -82,8 +81,7 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mUserLearnedDrawer = sp.getBoolean(Constants.PREF_USER_LEARNED_DRAWER, false);
+        mUserLearnedDrawer = PreferencesUtils.readFromPreferences(getActivity().getApplicationContext(), Constants.PREF_USER_LEARNED_DRAWER, false);
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(Constants.STATE_SELECTED_POSITION);
@@ -191,9 +189,7 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
 
                 if (!mUserLearnedDrawer) {
                     mUserLearnedDrawer = true;
-                    SharedPreferences sp = PreferenceManager
-                            .getDefaultSharedPreferences(getActivity());
-                    sp.edit().putBoolean(Constants.PREF_USER_LEARNED_DRAWER, true).apply();
+                    PreferencesUtils.saveToPreferences(getActivity().getApplicationContext(), Constants.PREF_USER_LEARNED_DRAWER, true);
                 }
 
                 getActivity().invalidateOptionsMenu();
