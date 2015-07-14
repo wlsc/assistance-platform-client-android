@@ -7,6 +7,9 @@ import android.content.Context;
  */
 public class UserUtils {
 
+    private UserUtils() {
+    }
+
     /**
      * Returns user email saved in SharedPreferences
      *

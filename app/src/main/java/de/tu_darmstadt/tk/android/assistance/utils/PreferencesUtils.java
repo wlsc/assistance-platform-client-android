@@ -72,6 +72,11 @@ public class PreferencesUtils {
         return sharedPreferences.getBoolean(preferenceName, defaultValue);
     }
 
+    /**
+     * Removes user login data from device
+     *
+     * @param context
+     */
     public static void clearUserCredentials(Context context) {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);

@@ -25,9 +25,12 @@ import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
 import de.tu_darmstadt.tk.android.assistance.models.http.UserSocialService;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.profile.UpdateUserProfileRequest;
+import de.tu_darmstadt.tk.android.assistance.models.http.response.UserProfileResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
+import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
+import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 import hugo.weaving.DebugLog;
 import retrofit.Callback;
@@ -83,6 +86,29 @@ public class UserProfileSettingsFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
+        // request user profile from server
+        String userToken = PreferencesUtils.readFromPreferences(getActivity().getApplicationContext(), Constants.PREF_USER_TOKEN, "");
+
+        if (!userToken.isEmpty()) {
+
+            UserService userService = ServiceGenerator.createService(UserService.class);
+            userService.getUserProfileFull(userToken, new Callback<UserProfileResponse>() {
+
+                @Override
+                public void success(UserProfileResponse userProfileResponse, Response response) {
+                    Log.d(TAG, "Successfully GOT the user profile!");
+
+                    fillupFullUserProfile(userProfileResponse);
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.d(TAG, "Failed while getting full user profile");
+                }
+            });
+
+        }
+
         userPhotoView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_user_pic));
 
         view.setClickable(true);
@@ -107,6 +133,46 @@ public class UserProfileSettingsFragment extends Fragment {
         return view;
     }
 
+    private void fillupFullUserProfile(UserProfileResponse userProfileResponse) {
+
+        firstnameText.setText(userProfileResponse.getFirstname());
+        lastnameText.setText(userProfileResponse.getLastname());
+
+        List<UserSocialService> socialServices = userProfileResponse.getSocialServices();
+
+        if (!socialServices.isEmpty()) {
+            String serviceName = "";
+
+            for (UserSocialService service : socialServices) {
+                if (service == null) {
+                    continue;
+                }
+
+                serviceName = service.getName();
+
+                if (serviceName.equals(UserSocialService.TYPE_GOOGLE)) {
+                    socialAccountGoogleText.setText(serviceName);
+                }
+
+                if (serviceName.equals(UserSocialService.TYPE_FACEBOOK)) {
+                    socialAccountFacebookText.setText(serviceName);
+                }
+
+                if (serviceName.equals(UserSocialService.TYPE_LIVE)) {
+                    socialAccountLiveText.setText(serviceName);
+                }
+
+                if (serviceName.equals(UserSocialService.TYPE_TWITTER)) {
+                    socialAccountTwitterText.setText(serviceName);
+                }
+
+                if (serviceName.equals(UserSocialService.TYPE_GITHUB)) {
+                    socialAccountGithubText.setText(serviceName);
+                }
+            }
+        }
+    }
+
     @OnClick(R.id.userPhoto)
     protected void onUserPhotoClicked() {
         Log.d(TAG, "User clicked selection of an image");
@@ -125,8 +191,8 @@ public class UserProfileSettingsFragment extends Fragment {
 
         UpdateUserProfileRequest request = new UpdateUserProfileRequest();
 
-        String firstname = firstnameText.getText().toString().trim();
-        String lastname = lastnameText.getText().toString().trim();
+        final String firstname = firstnameText.getText().toString().trim();
+        final String lastname = lastnameText.getText().toString().trim();
 
         request.setFirstname(firstname);
         request.setLastname(lastname);
@@ -240,6 +306,10 @@ public class UserProfileSettingsFragment extends Fragment {
             public void success(Void aVoid, Response response) {
 
                 Log.d(TAG, "Successfully updated user profile!");
+
+                PreferencesUtils.saveToPreferences(getActivity().getApplicationContext(), Constants.PREF_USER_FIRSTNAME, firstname);
+                PreferencesUtils.saveToPreferences(getActivity().getApplicationContext(), Constants.PREF_USER_LASTNAME, lastname);
+
                 getActivity().finish();
             }
 
