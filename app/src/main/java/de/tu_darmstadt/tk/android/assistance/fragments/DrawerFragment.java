@@ -309,6 +309,11 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
         return ButterKnife.findById(mFragmentContainerView, R.id.googleDrawer);
     }
 
+    @OnClick({R.id.imgAvatar, R.id.txtUserEmail, R.id.txtUsername})
+    protected void onUserPicClicked() {
+        launchSettings();
+    }
+
     @OnClick(R.id.available_modules)
     protected void onAvailableModulesClicked() {
         Intent intent = new Intent(getActivity(), AvailableModulesActivity.class);
@@ -319,6 +324,13 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
 
     @OnClick(R.id.settings)
     protected void onSettingsClicked() {
+        launchSettings();
+    }
+
+    /**
+     * Starts settings activity
+     */
+    private void launchSettings() {
         Intent intent = new Intent(getActivity(), SettingsActivity.class);
         startActivityForResult(intent, R.id.logout_settings);
     }
