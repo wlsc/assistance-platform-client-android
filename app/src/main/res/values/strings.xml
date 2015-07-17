@@ -3,8 +3,12 @@
     <!-- COMMON -->
     <string name="app_name">Assistance</string>
     <string name="action_back_button_pressed_once">Please press back button again to exit</string>
+    <string name="user_faq_url">https://kraken.me/#/idee</string>
+    <string name="user_feedback_url">mailto:developer@tk.informatik.tu-darmstadt.de</string>
+    <string name="user_feedback_subject">Feedback for Kraken App</string>
+    <string name="user_feedback_body">Hi,\n\n</string>
 
-    <!-- SETTINGS SCREEN -->
+    <!-- SETTINGS: SCREEN -->
     <string name="settings_activity_title">Settings</string>
     <string name="settings_header_application_title">Application</string>
     <string name="settings_header_application_summary">Common application settings</string>
@@ -14,10 +18,18 @@
     <string name="settings_header_user_device_summary">Mobile device information</string>
     <string name="settings_header_development_title">Development</string>
     <string name="settings_header_development_summary">Development settings</string>
-    <string name="settings_header_about_title">About</string>
-    <string name="settings_header_about_summary">About the app and used licenses</string>
+    <string name="settings_header_help_and_about_title">Help and About</string>
+    <string name="settings_header_help_and_about_summary">About the application</string>
     <string name="settings_header_logout_title">Log out</string>
     <string name="settings_header_logout_summary">Switch to another account</string>
+
+    <!-- SETTINGS: HELP / ABOUT -->
+    <string name="settings_about_title">About</string>
+    <string name="settings_about_summary">About the app and used licenses</string>
+    <string name="settings_faq_title">FAQ</string>
+    <string name="settings_faq_summary">Collection of helpful hints</string>
+    <string name="settings_feedback_title">Send us a feedback</string>
+    <string name="settings_feedback_summary">Please tell us about your experience</string>
 
     <!-- NAVIGATION DRAWER -->
     <string name="drawer_open">Menu opened</string>

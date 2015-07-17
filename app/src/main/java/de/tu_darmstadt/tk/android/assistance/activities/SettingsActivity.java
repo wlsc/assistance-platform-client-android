@@ -21,6 +21,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.tu_darmstadt.tk.android.assistance.Config;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.ApplicationAboutSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.ApplicationSettingsFragment;
@@ -37,6 +38,9 @@ import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 public class SettingsActivity extends PreferenceActivity {
 
     private static final String TAG = SettingsActivity.class.getSimpleName();
+
+    private static final String IMAGE_TYPE_FILTER = "image/*";
+    private static final String USER_PIC_NAME = "user_pic";
 
     private final String[] VALID_FRAGMENTS = {
             ApplicationAboutSettingsFragment.class.getName(),
@@ -120,8 +124,11 @@ public class SettingsActivity extends PreferenceActivity {
     public void onHeaderClick(Header header, int position) {
         super.onHeaderClick(header, position);
 
-        if (header.id == R.id.logout_settings) {
-            doLogout();
+        switch ((int) header.id) {
+
+            case R.id.logout_settings:
+                doLogout();
+                break;
         }
     }
 
@@ -131,7 +138,7 @@ public class SettingsActivity extends PreferenceActivity {
     public void pickImage() {
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
+        intent.setType(IMAGE_TYPE_FILTER);
         startActivityForResult(intent, R.id.userPhoto);
     }
 
@@ -149,10 +156,10 @@ public class SettingsActivity extends PreferenceActivity {
             try {
                 InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(data.getData());
 
-                CommonUtils.saveFile("assistance/user/img", inputStream);
+                CommonUtils.saveFile(Config.USER_PIC_PATH, inputStream);
 
                 CircularImageView image = ButterKnife.findById(this, R.id.userPhoto);
-                image.setImageDrawable(Drawable.createFromStream(inputStream, "user_pic"));
+                image.setImageDrawable(Drawable.createFromStream(inputStream, USER_PIC_NAME));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -180,5 +187,4 @@ public class SettingsActivity extends PreferenceActivity {
     public Toolbar getToolBar() {
         return mToolBar;
     }
-
 }

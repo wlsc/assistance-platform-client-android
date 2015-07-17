@@ -52,8 +52,8 @@
         android:id="@+id/about_settings"
         android:fragment="de.tu_darmstadt.tk.android.assistance.fragments.settings.ApplicationAboutSettingsFragment"
         android:icon="@drawable/ic_info_outline_black_48dp"
-        android:summary="@string/settings_header_about_summary"
-        android:title="@string/settings_header_about_title" />
+        android:summary="@string/settings_header_help_and_about_title"
+        android:title="@string/settings_header_help_and_about_summary" />
 
     <!-- Log out of user -->
     <header

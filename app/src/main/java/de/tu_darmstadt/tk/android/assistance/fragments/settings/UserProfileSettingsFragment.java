@@ -133,6 +133,11 @@ public class UserProfileSettingsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Populate user profile fields
+     *
+     * @param userProfileResponse
+     */
     private void fillupFullUserProfile(UserProfileResponse userProfileResponse) {
 
         firstnameText.setText(userProfileResponse.getFirstname());

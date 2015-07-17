@@ -22,4 +22,9 @@ public class Config {
      * Min password length
      */
     public static final int PASSWORD_MIN_LENGTH = 4;
+
+    /**
+     * Path to save user picture
+     */
+    public static final String USER_PIC_PATH = "assistance/user/img";
 }
