@@ -2,6 +2,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="pref_screen_development">
 
-
+    <SwitchPreference
+        android:key="pref_be_developer"
+        android:summary="@string/settings_be_developer_summary"
+        android:title="@string/settings_be_developer_title" />
 
 </PreferenceScreen>

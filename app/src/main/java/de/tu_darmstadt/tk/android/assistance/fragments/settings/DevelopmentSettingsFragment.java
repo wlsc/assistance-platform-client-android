@@ -11,6 +11,8 @@ import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
  */
 public class DevelopmentSettingsFragment extends PreferenceFragment {
 
+    private static final String TAG = DevelopmentSettingsFragment.class.getSimpleName();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

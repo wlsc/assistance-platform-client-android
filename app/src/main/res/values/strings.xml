@@ -23,6 +23,10 @@
     <string name="settings_header_logout_title">Log out</string>
     <string name="settings_header_logout_summary">Switch to another account</string>
 
+    <!-- SETTINGS: DEVELOPER -->
+    <string name="settings_be_developer_title">Developer</string>
+    <string name="settings_be_developer_summary">I am generous god!</string>
+
     <!-- SETTINGS: HELP / ABOUT -->
     <string name="settings_about_title">About</string>
     <string name="settings_about_summary">About the app and used licenses</string>
