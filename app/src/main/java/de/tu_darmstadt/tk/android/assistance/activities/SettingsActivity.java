@@ -31,9 +31,9 @@ import de.tu_darmstadt.tk.android.assistance.fragments.settings.SensorsListFragm
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserDeviceInfoSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserProfileSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
-import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
+import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 
 /**
  * Core user settings activity
@@ -165,7 +165,7 @@ public class SettingsActivity extends PreferenceActivity {
                 return;
             }
 
-            String oldFilename = PreferencesUtils.readFromPreferences(getApplicationContext(), Constants.PREF_USER_PIC, "");
+            String oldFilename = UserUtils.getUserPicFilename(getApplicationContext());
             Log.d(TAG, "old user pic filename: " + oldFilename);
 
             // process selected image and show it to user

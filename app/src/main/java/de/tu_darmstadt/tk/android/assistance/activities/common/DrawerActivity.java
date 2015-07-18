@@ -1,7 +1,6 @@
 package de.tu_darmstadt.tk.android.assistance.activities.common;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +15,13 @@ import de.tu_darmstadt.tk.android.assistance.callbacks.DrawerCallback;
 import de.tu_darmstadt.tk.android.assistance.fragments.DrawerFragment;
 import de.tu_darmstadt.tk.android.assistance.models.http.HttpErrorCode;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
+import de.tu_darmstadt.tk.android.assistance.models.http.response.UserProfileResponse;
+import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
+import de.tu_darmstadt.tk.android.assistance.services.UserService;
 import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -26,6 +29,8 @@ import retrofit.client.Response;
  * Base activity for common stuff
  */
 public class DrawerActivity extends AppCompatActivity implements DrawerCallback {
+
+    private static final String TAG = DrawerActivity.class.getSimpleName();
 
     protected boolean mBackButtonPressedOnce;
 
@@ -57,9 +62,65 @@ public class DrawerActivity extends AppCompatActivity implements DrawerCallback 
 
         setSupportActionBar(mToolbar);
         setupDrawer(mToolbar);
+
+        // if user data was not cached, request new
+        String userFirstname = UserUtils.getUserFirstname(getApplicationContext());
+        String userLastname = UserUtils.getUserLastname(getApplicationContext());
+
+        if (userFirstname.isEmpty() || userLastname.isEmpty()) {
+            requestUserProfile();
+        } else {
+            updateUserDrawerInfo();
+        }
     }
 
+    /**
+     * Requests user profile information
+     */
+    private void requestUserProfile() {
 
+        String userToken = UserUtils.getUserToken(getApplicationContext());
+
+        UserService userservice = ServiceGenerator.createService(UserService.class);
+        userservice.getUserProfileShort(userToken, new Callback<UserProfileResponse>() {
+
+            @Override
+            public void success(UserProfileResponse userProfileResponse, Response response) {
+
+                String firstname = userProfileResponse.getFirstname();
+                String lastname = userProfileResponse.getLastname();
+
+                UserUtils.saveUserFirstname(getApplicationContext(), firstname);
+                UserUtils.saveUserLastname(getApplicationContext(), lastname);
+
+                updateUserDrawerInfo();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                showErrorMessages(TAG, error);
+            }
+        });
+    }
+
+    /**
+     * Updates user information from preference
+     */
+    private void updateUserDrawerInfo() {
+
+        String userFirstname = UserUtils.getUserFirstname(getApplicationContext());
+        String userLastname = UserUtils.getUserLastname(getApplicationContext());
+        String userEmail = UserUtils.getUserEmail(getApplicationContext());
+        String userPicFilename = UserUtils.getUserPicFilename(getApplicationContext());
+
+        mDrawerFragment.updateUserData(userFirstname + " " + userLastname, userEmail, userPicFilename);
+    }
+
+    /**
+     * Setup navigation drawer
+     *
+     * @param mToolbar
+     */
     protected void setupDrawer(Toolbar mToolbar) {
 
         mDrawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.drawer_fragment);
@@ -129,18 +190,5 @@ public class DrawerActivity extends AppCompatActivity implements DrawerCallback 
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-    }
-
-    /**
-     * Updates user information in drawer
-     *
-     * @param userFirstname
-     * @param userLastname
-     */
-    protected void updateUserDrawerInfo(String userFirstname, String userLastname) {
-
-        if (mDrawerFragment != null) {
-            mDrawerFragment.updateUserData(userFirstname + " " + userLastname, mUserEmail, BitmapFactory.decodeResource(getResources(), R.drawable.no_user_pic));
-        }
     }
 }

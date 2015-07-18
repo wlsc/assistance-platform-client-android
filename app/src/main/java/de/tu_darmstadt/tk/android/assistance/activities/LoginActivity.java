@@ -6,12 +6,10 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -296,8 +294,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * @param token
      */
     private void saveLoginData(String token) {
-        PreferencesUtils.saveToPreferences(getApplicationContext(), Constants.PREF_USER_TOKEN, token);
-        PreferencesUtils.saveToPreferences(getApplicationContext(), Constants.PREF_USER_EMAIL, email);
+
+        UserUtils.saveUserToken(getApplicationContext(), token);
+        UserUtils.saveUserEmail(getApplicationContext(), email);
     }
 
     /**

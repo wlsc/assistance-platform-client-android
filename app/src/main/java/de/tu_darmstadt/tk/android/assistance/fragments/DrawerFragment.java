@@ -5,10 +5,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,13 +21,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pkmmte.view.CircularImageView;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.tu_darmstadt.tk.android.assistance.Config;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.AvailableModulesActivity;
 import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
@@ -67,13 +70,13 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
     private boolean mUserLearnedDrawer;
 
     @Bind(R.id.imgAvatar)
-    protected CircularImageView userAvatar;
+    protected CircularImageView userPicView;
 
     @Bind(R.id.txtUserEmail)
-    protected TextView txtUserEmail;
+    protected TextView userEmailView;
 
     @Bind(R.id.txtUsername)
-    protected TextView txtUsername;
+    protected TextView usernameView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -292,17 +295,33 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
     }
 
     /**
-     * Updates user data
+     * Updates username data
      *
-     * @param user
+     * @param username
      * @param email
-     * @param userPic
+     * @param userPicFilename
      */
-    public void updateUserData(String user, String email, Bitmap userPic) {
+    public void updateUserData(String username, String email, String userPicFilename) {
 
-        txtUserEmail.setText(email);
-        txtUserEmail.setMovementMethod(LinkMovementMethod.getInstance());
-        txtUsername.setText(user);
+        usernameView.setText(username);
+        userEmailView.setText(email);
+        userEmailView.setMovementMethod(LinkMovementMethod.getInstance());
+
+        if (!userPicFilename.isEmpty()) {
+            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + userPicFilename + ".jpg");
+
+            if (file.exists()) {
+
+                Picasso.with(getActivity().getApplicationContext())
+                        .load(file)
+                        .into(userPicView);
+            }
+        } else {
+
+            Picasso.with(getActivity().getApplicationContext())
+                    .load(R.drawable.no_user_pic)
+                    .into(userPicView);
+        }
     }
 
     public View getGoogleDrawer() {

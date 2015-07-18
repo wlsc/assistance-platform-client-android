@@ -32,9 +32,7 @@ import de.tu_darmstadt.tk.android.assistance.models.http.request.UpdateUserProfi
 import de.tu_darmstadt.tk.android.assistance.models.http.response.UserProfileResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
-import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
-import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 import hugo.weaving.DebugLog;
 import retrofit.Callback;
@@ -94,11 +92,11 @@ public class UserProfileSettingsFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         // request user profile from server
-        String userToken = PreferencesUtils.readFromPreferences(getActivity().getApplicationContext(), Constants.PREF_USER_TOKEN, "");
+        String userToken = UserUtils.getUserToken(getActivity().getApplicationContext());
 
         if (!userToken.isEmpty()) {
 
-            String filename = PreferencesUtils.readFromPreferences(getActivity().getApplicationContext(), Constants.PREF_USER_PIC, "");
+            String filename = UserUtils.getUserPicFilename(getActivity().getApplicationContext());
 
             if (!filename.isEmpty()) {
                 File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + filename + ".jpg");
@@ -332,8 +330,8 @@ public class UserProfileSettingsFragment extends Fragment {
 
                 Log.d(TAG, "Successfully updated user profile!");
 
-                PreferencesUtils.saveToPreferences(getActivity().getApplicationContext(), Constants.PREF_USER_FIRSTNAME, firstname);
-                PreferencesUtils.saveToPreferences(getActivity().getApplicationContext(), Constants.PREF_USER_LASTNAME, lastname);
+                UserUtils.saveUserFirstname(getActivity().getApplicationContext(), firstname);
+                UserUtils.saveUserLastname(getActivity().getApplicationContext(), lastname);
 
                 getActivity().finish();
             }
