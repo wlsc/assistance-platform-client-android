@@ -20,6 +20,8 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
 
     private static Preference.OnPreferenceClickListener aboutClickHandler;
 
+    private AlertDialog.Builder builder;
+
     public ApplicationAboutSettingsFragment() {
     }
 
@@ -53,8 +55,14 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
      */
     private void showAboutInformation() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("This an about dialog!");
-        builder.create().show();
+        if (builder == null) {
+            builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("This an about dialog!");
+            builder.create();
+        }
+
+        if (!getActivity().isFinishing()) {
+            builder.show();
+        }
     }
 }
