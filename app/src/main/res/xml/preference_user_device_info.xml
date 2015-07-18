@@ -2,4 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="pref_screen_user_device_info">
 
+    <Preference
+        android:key="pref_list_of_sensors"
+        android:summary="@string/settings_list_of_sensors_summary"
+        android:title="@string/settings_list_of_sensors_title"
+        android:fragment="de.tu_darmstadt.tk.android.assistance.fragments.settings.SensorsListFragment"/>
+
 </PreferenceScreen>

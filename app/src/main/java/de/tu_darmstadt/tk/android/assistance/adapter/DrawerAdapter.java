@@ -47,6 +47,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
 
         viewHolder.itemView.setClickable(true);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+
                                                    @Override
                                                    public void onClick(View v) {
 
@@ -71,17 +72,17 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(DrawerAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(DrawerAdapter.ViewHolder viewHolder, int position) {
 
-        viewHolder.textView.setText(mData.get(i).getText());
-        viewHolder.textView.setCompoundDrawablesWithIntrinsicBounds(mData.get(i).getDrawable(), null, null, null);
+        viewHolder.textView.setText(mData.get(position).getText());
+        viewHolder.textView.setCompoundDrawablesWithIntrinsicBounds(mData.get(position).getDrawable(), null, null, null);
 
-        if (mSelectedPosition == i) {
+        if (mSelectedPosition == position) {
             if (mSelectedView != null) {
                 mSelectedView.setSelected(false);
             }
 
-            mSelectedPosition = i;
+            mSelectedPosition = position;
             mSelectedView = viewHolder.itemView;
             mSelectedView.setSelected(true);
         }
@@ -98,6 +99,9 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
         return mData != null ? mData.size() : 0;
     }
 
+    /**
+     * Drawer item holder
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.item_name)

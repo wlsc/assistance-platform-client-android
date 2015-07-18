@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.support.v7.widget.Toolbar;
 
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
@@ -15,7 +16,12 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
 
     private static final String TAG = ApplicationAboutSettingsFragment.class.getSimpleName();
 
+    private Toolbar mParentToolbar;
+
     private static Preference.OnPreferenceClickListener aboutClickHandler;
+
+    public ApplicationAboutSettingsFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,7 +29,8 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
 
         addPreferencesFromResource(R.xml.preference_app_about);
 
-        ((SettingsActivity) getActivity()).getToolBar().setTitle(R.string.settings_about_title);
+        mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
+        mParentToolbar.setTitle(R.string.settings_about_title);
 
         Preference aboutPref = findPreference("pref_about_app");
 

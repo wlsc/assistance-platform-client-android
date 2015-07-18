@@ -26,6 +26,7 @@ import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.ApplicationAboutSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.ApplicationSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.DevelopmentSettingsFragment;
+import de.tu_darmstadt.tk.android.assistance.fragments.settings.SensorsListFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserDeviceInfoSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserProfileSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
@@ -47,11 +48,15 @@ public class SettingsActivity extends PreferenceActivity {
             ApplicationSettingsFragment.class.getName(),
             DevelopmentSettingsFragment.class.getName(),
             UserDeviceInfoSettingsFragment.class.getName(),
-            UserProfileSettingsFragment.class.getName()
+            UserProfileSettingsFragment.class.getName(),
+            SensorsListFragment.class.getName()
     };
 
     @Bind(R.id.toolbar)
     protected Toolbar mToolBar;
+
+    public SettingsActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

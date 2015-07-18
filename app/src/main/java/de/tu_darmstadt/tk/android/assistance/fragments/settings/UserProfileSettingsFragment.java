@@ -70,6 +70,9 @@ public class UserProfileSettingsFragment extends Fragment {
     @Bind(R.id.social_account_github)
     protected EditText socialAccountGithubText;
 
+    public UserProfileSettingsFragment() {
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
