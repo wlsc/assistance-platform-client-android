@@ -3,6 +3,7 @@
     android:key="pref_screen_development">
 
     <SwitchPreference
+        android:defaultValue="false"
         android:key="pref_be_developer"
         android:summary="@string/settings_be_developer_summary"
         android:title="@string/settings_be_developer_title" />

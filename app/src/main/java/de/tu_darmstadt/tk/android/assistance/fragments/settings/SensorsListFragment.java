@@ -6,7 +6,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +22,7 @@ import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
 import de.tu_darmstadt.tk.android.assistance.adapter.SensorsListAdapter;
 import de.tu_darmstadt.tk.android.assistance.models.items.SensorsListItem;
+import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -48,7 +48,6 @@ public class SensorsListFragment extends Fragment {
         mParentToolbar.setTitle(R.string.settings_list_of_sensors_title);
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -72,11 +71,13 @@ public class SensorsListFragment extends Fragment {
     }
 
     /**
-     * Gets list of available sensors on particular device
+     * Supplies a list of available sensors on particular device
      *
      * @return
      */
     private List<SensorsListItem> getSensorsList() {
+
+        boolean isDeveloperEnabled = PreferencesUtils.readFromPreferences(getActivity().getApplicationContext(), "pref_be_developer", false);
 
         List<SensorsListItem> sensorsListItems = new ArrayList<>();
         SensorManager manager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
@@ -84,8 +85,10 @@ public class SensorsListFragment extends Fragment {
 
         for (Sensor sensor : sensors) {
             SensorsListItem item = new SensorsListItem(sensor.getName());
+            item.setVisible(isDeveloperEnabled);
             sensorsListItems.add(item);
         }
+
         return sensorsListItems;
     }
 }

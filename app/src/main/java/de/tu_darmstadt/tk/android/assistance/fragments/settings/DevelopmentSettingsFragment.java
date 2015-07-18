@@ -1,16 +1,19 @@
 package de.tu_darmstadt.tk.android.assistance.fragments.settings;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
+import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 
 /**
  * Created by Wladimir Schmidt on 29.06.2015.
  */
-public class DevelopmentSettingsFragment extends PreferenceFragment {
+public class DevelopmentSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = DevelopmentSettingsFragment.class.getSimpleName();
 
@@ -27,5 +30,34 @@ public class DevelopmentSettingsFragment extends PreferenceFragment {
 
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
         mParentToolbar.setTitle(R.string.settings_header_development_title);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+        if (key.equalsIgnoreCase("pref_be_developer")) {
+
+            boolean isDeveloper = sharedPreferences.getBoolean(key, false);
+
+            if (isDeveloper) {
+                Log.d(TAG, "Developer mode is ENABLED.");
+            } else {
+                Log.d(TAG, "Developer mode is DISABLED.");
+            }
+
+            PreferencesUtils.saveToPreferences(getActivity().getApplicationContext(), key, isDeveloper);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
     }
 }
