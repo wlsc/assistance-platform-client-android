@@ -1,26 +1,33 @@
 package de.tu_darmstadt.tk.android.assistance.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import java.io.BufferedOutputStream;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import de.tu_darmstadt.tk.android.assistance.Config;
+
 /**
  * Created by Wladimir Schmidt (wlsc.dev@gmail.com) on 07.06.2015.
  */
 public class CommonUtils {
+
+    private static final String TAG = CommonUtils.class.getSimpleName();
 
     private CommonUtils() {
     }
@@ -91,34 +98,72 @@ public class CommonUtils {
     }
 
     /**
-     * Saves given stream to file
+     * Saves given image stream to file with picasso library
      *
-     * @param dirPath
-     * @param inputStream
+     * @param uri
      */
-    public static void saveFile(String dirPath, InputStream inputStream) {
+    public static void saveFile(final Context context, Uri uri, final String oldFilename) {
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault());
-        String currentTimeStamp = format.format(new Date());
+        Target target = new Target() {
 
-        File imagesFolder = new File(Environment.getExternalStorageDirectory(), dirPath);
-        imagesFolder.mkdirs();
+            @Override
+            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
 
-        File imageFile = new File(imagesFolder, "assi_" + currentTimeStamp + ".png");
+                new Thread(new Runnable() {
 
-        OutputStream out = null;
-        try {
-            out = new BufferedOutputStream(new FileOutputStream(imageFile));
-        } catch (IOException e) {
-            Log.e("saveFile", "Cannot save file to system!");
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    Log.e("saveFile", "Cannot close file!");
-                }
+                    @Override
+                    public void run() {
+
+                        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault());
+                        String currentTimeStamp = format.format(new Date());
+                        String filename = oldFilename;
+
+                        if (oldFilename.isEmpty()) {
+                            filename = "assi_" + currentTimeStamp;
+
+                            Log.d(TAG, "new user pic filename: " + filename);
+                        }
+
+                        PreferencesUtils.saveToPreferences(context, Constants.PREF_USER_PIC, filename);
+
+                        Log.e(TAG, Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + filename + ".jpg");
+
+                        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + filename + ".jpg");
+                        FileOutputStream oStream = null;
+                        try {
+                            file.createNewFile();
+
+                            oStream = new FileOutputStream(file);
+
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, oStream);
+
+                        } catch (Exception e) {
+                            Log.e(TAG, "Cannot save image to internal file storage! Error: " + e.getMessage());
+                        } finally {
+                            try {
+                                if (oStream != null) {
+                                    oStream.close();
+                                }
+                            } catch (IOException e) {
+                                Log.e(TAG, "Cannot close output stream! Error: " + e.getMessage());
+                            }
+                        }
+                    }
+                }).start();
             }
-        }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+            }
+        };
+
+        // save to file storage
+        Picasso.with(context)
+                .load(uri)
+                .into(target);
     }
 }

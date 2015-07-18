@@ -83,6 +83,7 @@ public class SensorsListFragment extends Fragment {
         SensorManager manager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         List<Sensor> sensors = manager.getSensorList(Sensor.TYPE_ALL);
 
+
         for (Sensor sensor : sensors) {
             SensorsListItem item = new SensorsListItem(sensor.getName());
             item.setVisible(isDeveloperEnabled);

@@ -1,8 +1,10 @@
 package de.tu_darmstadt.tk.android.assistance.activities;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,7 +23,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.tu_darmstadt.tk.android.assistance.Config;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.ApplicationAboutSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.ApplicationSettingsFragment;
@@ -30,6 +31,7 @@ import de.tu_darmstadt.tk.android.assistance.fragments.settings.SensorsListFragm
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserDeviceInfoSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserProfileSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
+import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 
@@ -77,11 +79,17 @@ public class SettingsActivity extends PreferenceActivity {
         mToolBar.setTitle(getTitle());
         mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
-//        if (hasHeaders()) {
-//            Button button = new Button(this);
-//            button.setText("LOG OUT");
-//            setListFooter(button);
-//        }
+
+        FragmentManager fm = getFragmentManager();
+        fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+
+            @Override
+            public void onBackStackChanged() {
+                if (getFragmentManager().getBackStackEntryCount() == 0) {
+                    finish();
+                }
+            }
+        });
     }
 
     @OnClick(R.id.toolbar)
@@ -157,16 +165,22 @@ public class SettingsActivity extends PreferenceActivity {
                 return;
             }
 
+            String oldFilename = PreferencesUtils.readFromPreferences(getApplicationContext(), Constants.PREF_USER_PIC, "");
+            Log.d(TAG, "old user pic filename: " + oldFilename);
+
             // process selected image and show it to user
             try {
-                InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(data.getData());
+                Uri uri = data.getData();
 
-                CommonUtils.saveFile(Config.USER_PIC_PATH, inputStream);
+                InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(uri);
+
+                CommonUtils.saveFile(getApplicationContext(), uri, oldFilename);
 
                 CircularImageView image = ButterKnife.findById(this, R.id.userPhoto);
                 image.setImageDrawable(Drawable.createFromStream(inputStream, USER_PIC_NAME));
+
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                Log.e(TAG, "User pic file not found!");
             }
         }
     }

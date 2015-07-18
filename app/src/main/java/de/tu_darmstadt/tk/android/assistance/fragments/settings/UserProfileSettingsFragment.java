@@ -2,6 +2,7 @@ package de.tu_darmstadt.tk.android.assistance.fragments.settings;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -14,13 +15,16 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.pkmmte.view.CircularImageView;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.tu_darmstadt.tk.android.assistance.Config;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
 import de.tu_darmstadt.tk.android.assistance.models.http.UserSocialService;
@@ -47,7 +51,7 @@ public class UserProfileSettingsFragment extends Fragment {
     private Toolbar mParentToolbar;
 
     @Bind(R.id.userPhoto)
-    protected CircularImageView userPhotoView;
+    protected CircularImageView userPicView;
 
     @Bind(R.id.firstname)
     protected EditText firstnameText;
@@ -94,6 +98,19 @@ public class UserProfileSettingsFragment extends Fragment {
 
         if (!userToken.isEmpty()) {
 
+            String filename = PreferencesUtils.readFromPreferences(getActivity().getApplicationContext(), Constants.PREF_USER_PIC, "");
+
+            if (!filename.isEmpty()) {
+                File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + filename + ".jpg");
+
+                if (file.exists()) {
+
+                    Picasso.with(getActivity().getApplicationContext())
+                            .load(file)
+                            .into(userPicView);
+                }
+            }
+
             UserService userService = ServiceGenerator.createService(UserService.class);
             userService.getUserProfileFull(userToken, new Callback<UserProfileResponse>() {
 
@@ -112,7 +129,7 @@ public class UserProfileSettingsFragment extends Fragment {
 
         }
 
-        userPhotoView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_user_pic));
+        userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_user_pic));
 
         view.setClickable(true);
         view.setFocusable(true);

@@ -58,6 +58,8 @@ dependencies {
     compile 'com.github.gabrielemariotti.cards:cardslib-cards:2.1.0'
     compile 'com.github.gabrielemariotti.cards:cardslib-recyclerview:2.1.0'
 
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
     compile 'org.metawidget:metawidget-parent:4.1'
 
     compile project(":krakenSDK")
