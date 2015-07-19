@@ -477,9 +477,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         ButterKnife.unbind(this);
         Log.d(TAG, "onDestroy -> unbound resources");
+        super.onDestroy();
     }
 
     private interface ProfileQuery {

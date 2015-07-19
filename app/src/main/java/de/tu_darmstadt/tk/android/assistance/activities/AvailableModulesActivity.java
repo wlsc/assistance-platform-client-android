@@ -7,12 +7,18 @@ import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
+import de.tu_darmstadt.tk.android.assistance.events.ModuleInstallEvent;
+import de.tu_darmstadt.tk.android.assistance.events.ModuleShowMoreInfoEvent;
 import de.tu_darmstadt.tk.android.assistance.handlers.DrawerHandler;
+import de.tu_darmstadt.tk.android.assistance.models.cards.ModuleCard;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.AvailableModuleResponse;
 import de.tu_darmstadt.tk.android.assistance.services.AssistanceService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
@@ -33,6 +39,8 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
     protected CardListView mModuleList;
 
     protected SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private Map<String, AvailableModuleResponse> availableModules;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +83,8 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         mSwipeRefreshLayout.setRefreshing(true);
 
+        EventBus.getDefault().register(this);
+
         requestAvailableModules();
     }
 
@@ -91,17 +101,17 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
             /**
              * Successful HTTP response.
              *
-             * @param availableModuleResponses
+             * @param availableModulesResponse
              * @param response
              */
             @Override
-            public void success(List<AvailableModuleResponse> availableModuleResponses, Response response) {
+            public void success(List<AvailableModuleResponse> availableModulesResponse, Response response) {
 
-                populateAvailableModuleList(availableModuleResponses);
+                populateAvailableModuleList(availableModulesResponse);
 
                 mSwipeRefreshLayout.setRefreshing(false);
 
-                Log.d(TAG, "successfully received available modules! size: " + availableModuleResponses.size());
+                Log.d(TAG, "successfully received available modules! size: " + availableModulesResponse.size());
             }
 
             /**
@@ -123,17 +133,18 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
     /**
      * Show available modules to user
      *
-     * @param availableModuleResponses
+     * @param availableModulesResponse
      */
-    private void populateAvailableModuleList(List<AvailableModuleResponse> availableModuleResponses) {
+    private void populateAvailableModuleList(List<AvailableModuleResponse> availableModulesResponse) {
 
-        if (availableModuleResponses != null && !availableModuleResponses.isEmpty()) {
+        if (availableModulesResponse != null && !availableModulesResponse.isEmpty()) {
 
+            availableModules = new HashMap<>();
             ArrayList<Card> cards = new ArrayList<>();
 
-            for (AvailableModuleResponse module : availableModuleResponses) {
+            for (AvailableModuleResponse module : availableModulesResponse) {
 
-                Card card = new Card(this, R.layout.card_row);
+                ModuleCard card = new ModuleCard(getApplicationContext());
 
                 CardHeader header = new CardHeader(this);
 
@@ -146,6 +157,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 header.setTitle(module.getTitle());
                 card.setTitle(module.getDescriptionShort());
                 card.addCardHeader(header);
+                card.setModuleId(module.getModulePackage());
 
                 CardThumbnail thumb = new CardThumbnail(this);
 
@@ -162,6 +174,9 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 card.addCardThumbnail(thumb);
 
                 cards.add(card);
+
+                // for easy access later on
+                availableModules.put(module.getModulePackage(), module);
             }
 
             CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, cards);
@@ -177,10 +192,29 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
     }
 
+    /**
+     * On module install event
+     *
+     * @param event
+     */
+    public void onEvent(ModuleInstallEvent event) {
+        Log.d(TAG, "Received installation event. Module id: " + event.getModuleId());
+    }
+
+    /**
+     * On module show more info event
+     *
+     * @param event
+     */
+    public void onEvent(ModuleShowMoreInfoEvent event) {
+        Log.d(TAG, "Received show more info event. Module id: " + event.getModuleId());
+    }
+
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         ButterKnife.unbind(this);
+        EventBus.getDefault().unregister(this);
         Log.d(TAG, "onDestroy -> unbound resources");
+        super.onDestroy();
     }
 }

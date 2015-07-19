@@ -46,9 +46,9 @@ public class MainActivity extends DrawerActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         ButterKnife.unbind(this);
         Log.d(TAG, "onDestroy -> unbound resources");
+        super.onDestroy();
     }
 
     public Toolbar getToolbar() {

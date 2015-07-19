@@ -132,9 +132,9 @@ public class SettingsActivity extends PreferenceActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         ButterKnife.unbind(this);
         Log.d(TAG, "onDestroy -> unbound resources");
+        super.onDestroy();
     }
 
     /**

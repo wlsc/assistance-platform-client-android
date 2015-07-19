@@ -47,9 +47,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         ButterKnife.unbind(this);
         Log.d(TAG, "onDestroy -> unbound resources");
+        super.onDestroy();
     }
 
     @OnClick(R.id.reset_button)

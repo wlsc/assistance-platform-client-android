@@ -167,9 +167,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         ButterKnife.unbind(this);
         Log.d(TAG, "onDestroy -> unbound resources");
+        super.onDestroy();
     }
 
     /**
