@@ -11,6 +11,25 @@ public class UserUtils {
     }
 
     /**
+     * Returns user has learned navigation drawer saved in SharedPreferences
+     *
+     * @return
+     */
+    public static boolean getUserHasLearnedDrawer(Context context) {
+        return PreferencesUtils.readFromPreferences(context, Constants.PREF_USER_LEARNED_DRAWER, false);
+    }
+
+    /**
+     * Saves user has learned navigation drawer in SharedPreferences
+     *
+     * @param context
+     * @param value
+     */
+    public static void saveUserHasLearnedDrawer(Context context, boolean value) {
+        PreferencesUtils.saveToPreferences(context, Constants.PREF_USER_LEARNED_DRAWER, value);
+    }
+
+    /**
      * Returns user email saved in SharedPreferences
      *
      * @return

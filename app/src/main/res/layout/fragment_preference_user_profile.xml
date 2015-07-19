@@ -26,7 +26,7 @@
             android:paddingStart="8dip">
 
             <com.pkmmte.view.CircularImageView
-                android:id="@+id/userPhoto"
+                android:id="@+id/userPicVIew"
                 android:layout_width="160dp"
                 android:layout_height="160dp"
                 android:layout_gravity="center_horizontal"

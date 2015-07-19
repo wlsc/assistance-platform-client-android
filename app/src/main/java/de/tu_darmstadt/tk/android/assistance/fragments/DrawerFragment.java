@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,7 @@ import de.tu_darmstadt.tk.android.assistance.adapter.DrawerAdapter;
 import de.tu_darmstadt.tk.android.assistance.callbacks.DrawerCallback;
 import de.tu_darmstadt.tk.android.assistance.models.items.DrawerItem;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
-import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
+import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -84,7 +85,7 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
-        mUserLearnedDrawer = PreferencesUtils.readFromPreferences(getActivity().getApplicationContext(), Constants.PREF_USER_LEARNED_DRAWER, false);
+        mUserLearnedDrawer = UserUtils.getUserHasLearnedDrawer(getActivity().getApplicationContext());
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(Constants.STATE_SELECTED_POSITION);
@@ -192,7 +193,7 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
 
                 if (!mUserLearnedDrawer) {
                     mUserLearnedDrawer = true;
-                    PreferencesUtils.saveToPreferences(getActivity().getApplicationContext(), Constants.PREF_USER_LEARNED_DRAWER, true);
+                    UserUtils.saveUserHasLearnedDrawer(getActivity().getApplicationContext(), true);
                 }
 
                 getActivity().invalidateOptionsMenu();
@@ -254,10 +255,14 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode) {
             case R.id.logout_settings:
+                Log.d(TAG, "User logged out");
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 getActivity().finish();
+                break;
+            case R.id.settings:
+                Log.d(TAG, "fsfsd");
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -307,20 +312,24 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
         userEmailView.setText(email);
         userEmailView.setMovementMethod(LinkMovementMethod.getInstance());
 
-        if (!userPicFilename.isEmpty()) {
+        if (userPicFilename.isEmpty()) {
+
+            Picasso.with(getActivity())
+                    .load(R.drawable.no_user_pic)
+                    .placeholder(R.drawable.no_user_pic)
+                    .into(userPicView);
+
+        } else {
+
             File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + userPicFilename + ".jpg");
 
             if (file.exists()) {
 
-                Picasso.with(getActivity().getApplicationContext())
+                Picasso.with(getActivity())
                         .load(file)
+                        .placeholder(R.drawable.no_user_pic)
                         .into(userPicView);
             }
-        } else {
-
-            Picasso.with(getActivity().getApplicationContext())
-                    .load(R.drawable.no_user_pic)
-                    .into(userPicView);
         }
     }
 
@@ -350,8 +359,9 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
      * Starts settings activity
      */
     private void launchSettings() {
+        Log.d(TAG, "Launched settings");
         Intent intent = new Intent(getActivity(), SettingsActivity.class);
-        startActivityForResult(intent, R.id.logout_settings);
+        startActivityForResult(intent, R.id.settings);
     }
 
     @Override

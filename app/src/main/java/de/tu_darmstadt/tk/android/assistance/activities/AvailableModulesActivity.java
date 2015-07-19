@@ -138,12 +138,12 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerCa
 
                 String logoUrl = module.getLogo();
 
-                if (logoUrl != null && !logoUrl.isEmpty()) {
+                if (logoUrl.isEmpty()) {
+                    Log.d(TAG, "Logo URL: NO LOGO supplied");
+                    thumb.setDrawableResource(R.drawable.no_user_pic);
+                } else {
                     Log.d(TAG, "Logo URL: " + logoUrl);
                     thumb.setUrlResource(logoUrl);
-                } else {
-                    Log.d(TAG, "Logo URL: NO LOGO");
-                    thumb.setDrawableResource(R.drawable.no_user_pic);
                 }
 
                 card.addCardThumbnail(thumb);

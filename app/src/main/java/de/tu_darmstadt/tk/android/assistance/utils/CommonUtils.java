@@ -161,7 +161,7 @@ public class CommonUtils {
             }
         };
 
-        // save to file storage
+        // save file to internal storage
         Picasso.with(context)
                 .load(uri)
                 .into(target);

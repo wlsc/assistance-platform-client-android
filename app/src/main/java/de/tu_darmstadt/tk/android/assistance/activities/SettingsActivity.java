@@ -42,9 +42,6 @@ public class SettingsActivity extends PreferenceActivity {
 
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
-    private static final String IMAGE_TYPE_FILTER = "image/*";
-    private static final String USER_PIC_NAME = "user_pic";
-
     private final String[] VALID_FRAGMENTS = {
             ApplicationAboutSettingsFragment.class.getName(),
             ApplicationSettingsFragment.class.getName(),
@@ -142,46 +139,6 @@ public class SettingsActivity extends PreferenceActivity {
             case R.id.logout_settings:
                 doLogout();
                 break;
-        }
-    }
-
-    /*
-    *   Starts intent to pick some image
-     */
-    public void pickImage() {
-
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType(IMAGE_TYPE_FILTER);
-        startActivityForResult(intent, R.id.userPhoto);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == R.id.userPhoto && resultCode == Activity.RESULT_OK) {
-            if (data == null) {
-                Toaster.showLong(this, R.string.error_select_new_user_photo);
-                return;
-            }
-
-            String oldFilename = UserUtils.getUserPicFilename(getApplicationContext());
-            Log.d(TAG, "old user pic filename: " + oldFilename);
-
-            // process selected image and show it to user
-            try {
-                Uri uri = data.getData();
-
-                InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(uri);
-
-                CommonUtils.saveFile(getApplicationContext(), uri, oldFilename);
-
-                CircularImageView image = ButterKnife.findById(this, R.id.userPhoto);
-                image.setImageDrawable(Drawable.createFromStream(inputStream, USER_PIC_NAME));
-
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, "User pic file not found!");
-            }
         }
     }
 

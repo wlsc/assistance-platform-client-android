@@ -111,7 +111,7 @@ public class DrawerActivity extends AppCompatActivity implements DrawerCallback 
         String userFirstname = UserUtils.getUserFirstname(getApplicationContext());
         String userLastname = UserUtils.getUserLastname(getApplicationContext());
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
-        String userPicFilename = UserUtils.getUserPicFilename(getApplicationContext());
+        String userPicFilename = UserUtils.getUserEmail(getApplicationContext());
 
         mDrawerFragment.updateUserData(userFirstname + " " + userLastname, userEmail, userPicFilename);
     }

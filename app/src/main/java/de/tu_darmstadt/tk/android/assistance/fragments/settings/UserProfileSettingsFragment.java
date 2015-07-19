@@ -1,6 +1,10 @@
 package de.tu_darmstadt.tk.android.assistance.fragments.settings;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -18,6 +22,8 @@ import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +38,9 @@ import de.tu_darmstadt.tk.android.assistance.models.http.request.UpdateUserProfi
 import de.tu_darmstadt.tk.android.assistance.models.http.response.UserProfileResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
+import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
+import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 import hugo.weaving.DebugLog;
 import retrofit.Callback;
@@ -46,9 +54,12 @@ public class UserProfileSettingsFragment extends Fragment {
 
     private static final String TAG = UserProfileSettingsFragment.class.getSimpleName();
 
+    private static final String IMAGE_TYPE_FILTER = "image/*";
+    private static final String USER_PIC_NAME = "user_pic";
+
     private Toolbar mParentToolbar;
 
-    @Bind(R.id.userPhoto)
+    @Bind(R.id.userPicVIew)
     protected CircularImageView userPicView;
 
     @Bind(R.id.firstname)
@@ -87,14 +98,16 @@ public class UserProfileSettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_preference_user_profile, container, false);
-
-        ButterKnife.bind(this, view);
+        View view = null;
 
         // request user profile from server
         String userToken = UserUtils.getUserToken(getActivity().getApplicationContext());
 
         if (!userToken.isEmpty()) {
+
+            view = inflater.inflate(R.layout.fragment_preference_user_profile, container, false);
+
+            ButterKnife.bind(this, view);
 
             String filename = UserUtils.getUserPicFilename(getActivity().getApplicationContext());
 
@@ -102,11 +115,18 @@ public class UserProfileSettingsFragment extends Fragment {
                 File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + filename + ".jpg");
 
                 if (file.exists()) {
+                    Log.d(TAG, "File exists");
 
                     Picasso.with(getActivity().getApplicationContext())
                             .load(file)
+                            .placeholder(R.drawable.no_user_pic)
                             .into(userPicView);
+                } else {
+                    Log.d(TAG, "File NOT exists");
                 }
+            } else {
+                Log.d(TAG, "user pic filename NOT exists");
+                userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_user_pic));
             }
 
             UserService userService = ServiceGenerator.createService(UserService.class);
@@ -125,28 +145,24 @@ public class UserProfileSettingsFragment extends Fragment {
                 }
             });
 
-        }
+            view.setClickable(true);
+            view.setFocusable(true);
+            view.setFocusableInTouchMode(true);
+            view.setOnKeyListener(new View.OnKeyListener() {
 
-        userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_user_pic));
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-        view.setClickable(true);
-        view.setFocusable(true);
-        view.setFocusableInTouchMode(true);
-        view.setOnKeyListener(new View.OnKeyListener() {
+                    if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                        Log.d(TAG, "User pressed back and profile is updating...");
+                        updateUserProfile();
+                        return true;
+                    }
 
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                    Log.d(TAG, "User pressed back and profile is updating...");
-                    updateUserProfile();
-                    return true;
+                    return false;
                 }
-
-                return false;
-            }
-        });
-
+            });
+        }
 
         return view;
     }
@@ -196,10 +212,20 @@ public class UserProfileSettingsFragment extends Fragment {
         }
     }
 
-    @OnClick(R.id.userPhoto)
+    @OnClick(R.id.userPicVIew)
     protected void onUserPhotoClicked() {
         Log.d(TAG, "User clicked selection of an image");
-        ((SettingsActivity) getActivity()).pickImage();
+        pickImage();
+    }
+
+    /*
+    *   Starts intent to pick some image
+     */
+    public void pickImage() {
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType(IMAGE_TYPE_FILTER);
+        startActivityForResult(intent, R.id.userPicVIew);
     }
 
     /**
@@ -341,6 +367,36 @@ public class UserProfileSettingsFragment extends Fragment {
                 Log.d(TAG, "Failed while updating user profile");
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == R.id.userPicVIew && resultCode == Activity.RESULT_OK) {
+            if (data == null) {
+                Toaster.showLong(getActivity(), R.string.error_select_new_user_photo);
+                return;
+            }
+
+            String oldFilename = UserUtils.getUserPicFilename(getActivity().getApplicationContext());
+            Log.d(TAG, "old user pic filename: " + (oldFilename.isEmpty() ? "empty" : oldFilename));
+
+            // process selected image and show it to user
+            try {
+                Uri uri = data.getData();
+
+                InputStream inputStream = getActivity().getApplicationContext().getContentResolver().openInputStream(uri);
+
+                CommonUtils.saveFile(getActivity().getApplicationContext(), uri, oldFilename);
+
+                CircularImageView image = ButterKnife.findById(getActivity(), R.id.userPicVIew);
+                image.setImageDrawable(Drawable.createFromStream(inputStream, USER_PIC_NAME));
+
+            } catch (FileNotFoundException e) {
+                Log.e(TAG, "User pic file not found!");
+            }
+        }
     }
 
     @Override
