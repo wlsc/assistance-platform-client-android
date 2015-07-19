@@ -1,6 +1,7 @@
 package de.tu_darmstadt.tk.android.assistance.activities;
 
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
@@ -37,8 +38,18 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        boolean userHasModulesInstalled = UserUtils.isUserHasModules(getApplicationContext());
+
+        if (userHasModulesInstalled) {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            mDrawerFragment.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+        } else {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            mDrawerFragment.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
+        }
+
         //Inflate this layout into drawer container
-        getLayoutInflater().inflate(R.layout.activity_available_modules, frameLayout);
+        getLayoutInflater().inflate(R.layout.activity_available_modules, mFrameLayout);
 
         mModuleList = ButterKnife.findById(this, R.id.module_list);
         mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);

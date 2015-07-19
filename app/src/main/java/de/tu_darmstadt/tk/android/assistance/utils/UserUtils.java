@@ -126,4 +126,24 @@ public class UserUtils {
     public static void saveUserPicFilename(Context context, String value) {
         PreferencesUtils.saveToPreferences(context, Constants.PREF_USER_PIC, value);
     }
+
+    /**
+     * Returns user has any modules installed
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isUserHasModules(Context context) {
+        return PreferencesUtils.readFromPreferences(context, Constants.PREF_USER_HAS_MODULES, false);
+    }
+
+    /**
+     * Saves user has any modules installed
+     *
+     * @param context
+     * @param value
+     */
+    public static void saveUserHasModules(Context context, boolean value) {
+        PreferencesUtils.saveToPreferences(context, Constants.PREF_USER_HAS_MODULES, value);
+    }
 }

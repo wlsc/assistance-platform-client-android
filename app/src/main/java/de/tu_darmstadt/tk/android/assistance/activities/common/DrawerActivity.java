@@ -2,6 +2,7 @@ package de.tu_darmstadt.tk.android.assistance.activities.common;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,7 @@ import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.UserProfileResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
+import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
@@ -32,15 +34,15 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
     private static final String TAG = DrawerActivity.class.getSimpleName();
 
-    protected boolean mBackButtonPressedOnce;
+    private boolean mBackButtonPressedOnce;
 
     protected Toolbar mToolbar;
 
-    protected FrameLayout frameLayout;
+    protected FrameLayout mFrameLayout;
 
     protected DrawerFragment mDrawerFragment;
 
-    protected DrawerLayout drawerLayout;
+    protected DrawerLayout mDrawerLayout;
 
     protected String mUserEmail;
 
@@ -57,8 +59,8 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
         mUserEmail = UserUtils.getUserEmail(getApplicationContext());
 
-        frameLayout = ButterKnife.findById(this, R.id.container_frame);
-        drawerLayout = ButterKnife.findById(this, R.id.drawer_layout);
+        mFrameLayout = ButterKnife.findById(this, R.id.container_frame);
+        mDrawerLayout = ButterKnife.findById(this, R.id.drawer_layout);
 
         setSupportActionBar(mToolbar);
         setupDrawer(mToolbar);
@@ -124,7 +126,7 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
     protected void setupDrawer(Toolbar mToolbar) {
 
         mDrawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.drawer_fragment);
-        mDrawerFragment.setup(R.id.drawer_fragment, drawerLayout, mToolbar);
+        mDrawerFragment.setup(R.id.drawer_fragment, mDrawerLayout, mToolbar);
     }
 
     /**
@@ -184,7 +186,23 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
         if (mDrawerFragment.isDrawerOpen()) {
             mDrawerFragment.closeDrawer();
         } else {
-            super.onBackPressed();
+
+            if (mBackButtonPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+
+            mBackButtonPressedOnce = true;
+
+            Toaster.showLong(this, R.string.action_back_button_pressed_once);
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    mBackButtonPressedOnce = false;
+                }
+            }, Constants.BACK_BUTTON_DELAY_MILLIS);
         }
     }
 

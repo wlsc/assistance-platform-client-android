@@ -37,6 +37,7 @@ public class Constants {
     public static final String PREF_USER_FIRSTNAME = "user_firstname";
     public static final String PREF_USER_LASTNAME = "user_lastname";
     public static final String PREF_USER_PIC = "user_picture";
+    public static final String PREF_USER_HAS_MODULES = "user_has_modules";
 
     /**
      * Per the design guidelines, you should show the drawer on launch until the user manually

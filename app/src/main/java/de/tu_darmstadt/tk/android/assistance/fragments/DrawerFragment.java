@@ -256,6 +256,7 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
         switch (resultCode) {
             case R.id.logout_settings:
                 Log.d(TAG, "User logged out");
+
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -263,6 +264,7 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
                 break;
             case R.id.settings:
                 Log.d(TAG, "User left settings activity");
+
                 String firstname = UserUtils.getUserFirstname(getActivity());
                 String lastname = UserUtils.getUserLastname(getActivity());
                 String email = UserUtils.getUserEmail(getActivity());
