@@ -129,17 +129,19 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         if (availableModuleResponses != null && !availableModuleResponses.isEmpty()) {
 
-            ArrayList<Card> cards = new ArrayList<Card>();
+            ArrayList<Card> cards = new ArrayList<>();
 
             for (AvailableModuleResponse module : availableModuleResponses) {
 
-                Card card = new Card(this);
+                Card card = new Card(this, R.layout.card_row);
 
                 CardHeader header = new CardHeader(this);
 
                 Log.d(TAG, "Module content");
                 Log.d(TAG, "Title: " + module.getTitle());
+                Log.d(TAG, "Full description: " + module.getDescriptionFull());
                 Log.d(TAG, "Short description: " + module.getDescriptionShort());
+                Log.d(TAG, "Copyright: " + module.getCopyright());
 
                 header.setTitle(module.getTitle());
                 card.setTitle(module.getDescriptionShort());
