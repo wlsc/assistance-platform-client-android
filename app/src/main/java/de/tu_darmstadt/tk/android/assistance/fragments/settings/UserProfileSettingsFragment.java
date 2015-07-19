@@ -7,12 +7,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +28,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import de.tu_darmstadt.tk.android.assistance.Config;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
@@ -42,7 +41,6 @@ import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
-import hugo.weaving.DebugLog;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -59,29 +57,45 @@ public class UserProfileSettingsFragment extends Fragment {
 
     private Toolbar mParentToolbar;
 
+    private String userToken;
+
     @Bind(R.id.userPicVIew)
     protected CircularImageView userPicView;
 
     @Bind(R.id.firstname)
     protected EditText firstnameText;
 
+    private String firstname;
+
     @Bind(R.id.lastname)
     protected EditText lastnameText;
+
+    private String lastname;
 
     @Bind(R.id.social_account_google)
     protected EditText socialAccountGoogleText;
 
+    private String socialAccountGoogle;
+
     @Bind(R.id.social_account_facebook)
     protected EditText socialAccountFacebookText;
+
+    private String socialAccountFacebook;
 
     @Bind(R.id.social_account_live)
     protected EditText socialAccountLiveText;
 
+    private String socialAccountLive;
+
     @Bind(R.id.social_account_twitter)
     protected EditText socialAccountTwitterText;
 
+    private String socialAccountTwitter;
+
     @Bind(R.id.social_account_github)
     protected EditText socialAccountGithubText;
+
+    private String socialAccountGithub;
 
     public UserProfileSettingsFragment() {
     }
@@ -94,14 +108,13 @@ public class UserProfileSettingsFragment extends Fragment {
         mParentToolbar.setTitle(R.string.settings_header_user_profile_title);
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = null;
 
         // request user profile from server
-        String userToken = UserUtils.getUserToken(getActivity().getApplicationContext());
+        userToken = UserUtils.getUserToken(getActivity().getApplicationContext());
 
         if (!userToken.isEmpty()) {
 
@@ -134,7 +147,7 @@ public class UserProfileSettingsFragment extends Fragment {
 
                 @Override
                 public void success(UserProfileResponse userProfileResponse, Response response) {
-                    Log.d(TAG, "Successfully GOT the user profile!");
+                    Log.d(TAG, "Successfully received the user profile!");
 
                     fillupFullUserProfile(userProfileResponse);
                 }
@@ -142,24 +155,6 @@ public class UserProfileSettingsFragment extends Fragment {
                 @Override
                 public void failure(RetrofitError error) {
                     Log.d(TAG, "Failed while getting full user profile");
-                }
-            });
-
-            view.setClickable(true);
-            view.setFocusable(true);
-            view.setFocusableInTouchMode(true);
-            view.setOnKeyListener(new View.OnKeyListener() {
-
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-
-                    if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                        Log.d(TAG, "User pressed back and profile is updating...");
-                        updateUserProfile();
-                        return true;
-                    }
-
-                    return false;
                 }
             });
         }
@@ -228,121 +223,137 @@ public class UserProfileSettingsFragment extends Fragment {
         startActivityForResult(intent, R.id.userPicVIew);
     }
 
+    @OnTextChanged({R.id.firstname,
+            R.id.lastname,
+            R.id.social_account_google,
+            R.id.social_account_facebook,
+            R.id.social_account_live,
+            R.id.social_account_twitter,
+            R.id.social_account_github})
+    void onFocusChanged(CharSequence text) {
+        Log.d(TAG, text.toString());
+        isUserInputOK();
+    }
+
+    /**
+     * Validates user input
+     */
+    private boolean isUserInputOK() {
+
+        firstname = firstnameText.getText().toString().trim();
+        lastname = lastnameText.getText().toString().trim();
+
+        socialAccountGoogle = socialAccountGoogleText.getText().toString().trim();
+
+        if (!TextUtils.isEmpty(socialAccountGoogle)) {
+
+            if (!InputValidation.isValidEmail(socialAccountGoogle)) {
+                socialAccountGoogleText.setError(getString(R.string.error_invalid_email));
+                socialAccountGoogleText.requestFocus();
+                return false;
+            }
+        }
+
+        socialAccountFacebook = socialAccountFacebookText.getText().toString().trim();
+
+        if (!TextUtils.isEmpty(socialAccountFacebook)) {
+
+            if (!InputValidation.isValidEmail(socialAccountFacebook)) {
+                socialAccountFacebookText.setError(getString(R.string.error_invalid_email));
+                socialAccountFacebookText.requestFocus();
+                return false;
+            }
+        }
+
+        socialAccountLive = socialAccountLiveText.getText().toString().trim();
+
+        if (!TextUtils.isEmpty(socialAccountLive)) {
+
+            if (!InputValidation.isValidEmail(socialAccountLive)) {
+                socialAccountLiveText.setError(getString(R.string.error_invalid_email));
+                socialAccountLiveText.requestFocus();
+                return false;
+            }
+        }
+
+        socialAccountTwitter = socialAccountTwitterText.getText().toString().trim();
+
+        if (!TextUtils.isEmpty(socialAccountTwitter)) {
+
+            if (!InputValidation.isValidEmail(socialAccountTwitter)) {
+                socialAccountTwitterText.setError(getString(R.string.error_invalid_email));
+                socialAccountTwitterText.requestFocus();
+                return false;
+            }
+        }
+
+        socialAccountGithub = socialAccountGithubText.getText().toString().trim();
+
+        if (!TextUtils.isEmpty(socialAccountGithub)) {
+
+            if (!InputValidation.isValidEmail(socialAccountGithub)) {
+                socialAccountGithubText.setError(getString(R.string.error_invalid_email));
+                socialAccountGithubText.requestFocus();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Saves user profile -> send request to server
      */
-    @DebugLog
     private void updateUserProfile() {
 
         Log.d(TAG, "updateUserProfile() invoked");
 
-        String userToken = UserUtils.getUserToken(getActivity().getApplicationContext());
-
         UpdateUserProfileRequest request = new UpdateUserProfileRequest();
-
-        final String firstname = firstnameText.getText().toString().trim();
-        final String lastname = lastnameText.getText().toString().trim();
 
         request.setFirstname(firstname);
         request.setLastname(lastname);
 
+        UserUtils.saveUserFirstname(getActivity().getApplicationContext(), firstname);
+        UserUtils.saveUserLastname(getActivity().getApplicationContext(), lastname);
+
         List<UserSocialService> socialServices = new ArrayList<>();
 
         // GOOGLE
+        UserSocialService googleService = new UserSocialService();
+        googleService.setName(UserSocialService.TYPE_GOOGLE);
+        googleService.setEmail(socialAccountGoogle);
 
-        String googleEmail = socialAccountGoogleText.getText().toString();
-
-        if (!TextUtils.isEmpty(googleEmail)) {
-
-            if (!InputValidation.isValidEmail(googleEmail)) {
-                socialAccountGoogleText.setError(getString(R.string.error_invalid_email));
-                socialAccountGoogleText.requestFocus();
-                return;
-            }
-
-            UserSocialService googleService = new UserSocialService();
-            googleService.setName(UserSocialService.TYPE_GOOGLE);
-            googleService.setEmail(googleEmail);
-
-            socialServices.add(googleService);
-        }
+        socialServices.add(googleService);
 
         // FACEBOOK
+        UserSocialService facebookService = new UserSocialService();
+        facebookService.setName(UserSocialService.TYPE_FACEBOOK);
+        facebookService.setEmail(socialAccountFacebook);
 
-        String facebookEmail = socialAccountFacebookText.getText().toString();
-
-        if (!TextUtils.isEmpty(facebookEmail)) {
-
-            if (!InputValidation.isValidEmail(facebookEmail)) {
-                socialAccountFacebookText.setError(getString(R.string.error_invalid_email));
-                socialAccountFacebookText.requestFocus();
-                return;
-            }
-
-            UserSocialService facebookService = new UserSocialService();
-            facebookService.setName(UserSocialService.TYPE_FACEBOOK);
-            facebookService.setEmail(facebookEmail);
-
-            socialServices.add(facebookService);
-        }
+        socialServices.add(facebookService);
 
         // LIVE
+        UserSocialService liveService = new UserSocialService();
+        liveService.setName(UserSocialService.TYPE_LIVE);
+        liveService.setEmail(socialAccountLive);
 
-        String liveEmail = socialAccountLiveText.getText().toString();
-
-        if (!TextUtils.isEmpty(liveEmail)) {
-
-            if (!InputValidation.isValidEmail(liveEmail)) {
-                socialAccountLiveText.setError(getString(R.string.error_invalid_email));
-                socialAccountLiveText.requestFocus();
-                return;
-            }
-
-            UserSocialService liveService = new UserSocialService();
-            liveService.setName(UserSocialService.TYPE_LIVE);
-            liveService.setEmail(liveEmail);
-
-            socialServices.add(liveService);
-        }
+        socialServices.add(liveService);
 
         // TWITTER
+        UserSocialService twitterService = new UserSocialService();
+        twitterService.setName(UserSocialService.TYPE_TWITTER);
+        twitterService.setEmail(socialAccountTwitter);
 
-        String twitterEmail = socialAccountTwitterText.getText().toString();
-
-        if (!TextUtils.isEmpty(twitterEmail)) {
-
-            if (!InputValidation.isValidEmail(twitterEmail)) {
-                socialAccountTwitterText.setError(getString(R.string.error_invalid_email));
-                socialAccountTwitterText.requestFocus();
-                return;
-            }
-
-            UserSocialService twitterService = new UserSocialService();
-            twitterService.setName(UserSocialService.TYPE_TWITTER);
-            twitterService.setEmail(twitterEmail);
-
-            socialServices.add(twitterService);
-        }
+        socialServices.add(twitterService);
 
         // GITHUB
+        UserSocialService githubService = new UserSocialService();
+        githubService.setName(UserSocialService.TYPE_GITHUB);
+        githubService.setEmail(socialAccountGithub);
 
-        String githubEmail = socialAccountGithubText.getText().toString();
+        socialServices.add(githubService);
 
-        if (!TextUtils.isEmpty(githubEmail)) {
-
-            if (!InputValidation.isValidEmail(githubEmail)) {
-                socialAccountGithubText.setError(getString(R.string.error_invalid_email));
-                socialAccountGithubText.requestFocus();
-                return;
-            }
-
-            UserSocialService githubService = new UserSocialService();
-            githubService.setName(UserSocialService.TYPE_GITHUB);
-            githubService.setEmail(githubEmail);
-
-            socialServices.add(githubService);
-        }
-
+        // set services
         request.setServices(socialServices);
 
         /**
@@ -353,13 +364,7 @@ public class UserProfileSettingsFragment extends Fragment {
 
             @Override
             public void success(Void aVoid, Response response) {
-
                 Log.d(TAG, "Successfully updated user profile!");
-
-                UserUtils.saveUserFirstname(getActivity().getApplicationContext(), firstname);
-                UserUtils.saveUserLastname(getActivity().getApplicationContext(), lastname);
-
-                getActivity().finish();
             }
 
             @Override
@@ -397,6 +402,14 @@ public class UserProfileSettingsFragment extends Fragment {
                 Log.e(TAG, "User pic file not found!");
             }
         }
+    }
+
+    @Override
+    public void onStop() {
+        Log.d(TAG, "User pressed back and profile is updating...");
+        updateUserProfile();
+
+        super.onStop();
     }
 
     @Override

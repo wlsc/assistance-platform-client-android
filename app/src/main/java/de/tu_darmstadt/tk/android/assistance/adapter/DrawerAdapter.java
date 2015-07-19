@@ -12,7 +12,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.callbacks.DrawerCallback;
+import de.tu_darmstadt.tk.android.assistance.handlers.DrawerHandler;
 import de.tu_darmstadt.tk.android.assistance.models.items.DrawerItem;
 
 
@@ -22,7 +22,7 @@ import de.tu_darmstadt.tk.android.assistance.models.items.DrawerItem;
 public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder> {
 
     private List<DrawerItem> mData;
-    private DrawerCallback mDrawerCallback;
+    private DrawerHandler mDrawerHandler;
     private View mSelectedView;
     private int mSelectedPosition;
 
@@ -30,12 +30,12 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
         mData = data;
     }
 
-    public DrawerCallback getNavigationDrawerCallbacks() {
-        return mDrawerCallback;
+    public DrawerHandler getNavigationDrawerCallbacks() {
+        return mDrawerHandler;
     }
 
-    public void setNavigationDrawerCallbacks(DrawerCallback drawerCallback) {
-        mDrawerCallback = drawerCallback;
+    public void setNavigationDrawerCallbacks(DrawerHandler drawerHandler) {
+        mDrawerHandler = drawerHandler;
     }
 
     @Override
@@ -59,8 +59,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
                                                        v.setSelected(true);
 
                                                        mSelectedView = v;
-                                                       if (mDrawerCallback != null) {
-                                                           mDrawerCallback.onNavigationDrawerItemSelected(viewHolder.getAdapterPosition());
+                                                       if (mDrawerHandler != null) {
+                                                           mDrawerHandler.onNavigationDrawerItemSelected(viewHolder.getAdapterPosition());
                                                        }
                                                    }
                                                }

@@ -37,7 +37,7 @@ import de.tu_darmstadt.tk.android.assistance.activities.AvailableModulesActivity
 import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
 import de.tu_darmstadt.tk.android.assistance.adapter.DrawerAdapter;
-import de.tu_darmstadt.tk.android.assistance.callbacks.DrawerCallback;
+import de.tu_darmstadt.tk.android.assistance.handlers.DrawerHandler;
 import de.tu_darmstadt.tk.android.assistance.models.items.DrawerItem;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
@@ -45,14 +45,14 @@ import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  */
-public class DrawerFragment extends Fragment implements DrawerCallback {
+public class DrawerFragment extends Fragment implements DrawerHandler {
 
     private String TAG = DrawerFragment.class.getSimpleName();
 
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
-    private DrawerCallback mCallbacks;
+    private DrawerHandler mCallbacks;
 
     /**
      * Helper component that ties the action bar to the navigation drawer.
@@ -262,7 +262,13 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
                 getActivity().finish();
                 break;
             case R.id.settings:
-                Log.d(TAG, "fsfsd");
+                Log.d(TAG, "User left settings activity");
+                String firstname = UserUtils.getUserFirstname(getActivity());
+                String lastname = UserUtils.getUserLastname(getActivity());
+                String email = UserUtils.getUserEmail(getActivity());
+                String userPicFilename = UserUtils.getUserPicFilename(getActivity());
+
+                updateUserData(firstname + " " + lastname, email, userPicFilename);
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -275,9 +281,9 @@ public class DrawerFragment extends Fragment implements DrawerCallback {
         super.onAttach(activity);
 
         try {
-            mCallbacks = (DrawerCallback) activity;
+            mCallbacks = (DrawerHandler) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException("Activity must implement DrawerCallback!");
+            throw new ClassCastException("Activity must implement DrawerHandler!");
         }
     }
 

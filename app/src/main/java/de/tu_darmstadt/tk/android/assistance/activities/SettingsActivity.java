@@ -1,10 +1,6 @@
 package de.tu_darmstadt.tk.android.assistance.activities;
 
-import android.app.Activity;
 import android.app.FragmentManager;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,10 +10,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.pkmmte.view.CircularImageView;
-
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.List;
 
 import butterknife.Bind;
@@ -30,10 +22,7 @@ import de.tu_darmstadt.tk.android.assistance.fragments.settings.DevelopmentSetti
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.SensorsListFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserDeviceInfoSettingsFragment;
 import de.tu_darmstadt.tk.android.assistance.fragments.settings.UserProfileSettingsFragment;
-import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
-import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
-import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 
 /**
  * Core user settings activity
@@ -83,6 +72,7 @@ public class SettingsActivity extends PreferenceActivity {
             @Override
             public void onBackStackChanged() {
                 if (getFragmentManager().getBackStackEntryCount() == 0) {
+                    setResult(R.id.settings);
                     finish();
                 }
             }
@@ -91,18 +81,16 @@ public class SettingsActivity extends PreferenceActivity {
 
     @OnClick(R.id.toolbar)
     protected void onBackClicked() {
-        onBackFromFragment();
+        Log.d(TAG, "On Toolbar back pressed");
+        setResult(R.id.settings);
         finish();
     }
 
     @Override
     public void onBackPressed() {
-        onBackFromFragment();
+        Log.d(TAG, "On normal back pressed");
+        setResult(R.id.settings);
         finish();
-    }
-
-    private void onBackFromFragment() {
-
     }
 
     @Override

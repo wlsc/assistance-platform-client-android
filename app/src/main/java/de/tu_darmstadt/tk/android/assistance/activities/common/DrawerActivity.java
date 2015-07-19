@@ -11,8 +11,8 @@ import android.widget.FrameLayout;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
-import de.tu_darmstadt.tk.android.assistance.callbacks.DrawerCallback;
 import de.tu_darmstadt.tk.android.assistance.fragments.DrawerFragment;
+import de.tu_darmstadt.tk.android.assistance.handlers.DrawerHandler;
 import de.tu_darmstadt.tk.android.assistance.models.http.HttpErrorCode;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.UserProfileResponse;
@@ -28,7 +28,7 @@ import retrofit.client.Response;
 /**
  * Base activity for common stuff
  */
-public class DrawerActivity extends AppCompatActivity implements DrawerCallback {
+public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
     private static final String TAG = DrawerActivity.class.getSimpleName();
 
@@ -111,7 +111,7 @@ public class DrawerActivity extends AppCompatActivity implements DrawerCallback 
         String userFirstname = UserUtils.getUserFirstname(getApplicationContext());
         String userLastname = UserUtils.getUserLastname(getApplicationContext());
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
-        String userPicFilename = UserUtils.getUserEmail(getApplicationContext());
+        String userPicFilename = UserUtils.getUserPicFilename(getApplicationContext());
 
         mDrawerFragment.updateUserData(userFirstname + " " + userLastname, userEmail, userPicFilename);
     }

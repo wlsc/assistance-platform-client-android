@@ -11,7 +11,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
-import de.tu_darmstadt.tk.android.assistance.callbacks.DrawerCallback;
+import de.tu_darmstadt.tk.android.assistance.handlers.DrawerHandler;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.AvailableModuleResponse;
 import de.tu_darmstadt.tk.android.assistance.services.AssistanceService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
@@ -25,7 +25,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class AvailableModulesActivity extends DrawerActivity implements DrawerCallback {
+public class AvailableModulesActivity extends DrawerActivity implements DrawerHandler {
 
     private String TAG = AvailableModulesActivity.class.getSimpleName();
 
