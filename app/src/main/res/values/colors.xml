@@ -44,16 +44,21 @@
     <!-- SPLASH VIEW -->
     <color name="splashScreenBackground">#F1F1F1</color>
 
+    <!-- ALERT DIALOG -->
+    <color name="alertDialogBackground">#f5f5f5</color>
+    <color name="alertDialogTitle">#333333</color>
+    <color name="alertDialogNarration">#8d8d8d</color>
+
     <!-- LOGIN VIEW -->
-    <color name="login_header">#778290</color>
-    <color name="login_social_round">#AEBAC8</color>
+    <color name="loginHeader">#778290</color>
+    <color name="loginSocialRound">#AEBAC8</color>
 
     <!-- SWIPE REFRESH -->
-    <color name="swipe_refresh_progress_1">@color/myAccentColor400</color>
-    <color name="swipe_refresh_progress_2">@color/green700</color>
-    <color name="swipe_refresh_progress_3">@color/myPrimaryColor400</color>
+    <color name="swipeRefreshProgress1">@color/myAccentColor400</color>
+    <color name="swipeRefreshProgress2">@color/green700</color>
+    <color name="swipeRefreshProgress3">@color/myPrimaryColor400</color>
 
-    <drawable name="pressed_gray">#0c000000</drawable>
-    <drawable name="selected_gray">#cc9fd700</drawable>
+    <drawable name="pressedGray">#0c000000</drawable>
+    <drawable name="selectedGray">#cc9fd700</drawable>
 
 </resources>

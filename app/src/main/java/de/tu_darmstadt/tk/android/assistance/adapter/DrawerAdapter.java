@@ -2,6 +2,7 @@ package de.tu_darmstadt.tk.android.assistance.adapter;
 
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

@@ -7,6 +7,7 @@
     <string name="user_feedback_url">mailto:developer@tk.informatik.tu-darmstadt.de</string>
     <string name="user_feedback_subject">Feedback for Kraken App</string>
     <string name="user_feedback_body">Hi,\n\n</string>
+    <string name="accept_text">ACCEPT</string>
 
     <!-- SETTINGS: SCREEN -->
     <string name="settings_activity_title">Settings</string>
@@ -83,6 +84,10 @@
     <string name="module_list_activity_title">Available modules</string>
     <string name="module_action_install">INSTALL</string>
     <string name="module_action_more_info">MORE</string>
+
+    <!-- MODULE LIST PERMISSION DIALOG -->
+    <string name="module_permission_dialog_icon_description">Icon for a module</string>
+    <string name="module_permission_dialog_narration">needs access to</string>
 
     <!-- USER PROFILE SCREEN -->
     <string name="user_profile_firstname">Firstname</string>

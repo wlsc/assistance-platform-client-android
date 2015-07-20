@@ -382,6 +382,7 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
      */
     private void launchSettings() {
         Log.d(TAG, "Launched settings");
+
         Intent intent = new Intent(getActivity(), SettingsActivity.class);
         startActivityForResult(intent, R.id.settings);
     }

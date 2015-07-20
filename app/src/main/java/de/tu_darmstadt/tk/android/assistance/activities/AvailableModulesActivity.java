@@ -1,10 +1,18 @@
 package de.tu_darmstadt.tk.android.assistance.activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -199,6 +207,8 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
      */
     public void onEvent(ModuleInstallEvent event) {
         Log.d(TAG, "Received installation event. Module id: " + event.getModuleId());
+
+        showPermissionDialog(event.getModuleId());
     }
 
     /**
@@ -208,6 +218,61 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
      */
     public void onEvent(ModuleShowMoreInfoEvent event) {
         Log.d(TAG, "Received show more info event. Module id: " + event.getModuleId());
+    }
+
+    /**
+     * Shows a permission dialog to user
+     * Each permission is used actually by a module
+     *
+     * @param moduleId
+     */
+    private void showPermissionDialog(String moduleId) {
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setInverseBackgroundForced(true);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_dialog_permissions, null);
+        dialogBuilder.setView(dialogView);
+
+        dialogBuilder.setPositiveButton(R.string.accept_text, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d(TAG, "User accepted module permissions.");
+            }
+        });
+
+        AvailableModuleResponse selectedModule = availableModules.get(moduleId);
+
+        TextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
+        title.setText(selectedModule.getTitle());
+
+        ImageView imageView = ButterKnife.findById(dialogView, R.id.module_permission_icon);
+
+        Picasso.with(this)
+                .load(selectedModule.getLogo())
+                .placeholder(R.drawable.no_user_pic)
+                .into(imageView);
+
+        List<String> requiredSensors = selectedModule.getSensorsRequired();
+        List<String> optionalSensors = selectedModule.getSensorsOptional();
+
+        List<String> allModuleSensors = new ArrayList<>();
+        allModuleSensors.addAll(requiredSensors);
+        allModuleSensors.addAll(optionalSensors);
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                this,
+                R.layout.permission_item,
+                R.id.permission_item_title,
+                allModuleSensors);
+
+        ListView listView = ButterKnife.findById(dialogView, R.id.module_permission_list);
+        listView.setAdapter(arrayAdapter);
+
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
     }
 
     @Override

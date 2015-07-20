@@ -28,7 +28,7 @@
                 android:gravity="center_horizontal"
                 android:hint="@string/register_header"
                 android:paddingTop="8dp"
-                android:textColorHint="@color/login_header"
+                android:textColorHint="@color/loginHeader"
                 android:textSize="@dimen/abc_text_size_headline_material" />
 
             <android.support.design.widget.TextInputLayout
