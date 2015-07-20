@@ -49,11 +49,11 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
         boolean userHasModulesInstalled = UserUtils.isUserHasModules(getApplicationContext());
 
         if (userHasModulesInstalled) {
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            mDrawerFragment.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+//            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+//            mDrawerFragment.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         } else {
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            mDrawerFragment.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
+//            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//            mDrawerFragment.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
         }
 
         //Inflate this layout into drawer container

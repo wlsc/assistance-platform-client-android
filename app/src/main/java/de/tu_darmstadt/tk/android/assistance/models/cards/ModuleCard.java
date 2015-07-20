@@ -49,13 +49,16 @@ public class ModuleCard extends Card {
     @OnClick(R.id.install_module)
     void onInstallClicked() {
         Log.d(TAG, "Module installation button clicked");
-        // propagate install event to activity
+
+        // propagate event to activity
         EventBus.getDefault().post(new ModuleInstallEvent(getModuleId()));
     }
 
     @OnClick(R.id.more_info_module)
     void onMoreInfoClicked() {
         Log.d(TAG, "More information about a module clicked");
+
+        // propagate event to activity
         EventBus.getDefault().post(new ModuleShowMoreInfoEvent(getModuleId()));
     }
 

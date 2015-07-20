@@ -44,6 +44,7 @@
     <string name="drawer_close">Menu closed</string>
     <string name="drawer_available_modules">Available modules</string>
     <string name="drawer_settings">Settings</string>
+    <string name="drawer_no_module_data_available">NO MODULE INSTALLED</string>
 
     <!-- SPLASH SCREEN -->
     <string name="splash_loading">LOADING</string>

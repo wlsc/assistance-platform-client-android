@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -64,6 +63,9 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
     @Bind(R.id.drawerList)
     protected RecyclerView mDrawerList;
 
+    @Bind(R.id.drawer_no_modules)
+    protected TextView mDrawerNoModules;
+
     private View mFragmentContainerView;
 
     private int mCurrentSelectedPosition = 0;
@@ -107,7 +109,16 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
         mDrawerList.setLayoutManager(layoutManager);
         mDrawerList.setHasFixedSize(true);
 
-        List<DrawerItem> navigationItems = getMenu();
+        List<DrawerItem> navigationItems = getDrawerListItems();
+
+        if (navigationItems.size() == 0) {
+            // show no modules selected
+            mDrawerList.setVisibility(View.GONE);
+            mDrawerNoModules.setVisibility(View.VISIBLE);
+        } else {
+            mDrawerList.setVisibility(View.VISIBLE);
+            mDrawerNoModules.setVisibility(View.GONE);
+        }
 
         DrawerAdapter adapter = new DrawerAdapter(navigationItems);
         adapter.setNavigationDrawerCallbacks(this);
@@ -137,19 +148,19 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT_WATCH)
-    public List<DrawerItem> getMenu() {
+    public List<DrawerItem> getDrawerListItems() {
 
         List<DrawerItem> items = new ArrayList<DrawerItem>();
 
-        Drawable item1 = null;
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
-            item1 = getResources().getDrawable(R.drawable.ic_menu_check, null);
-        } else {
-            item1 = getResources().getDrawable(R.drawable.ic_menu_check);
-        }
-
-        items.add(new DrawerItem("item 1", item1));
+//        Drawable item1 = null;
+//
+//        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+//            item1 = getResources().getDrawable(R.drawable.ic_menu_check, null);
+//        } else {
+//            item1 = getResources().getDrawable(R.drawable.ic_menu_check);
+//        }
+//
+//        items.add(new DrawerItem("item 1", item1));
 
         return items;
     }
@@ -161,6 +172,7 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      * @param toolbar      The Toolbar of the activity.
      */
+
     public void setup(int fragmentId, DrawerLayout drawerLayout, final Toolbar toolbar) {
 
         ButterKnife.bind(getActivity());
@@ -237,9 +249,11 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
+
         if (mCallbacks != null) {
             mCallbacks.onNavigationDrawerItemSelected(position);
         }
+
         ((DrawerAdapter) mDrawerList.getAdapter()).selectPosition(position);
     }
 
