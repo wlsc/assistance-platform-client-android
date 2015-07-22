@@ -5,7 +5,7 @@ import android.widget.Toast;
 
 /**
  * Shows toasts to user in better form
- *
+ * <p>
  * Created by Wladimir Schmidt on 28.06.2015.
  */
 public class Toaster {
@@ -22,11 +22,11 @@ public class Toaster {
     }
 
     public static void showShort(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
     public static void showShort(Context context, int resId) {
-        Toast.makeText(context, resId, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, resId, Toast.LENGTH_SHORT).show();
     }
 
 }
