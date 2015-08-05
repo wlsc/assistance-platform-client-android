@@ -330,6 +330,11 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
      */
     public void updateUserData(String username, String email, String userPicFilename) {
 
+        // check for imports
+        if (usernameView == null || userEmailView == null) {
+            ButterKnife.bind(this, mFragmentContainerView);
+        }
+
         usernameView.setText(username);
         userEmailView.setText(email);
         userEmailView.setMovementMethod(LinkMovementMethod.getInstance());

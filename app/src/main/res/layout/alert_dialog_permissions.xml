@@ -3,7 +3,9 @@
     style="@style/AlertDialog.AppCompat.Light"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/alertDialogBackground">
+    android:background="@color/alertDialogBackground"
+    android:padding="@dimen/dialog_padding_material"
+    android:paddingTop="@dimen/dialog_padding_top_material">
 
     <LinearLayout
         android:id="@+id/module_permission_header"
@@ -36,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/alertDialogBackground"
-                android:text="Module title"
+                android:text="Title"
                 android:textColor="@color/alertDialogTitle" />
 
             <TextView
@@ -55,7 +57,9 @@
         android:id="@+id/module_permission_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/module_permission_header"
-        android:paddingTop="50dp" />
+        android:layout_below="@+id/module_permission_header"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
+        android:paddingTop="@dimen/dialog_list_padding_vertical_material" />
 
 </RelativeLayout>
