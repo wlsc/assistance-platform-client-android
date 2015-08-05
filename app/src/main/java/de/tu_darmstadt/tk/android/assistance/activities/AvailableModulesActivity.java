@@ -8,10 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -152,15 +152,42 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
             for (AvailableModuleResponse module : availableModulesResponse) {
 
-                ModuleCard card = new ModuleCard(getApplicationContext());
+                String modulePackage = module.getModulePackage();
+                String moduleTitle = module.getTitle();
+                String moduleDescriptionFull = module.getDescriptionFull();
+                String moduleDescriptionShort = module.getDescriptionShort();
+                String moduleCopyright = module.getCopyright();
+                List<String> moduleReqSensors = module.getSensorsRequired();
+                List<String> moduleOptSensors = module.getSensorsOptional();
 
+
+                ModuleCard card = new ModuleCard(getApplicationContext());
                 CardHeader header = new CardHeader(this);
 
                 Log.d(TAG, "Module content");
-                Log.d(TAG, "Title: " + module.getTitle());
-                Log.d(TAG, "Full description: " + module.getDescriptionFull());
-                Log.d(TAG, "Short description: " + module.getDescriptionShort());
-                Log.d(TAG, "Copyright: " + module.getCopyright());
+                Log.d(TAG, "Package: " + modulePackage);
+                Log.d(TAG, "Title: " + moduleTitle);
+                Log.d(TAG, "Full description: " + moduleDescriptionFull);
+                Log.d(TAG, "Short description: " + moduleDescriptionShort);
+                Log.d(TAG, "Copyright: " + moduleCopyright);
+
+                if (moduleReqSensors != null && !moduleReqSensors.isEmpty()) {
+                    Log.d(TAG, "Req. sensors:");
+                    for (String sensor : moduleReqSensors) {
+                        Log.d(TAG, sensor);
+                    }
+                } else {
+                    Log.d(TAG, "Empty");
+                }
+
+                if (moduleOptSensors != null && !moduleOptSensors.isEmpty()) {
+                    Log.d(TAG, "Optional sensors:");
+                    for (String sensor : moduleOptSensors) {
+                        Log.d(TAG, sensor);
+                    }
+                } else {
+                    Log.d(TAG, "Empty");
+                }
 
                 header.setTitle(module.getTitle());
                 card.setTitle(module.getDescriptionShort());
@@ -173,7 +200,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
                 if (logoUrl.isEmpty()) {
                     Log.d(TAG, "Logo URL: NO LOGO supplied");
-                    thumb.setDrawableResource(R.drawable.no_user_pic);
+                    thumb.setDrawableResource(R.drawable.no_image);
                 } else {
                     Log.d(TAG, "Logo URL: " + logoUrl);
                     thumb.setUrlResource(logoUrl);
@@ -248,11 +275,11 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
         TextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
         title.setText(selectedModule.getTitle());
 
-        ImageView imageView = ButterKnife.findById(dialogView, R.id.module_permission_icon);
+        CircularImageView imageView = ButterKnife.findById(dialogView, R.id.module_permission_icon);
 
         Picasso.with(this)
                 .load(selectedModule.getLogo())
-                .placeholder(R.drawable.no_user_pic)
+                .placeholder(R.drawable.no_image)
                 .into(imageView);
 
         List<String> requiredSensors = selectedModule.getSensorsRequired();

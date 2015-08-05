@@ -132,14 +132,14 @@ public class UserProfileSettingsFragment extends Fragment {
 
                     Picasso.with(getActivity().getApplicationContext())
                             .load(file)
-                            .placeholder(R.drawable.no_user_pic)
+                            .placeholder(R.drawable.no_image)
                             .into(userPicView);
                 } else {
                     Log.d(TAG, "File NOT exists");
                 }
             } else {
                 Log.d(TAG, "user pic filename NOT exists");
-                userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_user_pic));
+                userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_image));
             }
 
             UserService userService = ServiceGenerator.createService(UserService.class);

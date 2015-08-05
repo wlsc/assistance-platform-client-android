@@ -24,7 +24,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/no_user_pic"
+            android:src="@drawable/no_image"
             app:border="true"
             app:border_color="#EEEEEE"
             app:border_width="2dp"

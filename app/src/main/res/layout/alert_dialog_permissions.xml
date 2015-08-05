@@ -17,13 +17,15 @@
         android:orientation="horizontal"
         android:padding="15dp">
 
-        <ImageView
+        <com.pkmmte.view.CircularImageView
             android:id="@+id/module_permission_icon"
             android:layout_width="65dp"
             android:layout_height="65dp"
             android:background="@color/alertDialogBackground"
             android:contentDescription="@string/module_permission_dialog_icon_description"
-            android:src="@drawable/no_user_pic" />
+            android:gravity="center_vertical|start"
+            android:scaleType="centerCrop"
+            android:src="@drawable/no_image" />
 
         <LinearLayout
             android:layout_width="fill_parent"

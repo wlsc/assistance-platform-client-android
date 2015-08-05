@@ -342,8 +342,8 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
         if (userPicFilename.isEmpty()) {
 
             Picasso.with(getActivity())
-                    .load(R.drawable.no_user_pic)
-                    .placeholder(R.drawable.no_user_pic)
+                    .load(R.drawable.no_image)
+                    .placeholder(R.drawable.no_image)
                     .into(userPicView);
 
         } else {
@@ -354,7 +354,7 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
 
                 Picasso.with(getActivity())
                         .load(file)
-                        .placeholder(R.drawable.no_user_pic)
+                        .placeholder(R.drawable.no_image)
                         .into(userPicView);
             }
         }
