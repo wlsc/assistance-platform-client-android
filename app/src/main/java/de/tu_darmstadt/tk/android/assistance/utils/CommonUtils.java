@@ -19,6 +19,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import de.tu_darmstadt.tk.android.assistance.Config;
 
@@ -50,7 +51,7 @@ public class CommonUtils {
 
             byte bytes[] = md.digest();
 
-            result = convertBytesToString(bytes);
+            result = CommonUtils.convertBytesToString(bytes);
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -67,9 +68,9 @@ public class CommonUtils {
      */
     public static String convertBytesToString(byte[] bytes) {
 
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < bytes.length; i++) {
-            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+        StringBuilder sb = new StringBuilder();
+        for (byte aByte : bytes) {
+            sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
         }
 
         return sb.toString();
@@ -82,8 +83,16 @@ public class CommonUtils {
      * @param currentFocus
      */
     public static void hideKeyboard(Context context, View currentFocus) {
+
+        if(context == null || currentFocus == null){
+            return;
+        }
+
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+        }
     }
 
     /**
@@ -93,8 +102,16 @@ public class CommonUtils {
      * @param currentFocus
      */
     public static void showKeyboard(Context context, View currentFocus) {
-        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInputFromWindow(currentFocus.getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+
+        if(context == null || currentFocus == null){
+            return;
+        }
+
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        if (imm != null) {
+            imm.toggleSoftInputFromWindow(currentFocus.getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+        }
     }
 
     /**
@@ -114,7 +131,7 @@ public class CommonUtils {
                     @Override
                     public void run() {
 
-                        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault());
+                        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                         String currentTimeStamp = format.format(new Date());
                         String filename = oldFilename;
 

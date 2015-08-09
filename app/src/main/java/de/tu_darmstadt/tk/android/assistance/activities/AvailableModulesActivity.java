@@ -2,6 +2,7 @@ package de.tu_darmstadt.tk.android.assistance.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -15,7 +16,6 @@ import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -147,7 +147,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         if (availableModulesResponse != null && !availableModulesResponse.isEmpty()) {
 
-            availableModules = new HashMap<>();
+            availableModules = new ArrayMap<>();
             ArrayList<Card> cards = new ArrayList<>();
 
             for (AvailableModuleResponse module : availableModulesResponse) {

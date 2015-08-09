@@ -1,6 +1,7 @@
 package de.tu_darmstadt.tk.android.assistance.models.http;
 
-import java.util.HashMap;
+import android.support.v4.util.ArrayMap;
+
 import java.util.Map;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Map;
  */
 public class HttpErrorCode {
 
-    private static final Map<Integer, ErrorCode> CODE_MAP = new HashMap<>();
+    private static final Map<Integer, ErrorCode> CODE_MAP = new ArrayMap<>();
 
     static {
         for (ErrorCode type : ErrorCode.values()) {

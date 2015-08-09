@@ -39,6 +39,7 @@ import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.LoginResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
+import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
 import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
@@ -183,6 +184,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void attemptLogin() {
 
+        CommonUtils.hideKeyboard(this, getCurrentFocus());
+
         // disable button to reduce flood of requests
         if (mLoginButton != null) {
             mLoginButton.setEnabled(false);
@@ -211,10 +214,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailTextView.setError(getString(R.string.error_field_required));
             focusView = mEmailTextView;
             isAnyErrors = true;
-        } else if (!InputValidation.isValidEmail(email)) {
-            mEmailTextView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailTextView;
-            isAnyErrors = true;
+        } else {
+            if (!InputValidation.isValidEmail(email)) {
+                mEmailTextView.setError(getString(R.string.error_invalid_email));
+                focusView = mEmailTextView;
+                isAnyErrors = true;
+            }
         }
 
         if (isAnyErrors) {
@@ -223,6 +228,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 mLoginButton.setEnabled(true);
             }
             focusView.requestFocus();
+
+            // show again the keyboard
+//            CommonUtils.showKeyboard(this, focusView);
+
         } else {
             doLogin();
         }
