@@ -42,11 +42,8 @@ public class InputValidation {
      */
     public static boolean isUserTokenValid(String token) {
 
-        if (token != null && !token.trim().isEmpty()) {
-            return true;
-        }
+        return token != null && !token.trim().isEmpty();
 
-        return false;
     }
 
 }

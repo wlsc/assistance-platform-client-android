@@ -12,7 +12,7 @@ public abstract class AbstractModule {
         ONLINE,
         OFFLINE,
         POSTPONED
-    };
+    }
 
     private long id;
 

@@ -9,7 +9,7 @@ import android.view.View;
  */
 public class Snacker {
 
-    public Snacker() {
+    private Snacker() {
     }
 
     public static void showLong(View view, String message) {
