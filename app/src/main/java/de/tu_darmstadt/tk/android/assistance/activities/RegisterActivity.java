@@ -12,16 +12,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
-import de.tu_darmstadt.tk.android.assistance.models.http.HttpErrorCode;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.RegistrationRequest;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.RegistrationResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
+import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
-import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import retrofit.Callback;
@@ -194,7 +192,6 @@ public class RegisterActivity extends AppCompatActivity {
                     Integer apiResponseCode = errorResponse.getCode();
                     String apiMessage = errorResponse.getMessage();
                     int httpResponseCode = errorResponse.getStatusCode();
-                    HttpErrorCode.ErrorCode apiErrorType = HttpErrorCode.fromCode(apiResponseCode);
 
                     Log.d(TAG, "Response status: " + httpResponseCode);
                     Log.d(TAG, "Response code: " + apiResponseCode);

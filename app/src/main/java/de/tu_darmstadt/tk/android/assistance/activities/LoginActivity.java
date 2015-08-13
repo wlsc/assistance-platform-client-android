@@ -33,7 +33,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.models.http.HttpErrorCode;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.LoginRequest;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.LoginResponse;
@@ -523,7 +522,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Integer apiResponseCode = errorResponse.getCode();
                     String apiMessage = errorResponse.getMessage();
                     int httpResponseCode = errorResponse.getStatusCode();
-                    HttpErrorCode.ErrorCode apiErrorType = HttpErrorCode.fromCode(apiResponseCode);
 
                     Log.d(TAG, "Response status: " + httpResponseCode);
                     Log.d(TAG, "Response code: " + apiResponseCode);

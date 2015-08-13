@@ -12,8 +12,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
-import de.tu_darmstadt.tk.android.assistance.models.http.HttpErrorCode;
 import de.tu_darmstadt.tk.android.assistance.models.http.request.ResetPasswordRequest;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
@@ -115,7 +113,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
                     Integer apiResponseCode = errorResponse.getCode();
                     String apiMessage = errorResponse.getMessage();
                     int httpResponseCode = errorResponse.getStatusCode();
-                    HttpErrorCode.ErrorCode apiErrorType = HttpErrorCode.fromCode(apiResponseCode);
 
                     Log.d(TAG, "Response status: " + httpResponseCode);
                     Log.d(TAG, "Response code: " + apiResponseCode);

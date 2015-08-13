@@ -14,7 +14,6 @@ import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
 import de.tu_darmstadt.tk.android.assistance.fragments.DrawerFragment;
 import de.tu_darmstadt.tk.android.assistance.handlers.DrawerHandler;
-import de.tu_darmstadt.tk.android.assistance.models.http.HttpErrorCode;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
 import de.tu_darmstadt.tk.android.assistance.models.http.response.UserProfileResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
@@ -151,7 +150,6 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
                     Integer apiResponseCode = errorResponse.getCode();
                     String apiMessage = errorResponse.getMessage();
                     int httpResponseCode = errorResponse.getStatusCode();
-                    HttpErrorCode.ErrorCode apiErrorType = HttpErrorCode.fromCode(apiResponseCode);
 
                     Log.d(TAG, "Response status: " + httpResponseCode);
                     Log.d(TAG, "Response code: " + apiResponseCode);

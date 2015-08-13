@@ -16,6 +16,10 @@ public class LoginRequest {
     @Expose
     private String password;
 
+    @SerializedName("device")
+    @Expose
+    private LoginRequest.UserDevice device;
+
     public LoginRequest() {
     }
 
@@ -33,5 +37,94 @@ public class LoginRequest {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public LoginRequest.UserDevice getDevice() {
+        return this.device;
+    }
+
+    public void setDevice(LoginRequest.UserDevice device) {
+        this.device = device;
+    }
+
+    /**
+     * User's device information
+     */
+    private class UserDevice {
+
+        @SerializedName("id")
+        @Expose
+        private long id;
+
+        @SerializedName("device_identifier")
+        @Expose
+        private String deviceId;
+
+        @SerializedName("os")
+        @Expose
+        private long os;
+
+        @SerializedName("os_version")
+        @Expose
+        private String osVersion;
+
+        @SerializedName("brand")
+        @Expose
+        private String brand;
+
+        @SerializedName("model")
+        @Expose
+        private String model;
+
+        public UserDevice() {
+        }
+
+        public long getId() {
+            return this.id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        public String getDeviceId() {
+            return this.deviceId;
+        }
+
+        public void setDeviceId(String deviceId) {
+            this.deviceId = deviceId;
+        }
+
+        public long getOs() {
+            return this.os;
+        }
+
+        public void setOs(long os) {
+            this.os = os;
+        }
+
+        public String getOsVersion() {
+            return this.osVersion;
+        }
+
+        public void setOsVersion(String osVersion) {
+            this.osVersion = osVersion;
+        }
+
+        public String getBrand() {
+            return this.brand;
+        }
+
+        public void setBrand(String brand) {
+            this.brand = brand;
+        }
+
+        public String getModel() {
+            return this.model;
+        }
+
+        public void setModel(String model) {
+            this.model = model;
+        }
     }
 }

@@ -63,4 +63,6 @@ dependencies {
     compile 'org.metawidget:metawidget-parent:4.1'
 
     compile project(":krakenSDK")
+
+    testCompile "org.robolectric:robolectric:3.0"
 }
