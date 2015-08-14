@@ -62,7 +62,7 @@ public class LoginRequest {
 
         @SerializedName("os")
         @Expose
-        private long os;
+        private String os;
 
         @SerializedName("os_version")
         @Expose
@@ -95,11 +95,11 @@ public class LoginRequest {
             this.deviceId = deviceId;
         }
 
-        public long getOs() {
+        public String getOs() {
             return this.os;
         }
 
-        public void setOs(long os) {
+        public void setOs(String os) {
             this.os = os;
         }
 
