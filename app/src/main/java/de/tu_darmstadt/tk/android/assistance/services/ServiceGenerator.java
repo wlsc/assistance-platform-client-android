@@ -1,8 +1,7 @@
 package de.tu_darmstadt.tk.android.assistance.services;
 
 import de.tu_darmstadt.tk.android.assistance.Config;
-import de.tu_darmstadt.tk.android.assistance.handlers.AssistanceErrorHandler;
-import de.tu_darmstadt.tk.android.assistance.httpclient.UntrustedOkHttpClient;
+import de.tu_darmstadt.tk.android.assistance.models.httpclient.UntrustedOkHttpClient;
 import retrofit.RestAdapter;
 import retrofit.android.AndroidLog;
 import retrofit.client.OkClient;
