@@ -59,6 +59,7 @@ public class AssistanceErrorHandler implements ErrorHandler {
         String apiMessage = errorResponse.getMessage();
         int httpResponseCode = errorResponse.getStatusCode();
 
+        Log.d(TAG, "Error handler information.");
         Log.d(TAG, "Response status: " + httpResponseCode);
         Log.d(TAG, "Response code: " + apiResponseCode);
         Log.d(TAG, "Response message: " + apiMessage);

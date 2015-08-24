@@ -1,4 +1,4 @@
-package de.tu_darmstadt.tk.android.assistance.httpclient;
+package de.tu_darmstadt.tk.android.assistance.models.httpclient;
 
 import com.squareup.okhttp.OkHttpClient;
 

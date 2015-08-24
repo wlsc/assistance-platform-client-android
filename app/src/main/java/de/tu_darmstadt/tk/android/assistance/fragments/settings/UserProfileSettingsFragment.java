@@ -32,7 +32,7 @@ import butterknife.OnTextChanged;
 import de.tu_darmstadt.tk.android.assistance.Config;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
-import de.tu_darmstadt.tk.android.assistance.models.api.UserSocialService;
+import de.tu_darmstadt.tk.android.assistance.models.api.profile.UserSocialService;
 import de.tu_darmstadt.tk.android.assistance.models.api.profile.UpdateProfileRequest;
 import de.tu_darmstadt.tk.android.assistance.models.api.profile.ProfileResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
