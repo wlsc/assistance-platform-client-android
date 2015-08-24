@@ -12,6 +12,8 @@ public class Constants {
      * COMMON
      */
 
+    public static final String PLATFORM_NAME = "android";
+
     public static final int BACK_BUTTON_DELAY_MILLIS = 2000;
 
     /**

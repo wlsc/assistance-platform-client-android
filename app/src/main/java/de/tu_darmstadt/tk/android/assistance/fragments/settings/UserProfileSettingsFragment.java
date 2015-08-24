@@ -32,9 +32,9 @@ import butterknife.OnTextChanged;
 import de.tu_darmstadt.tk.android.assistance.Config;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.SettingsActivity;
-import de.tu_darmstadt.tk.android.assistance.models.http.UserSocialService;
-import de.tu_darmstadt.tk.android.assistance.models.http.request.UpdateUserProfileRequest;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.UserProfileResponse;
+import de.tu_darmstadt.tk.android.assistance.models.api.UserSocialService;
+import de.tu_darmstadt.tk.android.assistance.models.api.profile.UpdateProfileRequest;
+import de.tu_darmstadt.tk.android.assistance.models.api.profile.ProfileResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
 import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
@@ -143,13 +143,13 @@ public class UserProfileSettingsFragment extends Fragment {
             }
 
             UserService userService = ServiceGenerator.createService(UserService.class);
-            userService.getUserProfileFull(userToken, new Callback<UserProfileResponse>() {
+            userService.getUserProfileFull(userToken, new Callback<ProfileResponse>() {
 
                 @Override
-                public void success(UserProfileResponse userProfileResponse, Response response) {
+                public void success(ProfileResponse profileResponse, Response response) {
                     Log.d(TAG, "Successfully received the user profile!");
 
-                    fillupFullUserProfile(userProfileResponse);
+                    fillupFullUserProfile(profileResponse);
                 }
 
                 @Override
@@ -165,14 +165,14 @@ public class UserProfileSettingsFragment extends Fragment {
     /**
      * Populate user profile fields
      *
-     * @param userProfileResponse
+     * @param profileResponse
      */
-    private void fillupFullUserProfile(UserProfileResponse userProfileResponse) {
+    private void fillupFullUserProfile(ProfileResponse profileResponse) {
 
-        firstnameText.setText(userProfileResponse.getFirstname());
-        lastnameText.setText(userProfileResponse.getLastname());
+        firstnameText.setText(profileResponse.getFirstname());
+        lastnameText.setText(profileResponse.getLastname());
 
-        List<UserSocialService> socialServices = userProfileResponse.getSocialServices();
+        List<UserSocialService> socialServices = profileResponse.getSocialServices();
 
         if (!socialServices.isEmpty()) {
             String serviceName = "";
@@ -308,7 +308,7 @@ public class UserProfileSettingsFragment extends Fragment {
 
         Log.d(TAG, "updateUserProfile() invoked");
 
-        UpdateUserProfileRequest request = new UpdateUserProfileRequest();
+        UpdateProfileRequest request = new UpdateProfileRequest();
 
         request.setFirstname(firstname);
         request.setLastname(lastname);

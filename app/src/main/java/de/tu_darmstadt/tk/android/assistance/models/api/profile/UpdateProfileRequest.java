@@ -1,16 +1,16 @@
-package de.tu_darmstadt.tk.android.assistance.models.http.request;
+package de.tu_darmstadt.tk.android.assistance.models.api.profile;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import de.tu_darmstadt.tk.android.assistance.models.http.UserSocialService;
+import de.tu_darmstadt.tk.android.assistance.models.api.UserSocialService;
 
 /**
  * Created by Wladimir Schmidt on 04.07.2015.
  */
-public class UpdateUserProfileRequest {
+public class UpdateProfileRequest {
 
     @SerializedName("firstname")
     @Expose
@@ -24,7 +24,7 @@ public class UpdateUserProfileRequest {
     @Expose
     private List<UserSocialService> services;
 
-    public UpdateUserProfileRequest() {
+    public UpdateProfileRequest() {
     }
 
     public String getFirstname() {

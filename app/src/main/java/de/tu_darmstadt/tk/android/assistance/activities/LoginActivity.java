@@ -33,13 +33,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.tu_darmstadt.tk.android.assistance.R;
-import de.tu_darmstadt.tk.android.assistance.models.http.request.LoginRequest;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.LoginResponse;
+import de.tu_darmstadt.tk.android.assistance.models.api.error.ErrorResponse;
+import de.tu_darmstadt.tk.android.assistance.models.api.login.LoginRequest;
+import de.tu_darmstadt.tk.android.assistance.models.api.login.LoginResponse;
+import de.tu_darmstadt.tk.android.assistance.models.api.login.UserDevice;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
 import de.tu_darmstadt.tk.android.assistance.utils.CommonUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
+import de.tu_darmstadt.tk.android.assistance.utils.HardwareUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.InputValidation;
 import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
@@ -249,6 +251,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         LoginRequest request = new LoginRequest();
         request.setUserEmail(email);
         request.setPassword(password);
+
+        UserDevice userDevice = new UserDevice();
+        userDevice.setOs(Constants.PLATFORM_NAME);
+        userDevice.setOsVersion(HardwareUtils.getAndroidVersion());
+        userDevice.setBrand(HardwareUtils.getDeviceBrandName());
+        userDevice.setModel(HardwareUtils.getDeviceModelName());
+        userDevice.setDeviceId(HardwareUtils.getAndroidId(this));
+
+        request.setDevice(userDevice);
 
         /**
          * Logging in the user

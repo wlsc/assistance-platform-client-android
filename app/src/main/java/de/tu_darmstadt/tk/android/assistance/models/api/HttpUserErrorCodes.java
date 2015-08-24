@@ -1,4 +1,4 @@
-package de.tu_darmstadt.tk.android.assistance.models.http;
+package de.tu_darmstadt.tk.android.assistance.models.api;
 
 /**
  * HTTP user error codes

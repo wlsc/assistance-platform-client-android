@@ -27,7 +27,7 @@ import de.tu_darmstadt.tk.android.assistance.events.ModuleInstallEvent;
 import de.tu_darmstadt.tk.android.assistance.events.ModuleShowMoreInfoEvent;
 import de.tu_darmstadt.tk.android.assistance.handlers.DrawerHandler;
 import de.tu_darmstadt.tk.android.assistance.models.cards.ModuleCard;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.AvailableModuleResponse;
+import de.tu_darmstadt.tk.android.assistance.models.api.module.AvailableModuleResponse;
 import de.tu_darmstadt.tk.android.assistance.services.AssistanceService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;

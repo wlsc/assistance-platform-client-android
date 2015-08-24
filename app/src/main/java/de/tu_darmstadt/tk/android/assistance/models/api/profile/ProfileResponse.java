@@ -1,16 +1,16 @@
-package de.tu_darmstadt.tk.android.assistance.models.http.response;
+package de.tu_darmstadt.tk.android.assistance.models.api.profile;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import de.tu_darmstadt.tk.android.assistance.models.http.UserSocialService;
+import de.tu_darmstadt.tk.android.assistance.models.api.UserSocialService;
 
 /**
  * Created by Wladimir Schmidt on 02.07.2015.
  */
-public class UserProfileResponse {
+public class ProfileResponse {
 
     @SerializedName("firstName")
     @Expose
@@ -36,7 +36,7 @@ public class UserProfileResponse {
     @Expose
     private List<UserSocialService> socialServices;
 
-    public UserProfileResponse() {
+    public ProfileResponse() {
     }
 
     public String getFirstname() {

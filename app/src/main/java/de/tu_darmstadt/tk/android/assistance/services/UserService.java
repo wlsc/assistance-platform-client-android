@@ -1,12 +1,12 @@
 package de.tu_darmstadt.tk.android.assistance.services;
 
-import de.tu_darmstadt.tk.android.assistance.models.http.request.LoginRequest;
-import de.tu_darmstadt.tk.android.assistance.models.http.request.RegistrationRequest;
-import de.tu_darmstadt.tk.android.assistance.models.http.request.ResetPasswordRequest;
-import de.tu_darmstadt.tk.android.assistance.models.http.request.UpdateUserProfileRequest;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.LoginResponse;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.RegistrationResponse;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.UserProfileResponse;
+import de.tu_darmstadt.tk.android.assistance.models.api.login.LoginRequest;
+import de.tu_darmstadt.tk.android.assistance.models.api.registration.RegistrationRequest;
+import de.tu_darmstadt.tk.android.assistance.models.api.resetpassword.ResetPasswordRequest;
+import de.tu_darmstadt.tk.android.assistance.models.api.profile.UpdateProfileRequest;
+import de.tu_darmstadt.tk.android.assistance.models.api.login.LoginResponse;
+import de.tu_darmstadt.tk.android.assistance.models.api.registration.RegistrationResponse;
+import de.tu_darmstadt.tk.android.assistance.models.api.profile.ProfileResponse;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -33,14 +33,14 @@ public interface UserService {
 
     @GET("/users/profile/short")
     void getUserProfileShort(@Header("X-AUTH-TOKEN") String userToken,
-                             Callback<UserProfileResponse> callback);
+                             Callback<ProfileResponse> callback);
 
     @GET("/users/profile/long")
     void getUserProfileFull(@Header("X-AUTH-TOKEN") String userToken,
-                            Callback<UserProfileResponse> callback);
+                            Callback<ProfileResponse> callback);
 
     @PUT("/users/profile")
     void updateUserProfile(@Header("X-AUTH-TOKEN") String userToken,
-                           @Body UpdateUserProfileRequest body,
+                           @Body UpdateProfileRequest body,
                            Callback<Void> callback);
 }

@@ -2,7 +2,9 @@ package de.tu_darmstadt.tk.android.assistance.httpclient;
 
 import com.squareup.okhttp.OkHttpClient;
 
+import java.security.SecureRandom;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -13,7 +15,7 @@ import javax.net.ssl.X509TrustManager;
 
 /**
  * This is an implementation of okHttp client which trusts all ssl certificates
- *
+ * <p/>
  * Created by Wladimir Schmidt on 28.06.2015.
  */
 public class UntrustedOkHttpClient {
@@ -21,30 +23,31 @@ public class UntrustedOkHttpClient {
     public UntrustedOkHttpClient() {
     }
 
-    public OkHttpClient getUnsafeOkHttpClient() {
+    public OkHttpClient getClient() {
         try {
+
             // no validation of certification
-            final TrustManager[] trustAllCerts = new TrustManager[]{
+            TrustManager[] trustAllCerts = {
                     new X509TrustManager() {
                         @Override
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
                         }
 
                         @Override
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
                         }
 
                         @Override
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        public X509Certificate[] getAcceptedIssuers() {
                             return null;
                         }
                     }
             };
 
-            final SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new SecureRandom());
 
-            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
             OkHttpClient okHttpClient = new OkHttpClient();
             okHttpClient.setSslSocketFactory(sslSocketFactory);

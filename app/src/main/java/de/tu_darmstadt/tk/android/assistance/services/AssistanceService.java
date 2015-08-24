@@ -2,8 +2,8 @@ package de.tu_darmstadt.tk.android.assistance.services;
 
 import java.util.List;
 
-import de.tu_darmstadt.tk.android.assistance.models.http.request.ToggleModuleRequest;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.AvailableModuleResponse;
+import de.tu_darmstadt.tk.android.assistance.models.api.module.ToggleModuleRequest;
+import de.tu_darmstadt.tk.android.assistance.models.api.module.AvailableModuleResponse;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;

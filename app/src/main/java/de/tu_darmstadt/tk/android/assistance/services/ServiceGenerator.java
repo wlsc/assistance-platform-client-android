@@ -1,6 +1,7 @@
 package de.tu_darmstadt.tk.android.assistance.services;
 
 import de.tu_darmstadt.tk.android.assistance.Config;
+import de.tu_darmstadt.tk.android.assistance.handlers.AssistanceErrorHandler;
 import de.tu_darmstadt.tk.android.assistance.httpclient.UntrustedOkHttpClient;
 import retrofit.RestAdapter;
 import retrofit.android.AndroidLog;
@@ -14,16 +15,22 @@ public class ServiceGenerator {
     private ServiceGenerator() {
     }
 
+    /**
+     * Creates request service
+     *
+     * @param serviceClass
+     * @param <T>
+     * @return
+     */
     public static <T> T createService(Class<T> serviceClass) {
 
-        RestAdapter.Builder builder = new RestAdapter.Builder()
-                // enabling log traces
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setLog(new AndroidLog("HTTP_CLIENT"))
-                .setEndpoint(Config.ASSISTANCE_URL)
-                .setClient(new OkClient(new UntrustedOkHttpClient().getUnsafeOkHttpClient()));
-
-        RestAdapter adapter = builder.build();
+        RestAdapter adapter = new RestAdapter.Builder()
+//                .setErrorHandler(new AssistanceErrorHandler())
+                .setLogLevel(RestAdapter.LogLevel.FULL) // enabling log traces
+                .setLog(new AndroidLog("HTTPS_CLIENT"))
+                .setEndpoint(Config.ASSISTANCE_ENDPOINT)
+                .setClient(new OkClient(new UntrustedOkHttpClient().getClient()))
+                .build();
 
         return adapter.create(serviceClass);
     }

@@ -14,8 +14,8 @@ import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
 import de.tu_darmstadt.tk.android.assistance.fragments.DrawerFragment;
 import de.tu_darmstadt.tk.android.assistance.handlers.DrawerHandler;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.ErrorResponse;
-import de.tu_darmstadt.tk.android.assistance.models.http.response.UserProfileResponse;
+import de.tu_darmstadt.tk.android.assistance.models.api.error.ErrorResponse;
+import de.tu_darmstadt.tk.android.assistance.models.api.profile.ProfileResponse;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.services.UserService;
 import de.tu_darmstadt.tk.android.assistance.utils.Constants;
@@ -83,13 +83,13 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
         UserService userservice = ServiceGenerator.createService(UserService.class);
-        userservice.getUserProfileShort(userToken, new Callback<UserProfileResponse>() {
+        userservice.getUserProfileShort(userToken, new Callback<ProfileResponse>() {
 
             @Override
-            public void success(UserProfileResponse userProfileResponse, Response response) {
+            public void success(ProfileResponse profileResponse, Response response) {
 
-                String firstname = userProfileResponse.getFirstname();
-                String lastname = userProfileResponse.getLastname();
+                String firstname = profileResponse.getFirstname();
+                String lastname = profileResponse.getLastname();
 
                 UserUtils.saveUserFirstname(getApplicationContext(), firstname);
                 UserUtils.saveUserLastname(getApplicationContext(), lastname);
