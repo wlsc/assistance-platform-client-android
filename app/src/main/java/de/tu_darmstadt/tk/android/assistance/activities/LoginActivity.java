@@ -58,8 +58,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private final String TAG = LoginActivity.class.getSimpleName();
 
-    private boolean mBackButtonPressedOnce;
-
     @Bind(R.id.email)
     protected AutoCompleteTextView mEmailTextView;
 
@@ -96,6 +94,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Bind(R.id.ibGithubLogo)
     protected ImageButton mGithubLogo;
+
+    private boolean mBackButtonPressedOnce;
 
     private Handler uiThreadHandler = new Handler();
     private SplashView mSplashView;

@@ -26,7 +26,7 @@ import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
 import de.tu_darmstadt.tk.android.assistance.events.ModuleInstallEvent;
 import de.tu_darmstadt.tk.android.assistance.events.ModuleShowMoreInfoEvent;
 import de.tu_darmstadt.tk.android.assistance.handlers.DrawerHandler;
-import de.tu_darmstadt.tk.android.assistance.models.cards.ModuleCard;
+import de.tu_darmstadt.tk.android.assistance.views.CardView;
 import de.tu_darmstadt.tk.android.assistance.models.api.module.AvailableModuleResponse;
 import de.tu_darmstadt.tk.android.assistance.services.AssistanceService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
@@ -161,7 +161,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 List<String> moduleOptSensors = module.getSensorsOptional();
 
 
-                ModuleCard card = new ModuleCard(getApplicationContext());
+                CardView card = new CardView(getApplicationContext());
                 CardHeader header = new CardHeader(this);
 
                 Log.d(TAG, "Module content");

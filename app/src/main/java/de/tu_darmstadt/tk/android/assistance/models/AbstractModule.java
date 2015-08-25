@@ -3,6 +3,8 @@ package de.tu_darmstadt.tk.android.assistance.models;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.tudarmstadt.informatik.tk.kraken.android.sdk.sensors.abstract_sensors.AbstractSensor;
+
 /**
  * Created by Wladimir Schmidt on 23.06.2015.
  */

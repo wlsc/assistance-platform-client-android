@@ -1,4 +1,4 @@
-package de.tu_darmstadt.tk.android.assistance.models.cards;
+package de.tu_darmstadt.tk.android.assistance.views;
 
 import android.content.Context;
 import android.util.Log;
@@ -19,9 +19,9 @@ import it.gmariotti.cardslib.library.internal.Card;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 19.07.2015
  */
-public class ModuleCard extends Card {
+public class CardView extends Card {
 
-    private static final String TAG = ModuleCard.class.getSimpleName();
+    private static final String TAG = CardView.class.getSimpleName();
 
     private String moduleId;
 
@@ -31,12 +31,12 @@ public class ModuleCard extends Card {
     @Bind(R.id.install_module)
     protected Button install;
 
-    public ModuleCard(Context context) {
+    public CardView(Context context) {
         super(context, R.layout.card_row);
         this.mContext = context;
     }
 
-    public ModuleCard(Context context, int innerLayout) {
+    public CardView(Context context, int innerLayout) {
         super(context, innerLayout);
         this.mContext = context;
     }
