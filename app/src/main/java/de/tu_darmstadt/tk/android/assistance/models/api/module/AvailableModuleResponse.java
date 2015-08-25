@@ -36,11 +36,15 @@ public class AvailableModuleResponse {
 
     @SerializedName("requiredCapabilities")
     @Expose
-    private List<String> sensorsRequired;
+    private List<ModuleCapability> sensorsRequired;
 
     @SerializedName("optionalCapabilites")
     @Expose
-    private List<String> sensorsOptional;
+    private List<ModuleCapability> sensorsOptional;
+
+    @SerializedName("supportEmail")
+    @Expose
+    private String supportEmail;
 
     public AvailableModuleResponse() {
     }
@@ -93,19 +97,19 @@ public class AvailableModuleResponse {
         this.copyright = copyright;
     }
 
-    public List<String> getSensorsRequired() {
+    public List<ModuleCapability> getSensorsRequired() {
         return sensorsRequired;
     }
 
-    public void setSensorsRequired(List<String> sensorsRequired) {
+    public void setSensorsRequired(List<ModuleCapability> sensorsRequired) {
         this.sensorsRequired = sensorsRequired;
     }
 
-    public List<String> getSensorsOptional() {
+    public List<ModuleCapability> getSensorsOptional() {
         return sensorsOptional;
     }
 
-    public void setSensorsOptional(List<String> sensorsOptional) {
+    public void setSensorsOptional(List<ModuleCapability> sensorsOptional) {
         this.sensorsOptional = sensorsOptional;
     }
 }
