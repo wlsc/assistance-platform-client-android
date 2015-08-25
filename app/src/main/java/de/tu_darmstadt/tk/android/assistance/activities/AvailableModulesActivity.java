@@ -26,11 +26,12 @@ import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
 import de.tu_darmstadt.tk.android.assistance.events.ModuleInstallEvent;
 import de.tu_darmstadt.tk.android.assistance.events.ModuleShowMoreInfoEvent;
 import de.tu_darmstadt.tk.android.assistance.handlers.DrawerHandler;
-import de.tu_darmstadt.tk.android.assistance.views.CardView;
 import de.tu_darmstadt.tk.android.assistance.models.api.module.AvailableModuleResponse;
+import de.tu_darmstadt.tk.android.assistance.models.api.module.ModuleCapability;
 import de.tu_darmstadt.tk.android.assistance.services.AssistanceService;
 import de.tu_darmstadt.tk.android.assistance.services.ServiceGenerator;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
+import de.tu_darmstadt.tk.android.assistance.views.CardView;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
@@ -157,8 +158,8 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 String moduleDescriptionFull = module.getDescriptionFull();
                 String moduleDescriptionShort = module.getDescriptionShort();
                 String moduleCopyright = module.getCopyright();
-                List<String> moduleReqSensors = module.getSensorsRequired();
-                List<String> moduleOptSensors = module.getSensorsOptional();
+                List<ModuleCapability> moduleReqSensors = module.getSensorsRequired();
+                List<ModuleCapability> moduleOptSensors = module.getSensorsOptional();
 
 
                 CardView card = new CardView(getApplicationContext());
@@ -173,8 +174,9 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
                 if (moduleReqSensors != null && !moduleReqSensors.isEmpty()) {
                     Log.d(TAG, "Req. sensors:");
-                    for (String sensor : moduleReqSensors) {
-                        Log.d(TAG, sensor);
+                    for (ModuleCapability capability : moduleReqSensors) {
+                        Log.d(TAG, "Type: " + capability.getType());
+                        Log.d(TAG, "Frequency: " + capability.getFrequency());
                     }
                 } else {
                     Log.d(TAG, "Empty");
@@ -182,8 +184,9 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
                 if (moduleOptSensors != null && !moduleOptSensors.isEmpty()) {
                     Log.d(TAG, "Optional sensors:");
-                    for (String sensor : moduleOptSensors) {
-                        Log.d(TAG, sensor);
+                    for (ModuleCapability capability : moduleOptSensors) {
+                        Log.d(TAG, "Type: " + capability.getType());
+                        Log.d(TAG, "Frequency: " + capability.getFrequency());
                     }
                 } else {
                     Log.d(TAG, "Empty");
@@ -282,12 +285,18 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 .placeholder(R.drawable.no_image)
                 .into(imageView);
 
-        List<String> requiredSensors = selectedModule.getSensorsRequired();
-        List<String> optionalSensors = selectedModule.getSensorsOptional();
+        List<ModuleCapability> requiredSensors = selectedModule.getSensorsRequired();
+        List<ModuleCapability> optionalSensors = selectedModule.getSensorsOptional();
 
         List<String> allModuleSensors = new ArrayList<>();
-        allModuleSensors.addAll(requiredSensors);
-        allModuleSensors.addAll(optionalSensors);
+
+        for (ModuleCapability capability : requiredSensors) {
+            allModuleSensors.add(capability.getType());
+        }
+
+        for (ModuleCapability capability : optionalSensors) {
+            allModuleSensors.add(capability.getType());
+        }
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 this,
