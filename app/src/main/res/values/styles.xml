@@ -30,7 +30,7 @@
     </style>
 
     <style name="splashScreenTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
-        <item name="android:windowBackground">@mipmap/ic_launcher</item>
+        <item name="android:windowBackground">@mipmap/app_logo</item>
     </style>
 
     <style name="BtnSuccess" parent="android:style/Widget.Material.Button">

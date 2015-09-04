@@ -10,11 +10,6 @@ public class Config {
     private Config() {
     }
 
-    /**
-     * Set it to false when compiling for release
-     */
-    public static final boolean DEVELOPER_MODE_ENABLED = true;
-
     /*
     *   Assistance login server. CAUTION: Please write this address without "/" at the end!
     */
