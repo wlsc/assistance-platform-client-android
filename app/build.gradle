@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "de.tu_darmstadt.tk.android.assistance"
+        applicationId "de.tudarmstadt.informatik.tk.android.assistance"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
