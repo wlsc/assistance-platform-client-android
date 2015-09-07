@@ -51,6 +51,9 @@ public class Constants {
      * INTENT CONSTANTS
      */
 
+    public static final int INTENT_CURRENT_DEVICE_ID_RESULT = 723617691;
+
     public static final String INTENT_USER_ID = "user_id";
+    public static final String INTENT_CURRENT_DEVICE_ID = "current_device_id";
 
 }

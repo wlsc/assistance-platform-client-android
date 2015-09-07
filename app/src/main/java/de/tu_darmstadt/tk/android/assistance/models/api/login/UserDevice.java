@@ -42,6 +42,10 @@ public class UserDevice {
         return this.id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getDeviceId() {
         return this.deviceId;
     }

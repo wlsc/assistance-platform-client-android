@@ -26,7 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,6 +49,12 @@ import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 import de.tu_darmstadt.tk.android.assistance.views.SplashView;
+import de.tudarmstadt.informatik.tk.kraken.android.sdk.db.Device;
+import de.tudarmstadt.informatik.tk.kraken.android.sdk.db.DeviceDao;
+import de.tudarmstadt.informatik.tk.kraken.android.sdk.db.Login;
+import de.tudarmstadt.informatik.tk.kraken.android.sdk.db.LoginDao;
+import de.tudarmstadt.informatik.tk.kraken.android.sdk.utils.DatabaseManager;
+import de.tudarmstadt.informatik.tk.kraken.android.sdk.utils.DateUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -102,6 +110,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private String email;
     private String password;
+
+    private long currentDeviceId = -1;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -245,6 +255,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         showProgress(true);
 
+        // checking if we had already logged in in the past
+        DeviceDao deviceDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDeviceDao();
+
+        List<Device> devices = deviceDao
+                .queryBuilder()
+                .where(DeviceDao.Properties.Device_identifier.eq(HardwareUtils.getAndroidId(this)))
+                .limit(1)
+                .build()
+                .list();
+
+        Long serverDeviceId = null;
+
+        // user was already logged in
+        if (devices.size() > 0) {
+            // take a server device_id
+            Device device = devices.get(0);
+            serverDeviceId = device.getLogin().getServer_device_id();
+        }
+
         /**
          * Forming a login request
          */
@@ -253,6 +282,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         request.setPassword(password);
 
         UserDevice userDevice = new UserDevice();
+
+        if (serverDeviceId != null) {
+            userDevice.setId(serverDeviceId);
+        }
+
         userDevice.setOs(Constants.PLATFORM_NAME);
         userDevice.setOsVersion(HardwareUtils.getAndroidVersion());
         userDevice.setBrand(HardwareUtils.getDeviceBrandName());
@@ -288,22 +322,89 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
+     * Saves user device into database
+     *
+     * @param loginResponse
+     */
+    private void saveLoginIntoDb(LoginResponse loginResponse) {
+
+        String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
+
+        Login login = new Login();
+
+        login.setServer_device_id(loginResponse.getDeviceId());
+        login.setLast_email(email);
+        login.setToken(loginResponse.getUserToken());
+        login.setCreated(createdDate);
+
+        LoginDao loginDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getLoginDao();
+
+        List<Login> logins = loginDao
+                .queryBuilder()
+                .where(LoginDao.Properties.Token.eq(loginResponse.getUserToken()))
+                .limit(1)
+                .build()
+                .list();
+
+        // check if that login was already saved in the system
+        if (logins.size() == 0) {
+            // no such login found -> insert new login information into db
+            loginDao.insert(login);
+        } else {
+            // found existing login
+            login = logins.get(0);
+        }
+
+
+        DeviceDao deviceDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDeviceDao();
+
+        List<Device> devices = deviceDao
+                .queryBuilder()
+                .where(DeviceDao.Properties.Device_identifier.eq(HardwareUtils.getAndroidId(this)))
+                .limit(1)
+                .build()
+                .list();
+
+        // check if the device already exists in the db
+        if (devices.size() == 0) {
+            // no such device found in db -> insert new
+
+            Device device = new Device();
+            device.setOs(Constants.PLATFORM_NAME);
+            device.setOs_version(HardwareUtils.getAndroidVersion());
+            device.setBrand(HardwareUtils.getDeviceBrandName());
+            device.setModel(HardwareUtils.getDeviceModelName());
+            device.setDevice_identifier(HardwareUtils.getAndroidId(this));
+            device.setCreated(createdDate);
+            device.setLogin(login);
+
+            currentDeviceId = deviceDao.insert(device);
+
+        } else {
+            currentDeviceId = devices.get(0).getId();
+        }
+    }
+
+    /**
      * Loads next user screen
      *
-     * @param apiResponse
+     * @param loginApiResponse
      */
-    private void saveLoginGoNext(LoginResponse apiResponse) {
-        String token = apiResponse.getUserToken();
+    private void saveLoginGoNext(LoginResponse loginApiResponse) {
+
+        String token = loginApiResponse.getUserToken();
 
         if (InputValidation.isUserTokenValid(token)) {
             Log.d(TAG, "Token is valid. Proceeding with login...");
 
             showProgress(false);
+            saveLoginIntoDb(loginApiResponse);
             saveLoginData(token);
             loadMainActivity();
+
         } else {
             Toaster.showLong(this, R.string.error_user_token_not_valid);
-            Log.d(TAG, "Token is INVALID.");
+            Log.d(TAG, "User token is INVALID!");
         }
     }
 
@@ -445,6 +546,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(Constants.INTENT_CURRENT_DEVICE_ID, currentDeviceId);
         startActivity(intent);
         finish();
     }

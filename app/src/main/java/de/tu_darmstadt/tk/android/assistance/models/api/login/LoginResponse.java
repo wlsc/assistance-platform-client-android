@@ -14,7 +14,7 @@ public class LoginResponse {
 
     @SerializedName("device_id")
     @Expose
-    private String deviceId;
+    private Long deviceId;
 
     public LoginResponse() {
     }
@@ -23,15 +23,8 @@ public class LoginResponse {
         return userToken;
     }
 
-    public void setUserToken(String userToken) {
-        this.userToken = userToken;
-    }
-
-    public String getDeviceId() {
+    public Long getDeviceId() {
         return this.deviceId;
     }
 
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
 }

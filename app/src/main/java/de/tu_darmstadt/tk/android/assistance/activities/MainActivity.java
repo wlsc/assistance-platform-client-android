@@ -8,6 +8,7 @@ import android.util.Log;
 import butterknife.ButterKnife;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.common.DrawerActivity;
+import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
 
 
@@ -31,9 +32,13 @@ public class MainActivity extends DrawerActivity {
 
         } else {
 
+            Intent parentIntent = getIntent();
+            long currentDeviceId = parentIntent.getLongExtra(Constants.INTENT_CURRENT_DEVICE_ID, -1);
+
             Intent intent = new Intent(this, AvailableModulesActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            intent.putExtra(Constants.INTENT_CURRENT_DEVICE_ID, currentDeviceId);
+            setResult(Constants.INTENT_CURRENT_DEVICE_ID_RESULT, intent);
             finish();
         }
     }

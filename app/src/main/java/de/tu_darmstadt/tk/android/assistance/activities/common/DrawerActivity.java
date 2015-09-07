@@ -9,7 +9,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.FrameLayout;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 import butterknife.ButterKnife;
+import de.greenrobot.dao.query.Query;
 import de.tu_darmstadt.tk.android.assistance.R;
 import de.tu_darmstadt.tk.android.assistance.activities.LoginActivity;
 import de.tu_darmstadt.tk.android.assistance.fragments.DrawerFragment;
@@ -22,6 +27,10 @@ import de.tu_darmstadt.tk.android.assistance.utils.Constants;
 import de.tu_darmstadt.tk.android.assistance.utils.PreferencesUtils;
 import de.tu_darmstadt.tk.android.assistance.utils.Toaster;
 import de.tu_darmstadt.tk.android.assistance.utils.UserUtils;
+import de.tudarmstadt.informatik.tk.kraken.android.sdk.db.User;
+import de.tudarmstadt.informatik.tk.kraken.android.sdk.db.UserDao;
+import de.tudarmstadt.informatik.tk.kraken.android.sdk.utils.DatabaseManager;
+import de.tudarmstadt.informatik.tk.kraken.android.sdk.utils.DateUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -35,6 +44,8 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
     private boolean mBackButtonPressedOnce;
 
+    private static boolean isUserProfileRequestSent = false;
+
     protected Toolbar mToolbar;
 
     protected FrameLayout mFrameLayout;
@@ -44,6 +55,8 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
     protected DrawerLayout mDrawerLayout;
 
     protected String mUserEmail;
+
+    protected long currentDeviceId = -1;
 
     public DrawerActivity() {
         this.mBackButtonPressedOnce = false;
@@ -68,8 +81,12 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
         String userFirstname = UserUtils.getUserFirstname(getApplicationContext());
         String userLastname = UserUtils.getUserLastname(getApplicationContext());
 
+        // TODO: optimize it to execute it only once!
+
         if (userFirstname.isEmpty() || userLastname.isEmpty()) {
-            requestUserProfile();
+            if (!isUserProfileRequestSent) {
+                requestUserProfile();
+            }
         } else {
             updateUserDrawerInfo();
         }
@@ -80,6 +97,8 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
      */
     private void requestUserProfile() {
 
+        isUserProfileRequestSent = true;
+
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
         UserService userservice = ServiceGenerator.createService(UserService.class);
@@ -88,20 +107,60 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
             @Override
             public void success(ProfileResponse profileResponse, Response response) {
 
+                isUserProfileRequestSent = false;
+
                 String firstname = profileResponse.getFirstname();
                 String lastname = profileResponse.getLastname();
 
                 UserUtils.saveUserFirstname(getApplicationContext(), firstname);
                 UserUtils.saveUserLastname(getApplicationContext(), lastname);
 
+                updateUserLogin(profileResponse);
                 updateUserDrawerInfo();
             }
 
             @Override
             public void failure(RetrofitError error) {
+                isUserProfileRequestSent = false;
                 showErrorMessages(TAG, error);
             }
         });
+    }
+
+    /**
+     * Updates existent user login or creates one in db
+     *
+     * @param profileResponse
+     */
+    private void updateUserLogin(ProfileResponse profileResponse) {
+
+        User user = new User();
+
+        user.setFirstname(profileResponse.getFirstname());
+        user.setLastname(profileResponse.getLastname());
+        user.setPrimaryEmail(profileResponse.getPrimaryEmail());
+        user.setJoinedSince(DateUtils.dateToISO8601String(new Date(profileResponse.getJoinedSince()), Locale.getDefault()));
+        user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
+        user.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+
+        UserDao userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
+
+        Query<User> userQuery = userDao
+                .queryBuilder()
+                .where(UserDao.Properties.PrimaryEmail.eq(profileResponse.getPrimaryEmail()))
+                .limit(1)
+                .build();
+
+        List<User> users = userQuery.list();
+
+        // check for user existance in the db
+        if (users.size() == 0) {
+            // no user found -> create one
+            userDao.insert(user);
+        } else {
+            // found a user -> update for device and user information
+            userDao.update(user);
+        }
     }
 
     /**
@@ -201,6 +260,17 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
                     mBackButtonPressedOnce = false;
                 }
             }, Constants.BACK_BUTTON_DELAY_MILLIS);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK && requestCode == Constants.INTENT_CURRENT_DEVICE_ID_RESULT) {
+            if (data.hasExtra(Constants.INTENT_CURRENT_DEVICE_ID)) {
+                currentDeviceId = data.getLongExtra(Constants.INTENT_CURRENT_DEVICE_ID, -1);
+                Log.d(TAG, "Current DB device id received: " + currentDeviceId);
+            }
         }
     }
 
