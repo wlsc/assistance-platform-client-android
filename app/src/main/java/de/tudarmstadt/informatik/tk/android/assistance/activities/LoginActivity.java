@@ -272,6 +272,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // take a server device_id
             Device device = devices.get(0);
             serverDeviceId = device.getLogin().getServer_device_id();
+            if (serverDeviceId.equals(0)) {
+                serverDeviceId = null;
+            }
         }
 
         /**

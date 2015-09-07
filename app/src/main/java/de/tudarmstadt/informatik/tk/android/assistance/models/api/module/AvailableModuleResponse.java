@@ -112,4 +112,12 @@ public class AvailableModuleResponse {
     public void setSensorsOptional(List<ModuleCapability> sensorsOptional) {
         this.sensorsOptional = sensorsOptional;
     }
+
+    public String getSupportEmail() {
+        return this.supportEmail;
+    }
+
+    public void setSupportEmail(String supportEmail) {
+        this.supportEmail = supportEmail;
+    }
 }
