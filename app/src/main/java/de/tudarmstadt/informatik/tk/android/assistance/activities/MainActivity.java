@@ -39,6 +39,7 @@ public class MainActivity extends DrawerActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra(Constants.INTENT_CURRENT_DEVICE_ID, currentDeviceId);
             setResult(Constants.INTENT_CURRENT_DEVICE_ID_RESULT, intent);
+            startActivity(intent);
             finish();
         }
     }

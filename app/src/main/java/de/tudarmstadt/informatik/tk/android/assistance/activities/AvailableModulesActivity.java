@@ -290,12 +290,16 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         List<String> allModuleSensors = new ArrayList<>();
 
-        for (ModuleCapability capability : requiredSensors) {
-            allModuleSensors.add(capability.getType());
+        if (requiredSensors != null) {
+            for (ModuleCapability capability : requiredSensors) {
+                allModuleSensors.add(capability.getType());
+            }
         }
 
-        for (ModuleCapability capability : optionalSensors) {
-            allModuleSensors.add(capability.getType());
+        if (optionalSensors != null) {
+            for (ModuleCapability capability : optionalSensors) {
+                allModuleSensors.add(capability.getType());
+            }
         }
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(

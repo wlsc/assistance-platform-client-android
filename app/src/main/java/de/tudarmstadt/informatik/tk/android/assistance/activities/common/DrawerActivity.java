@@ -44,7 +44,7 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
     private boolean mBackButtonPressedOnce;
 
-    private static boolean isUserProfileRequestSent = false;
+    private static boolean isUserProfileRequestSent;
 
     protected Toolbar mToolbar;
 
@@ -54,9 +54,11 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
     protected DrawerLayout mDrawerLayout;
 
+    protected String mUserFirstname;
+    protected String mUserLastname;
     protected String mUserEmail;
 
-    protected long currentDeviceId = -1;
+    protected long mCurrentDeviceId = -1;
 
     public DrawerActivity() {
         this.mBackButtonPressedOnce = false;
@@ -78,17 +80,37 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
         setupDrawer(mToolbar);
 
         // if user data was not cached, request new
-        String userFirstname = UserUtils.getUserFirstname(getApplicationContext());
-        String userLastname = UserUtils.getUserLastname(getApplicationContext());
 
-        // TODO: optimize it to execute it only once!
+        if (!mUserEmail.isEmpty()) {
 
-        if (userFirstname.isEmpty() || userLastname.isEmpty()) {
-            if (!isUserProfileRequestSent) {
-                requestUserProfile();
+            if (mUserFirstname == null || mUserLastname == null) {
+
+                UserDao userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
+
+                List<User> users = userDao
+                        .queryBuilder()
+                        .where(UserDao.Properties.PrimaryEmail.eq(mUserEmail))
+                        .limit(1)
+                        .build()
+                        .list();
+
+                // found cached user in the db
+                if (users.size() > 0) {
+                    User user = users.get(0);
+
+                    mUserFirstname = user.getFirstname();
+                    mUserLastname = user.getLastname();
+
+                    updateUserDrawerInfo();
+                } else {
+                    // no user profile found -> request from server
+                    if (!isUserProfileRequestSent) {
+                        requestUserProfile();
+                    }
+                }
+            } else {
+                updateUserDrawerInfo();
             }
-        } else {
-            updateUserDrawerInfo();
         }
     }
 
@@ -109,11 +131,11 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
                 isUserProfileRequestSent = false;
 
-                String firstname = profileResponse.getFirstname();
-                String lastname = profileResponse.getLastname();
+                UserUtils.saveUserFirstname(getApplicationContext(), profileResponse.getFirstname());
+                UserUtils.saveUserLastname(getApplicationContext(), profileResponse.getLastname());
 
-                UserUtils.saveUserFirstname(getApplicationContext(), firstname);
-                UserUtils.saveUserLastname(getApplicationContext(), lastname);
+                mUserFirstname = profileResponse.getFirstname();
+                mUserLastname = profileResponse.getLastname();
 
                 updateUserLogin(profileResponse);
                 updateUserDrawerInfo();
@@ -134,17 +156,9 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
      */
     private void updateUserLogin(ProfileResponse profileResponse) {
 
-        User user = new User();
-
-        user.setFirstname(profileResponse.getFirstname());
-        user.setLastname(profileResponse.getLastname());
-        user.setPrimaryEmail(profileResponse.getPrimaryEmail());
-        user.setJoinedSince(DateUtils.dateToISO8601String(new Date(profileResponse.getJoinedSince()), Locale.getDefault()));
-        user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
-        user.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
-
         UserDao userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
 
+        // check already available user in db
         Query<User> userQuery = userDao
                 .queryBuilder()
                 .where(UserDao.Properties.PrimaryEmail.eq(profileResponse.getPrimaryEmail()))
@@ -156,9 +170,28 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
         // check for user existance in the db
         if (users.size() == 0) {
             // no user found -> create one
-            userDao.insert(user);
+
+            User user = new User();
+
+            user.setFirstname(profileResponse.getFirstname());
+            user.setLastname(profileResponse.getLastname());
+            user.setPrimaryEmail(profileResponse.getPrimaryEmail());
+            user.setJoinedSince(DateUtils.dateToISO8601String(new Date(profileResponse.getJoinedSince()), Locale.getDefault()));
+            user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
+            user.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+
+            userDao.insertOrReplace(user);
         } else {
             // found a user -> update for device and user information
+            User user = users.get(0);
+
+            user.setFirstname(profileResponse.getFirstname());
+            user.setLastname(profileResponse.getLastname());
+            user.setPrimaryEmail(profileResponse.getPrimaryEmail());
+            user.setJoinedSince(DateUtils.dateToISO8601String(new Date(profileResponse.getJoinedSince()), Locale.getDefault()));
+            user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
+            user.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+
             userDao.update(user);
         }
     }
@@ -168,12 +201,9 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
      */
     private void updateUserDrawerInfo() {
 
-        String userFirstname = UserUtils.getUserFirstname(getApplicationContext());
-        String userLastname = UserUtils.getUserLastname(getApplicationContext());
-        String userEmail = UserUtils.getUserEmail(getApplicationContext());
         String userPicFilename = UserUtils.getUserPicFilename(getApplicationContext());
 
-        mDrawerFragment.updateUserData(userFirstname + " " + userLastname, userEmail, userPicFilename);
+        mDrawerFragment.updateUserData(mUserFirstname + " " + mUserLastname, mUserEmail, userPicFilename);
     }
 
     /**
@@ -268,8 +298,8 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
         if (resultCode == RESULT_OK && requestCode == Constants.INTENT_CURRENT_DEVICE_ID_RESULT) {
             if (data.hasExtra(Constants.INTENT_CURRENT_DEVICE_ID)) {
-                currentDeviceId = data.getLongExtra(Constants.INTENT_CURRENT_DEVICE_ID, -1);
-                Log.d(TAG, "Current DB device id received: " + currentDeviceId);
+                mCurrentDeviceId = data.getLongExtra(Constants.INTENT_CURRENT_DEVICE_ID, -1);
+                Log.d(TAG, "Current DB device id received: " + mCurrentDeviceId);
             }
         }
     }
