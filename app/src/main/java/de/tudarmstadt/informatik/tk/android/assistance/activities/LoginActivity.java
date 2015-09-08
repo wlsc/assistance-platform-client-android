@@ -113,6 +113,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private String email;
     private String password;
 
+    private LoginDao loginDao;
+
     private DeviceDao deviceDao;
 
     private UserDao userDao;
@@ -267,45 +269,29 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
         }
 
-        List<User> users = userDao
+        User user = userDao
                 .queryBuilder()
                 .where(UserDao.Properties.PrimaryEmail.eq(userEmail))
                 .limit(1)
                 .build()
-                .list();
-
-        if (!users.isEmpty()) {
-            User user = users.get(0);
-
-            UserUtils.saveUserEmail(getApplicationContext(), user.getPrimaryEmail());
-            UserUtils.saveUserFirstname(getApplicationContext(), user.getFirstname());
-            UserUtils.saveUserLastname(getApplicationContext(), user.getLastname());
-        }
-
-        // checking device information
-        // if we had already logged in in the past
-        if (deviceDao == null) {
-            deviceDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDeviceDao();
-        }
-
-        List<Device> devices = deviceDao
-                .queryBuilder()
-                .where(DeviceDao.Properties.Device_identifier.eq(HardwareUtils.getAndroidId(this)))
-                .limit(1)
-                .build()
-                .list();
+                .unique();
 
         Long serverDeviceId = null;
 
-        // user was already logged in
-        if (devices.size() > 0) {
-            // take a server device_id
-            Device device = devices.get(0);
+        if (user != null) {
+            UserUtils.saveUserEmail(getApplicationContext(), user.getPrimaryEmail());
+            UserUtils.saveUserFirstname(getApplicationContext(), user.getFirstname());
+            UserUtils.saveUserLastname(getApplicationContext(), user.getLastname());
 
-            serverDeviceId = device.getLogin().getServer_device_id();
+            String currentAndroidId = HardwareUtils.getAndroidId(this);
 
-            if (serverDeviceId.equals(0)) {
-                serverDeviceId = null;
+            List<Device> userDevices = user.getDeviceList();
+
+            for (Device device : userDevices) {
+                if (device.getDevice_identifier().equals(currentAndroidId)) {
+                    serverDeviceId = device.getLogin().getServer_device_id();
+                    break;
+                }
             }
         }
 
@@ -365,58 +351,60 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
 
-        Login login = new Login();
+        if (loginDao == null) {
+            loginDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getLoginDao();
+        }
 
-        login.setServer_device_id(loginResponse.getDeviceId());
-        login.setLast_email(email);
-        login.setToken(loginResponse.getUserToken());
-        login.setCreated(createdDate);
-
-        LoginDao loginDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getLoginDao();
-
-        List<Login> logins = loginDao
+        Login login = loginDao
                 .queryBuilder()
                 .where(LoginDao.Properties.Token.eq(loginResponse.getUserToken()))
                 .limit(1)
                 .build()
-                .list();
+                .unique();
 
         // check if that login was already saved in the system
-        if (logins.size() == 0) {
+        if (login == null) {
             // no such login found -> insert new login information into db
-            loginDao.insert(login);
+
+            Login newLogin = new Login();
+
+            newLogin.setServer_device_id(loginResponse.getDeviceId());
+            newLogin.setLast_email(email);
+            newLogin.setToken(loginResponse.getUserToken());
+            newLogin.setCreated(createdDate);
+
+            loginDao.insert(newLogin);
         } else {
-            // found existing login
-            login = logins.get(0);
-        }
 
+            List<Device> userDevices = login.getDeviceList();
 
-        DeviceDao deviceDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDeviceDao();
+            String currentAndroidId = HardwareUtils.getAndroidId(this);
+            boolean isDeviceWasFound = false;
 
-        List<Device> devices = deviceDao
-                .queryBuilder()
-                .where(DeviceDao.Properties.Device_identifier.eq(HardwareUtils.getAndroidId(this)))
-                .limit(1)
-                .build()
-                .list();
+            for (Device device : userDevices) {
+                if (device.getDevice_identifier().equals(currentAndroidId)) {
+                    isDeviceWasFound = true;
+                    currentDeviceId = device.getId();
+                    break;
+                }
+            }
 
-        // check if the device already exists in the db
-        if (devices.size() == 0) {
-            // no such device found in db -> insert new
+            if (!isDeviceWasFound) {
+                // no such device found in db -> insert new
 
-            Device device = new Device();
-            device.setOs(Constants.PLATFORM_NAME);
-            device.setOs_version(HardwareUtils.getAndroidVersion());
-            device.setBrand(HardwareUtils.getDeviceBrandName());
-            device.setModel(HardwareUtils.getDeviceModelName());
-            device.setDevice_identifier(HardwareUtils.getAndroidId(this));
-            device.setCreated(createdDate);
-            device.setLogin(login);
+                Device device = new Device();
+                device.setOs(Constants.PLATFORM_NAME);
+                device.setOs_version(HardwareUtils.getAndroidVersion());
+                device.setBrand(HardwareUtils.getDeviceBrandName());
+                device.setModel(HardwareUtils.getDeviceModelName());
+                device.setDevice_identifier(HardwareUtils.getAndroidId(this));
+                device.setCreated(createdDate);
+                device.setLogin(login);
 
-            currentDeviceId = deviceDao.insert(device);
+                currentDeviceId = deviceDao.insert(device);
 
-        } else {
-            currentDeviceId = devices.get(0).getId();
+                userDevices.add(device);
+            }
         }
     }
 

@@ -1,9 +1,13 @@
 package de.tudarmstadt.informatik.tk.android.assistance.utils;
 
+import java.util.Date;
+import java.util.Locale;
+
 import de.tudarmstadt.informatik.tk.android.assistance.models.api.module.AvailableModuleResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.models.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
 import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleCapability;
+import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -52,6 +56,7 @@ public class ConverterUtils {
         dbModule.setDescription_full(availableModuleResponse.getDescriptionFull() == null ? "" : availableModuleResponse.getDescriptionFull());
         dbModule.setPackage_name(availableModuleResponse.getModulePackage() == null ? "" : availableModuleResponse.getModulePackage());
         dbModule.setSupport_email(availableModuleResponse.getSupportEmail() == null ? "" : availableModuleResponse.getSupportEmail());
+        dbModule.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
         return dbModule;
     }
@@ -84,6 +89,7 @@ public class ConverterUtils {
 
         moduleCapability.setType(moduleCapabilityResponse.getType());
         moduleCapability.setFrequency(moduleCapabilityResponse.getFrequency());
+        moduleCapability.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
         return moduleCapability;
     }

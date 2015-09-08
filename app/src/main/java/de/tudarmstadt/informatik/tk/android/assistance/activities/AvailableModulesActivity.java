@@ -16,9 +16,7 @@ import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -42,7 +40,6 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.User;
 import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DatabaseManager;
-import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
@@ -126,42 +123,32 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
             userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
         }
 
-        List<User> users = userDao
+        User user = userDao
                 .queryBuilder()
                 .where(UserDao.Properties.PrimaryEmail.eq(mUserEmail))
                 .limit(1)
                 .build()
-                .list();
+                .unique();
 
-
-        // user was found
-        long currentUserId = -1;
-
-        if (users.size() > 0) {
-
-            User user = users.get(0);
-
-            UserUtils.saveCurrentUserId(getApplicationContext(), user.getId());
-
-            currentUserId = user.getId();
+        if (user == null) {
+            requestAvailableModules();
+            return;
         }
+
+        UserUtils.saveCurrentUserId(getApplicationContext(), user.getId());
 
         if (moduleDao == null) {
             moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleDao();
         }
 
-        List<Module> userModules = moduleDao
-                .queryBuilder()
-                .where(ModuleDao.Properties.User_id.eq(currentUserId))
-                .build()
-                .list();
+        List<Module> userModules = user.getModuleList();
+
 
         // no modules was found -> request from server
         if (userModules.isEmpty()) {
             Log.d(TAG, "Module list not found in db. Requesting from server...");
 
             requestAvailableModules();
-
         } else {
             // there are modules were found -> populate a list
 
@@ -271,23 +258,41 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
             moduleCapabilityDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleCapabilityDao();
         }
 
-        long currentUserId = UserUtils.getCurrentUserId(getApplicationContext());
+        User user = userDao
+                .queryBuilder()
+                .where(UserDao.Properties.PrimaryEmail.eq(mUserEmail))
+                .limit(1)
+                .build()
+                .unique();
 
-        List<Module> dbModules = new ArrayList<>(availableModulesResponse.size());
+        List<Module> userModules = user.getModuleList();
+
+        if (moduleDao == null) {
+            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleDao();
+        }
 
         for (AvailableModuleResponse availableModule : availableModulesResponse) {
 
-            Module module = ConverterUtils.convertModule(availableModule);
+            Log.d(TAG, "Inserting following...");
+            Log.d(TAG, availableModule.toString());
 
-            module.setUser_id(currentUserId);
-            module.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+            Module module = ConverterUtils.convertModule(availableModule);
+            module.setUser(user);
+
+            moduleDao.insert(module);
+
+            userModules.add(module);
+
+            List<ModuleCapability> capList = module.getModuleCapabilityList();
+
+            Log.d(TAG, "capability list size: " + capList.size());
 
             List<ModuleCapabilityResponse> reqCaps = availableModule.getSensorsRequired();
             List<ModuleCapabilityResponse> optCaps = availableModule.getSensorsOptional();
 
-            if (reqCaps != null && !reqCaps.isEmpty()) {
+            List<ModuleCapability> modCaps = new ArrayList<>();
 
-                List<ModuleCapability> modCaps = new ArrayList<>();
+            if (reqCaps != null && !reqCaps.isEmpty()) {
 
                 // process required capabilities
                 for (ModuleCapabilityResponse cap : reqCaps) {
@@ -297,16 +302,15 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                     dbCap.setRequired(true);
                     dbCap.setModule(module);
 
-                    modCaps.add(dbCap);
-                }
+                    moduleCapabilityDao.insert(dbCap);
 
-                // insert entries
-                moduleCapabilityDao.insertInTx(modCaps);
+                    capList.add(dbCap);
+
+//                    modCaps.add(dbCap);
+                }
             }
 
             if (optCaps != null && !optCaps.isEmpty()) {
-
-                List<ModuleCapability> modCaps = new ArrayList<>();
 
                 // process optional capabilities
                 for (ModuleCapabilityResponse cap : optCaps) {
@@ -316,17 +320,21 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                     dbCap.setRequired(false);
                     dbCap.setModule(module);
 
-                    modCaps.add(dbCap);
-                }
+                    moduleCapabilityDao.insert(dbCap);
 
-                // insert entries
-                moduleCapabilityDao.insertInTx(modCaps);
+                    capList.add(dbCap);
+
+//                    modCaps.add(dbCap);
+                }
             }
 
-            dbModules.add(module);
-        }
+            // insert entries
+//            if (!modCaps.isEmpty()) {
+//                moduleCapabilityDao.insertInTx(modCaps);
+//            }
 
-        moduleDao.insertOrReplaceInTx(dbModules);
+//            capList.addAll(modCaps);
+        }
 
         Log.d(TAG, "Finished saving modules into db!");
     }
