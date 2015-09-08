@@ -24,4 +24,11 @@ public class Config {
      * Path to save user picture
      */
     public static final String USER_PIC_PATH = "assistance/user/img";
+
+    /**
+     * An update interval for every request to server
+     * In milliseconds
+     * Current: 5 MIN
+     */
+    public static final int UPDATE_REQUEST_INTERVAL = 5 * 60 * 1000;
 }

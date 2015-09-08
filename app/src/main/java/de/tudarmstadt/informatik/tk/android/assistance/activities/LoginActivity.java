@@ -255,7 +255,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         showProgress(true);
 
-        // checking if we had already logged in in the past
+        // checking device information
+        // if we had already logged in in the past
         DeviceDao deviceDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDeviceDao();
 
         List<Device> devices = deviceDao

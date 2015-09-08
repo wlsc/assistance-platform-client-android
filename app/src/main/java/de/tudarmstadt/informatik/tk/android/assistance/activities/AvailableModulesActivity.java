@@ -30,8 +30,15 @@ import de.tudarmstadt.informatik.tk.android.assistance.models.api.module.Availab
 import de.tudarmstadt.informatik.tk.android.assistance.models.api.module.ModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.services.AssistanceService;
 import de.tudarmstadt.informatik.tk.android.assistance.services.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.utils.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.utils.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.views.CardView;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DaoSession;
+import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
+import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.User;
+import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
+import de.tudarmstadt.informatik.tk.android.kraken.utils.DatabaseManager;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
@@ -49,7 +56,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
     protected SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private Map<String, AvailableModuleResponse> availableModules;
+    private Map<String, AvailableModuleResponse> availableModuleResponses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         boolean userHasModulesInstalled = UserUtils.isUserHasModules(getApplicationContext());
 
+        // locking or unlocking drawer
         if (userHasModulesInstalled) {
 //            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 //            mDrawerFragment.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
@@ -92,9 +100,86 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         mSwipeRefreshLayout.setRefreshing(true);
 
+        // register this activity to events
         EventBus.getDefault().register(this);
 
-        requestAvailableModules();
+        loadModules();
+    }
+
+    private void loadModules() {
+
+        final DaoSession daoSession = DatabaseManager.getInstance(getApplicationContext()).getDaoSession();
+
+        UserDao userDao = daoSession.getUserDao();
+
+        List<User> users = userDao
+                .queryBuilder()
+                .where(UserDao.Properties.PrimaryEmail.eq(mUserEmail))
+                .limit(1)
+                .build()
+                .list();
+
+        long userId = -1;
+
+        // user was found
+        if (users.size() > 0) {
+            User user = users.get(0);
+            userId = user.getId();
+        }
+
+        ModuleDao moduleDao = daoSession.getModuleDao();
+
+        List<Module> userModules = moduleDao
+                .queryBuilder()
+                .where(ModuleDao.Properties.User_id.eq(userId))
+                .build()
+                .list();
+
+        // no modules was found -> request from server
+        if (userModules.isEmpty()) {
+            requestAvailableModules();
+        } else {
+            // there are modules were found -> populate a list
+
+            availableModuleResponses = new ArrayMap<>();
+            ArrayList<Card> cards = new ArrayList<>();
+
+            for (Module module : userModules) {
+
+                CardView card = new CardView(getApplicationContext());
+                CardHeader header = new CardHeader(this);
+
+                header.setTitle(module.getTitle());
+                card.setTitle(module.getDescription_short());
+                card.addCardHeader(header);
+                card.setModuleId(module.getPackage_name());
+
+                CardThumbnail thumb = new CardThumbnail(this);
+
+                String logoUrl = module.getLogo_url();
+
+                if (logoUrl.isEmpty()) {
+                    Log.d(TAG, "Logo URL: NO LOGO supplied");
+                    thumb.setDrawableResource(R.drawable.no_image);
+                } else {
+                    Log.d(TAG, "Logo URL: " + logoUrl);
+                    thumb.setUrlResource(logoUrl);
+                }
+
+                card.addCardThumbnail(thumb);
+
+                cards.add(card);
+
+                // for easy access later on
+                availableModuleResponses.put(module.getPackage_name(), ConverterUtils.convertModule(module));
+            }
+
+            CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, cards);
+
+            if (mModuleList != null) {
+                mModuleList.setAdapter(mCardArrayAdapter);
+            }
+        }
     }
 
     /**
@@ -148,16 +233,11 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         if (availableModulesResponse != null && !availableModulesResponse.isEmpty()) {
 
-            availableModules = new ArrayMap<>();
+            this.availableModuleResponses = new ArrayMap<>();
             ArrayList<Card> cards = new ArrayList<>();
 
             for (AvailableModuleResponse module : availableModulesResponse) {
 
-                String modulePackage = module.getModulePackage();
-                String moduleTitle = module.getTitle();
-                String moduleDescriptionFull = module.getDescriptionFull();
-                String moduleDescriptionShort = module.getDescriptionShort();
-                String moduleCopyright = module.getCopyright();
                 List<ModuleCapability> moduleReqSensors = module.getSensorsRequired();
                 List<ModuleCapability> moduleOptSensors = module.getSensorsOptional();
 
@@ -165,12 +245,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 CardView card = new CardView(getApplicationContext());
                 CardHeader header = new CardHeader(this);
 
-                Log.d(TAG, "Module content");
-                Log.d(TAG, "Package: " + modulePackage);
-                Log.d(TAG, "Title: " + moduleTitle);
-                Log.d(TAG, "Full description: " + moduleDescriptionFull);
-                Log.d(TAG, "Short description: " + moduleDescriptionShort);
-                Log.d(TAG, "Copyright: " + moduleCopyright);
+                Log.d(TAG, module.toString());
 
                 if (moduleReqSensors != null && !moduleReqSensors.isEmpty()) {
 
@@ -218,7 +293,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 cards.add(card);
 
                 // for easy access later on
-                availableModules.put(module.getModulePackage(), module);
+                this.availableModuleResponses.put(module.getModulePackage(), module);
             }
 
             CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, cards);
@@ -270,7 +345,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
         View dialogView = inflater.inflate(R.layout.alert_dialog_more_info_module, null);
         dialogBuilder.setView(dialogView);
 
-        final AvailableModuleResponse selectedModule = availableModules.get(moduleId);
+        final AvailableModuleResponse selectedModule = availableModuleResponses.get(moduleId);
 
         dialogBuilder.setPositiveButton(R.string.button_ok_text, new DialogInterface.OnClickListener() {
 
@@ -307,10 +382,12 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Log.d(TAG, "User accepted module permissions.");
+
+
             }
         });
 
-        AvailableModuleResponse selectedModule = availableModules.get(moduleId);
+        AvailableModuleResponse selectedModule = availableModuleResponses.get(moduleId);
 
         TextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
         title.setText(selectedModule.getTitle());
