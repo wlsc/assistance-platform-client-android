@@ -34,4 +34,12 @@ public class RegistrationRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public String toString() {
+        return "RegistrationRequest{" +
+                "userEmail='" + userEmail + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

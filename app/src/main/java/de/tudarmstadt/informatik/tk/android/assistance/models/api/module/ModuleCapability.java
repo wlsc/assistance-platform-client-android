@@ -35,4 +35,12 @@ public class ModuleCapability {
     public void setFrequency(double frequency) {
         this.frequency = frequency;
     }
+
+    @Override
+    public String toString() {
+        return "ModuleCapability{" +
+                "type='" + type + '\'' +
+                ", frequency=" + frequency +
+                '}';
+    }
 }

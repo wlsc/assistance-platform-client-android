@@ -48,4 +48,13 @@ public class UpdateProfileRequest {
     public void setServices(List<UserSocialService> services) {
         this.services = services;
     }
+
+    @Override
+    public String toString() {
+        return "UpdateProfileRequest{" +
+                "firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", services=" + services +
+                '}';
+    }
 }

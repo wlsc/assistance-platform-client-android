@@ -22,4 +22,11 @@ public class ResetPasswordRequest {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public String toString() {
+        return "ResetPasswordRequest{" +
+                "email='" + email + '\'' +
+                '}';
+    }
 }

@@ -22,4 +22,11 @@ public class ToggleModuleRequest {
     public void setModuleId(String moduleId) {
         this.moduleId = moduleId;
     }
+
+    @Override
+    public String toString() {
+        return "ToggleModuleRequest{" +
+                "moduleId='" + moduleId + '\'' +
+                '}';
+    }
 }

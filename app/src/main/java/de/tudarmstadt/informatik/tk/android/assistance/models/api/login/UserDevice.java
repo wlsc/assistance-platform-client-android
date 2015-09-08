@@ -86,4 +86,15 @@ public class UserDevice {
         this.model = model;
     }
 
+    @Override
+    public String toString() {
+        return "UserDevice{" +
+                "id=" + id +
+                ", deviceId='" + deviceId + '\'' +
+                ", os='" + os + '\'' +
+                ", osVersion='" + osVersion + '\'' +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                '}';
+    }
 }

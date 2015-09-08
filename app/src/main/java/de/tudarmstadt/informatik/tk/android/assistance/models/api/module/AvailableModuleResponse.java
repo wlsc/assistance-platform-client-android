@@ -120,4 +120,19 @@ public class AvailableModuleResponse {
     public void setSupportEmail(String supportEmail) {
         this.supportEmail = supportEmail;
     }
+
+    @Override
+    public String toString() {
+        return "AvailableModuleResponse{" +
+                "modulePackage='" + modulePackage + '\'' +
+                ", title='" + title + '\'' +
+                ", logo='" + logo + '\'' +
+                ", descriptionShort='" + descriptionShort + '\'' +
+                ", descriptionFull='" + descriptionFull + '\'' +
+                ", copyright='" + copyright + '\'' +
+                ", sensorsRequired=" + sensorsRequired +
+                ", sensorsOptional=" + sensorsOptional +
+                ", supportEmail='" + supportEmail + '\'' +
+                '}';
+    }
 }

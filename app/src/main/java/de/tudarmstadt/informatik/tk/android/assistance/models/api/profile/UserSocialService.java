@@ -88,4 +88,16 @@ public class UserSocialService {
     public void setUpdated(Long updated) {
         this.updated = updated;
     }
+
+    @Override
+    public String toString() {
+        return "UserSocialService{" +
+                "name='" + name + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", email='" + email + '\'' +
+                ", updated=" + updated +
+                ", created=" + created +
+                '}';
+    }
 }

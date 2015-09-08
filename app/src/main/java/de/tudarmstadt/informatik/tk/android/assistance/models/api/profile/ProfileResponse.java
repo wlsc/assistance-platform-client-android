@@ -84,4 +84,16 @@ public class ProfileResponse {
     public void setSocialServices(List<UserSocialService> socialServices) {
         this.socialServices = socialServices;
     }
+
+    @Override
+    public String toString() {
+        return "ProfileResponse{" +
+                "firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", primaryEmail='" + primaryEmail + '\'' +
+                ", lastLogin=" + lastLogin +
+                ", joinedSince=" + joinedSince +
+                ", socialServices=" + socialServices +
+                '}';
+    }
 }

@@ -48,4 +48,13 @@ public class LoginRequest {
     public void setDevice(UserDevice device) {
         this.device = device;
     }
+
+    @Override
+    public String toString() {
+        return "LoginRequest{" +
+                "userEmail='" + userEmail + '\'' +
+                ", password='" + password + '\'' +
+                ", device=" + device +
+                '}';
+    }
 }

@@ -22,4 +22,11 @@ public class RegistrationResponse {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    @Override
+    public String toString() {
+        return "RegistrationResponse{" +
+                "userId=" + userId +
+                '}';
+    }
 }

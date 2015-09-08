@@ -27,4 +27,11 @@ public class LoginResponse {
         return this.deviceId;
     }
 
+    @Override
+    public String toString() {
+        return "LoginResponse{" +
+                "userToken='" + userToken + '\'' +
+                ", deviceId=" + deviceId +
+                '}';
+    }
 }
