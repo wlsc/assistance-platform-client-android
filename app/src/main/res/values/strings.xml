@@ -7,7 +7,8 @@
     <string name="user_feedback_url">mailto:developer@tk.informatik.tu-darmstadt.de</string>
     <string name="user_feedback_subject">Feedback for Kraken App</string>
     <string name="user_feedback_body">Hi,\n\n</string>
-    <string name="accept_text">ACCEPT</string>
+    <string name="button_accept_text">ACCEPT</string>
+    <string name="button_ok_text">OK</string>
 
     <!-- SETTINGS: SCREEN -->
     <string name="settings_activity_title">Settings</string>

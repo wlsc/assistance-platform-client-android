@@ -173,7 +173,9 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 Log.d(TAG, "Copyright: " + moduleCopyright);
 
                 if (moduleReqSensors != null && !moduleReqSensors.isEmpty()) {
+
                     Log.d(TAG, "Req. sensors:");
+
                     for (ModuleCapability capability : moduleReqSensors) {
                         Log.d(TAG, "Type: " + capability.getType());
                         Log.d(TAG, "Frequency: " + capability.getFrequency());
@@ -183,7 +185,9 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 }
 
                 if (moduleOptSensors != null && !moduleOptSensors.isEmpty()) {
+
                     Log.d(TAG, "Optional sensors:");
+
                     for (ModuleCapability capability : moduleOptSensors) {
                         Log.d(TAG, "Type: " + capability.getType());
                         Log.d(TAG, "Frequency: " + capability.getFrequency());
@@ -248,6 +252,39 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
      */
     public void onEvent(ModuleShowMoreInfoEvent event) {
         Log.d(TAG, "Received show more info event. Module id: " + event.getModuleId());
+
+        showMoreModuleInformationDialog(event.getModuleId());
+    }
+
+    /**
+     * Shows more information about an assistance module
+     *
+     * @param moduleId
+     */
+    private void showMoreModuleInformationDialog(String moduleId) {
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setInverseBackgroundForced(true);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_dialog_more_info_module, null);
+        dialogBuilder.setView(dialogView);
+
+        final AvailableModuleResponse selectedModule = availableModules.get(moduleId);
+
+        dialogBuilder.setPositiveButton(R.string.button_ok_text, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d(TAG, "User tapped more information about the " + selectedModule.getTitle() + " module");
+            }
+        });
+
+        TextView moreInfoFull = ButterKnife.findById(dialogView, R.id.module_more_info);
+        moreInfoFull.setText(selectedModule.getDescriptionFull());
+
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
     }
 
     /**
@@ -265,7 +302,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
         View dialogView = inflater.inflate(R.layout.alert_dialog_permissions, null);
         dialogBuilder.setView(dialogView);
 
-        dialogBuilder.setPositiveButton(R.string.accept_text, new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton(R.string.button_accept_text, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
