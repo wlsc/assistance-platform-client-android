@@ -267,6 +267,10 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         Log.d(TAG, "Saving modules into db...");
 
+        if (moduleCapabilityDao == null) {
+            moduleCapabilityDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleCapabilityDao();
+        }
+
         long currentUserId = UserUtils.getCurrentUserId(getApplicationContext());
 
         List<Module> dbModules = new ArrayList<>(availableModulesResponse.size());
