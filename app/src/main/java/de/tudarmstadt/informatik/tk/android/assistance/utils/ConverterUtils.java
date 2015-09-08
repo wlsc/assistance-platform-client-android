@@ -43,13 +43,13 @@ public class ConverterUtils {
 
         Module dbModule = new Module();
 
-        dbModule.setTitle(availableModuleResponse.getTitle());
-        dbModule.setLogo_url(availableModuleResponse.getLogo());
-        dbModule.setCopyright(availableModuleResponse.getCopyright());
-        dbModule.setDescription_short(availableModuleResponse.getDescriptionShort());
-        dbModule.setDescription_full(availableModuleResponse.getDescriptionFull());
-        dbModule.setPackage_name(availableModuleResponse.getModulePackage());
-        dbModule.setSupport_email(availableModuleResponse.getSupportEmail());
+        dbModule.setTitle(availableModuleResponse.getTitle() == null ? "" : availableModuleResponse.getTitle());
+        dbModule.setLogo_url(availableModuleResponse.getLogo() == null ? "" : availableModuleResponse.getLogo());
+        dbModule.setCopyright(availableModuleResponse.getCopyright() == null ? "" : availableModuleResponse.getCopyright());
+        dbModule.setDescription_short(availableModuleResponse.getDescriptionShort() == null ? "" : availableModuleResponse.getDescriptionShort());
+        dbModule.setDescription_full(availableModuleResponse.getDescriptionFull() == null ? "" : availableModuleResponse.getDescriptionFull());
+        dbModule.setPackage_name(availableModuleResponse.getModulePackage() == null ? "" : availableModuleResponse.getModulePackage());
+        dbModule.setSupport_email(availableModuleResponse.getSupportEmail() == null ? "" : availableModuleResponse.getSupportEmail());
 
         return dbModule;
     }

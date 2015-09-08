@@ -45,7 +45,7 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
                 Log.d(TAG, "Developer mode is DISABLED.");
             }
 
-            PreferencesUtils.saveToPreferences(getActivity().getApplicationContext(), key, isDeveloper);
+            PreferencesUtils.savePreference(getActivity().getApplicationContext(), key, isDeveloper);
         }
     }
 

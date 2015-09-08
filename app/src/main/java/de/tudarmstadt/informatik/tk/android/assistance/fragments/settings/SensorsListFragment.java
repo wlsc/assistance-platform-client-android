@@ -77,7 +77,7 @@ public class SensorsListFragment extends Fragment {
      */
     private List<SensorsListItem> getSensorsList() {
 
-        boolean isDeveloperEnabled = PreferencesUtils.readFromPreferences(getActivity().getApplicationContext(), "pref_be_developer", false);
+        boolean isDeveloperEnabled = PreferencesUtils.getPreference(getActivity().getApplicationContext(), "pref_be_developer", false);
 
         List<SensorsListItem> sensorsListItems = new ArrayList<>();
         SensorManager manager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);

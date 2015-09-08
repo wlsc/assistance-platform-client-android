@@ -16,7 +16,9 @@ import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -33,12 +35,12 @@ import de.tudarmstadt.informatik.tk.android.assistance.services.ServiceGenerator
 import de.tudarmstadt.informatik.tk.android.assistance.utils.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.utils.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.views.CardView;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DaoSession;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
 import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.User;
 import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DatabaseManager;
+import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
@@ -57,6 +59,10 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
     protected SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Map<String, AvailableModuleResponse> availableModuleResponses;
+
+    private static UserDao userDao;
+
+    private static ModuleDao moduleDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +100,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
             @Override
             public void onRefresh() {
-                requestAvailableModules();
+                loadModules();
             }
         });
 
@@ -108,9 +114,9 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
     private void loadModules() {
 
-        final DaoSession daoSession = DatabaseManager.getInstance(getApplicationContext()).getDaoSession();
-
-        UserDao userDao = daoSession.getUserDao();
+        if (userDao == null) {
+            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
+        }
 
         List<User> users = userDao
                 .queryBuilder()
@@ -119,29 +125,40 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 .build()
                 .list();
 
-        long userId = -1;
 
         // user was found
+        long currentUserId = -1;
+
         if (users.size() > 0) {
+
             User user = users.get(0);
-            userId = user.getId();
+
+            UserUtils.saveCurrentUserId(getApplicationContext(), user.getId());
+
+            currentUserId = user.getId();
         }
 
-        ModuleDao moduleDao = daoSession.getModuleDao();
+        if (moduleDao == null) {
+            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleDao();
+        }
 
         List<Module> userModules = moduleDao
                 .queryBuilder()
-                .where(ModuleDao.Properties.User_id.eq(userId))
+                .where(ModuleDao.Properties.User_id.eq(currentUserId))
                 .build()
                 .list();
 
         // no modules was found -> request from server
         if (userModules.isEmpty()) {
+            Log.d(TAG, "Module list not found in db. Requesting from server...");
+
             requestAvailableModules();
+
         } else {
             // there are modules were found -> populate a list
 
             availableModuleResponses = new ArrayMap<>();
+
             ArrayList<Card> cards = new ArrayList<>();
 
             for (Module module : userModules) {
@@ -167,7 +184,6 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 }
 
                 card.addCardThumbnail(thumb);
-
                 cards.add(card);
 
                 // for easy access later on
@@ -201,9 +217,19 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
             @Override
             public void success(List<AvailableModuleResponse> availableModulesResponse, Response response) {
 
-                populateAvailableModuleList(availableModulesResponse);
+                if (availableModulesResponse != null && !availableModulesResponse.isEmpty()) {
 
-                mSwipeRefreshLayout.setRefreshing(false);
+                    // show them to user
+                    populateAvailableModuleList(availableModulesResponse);
+
+                    // save module information into db
+                    saveModulesIntoDb(availableModulesResponse);
+
+                    mSwipeRefreshLayout.setRefreshing(false);
+
+                } else {
+                    // TODO: show no modules available
+                }
 
                 Log.d(TAG, "successfully received available modules! size: " + availableModulesResponse.size());
             }
@@ -225,82 +251,103 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
     }
 
     /**
+     * Saves module information into db
+     *
+     * @param availableModulesResponse
+     */
+    private void saveModulesIntoDb(List<AvailableModuleResponse> availableModulesResponse) {
+
+        Log.d(TAG, "Saving modules into db...");
+
+        long currentUserId = UserUtils.getCurrentUserId(getApplicationContext());
+
+        List<Module> dbModules = new ArrayList<>(availableModulesResponse.size());
+
+        for (AvailableModuleResponse availableModule : availableModulesResponse) {
+            Module module = ConverterUtils.convertModule(availableModule);
+            module.setUser_id(currentUserId);
+            module.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+            dbModules.add(module);
+        }
+
+        moduleDao.insertOrReplaceInTx(dbModules);
+
+        Log.d(TAG, "Finished saving modules into db!");
+    }
+
+    /**
      * Show available modules to user
      *
      * @param availableModulesResponse
      */
     private void populateAvailableModuleList(List<AvailableModuleResponse> availableModulesResponse) {
 
-        if (availableModulesResponse != null && !availableModulesResponse.isEmpty()) {
+        this.availableModuleResponses = new ArrayMap<>();
+        ArrayList<Card> cards = new ArrayList<>();
 
-            this.availableModuleResponses = new ArrayMap<>();
-            ArrayList<Card> cards = new ArrayList<>();
+        for (AvailableModuleResponse module : availableModulesResponse) {
 
-            for (AvailableModuleResponse module : availableModulesResponse) {
-
-                List<ModuleCapability> moduleReqSensors = module.getSensorsRequired();
-                List<ModuleCapability> moduleOptSensors = module.getSensorsOptional();
+            List<ModuleCapability> moduleReqSensors = module.getSensorsRequired();
+            List<ModuleCapability> moduleOptSensors = module.getSensorsOptional();
 
 
-                CardView card = new CardView(getApplicationContext());
-                CardHeader header = new CardHeader(this);
+            CardView card = new CardView(getApplicationContext());
+            CardHeader header = new CardHeader(this);
 
-                Log.d(TAG, module.toString());
+            Log.d(TAG, module.toString());
 
-                if (moduleReqSensors != null && !moduleReqSensors.isEmpty()) {
+            if (moduleReqSensors != null && !moduleReqSensors.isEmpty()) {
 
-                    Log.d(TAG, "Req. sensors:");
+                Log.d(TAG, "Req. sensors:");
 
-                    for (ModuleCapability capability : moduleReqSensors) {
-                        Log.d(TAG, "Type: " + capability.getType());
-                        Log.d(TAG, "Frequency: " + capability.getFrequency());
-                    }
-                } else {
-                    Log.d(TAG, "Empty");
+                for (ModuleCapability capability : moduleReqSensors) {
+                    Log.d(TAG, "Type: " + capability.getType());
+                    Log.d(TAG, "Frequency: " + capability.getFrequency());
                 }
-
-                if (moduleOptSensors != null && !moduleOptSensors.isEmpty()) {
-
-                    Log.d(TAG, "Optional sensors:");
-
-                    for (ModuleCapability capability : moduleOptSensors) {
-                        Log.d(TAG, "Type: " + capability.getType());
-                        Log.d(TAG, "Frequency: " + capability.getFrequency());
-                    }
-                } else {
-                    Log.d(TAG, "Empty");
-                }
-
-                header.setTitle(module.getTitle());
-                card.setTitle(module.getDescriptionShort());
-                card.addCardHeader(header);
-                card.setModuleId(module.getModulePackage());
-
-                CardThumbnail thumb = new CardThumbnail(this);
-
-                String logoUrl = module.getLogo();
-
-                if (logoUrl.isEmpty()) {
-                    Log.d(TAG, "Logo URL: NO LOGO supplied");
-                    thumb.setDrawableResource(R.drawable.no_image);
-                } else {
-                    Log.d(TAG, "Logo URL: " + logoUrl);
-                    thumb.setUrlResource(logoUrl);
-                }
-
-                card.addCardThumbnail(thumb);
-
-                cards.add(card);
-
-                // for easy access later on
-                this.availableModuleResponses.put(module.getModulePackage(), module);
+            } else {
+                Log.d(TAG, "Empty");
             }
 
-            CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, cards);
+            if (moduleOptSensors != null && !moduleOptSensors.isEmpty()) {
 
-            if (mModuleList != null) {
-                mModuleList.setAdapter(mCardArrayAdapter);
+                Log.d(TAG, "Optional sensors:");
+
+                for (ModuleCapability capability : moduleOptSensors) {
+                    Log.d(TAG, "Type: " + capability.getType());
+                    Log.d(TAG, "Frequency: " + capability.getFrequency());
+                }
+            } else {
+                Log.d(TAG, "Empty");
             }
+
+            header.setTitle(module.getTitle());
+            card.setTitle(module.getDescriptionShort());
+            card.addCardHeader(header);
+            card.setModuleId(module.getModulePackage());
+
+            CardThumbnail thumb = new CardThumbnail(this);
+
+            String logoUrl = module.getLogo();
+
+            if (logoUrl.isEmpty()) {
+                Log.d(TAG, "Logo URL: NO LOGO supplied");
+                thumb.setDrawableResource(R.drawable.no_image);
+            } else {
+                Log.d(TAG, "Logo URL: " + logoUrl);
+                thumb.setUrlResource(logoUrl);
+            }
+
+            card.addCardThumbnail(thumb);
+            cards.add(card);
+
+            // for easy access later on
+            this.availableModuleResponses.put(module.getModulePackage(), module);
+        }
+
+        CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, cards);
+
+        if (mModuleList != null) {
+            mModuleList.setAdapter(mCardArrayAdapter);
         }
     }
 
@@ -433,6 +480,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
     protected void onDestroy() {
         ButterKnife.unbind(this);
         EventBus.getDefault().unregister(this);
+        moduleDao = null;
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }

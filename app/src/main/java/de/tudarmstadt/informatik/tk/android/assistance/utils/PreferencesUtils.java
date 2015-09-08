@@ -19,7 +19,7 @@ public class PreferencesUtils {
      * @param preferenceName
      * @param preferenceValue
      */
-    public static void saveToPreferences(Context context, String preferenceName, String preferenceValue) {
+    public static void savePreference(Context context, String preferenceName, String preferenceValue) {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPreferences
@@ -35,12 +35,28 @@ public class PreferencesUtils {
      * @param preferenceName
      * @param preferenceValue
      */
-    public static void saveToPreferences(Context context, String preferenceName, boolean preferenceValue) {
+    public static void savePreference(Context context, String preferenceName, boolean preferenceValue) {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPreferences
                 .edit()
                 .putBoolean(preferenceName, preferenceValue)
+                .apply();
+    }
+
+    /**
+     * Puts some long value to shared preferences
+     *
+     * @param context
+     * @param preferenceName
+     * @param preferenceValue
+     */
+    public static void savePreference(Context context, String preferenceName, long preferenceValue) {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences
+                .edit()
+                .putLong(preferenceName, preferenceValue)
                 .apply();
     }
 
@@ -52,7 +68,7 @@ public class PreferencesUtils {
      * @param defaultValue
      * @return
      */
-    public static String readFromPreferences(Context context, String preferenceName, String defaultValue) {
+    public static String getPreference(Context context, String preferenceName, String defaultValue) {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getString(preferenceName, defaultValue);
@@ -66,10 +82,24 @@ public class PreferencesUtils {
      * @param defaultValue
      * @return
      */
-    public static boolean readFromPreferences(Context context, String preferenceName, boolean defaultValue) {
+    public static boolean getPreference(Context context, String preferenceName, boolean defaultValue) {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getBoolean(preferenceName, defaultValue);
+    }
+
+    /**
+     * Gets some long value from shared preferences
+     *
+     * @param context
+     * @param preferenceName
+     * @param defaultValue
+     * @return
+     */
+    public static long getPreference(Context context, String preferenceName, long defaultValue) {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getLong(preferenceName, defaultValue);
     }
 
     /**

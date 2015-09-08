@@ -23,12 +23,32 @@ public class UserUtils {
     }
 
     /**
+     * Returns current user id saved in SharedPreferences
+     *
+     * @param context
+     * @return
+     */
+    public static long getCurrentUserId(Context context) {
+        return PreferencesUtils.getPreference(context, Constants.PREF_USER_ID, -1);
+    }
+
+    /**
+     * Saves current user id saved into SharedPreferences
+     *
+     * @param context
+     * @param value
+     */
+    public static void saveCurrentUserId(Context context, long value) {
+        PreferencesUtils.savePreference(context, Constants.PREF_USER_ID, value);
+    }
+
+    /**
      * Returns user has learned navigation drawer saved in SharedPreferences
      *
      * @return
      */
     public static boolean getUserHasLearnedDrawer(Context context) {
-        return PreferencesUtils.readFromPreferences(context, Constants.PREF_USER_LEARNED_DRAWER, false);
+        return PreferencesUtils.getPreference(context, Constants.PREF_USER_LEARNED_DRAWER, false);
     }
 
     /**
@@ -38,7 +58,7 @@ public class UserUtils {
      * @param value
      */
     public static void saveUserHasLearnedDrawer(Context context, boolean value) {
-        PreferencesUtils.saveToPreferences(context, Constants.PREF_USER_LEARNED_DRAWER, value);
+        PreferencesUtils.savePreference(context, Constants.PREF_USER_LEARNED_DRAWER, value);
     }
 
     /**
@@ -47,7 +67,7 @@ public class UserUtils {
      * @return
      */
     public static String getUserEmail(Context context) {
-        return PreferencesUtils.readFromPreferences(context, Constants.PREF_USER_EMAIL, "");
+        return PreferencesUtils.getPreference(context, Constants.PREF_USER_EMAIL, "");
     }
 
     /**
@@ -57,7 +77,7 @@ public class UserUtils {
      * @param value
      */
     public static void saveUserEmail(Context context, String value) {
-        PreferencesUtils.saveToPreferences(context, Constants.PREF_USER_EMAIL, value);
+        PreferencesUtils.savePreference(context, Constants.PREF_USER_EMAIL, value);
     }
 
     /**
@@ -67,7 +87,7 @@ public class UserUtils {
      * @return
      */
     public static String getUserFirstname(Context context) {
-        return PreferencesUtils.readFromPreferences(context, Constants.PREF_USER_FIRSTNAME, "");
+        return PreferencesUtils.getPreference(context, Constants.PREF_USER_FIRSTNAME, "");
     }
 
     /**
@@ -77,7 +97,7 @@ public class UserUtils {
      * @param value
      */
     public static void saveUserFirstname(Context context, String value) {
-        PreferencesUtils.saveToPreferences(context, Constants.PREF_USER_FIRSTNAME, value);
+        PreferencesUtils.savePreference(context, Constants.PREF_USER_FIRSTNAME, value);
     }
 
     /**
@@ -87,7 +107,7 @@ public class UserUtils {
      * @return
      */
     public static String getUserLastname(Context context) {
-        return PreferencesUtils.readFromPreferences(context, Constants.PREF_USER_LASTNAME, "");
+        return PreferencesUtils.getPreference(context, Constants.PREF_USER_LASTNAME, "");
     }
 
     /**
@@ -97,7 +117,7 @@ public class UserUtils {
      * @param value
      */
     public static void saveUserLastname(Context context, String value) {
-        PreferencesUtils.saveToPreferences(context, Constants.PREF_USER_LASTNAME, value);
+        PreferencesUtils.savePreference(context, Constants.PREF_USER_LASTNAME, value);
     }
 
     /**
@@ -106,7 +126,7 @@ public class UserUtils {
      * @return
      */
     public static String getUserToken(Context context) {
-        return PreferencesUtils.readFromPreferences(context, Constants.PREF_USER_TOKEN, "");
+        return PreferencesUtils.getPreference(context, Constants.PREF_USER_TOKEN, "");
     }
 
     /**
@@ -116,7 +136,7 @@ public class UserUtils {
      * @param value
      */
     public static void saveUserToken(Context context, String value) {
-        PreferencesUtils.saveToPreferences(context, Constants.PREF_USER_TOKEN, value);
+        PreferencesUtils.savePreference(context, Constants.PREF_USER_TOKEN, value);
     }
 
     /**
@@ -126,7 +146,7 @@ public class UserUtils {
      * @return
      */
     public static String getUserPicFilename(Context context) {
-        return PreferencesUtils.readFromPreferences(context, Constants.PREF_USER_PIC, "");
+        return PreferencesUtils.getPreference(context, Constants.PREF_USER_PIC, "");
     }
 
     /**
@@ -136,7 +156,7 @@ public class UserUtils {
      * @param value
      */
     public static void saveUserPicFilename(Context context, String value) {
-        PreferencesUtils.saveToPreferences(context, Constants.PREF_USER_PIC, value);
+        PreferencesUtils.savePreference(context, Constants.PREF_USER_PIC, value);
     }
 
     /**
@@ -146,7 +166,7 @@ public class UserUtils {
      * @return
      */
     public static boolean isUserHasModules(Context context) {
-        return PreferencesUtils.readFromPreferences(context, Constants.PREF_USER_HAS_MODULES, false);
+        return PreferencesUtils.getPreference(context, Constants.PREF_USER_HAS_MODULES, false);
     }
 
     /**
@@ -156,6 +176,6 @@ public class UserUtils {
      * @param value
      */
     public static void saveUserHasModules(Context context, boolean value) {
-        PreferencesUtils.saveToPreferences(context, Constants.PREF_USER_HAS_MODULES, value);
+        PreferencesUtils.savePreference(context, Constants.PREF_USER_HAS_MODULES, value);
     }
 }
