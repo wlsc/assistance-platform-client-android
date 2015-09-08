@@ -1,7 +1,9 @@
 package de.tudarmstadt.informatik.tk.android.assistance.utils;
 
 import de.tudarmstadt.informatik.tk.android.assistance.models.api.module.AvailableModuleResponse;
+import de.tudarmstadt.informatik.tk.android.assistance.models.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
+import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleCapability;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -52,5 +54,37 @@ public class ConverterUtils {
         dbModule.setSupport_email(availableModuleResponse.getSupportEmail() == null ? "" : availableModuleResponse.getSupportEmail());
 
         return dbModule;
+    }
+
+    /**
+     * Converts from db module capability object to module capability response object
+     *
+     * @param moduleCapability
+     * @return
+     */
+    public static final ModuleCapabilityResponse convertModuleCapability(ModuleCapability moduleCapability) {
+
+        ModuleCapabilityResponse moduleCapabilityResponse = new ModuleCapabilityResponse();
+
+        moduleCapabilityResponse.setType(moduleCapability.getType());
+        moduleCapabilityResponse.setFrequency(moduleCapability.getFrequency());
+
+        return moduleCapabilityResponse;
+    }
+
+    /**
+     * Converts from module capability response object to db module capability object
+     *
+     * @param moduleCapabilityResponse
+     * @return
+     */
+    public static final ModuleCapability convertModuleCapability(ModuleCapabilityResponse moduleCapabilityResponse) {
+
+        ModuleCapability moduleCapability = new ModuleCapability();
+
+        moduleCapability.setType(moduleCapabilityResponse.getType());
+        moduleCapability.setFrequency(moduleCapabilityResponse.getFrequency());
+
+        return moduleCapability;
     }
 }

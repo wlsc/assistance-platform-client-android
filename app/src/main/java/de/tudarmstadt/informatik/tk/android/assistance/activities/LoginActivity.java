@@ -53,6 +53,8 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.Device;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DeviceDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Login;
 import de.tudarmstadt.informatik.tk.android.kraken.db.LoginDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.User;
+import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 import retrofit.Callback;
@@ -110,6 +112,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private String email;
     private String password;
+
+    private DeviceDao deviceDao;
+
+    private UserDao userDao;
 
     private long currentDeviceId = -1;
 
@@ -255,9 +261,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         showProgress(true);
 
+        String userEmail = mEmailTextView.getText().toString();
+
+        if (userDao == null) {
+            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
+        }
+
+        List<User> users = userDao
+                .queryBuilder()
+                .where(UserDao.Properties.PrimaryEmail.eq(userEmail))
+                .limit(1)
+                .build()
+                .list();
+
+        if (!users.isEmpty()) {
+            User user = users.get(0);
+
+            UserUtils.saveUserEmail(getApplicationContext(), user.getPrimaryEmail());
+            UserUtils.saveUserFirstname(getApplicationContext(), user.getFirstname());
+            UserUtils.saveUserLastname(getApplicationContext(), user.getLastname());
+        }
+
         // checking device information
         // if we had already logged in in the past
-        DeviceDao deviceDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDeviceDao();
+        if (deviceDao == null) {
+            deviceDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDeviceDao();
+        }
 
         List<Device> devices = deviceDao
                 .queryBuilder()
@@ -272,7 +301,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (devices.size() > 0) {
             // take a server device_id
             Device device = devices.get(0);
+
             serverDeviceId = device.getLogin().getServer_device_id();
+
             if (serverDeviceId.equals(0)) {
                 serverDeviceId = null;
             }

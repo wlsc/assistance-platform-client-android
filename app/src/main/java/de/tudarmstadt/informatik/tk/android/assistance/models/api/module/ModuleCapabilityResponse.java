@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 25.08.2015
  */
-public class ModuleCapability {
+public class ModuleCapabilityResponse {
 
     @SerializedName("type")
     @Expose
@@ -17,7 +17,7 @@ public class ModuleCapability {
     @Expose
     private double frequency;
 
-    public ModuleCapability() {
+    public ModuleCapabilityResponse() {
     }
 
     public String getType() {
@@ -38,7 +38,7 @@ public class ModuleCapability {
 
     @Override
     public String toString() {
-        return "ModuleCapability{" +
+        return "ModuleCapabilityResponse{" +
                 "type='" + type + '\'' +
                 ", frequency=" + frequency +
                 '}';

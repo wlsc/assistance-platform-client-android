@@ -29,13 +29,15 @@ import de.tudarmstadt.informatik.tk.android.assistance.events.ModuleInstallEvent
 import de.tudarmstadt.informatik.tk.android.assistance.events.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.handlers.DrawerHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.models.api.module.AvailableModuleResponse;
-import de.tudarmstadt.informatik.tk.android.assistance.models.api.module.ModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.models.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.services.AssistanceService;
 import de.tudarmstadt.informatik.tk.android.assistance.services.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.utils.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.utils.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.views.CardView;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
+import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleCapability;
+import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleCapabilityDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.User;
 import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
@@ -60,9 +62,11 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
     private Map<String, AvailableModuleResponse> availableModuleResponses;
 
-    private static UserDao userDao;
+    private UserDao userDao;
 
-    private static ModuleDao moduleDao;
+    private ModuleDao moduleDao;
+
+    private ModuleCapabilityDao moduleCapabilityDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +116,10 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
         loadModules();
     }
 
+    /**
+     * Loads module list from db or in case its empty
+     * loads it from server
+     */
     private void loadModules() {
 
         if (userDao == null) {
@@ -264,9 +272,53 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
         List<Module> dbModules = new ArrayList<>(availableModulesResponse.size());
 
         for (AvailableModuleResponse availableModule : availableModulesResponse) {
+
             Module module = ConverterUtils.convertModule(availableModule);
+
             module.setUser_id(currentUserId);
             module.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+
+            List<ModuleCapabilityResponse> reqCaps = availableModule.getSensorsRequired();
+            List<ModuleCapabilityResponse> optCaps = availableModule.getSensorsOptional();
+
+            if (reqCaps != null && !reqCaps.isEmpty()) {
+
+                List<ModuleCapability> modCaps = new ArrayList<>();
+
+                // process required capabilities
+                for (ModuleCapabilityResponse cap : reqCaps) {
+
+                    ModuleCapability dbCap = ConverterUtils.convertModuleCapability(cap);
+
+                    dbCap.setRequired(true);
+                    dbCap.setModule(module);
+
+                    modCaps.add(dbCap);
+                }
+
+                // insert entries
+                moduleCapabilityDao.insertInTx(modCaps);
+            }
+
+            if (optCaps != null && !optCaps.isEmpty()) {
+
+                List<ModuleCapability> modCaps = new ArrayList<>();
+
+                // process optional capabilities
+                for (ModuleCapabilityResponse cap : optCaps) {
+
+                    ModuleCapability dbCap = ConverterUtils.convertModuleCapability(cap);
+
+                    dbCap.setRequired(false);
+                    dbCap.setModule(module);
+
+                    modCaps.add(dbCap);
+                }
+
+                // insert entries
+                moduleCapabilityDao.insertInTx(modCaps);
+            }
+
             dbModules.add(module);
         }
 
@@ -287,8 +339,8 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         for (AvailableModuleResponse module : availableModulesResponse) {
 
-            List<ModuleCapability> moduleReqSensors = module.getSensorsRequired();
-            List<ModuleCapability> moduleOptSensors = module.getSensorsOptional();
+            List<ModuleCapabilityResponse> moduleReqSensors = module.getSensorsRequired();
+            List<ModuleCapabilityResponse> moduleOptSensors = module.getSensorsOptional();
 
 
             CardView card = new CardView(getApplicationContext());
@@ -300,7 +352,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
                 Log.d(TAG, "Req. sensors:");
 
-                for (ModuleCapability capability : moduleReqSensors) {
+                for (ModuleCapabilityResponse capability : moduleReqSensors) {
                     Log.d(TAG, "Type: " + capability.getType());
                     Log.d(TAG, "Frequency: " + capability.getFrequency());
                 }
@@ -312,7 +364,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
                 Log.d(TAG, "Optional sensors:");
 
-                for (ModuleCapability capability : moduleOptSensors) {
+                for (ModuleCapabilityResponse capability : moduleOptSensors) {
                     Log.d(TAG, "Type: " + capability.getType());
                     Log.d(TAG, "Frequency: " + capability.getFrequency());
                 }
@@ -446,19 +498,19 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 .placeholder(R.drawable.no_image)
                 .into(imageView);
 
-        List<ModuleCapability> requiredSensors = selectedModule.getSensorsRequired();
-        List<ModuleCapability> optionalSensors = selectedModule.getSensorsOptional();
+        List<ModuleCapabilityResponse> requiredSensors = selectedModule.getSensorsRequired();
+        List<ModuleCapabilityResponse> optionalSensors = selectedModule.getSensorsOptional();
 
         List<String> allModuleSensors = new ArrayList<>();
 
         if (requiredSensors != null) {
-            for (ModuleCapability capability : requiredSensors) {
+            for (ModuleCapabilityResponse capability : requiredSensors) {
                 allModuleSensors.add(capability.getType());
             }
         }
 
         if (optionalSensors != null) {
-            for (ModuleCapability capability : optionalSensors) {
+            for (ModuleCapabilityResponse capability : optionalSensors) {
                 allModuleSensors.add(capability.getType());
             }
         }
