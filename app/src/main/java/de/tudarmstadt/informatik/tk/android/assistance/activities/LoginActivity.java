@@ -355,12 +355,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             loginDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getLoginDao();
         }
 
+        if (deviceDao == null) {
+            deviceDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDeviceDao();
+        }
+
         Login login = loginDao
                 .queryBuilder()
                 .where(LoginDao.Properties.Token.eq(loginResponse.getUserToken()))
                 .limit(1)
                 .build()
                 .unique();
+
+
+        long loginId = -1;
 
         // check if that login was already saved in the system
         if (login == null) {
@@ -373,23 +380,37 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             newLogin.setToken(loginResponse.getUserToken());
             newLogin.setCreated(createdDate);
 
-            loginDao.insert(newLogin);
+            loginId = loginDao.insert(newLogin);
+
+            Device device = new Device();
+            device.setOs(Constants.PLATFORM_NAME);
+            device.setOs_version(HardwareUtils.getAndroidVersion());
+            device.setBrand(HardwareUtils.getDeviceBrandName());
+            device.setModel(HardwareUtils.getDeviceModelName());
+            device.setDevice_identifier(HardwareUtils.getAndroidId(this));
+            device.setCreated(createdDate);
+            device.setLogin_id(loginId);
+
+            currentDeviceId = deviceDao.insert(device);
+
         } else {
+
+            loginId = login.getId();
 
             List<Device> userDevices = login.getDeviceList();
 
             String currentAndroidId = HardwareUtils.getAndroidId(this);
-            boolean isDeviceWasFound = false;
+            boolean isDeviceAlreadyCreated = false;
 
             for (Device device : userDevices) {
                 if (device.getDevice_identifier().equals(currentAndroidId)) {
-                    isDeviceWasFound = true;
+                    isDeviceAlreadyCreated = true;
                     currentDeviceId = device.getId();
                     break;
                 }
             }
 
-            if (!isDeviceWasFound) {
+            if (!isDeviceAlreadyCreated) {
                 // no such device found in db -> insert new
 
                 Device device = new Device();
@@ -399,11 +420,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 device.setModel(HardwareUtils.getDeviceModelName());
                 device.setDevice_identifier(HardwareUtils.getAndroidId(this));
                 device.setCreated(createdDate);
-                device.setLogin(login);
+                device.setLogin_id(loginId);
 
                 currentDeviceId = deviceDao.insert(device);
-
-                userDevices.add(device);
             }
         }
     }
