@@ -49,13 +49,13 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Device;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DeviceDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Login;
 import de.tudarmstadt.informatik.tk.android.kraken.db.LoginDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.User;
 import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -264,6 +264,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         showProgress(true);
 
         String userEmail = mEmailTextView.getText().toString();
+        UserUtils.saveUserEmail(getApplicationContext(), userEmail);
 
         if (userDao == null) {
             userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
@@ -319,8 +320,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         /**
          * Logging in the user
          */
-        UserService service = ServiceGenerator.createService(UserService.class);
-        service.loginUser(request, new Callback<LoginResponse>() {
+        UserService userService = ServiceGenerator.createService(UserService.class);
+        userService.loginUser(request, new Callback<LoginResponse>() {
 
             @Override
             public void success(LoginResponse apiResponse, Response response) {
@@ -435,30 +436,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void saveLoginGoNext(LoginResponse loginApiResponse) {
 
         String token = loginApiResponse.getUserToken();
+        UserUtils.saveUserEmail(getApplicationContext(), mEmailTextView.getText().toString());
 
         if (InputValidation.isUserTokenValid(token)) {
             Log.d(TAG, "Token is valid. Proceeding with login...");
 
             showProgress(false);
+
             saveLoginIntoDb(loginApiResponse);
-            saveLoginData(token);
+
+            UserUtils.saveUserToken(getApplicationContext(), token);
+
             loadMainActivity();
 
         } else {
             Toaster.showLong(this, R.string.error_user_token_not_valid);
             Log.d(TAG, "User token is INVALID!");
         }
-    }
-
-    /**
-     * Saves user data needed for successful login into SharedPreferences
-     *
-     * @param token
-     */
-    private void saveLoginData(String token) {
-
-        UserUtils.saveUserToken(getApplicationContext(), token);
-        UserUtils.saveUserEmail(getApplicationContext(), email);
     }
 
     /**

@@ -37,6 +37,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CardView;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
 import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleCapabilityDao;
@@ -45,7 +46,6 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallationDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.User;
 import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
@@ -129,13 +129,15 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
      */
     private void loadModules() {
 
+        String userEmail = UserUtils.getUserEmail(getApplicationContext());
+
         if (userDao == null) {
             userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
         }
 
         User user = userDao
                 .queryBuilder()
-                .where(UserDao.Properties.PrimaryEmail.eq(mUserEmail))
+                .where(UserDao.Properties.PrimaryEmail.eq(userEmail))
                 .limit(1)
                 .build()
                 .unique();
@@ -282,13 +284,15 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         Log.d(TAG, "Saving modules into db...");
 
+        String userEmail = UserUtils.getUserEmail(getApplicationContext());
+
         if (moduleCapabilityDao == null) {
             moduleCapabilityDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleCapabilityDao();
         }
 
         User user = userDao
                 .queryBuilder()
-                .where(UserDao.Properties.PrimaryEmail.eq(mUserEmail))
+                .where(UserDao.Properties.PrimaryEmail.eq(userEmail))
                 .limit(1)
                 .build()
                 .unique();
@@ -506,7 +510,9 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
                 installModule(moduleId);
 
-                EventBus.getDefault().post(new DrawerUpdateEvent(mUserEmail));
+                String userEmail = UserUtils.getUserEmail(getApplicationContext());
+
+                EventBus.getDefault().post(new DrawerUpdateEvent(userEmail));
             }
         });
 
@@ -561,9 +567,11 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         Log.d(TAG, "Installation of a module " + moduleId + " started...");
 
+        String userEmail = UserUtils.getUserEmail(getApplicationContext());
+
         User user = userDao
                 .queryBuilder()
-                .where(UserDao.Properties.PrimaryEmail.eq(mUserEmail))
+                .where(UserDao.Properties.PrimaryEmail.eq(userEmail))
                 .limit(1)
                 .build()
                 .unique();

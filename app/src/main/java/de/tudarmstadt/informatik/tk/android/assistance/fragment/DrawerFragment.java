@@ -38,11 +38,11 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
 import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.User;
 import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -84,7 +84,7 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
     @Bind(R.id.txtUsername)
     protected TextView usernameView;
 
-    protected static List<DrawerItem> navigationItems;
+    private static List<DrawerItem> navigationItems;
 
     private UserDao userDao;
 
@@ -273,18 +273,21 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
                 break;
             case R.id.settings:
                 Log.d(TAG, "User left settings activity");
-
-                String firstname = UserUtils.getUserFirstname(getActivity());
-                String lastname = UserUtils.getUserLastname(getActivity());
-                String email = UserUtils.getUserEmail(getActivity());
-                String userPicFilename = UserUtils.getUserPicFilename(getActivity());
-
-                updateUserData(firstname + " " + lastname, email, userPicFilename);
+                updateDrawer();
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
                 break;
         }
+    }
+
+    /**
+     * Updates complete navigation drawer information
+     */
+    public void updateDrawer() {
+
+        updateDrawerHeader();
+        updateDrawerBody();
     }
 
     @Override
@@ -314,45 +317,6 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mActionBarDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    /**
-     * Updates username data
-     *
-     * @param username
-     * @param email
-     * @param userPicFilename
-     */
-    public void updateUserData(String username, String email, String userPicFilename) {
-
-        // check for imports
-        if (usernameView == null || userEmailView == null) {
-            ButterKnife.bind(this, mFragmentContainerView);
-        }
-
-        usernameView.setText(username);
-        userEmailView.setText(email);
-        userEmailView.setMovementMethod(LinkMovementMethod.getInstance());
-
-        if (userPicFilename.isEmpty()) {
-
-            Picasso.with(getActivity().getApplicationContext())
-                    .load(R.drawable.no_image)
-                    .placeholder(R.drawable.no_image)
-                    .into(userPicView);
-
-        } else {
-
-            File file = UserUtils.getUserPicture(getActivity().getApplicationContext(), userPicFilename);
-
-            if (file != null && file.exists()) {
-
-                Picasso.with(getActivity())
-                        .load(file)
-                        .placeholder(R.drawable.no_image)
-                        .into(userPicView);
-            }
-        }
     }
 
     public View getGoogleDrawer() {
@@ -404,21 +368,45 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
     public void onEvent(DrawerUpdateEvent event) {
         Log.d(TAG, "Received drawer update event");
 
+        UserUtils.saveUserEmail(getActivity().getApplicationContext(), event.getUserEmail());
+
+        updateDrawerBody();
+
+        Log.d(TAG, "Finished processing drawer update event!");
+    }
+
+    /**
+     * Updates navigation drawer list of active modules
+     */
+    public void updateDrawerBody() {
+
+        String userEmail = UserUtils.getUserEmail(getActivity().getApplicationContext());
+
+        if (userEmail.isEmpty()) {
+            return;
+        }
+
         if (userDao == null) {
             userDao = DatabaseManager.getInstance(getActivity().getApplicationContext()).getDaoSession().getUserDao();
         }
 
         User user = userDao
                 .queryBuilder()
-                .where(UserDao.Properties.PrimaryEmail.eq(event.getUserEmail()))
+                .where(UserDao.Properties.PrimaryEmail.eq(userEmail))
                 .limit(1)
                 .build()
                 .unique();
+
+        if (user == null) {
+            navigationItems = new ArrayList<>(0);
+            return;
+        }
 
         List<ModuleInstallation> userModules = user.getModuleInstallationList();
 
         if (userModules == null || userModules.isEmpty()) {
             navigationItems = new ArrayList<>(0);
+            return;
         } else {
             navigationItems = new ArrayList<>();
 
@@ -449,8 +437,48 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
                 mDrawerNoModules.setVisibility(View.GONE);
             }
         }
+    }
 
-        Log.d(TAG, "Finished processing drawer update event!");
+    /**
+     * Updates navigation drawer header layout
+     */
+    public void updateDrawerHeader() {
+
+        Context context = getActivity().getApplicationContext();
+
+        String firstname = UserUtils.getUserFirstname(context);
+        String lastname = UserUtils.getUserLastname(context);
+        String email = UserUtils.getUserEmail(context);
+        String userPicFilename = UserUtils.getUserPicFilename(context);
+
+        // check for imports
+        if (usernameView == null || userEmailView == null) {
+            ButterKnife.bind(this, mFragmentContainerView);
+        }
+
+        usernameView.setText(firstname + " " + lastname);
+        userEmailView.setText(email);
+        userEmailView.setMovementMethod(LinkMovementMethod.getInstance());
+
+        if (userPicFilename.isEmpty()) {
+
+            Picasso.with(context)
+                    .load(R.drawable.no_image)
+                    .placeholder(R.drawable.no_image)
+                    .into(userPicView);
+
+        } else {
+
+            File file = UserUtils.getUserPicture(context, userPicFilename);
+
+            if (file != null && file.exists()) {
+
+                Picasso.with(getActivity())
+                        .load(file)
+                        .placeholder(R.drawable.no_image)
+                        .into(userPicView);
+            }
+        }
     }
 
     @Override
