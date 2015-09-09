@@ -45,7 +45,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallationDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.User;
 import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
-import de.tudarmstadt.informatik.tk.android.kraken.utils.DatabaseManager;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;

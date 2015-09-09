@@ -42,7 +42,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
 import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.User;
 import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
-import de.tudarmstadt.informatik.tk.android.kraken.utils.DatabaseManager;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.

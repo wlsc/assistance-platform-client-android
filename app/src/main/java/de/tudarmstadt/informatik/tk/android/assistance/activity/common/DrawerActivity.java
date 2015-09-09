@@ -29,7 +29,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.User;
 import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
-import de.tudarmstadt.informatik.tk.android.kraken.utils.DatabaseManager;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
