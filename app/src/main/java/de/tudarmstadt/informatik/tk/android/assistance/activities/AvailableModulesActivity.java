@@ -16,7 +16,9 @@ import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -31,15 +33,19 @@ import de.tudarmstadt.informatik.tk.android.assistance.models.api.module.ModuleC
 import de.tudarmstadt.informatik.tk.android.assistance.services.AssistanceService;
 import de.tudarmstadt.informatik.tk.android.assistance.services.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.utils.ConverterUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.utils.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.utils.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.views.CardView;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
 import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleCapabilityDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallation;
+import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallationDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.User;
 import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DatabaseManager;
+import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
@@ -64,6 +70,8 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
     private ModuleDao moduleDao;
 
     private ModuleCapabilityDao moduleCapabilityDao;
+
+    private ModuleInstallationDao moduleInstallationDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -462,7 +470,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
      *
      * @param moduleId
      */
-    private void showPermissionDialog(String moduleId) {
+    private void showPermissionDialog(final String moduleId) {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setInverseBackgroundForced(true);
@@ -477,7 +485,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
             public void onClick(DialogInterface dialog, int which) {
                 Log.d(TAG, "User accepted module permissions.");
 
-
+                installModule(moduleId);
             }
         });
 
@@ -523,11 +531,59 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
         alertDialog.show();
     }
 
+    /**
+     * Saves information into db / install a module for user
+     *
+     * @param moduleId
+     */
+    private void installModule(String moduleId) {
+
+        Log.d(TAG, "Installation of a module " + moduleId + " started...");
+
+        User user = userDao
+                .queryBuilder()
+                .where(UserDao.Properties.PrimaryEmail.eq(mUserEmail))
+                .limit(1)
+                .build()
+                .unique();
+
+        if (moduleInstallationDao == null) {
+            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleInstallationDao();
+        }
+
+        Module module = moduleDao
+                .queryBuilder()
+                .where(ModuleDao.Properties.Package_name.eq(moduleId))
+                .where(ModuleDao.Properties.User_id.eq(user.getId()))
+                .limit(1)
+                .build()
+                .unique();
+
+        ModuleInstallation moduleInstallation = new ModuleInstallation();
+
+        moduleInstallation.setModule_id(module.getId());
+        moduleInstallation.setUser_id(user.getId());
+        moduleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+
+        Long installId = moduleInstallationDao.insert(moduleInstallation);
+
+        if (installId != null) {
+            Toaster.showLong(getApplicationContext(), R.string.module_installation_successful);
+        } else {
+            Toaster.showLong(getApplicationContext(), R.string.module_installation_unsuccessful);
+        }
+
+        Log.d(TAG, "Installation of a module " + moduleId + " finished! Installation id: " + installId);
+    }
+
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
         EventBus.getDefault().unregister(this);
         moduleDao = null;
+        moduleInstallationDao = null;
+        moduleCapabilityDao = null;
+        userDao = null;
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }

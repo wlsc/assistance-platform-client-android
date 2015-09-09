@@ -90,6 +90,10 @@
     <string name="module_permission_dialog_icon_description">Icon for a module</string>
     <string name="module_permission_dialog_narration">needs access to</string>
 
+    <!-- MODULE INSTALLATION -->
+    <string name="module_installation_successful">Installation was successful!</string>
+    <string name="module_installation_unsuccessful">Installation has failed :(</string>
+
     <!-- USER PROFILE SCREEN -->
     <string name="user_profile_firstname">Firstname</string>
     <string name="user_profile_lastname">Lastname</string>
