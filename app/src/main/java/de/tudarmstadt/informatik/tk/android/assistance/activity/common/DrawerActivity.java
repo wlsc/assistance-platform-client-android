@@ -42,8 +42,6 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
     private boolean mBackButtonPressedOnce;
 
-    private static boolean isUserProfileRequestSent = false;
-
     protected Toolbar mToolbar;
 
     protected FrameLayout mFrameLayout;
@@ -77,10 +75,14 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
         if (!userEmail.isEmpty()) {
 
+            Log.d(TAG, "User email is not empty");
+
             String userFirstname = UserUtils.getUserFirstname(getApplicationContext());
             String userLastname = UserUtils.getUserLastname(getApplicationContext());
 
-            if (userFirstname == null || userLastname == null) {
+            Log.d(TAG, "User firstname: " + userFirstname + " lastname: " + userLastname);
+
+            if (userFirstname.isEmpty() || userLastname.isEmpty()) {
 
                 Log.d(TAG, "No user info found cached. Checking db...");
 
@@ -106,14 +108,16 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
                     // no user profile found -> request from server
                     Log.d(TAG, "No user found in db");
 
-                    if (!isUserProfileRequestSent) {
-                        Log.d(TAG, "Requesting from server...");
-                        requestUserProfile();
-                    }
+//                    if (!isUserProfileRequestSent) {
+                    Log.d(TAG, "Requesting from server...");
+                    requestUserProfile();
+//                    }
                 }
             } else {
                 mDrawerFragment.updateDrawer();
             }
+        } else {
+            Log.d(TAG, "User email is EMPTY!");
         }
     }
 
@@ -122,8 +126,6 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
      */
     private void requestUserProfile() {
 
-        isUserProfileRequestSent = true;
-
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
         UserService userservice = ServiceGenerator.createService(UserService.class);
@@ -131,8 +133,6 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
             @Override
             public void success(ProfileResponse profileResponse, Response response) {
-
-                isUserProfileRequestSent = false;
 
                 if (profileResponse == null) {
                     return;
@@ -148,7 +148,6 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
             @Override
             public void failure(RetrofitError error) {
-                isUserProfileRequestSent = false;
                 showErrorMessages(TAG, error);
             }
         });
