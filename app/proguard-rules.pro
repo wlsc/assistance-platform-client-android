@@ -16,6 +16,19 @@
 #   public *;
 #}
 
+# --------------------------------------------------------------------
+# REMOVE all Log messages except warnings and errors
+# --------------------------------------------------------------------
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+}
+
+# --------------------------------------------------------------------
+# Butterknife library
+# --------------------------------------------------------------------
+
 -keep class butterknife.** { *; }
 -dontwarn butterknife.internal.**
 -keep class **$$ViewInjector { *; }
@@ -27,3 +40,35 @@
 -keepclasseswithmembernames class * {
     @butterknife.* <methods>;
 }
+
+# --------------------------------------------------------------------
+# OkHttp library
+# --------------------------------------------------------------------
+-keepnames class com.levelup.http.okhttp.** { *; }
+-keepnames interface com.levelup.http.okhttp.** { *; }
+-keepnames class com.squareup.okhttp.** { *; }
+-keepnames interface com.squareup.okhttp.** { *; }
+
+-dontwarn com.squareup.okhttp.internal.http.*
+
+# --------------------------------------------------------------------
+# Retrofit (uses GSON)
+# --------------------------------------------------------------------
+-keepattributes Signature
+-keepattributes *Annotation*
+
+-dontwarn rx.**
+-keep class com.google.gson.** { *; }
+-keep class com.google.inject.* { *; }
+-keep class org.apache.http.* { *; }
+-keep class org.apache.james.mime4j.* { *; }
+-keep class javax.inject.* { *; }
+-keep class retrofit.* { *; }
+-keep class sun.misc.Unsafe { *; }
+
+-keep class retrofit.** { *; }
+-keepclasseswithmembers class * {
+    @retrofit.http.* <methods>;
+}
+
+-dontwarn retrofit.appengine.**
