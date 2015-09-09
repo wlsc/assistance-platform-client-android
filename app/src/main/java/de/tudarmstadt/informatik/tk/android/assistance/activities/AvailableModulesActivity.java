@@ -190,8 +190,26 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 card.addCardThumbnail(thumb);
                 cards.add(card);
 
+                AvailableModuleResponse availableModule = ConverterUtils.convertModule(module);
+                List<ModuleCapabilityResponse> reqCaps = new ArrayList<>();
+                List<ModuleCapabilityResponse> optCaps = new ArrayList<>();
+
+                List<ModuleCapability> moduleCapabilities = module.getModuleCapabilityList();
+
+                for (ModuleCapability capability : moduleCapabilities) {
+
+                    if (capability.getRequired()) {
+                        reqCaps.add(ConverterUtils.convertModuleCapability(capability));
+                    } else {
+                        optCaps.add(ConverterUtils.convertModuleCapability(capability));
+                    }
+                }
+
+                availableModule.setSensorsRequired(reqCaps);
+                availableModule.setSensorsOptional(optCaps);
+
                 // for easy access later on
-                availableModuleResponses.put(module.getPackage_name(), ConverterUtils.convertModule(module));
+                availableModuleResponses.put(availableModule.getModulePackage(), availableModule);
             }
 
             CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, cards);
@@ -563,6 +581,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         moduleInstallation.setModule_id(module.getId());
         moduleInstallation.setUser_id(user.getId());
+        moduleInstallation.setActive(true);
         moduleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
         Long installId = moduleInstallationDao.insert(moduleInstallation);
