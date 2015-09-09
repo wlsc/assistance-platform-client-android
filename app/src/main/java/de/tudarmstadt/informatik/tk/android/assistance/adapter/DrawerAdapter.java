@@ -16,8 +16,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.handlers.DrawerHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.models.items.DrawerItem;
+import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerHandler;
+import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 
 
 /**

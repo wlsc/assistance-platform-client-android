@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/drawer_fragment"
-        android:name="de.tudarmstadt.informatik.tk.android.assistance.fragments.DrawerFragment"
+        android:name="de.tudarmstadt.informatik.tk.android.assistance.fragment.DrawerFragment"
         layout="@layout/fragment_drawer"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"

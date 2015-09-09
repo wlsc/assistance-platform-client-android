@@ -6,6 +6,6 @@
         android:key="pref_list_of_sensors"
         android:summary="@string/settings_list_of_sensors_summary"
         android:title="@string/settings_list_of_sensors_title"
-        android:fragment="de.tudarmstadt.informatik.tk.android.assistance.fragments.settings.SensorsListFragment"/>
+        android:fragment="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorsListFragment"/>
 
 </PreferenceScreen>

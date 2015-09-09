@@ -21,15 +21,15 @@
         tools:replace="android:icon">
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/main_activity_title"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.LoginActivity" />
+                android:value=".activity.LoginActivity" />
         </activity>
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".activity.LoginActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,22 +37,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.AvailableModulesActivity" />
+        <activity android:name=".activity.AvailableModulesActivity" />
         <activity
-            android:name=".activities.RegisterActivity"
-            android:parentActivityName=".activities.LoginActivity">
+            android:name=".activity.RegisterActivity"
+            android:parentActivityName=".activity.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.LoginActivity" />
+                android:value=".activity.LoginActivity" />
         </activity>
         <activity
-            android:name=".activities.ResetPasswordActivity"
-            android:parentActivityName=".activities.LoginActivity">
+            android:name=".activity.ResetPasswordActivity"
+            android:parentActivityName=".activity.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.LoginActivity" />
+                android:value=".activity.LoginActivity" />
         </activity>
-        <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activity.SettingsActivity" />
     </application>
 
 </manifest>

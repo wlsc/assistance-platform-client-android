@@ -14,8 +14,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.fragments.settings.SensorsListFragment;
-import de.tudarmstadt.informatik.tk.android.assistance.models.items.SensorsListItem;
+import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorsListFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.model.item.SensorsListItem;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
