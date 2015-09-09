@@ -102,6 +102,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
             @Override
             public void onRefresh() {
                 loadModules();
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -265,8 +266,6 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 .build()
                 .unique();
 
-        List<Module> userModules = user.getModuleList();
-
         if (moduleDao == null) {
             moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleDao();
         }
@@ -279,13 +278,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
             Module module = ConverterUtils.convertModule(availableModule);
             module.setUser(user);
 
-            moduleDao.insert(module);
-
-            userModules.add(module);
-
-            List<ModuleCapability> capList = module.getModuleCapabilityList();
-
-            Log.d(TAG, "capability list size: " + capList.size());
+            long moduleId = moduleDao.insert(module);
 
             List<ModuleCapabilityResponse> reqCaps = availableModule.getSensorsRequired();
             List<ModuleCapabilityResponse> optCaps = availableModule.getSensorsOptional();
@@ -300,13 +293,9 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                     ModuleCapability dbCap = ConverterUtils.convertModuleCapability(cap);
 
                     dbCap.setRequired(true);
-                    dbCap.setModule(module);
+                    dbCap.setModule_id(moduleId);
 
-                    moduleCapabilityDao.insert(dbCap);
-
-                    capList.add(dbCap);
-
-//                    modCaps.add(dbCap);
+                    modCaps.add(dbCap);
                 }
             }
 
@@ -318,22 +307,16 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                     ModuleCapability dbCap = ConverterUtils.convertModuleCapability(cap);
 
                     dbCap.setRequired(false);
-                    dbCap.setModule(module);
+                    dbCap.setModule_id(moduleId);
 
-                    moduleCapabilityDao.insert(dbCap);
-
-                    capList.add(dbCap);
-
-//                    modCaps.add(dbCap);
+                    modCaps.add(dbCap);
                 }
             }
 
             // insert entries
-//            if (!modCaps.isEmpty()) {
-//                moduleCapabilityDao.insertInTx(modCaps);
-//            }
-
-//            capList.addAll(modCaps);
+            if (!modCaps.isEmpty()) {
+                moduleCapabilityDao.insertInTx(modCaps);
+            }
         }
 
         Log.d(TAG, "Finished saving modules into db!");
