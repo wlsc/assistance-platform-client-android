@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,7 +28,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
-import de.tudarmstadt.informatik.tk.android.assistance.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activities.AvailableModulesActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.activities.LoginActivity;
@@ -345,9 +343,9 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
 
         } else {
 
-            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + userPicFilename + ".jpg");
+            File file = UserUtils.getUserPicture(getActivity().getApplicationContext(), userPicFilename);
 
-            if (file.exists()) {
+            if (file != null && file.exists()) {
 
                 Picasso.with(getActivity())
                         .load(file)

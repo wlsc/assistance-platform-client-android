@@ -1,8 +1,12 @@
 package de.tudarmstadt.informatik.tk.android.assistance.utils;
 
 import android.content.Context;
+import android.os.Environment;
 
+import java.io.File;
 import java.util.Locale;
+
+import de.tudarmstadt.informatik.tk.android.assistance.Config;
 
 /**
  * Created by Wladimir Schmidt on 04.07.2015.
@@ -177,5 +181,17 @@ public class UserUtils {
      */
     public static void saveUserHasModules(Context context, boolean value) {
         PreferencesUtils.savePreference(context, Constants.PREF_USER_HAS_MODULES, value);
+    }
+
+    /**
+     * Returns user profile picture
+     *
+     * @param context
+     * @param userPicFilename
+     * @return
+     */
+    public static File getUserPicture(Context context, String userPicFilename) {
+        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + userPicFilename + ".jpg");
+        return file;
     }
 }
