@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/myBackgroundColor"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:mContext=".MainActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/module_list_swipe_refresh_layout"

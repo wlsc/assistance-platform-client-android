@@ -25,6 +25,7 @@ import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activities.common.DrawerActivity;
+import de.tudarmstadt.informatik.tk.android.assistance.events.DrawerUpdateEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.events.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.events.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.handlers.DrawerHandler;
@@ -221,7 +222,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
     }
 
     /**
-     * Request available modules service
+     * Request available modules from service
      */
     private void requestAvailableModules() {
 
@@ -504,6 +505,8 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 Log.d(TAG, "User accepted module permissions.");
 
                 installModule(moduleId);
+
+                EventBus.getDefault().post(new DrawerUpdateEvent(mUserEmail));
             }
         });
 

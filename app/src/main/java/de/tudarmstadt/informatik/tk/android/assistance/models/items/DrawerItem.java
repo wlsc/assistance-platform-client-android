@@ -1,20 +1,17 @@
 package de.tudarmstadt.informatik.tk.android.assistance.models.items;
 
 
-import android.graphics.drawable.Drawable;
-
-
 /**
  * Item for navigation drawer
  */
 public class DrawerItem {
 
     private String mText;
-    private Drawable mDrawable;
+    private String mIconUrl;
 
-    public DrawerItem(String text, Drawable drawable) {
+    public DrawerItem(String text, String url) {
         mText = text;
-        mDrawable = drawable;
+        mIconUrl = url;
     }
 
     public String getText() {
@@ -25,11 +22,11 @@ public class DrawerItem {
         mText = text;
     }
 
-    public Drawable getDrawable() {
-        return mDrawable;
+    public String getIconUrl() {
+        return mIconUrl;
     }
 
-    public void setDrawable(Drawable drawable) {
-        mDrawable = drawable;
+    public void setIconUrl(String drawable) {
+        mIconUrl = drawable;
     }
 }

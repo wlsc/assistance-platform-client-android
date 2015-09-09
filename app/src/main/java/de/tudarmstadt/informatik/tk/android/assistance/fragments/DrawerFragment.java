@@ -1,11 +1,9 @@
 package de.tudarmstadt.informatik.tk.android.assistance.fragments;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.widget.DrawerLayout;
@@ -30,23 +28,30 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activities.AvailableModulesActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.activities.LoginActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.activities.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.DrawerAdapter;
+import de.tudarmstadt.informatik.tk.android.assistance.events.DrawerUpdateEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.handlers.DrawerHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.models.items.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.utils.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.utils.UserUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
+import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallation;
+import de.tudarmstadt.informatik.tk.android.kraken.db.User;
+import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
+import de.tudarmstadt.informatik.tk.android.kraken.utils.DatabaseManager;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  */
 public class DrawerFragment extends Fragment implements DrawerHandler {
 
-    private String TAG = DrawerFragment.class.getSimpleName();
+    private static final String TAG = DrawerFragment.class.getSimpleName();
 
     /**
      * A pointer to the current callbacks instance (the Activity).
@@ -81,6 +86,10 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
     @Bind(R.id.txtUsername)
     protected TextView usernameView;
 
+    protected static List<DrawerItem> navigationItems;
+
+    private UserDao userDao;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +102,8 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
             mCurrentSelectedPosition = savedInstanceState.getInt(Constants.STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
+
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -109,7 +120,9 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
         mDrawerList.setLayoutManager(layoutManager);
         mDrawerList.setHasFixedSize(true);
 
-        List<DrawerItem> navigationItems = getDrawerListItems();
+        if (navigationItems == null) {
+            navigationItems = new ArrayList<>();
+        }
 
         if (navigationItems.size() == 0) {
             // show no modules selected
@@ -120,7 +133,9 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
             mDrawerNoModules.setVisibility(View.GONE);
         }
 
-        DrawerAdapter adapter = new DrawerAdapter(navigationItems);
+        Log.d(TAG, "Drawer items size: " + navigationItems.size());
+
+        DrawerAdapter adapter = new DrawerAdapter(getActivity().getApplicationContext(), navigationItems);
         adapter.setNavigationDrawerCallbacks(this);
 
         mDrawerList.setAdapter(adapter);
@@ -145,24 +160,6 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         selectItem(position);
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT_WATCH)
-    public List<DrawerItem> getDrawerListItems() {
-
-        List<DrawerItem> items = new ArrayList<DrawerItem>();
-
-//        Drawable item1 = null;
-//
-//        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
-//            item1 = getResources().getDrawable(R.drawable.ic_menu_check, null);
-//        } else {
-//            item1 = getResources().getDrawable(R.drawable.ic_menu_check);
-//        }
-//
-//        items.add(new DrawerItem("item 1", item1));
-
-        return items;
     }
 
     /**
@@ -293,11 +290,11 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         try {
-            mCallbacks = (DrawerHandler) activity;
+            mCallbacks = (DrawerHandler) context;
         } catch (ClassCastException e) {
             throw new ClassCastException("Activity must implement DrawerHandler!");
         }
@@ -341,7 +338,7 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
 
         if (userPicFilename.isEmpty()) {
 
-            Picasso.with(getActivity())
+            Picasso.with(getActivity().getApplicationContext())
                     .load(R.drawable.no_image)
                     .placeholder(R.drawable.no_image)
                     .into(userPicView);
@@ -393,8 +390,76 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        if (userDao == null) {
+            userDao = DatabaseManager.getInstance(getActivity().getApplicationContext()).getDaoSession().getUserDao();
+        }
+    }
+
+    /**
+     * Process drawer update procedure and refresh the drawer with new information
+     *
+     * @param event
+     */
+    public void onEvent(DrawerUpdateEvent event) {
+        Log.d(TAG, "Received drawer update event");
+
+        if (userDao == null) {
+            userDao = DatabaseManager.getInstance(getActivity().getApplicationContext()).getDaoSession().getUserDao();
+        }
+
+        User user = userDao
+                .queryBuilder()
+                .where(UserDao.Properties.PrimaryEmail.eq(event.getUserEmail()))
+                .limit(1)
+                .build()
+                .unique();
+
+        List<ModuleInstallation> userModules = user.getModuleInstallationList();
+
+        if (userModules == null || userModules.isEmpty()) {
+            navigationItems = new ArrayList<>(0);
+        } else {
+            navigationItems = new ArrayList<>();
+
+            for (ModuleInstallation moduleInstalled : userModules) {
+
+                if (!moduleInstalled.getActive()) {
+                    userModules.remove(moduleInstalled);
+                } else {
+
+                    Module module = moduleInstalled.getModule();
+
+                    if (module != null) {
+
+                        navigationItems.add(new DrawerItem(module.getTitle(), module.getLogo_url()));
+                    }
+                }
+            }
+
+            if (!navigationItems.isEmpty()) {
+
+                DrawerAdapter adapter = new DrawerAdapter(getActivity().getApplicationContext(), navigationItems);
+                adapter.setNavigationDrawerCallbacks(this);
+
+                mDrawerList.setAdapter(adapter);
+                mDrawerList.getAdapter().notifyDataSetChanged();
+
+                mDrawerList.setVisibility(View.VISIBLE);
+                mDrawerNoModules.setVisibility(View.GONE);
+            }
+        }
+
+        Log.d(TAG, "Finished processing drawer update event!");
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+        EventBus.getDefault().unregister(this);
+        userDao = null;
     }
 }

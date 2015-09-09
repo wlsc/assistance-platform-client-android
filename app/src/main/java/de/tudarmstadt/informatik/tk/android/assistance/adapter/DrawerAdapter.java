@@ -1,11 +1,15 @@
 package de.tudarmstadt.informatik.tk.android.assistance.adapter;
 
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.pkmmte.view.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -17,16 +21,19 @@ import de.tudarmstadt.informatik.tk.android.assistance.models.items.DrawerItem;
 
 
 /**
- *  Navigation recycler view adapter to manage content
+ * Navigation recycler view adapter to manage content
  */
 public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder> {
+
+    private Context mContext;
 
     private List<DrawerItem> mData;
     private DrawerHandler mDrawerHandler;
     private View mSelectedView;
     private int mSelectedPosition;
 
-    public DrawerAdapter(List<DrawerItem> data) {
+    public DrawerAdapter(Context context, List<DrawerItem> data) {
+        this.mContext = context;
         mData = data;
     }
 
@@ -74,8 +81,12 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
     @Override
     public void onBindViewHolder(DrawerAdapter.ViewHolder viewHolder, int position) {
 
+        Picasso
+                .with(mContext)
+                .load(mData.get(position).getIconUrl())
+                .into(viewHolder.icon);
+
         viewHolder.textView.setText(mData.get(position).getText());
-        viewHolder.textView.setCompoundDrawablesWithIntrinsicBounds(mData.get(position).getDrawable(), null, null, null);
 
         if (mSelectedPosition == position) {
             if (mSelectedView != null) {
@@ -103,6 +114,9 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
      * Drawer item holder
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        @Bind(R.id.item_icon)
+        protected CircularImageView icon;
 
         @Bind(R.id.item_name)
         protected TextView textView;
