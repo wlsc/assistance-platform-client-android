@@ -174,13 +174,13 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                 CardHeader header = new CardHeader(this);
 
                 header.setTitle(module.getTitle());
-                card.setTitle(module.getDescription_short());
+                card.setTitle(module.getDescriptionShort());
                 card.addCardHeader(header);
-                card.setModuleId(module.getPackage_name());
+                card.setModuleId(module.getPackageName());
 
                 CardThumbnail thumb = new CardThumbnail(this);
 
-                String logoUrl = module.getLogo_url();
+                String logoUrl = module.getLogoUrl();
 
                 if (logoUrl.isEmpty()) {
                     Log.d(TAG, "Logo URL: NO LOGO supplied");
@@ -324,7 +324,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                     ModuleCapability dbCap = ConverterUtils.convertModuleCapability(cap);
 
                     dbCap.setRequired(true);
-                    dbCap.setModule_id(moduleId);
+                    dbCap.setModuleId(moduleId);
 
                     modCaps.add(dbCap);
                 }
@@ -338,7 +338,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
                     ModuleCapability dbCap = ConverterUtils.convertModuleCapability(cap);
 
                     dbCap.setRequired(false);
-                    dbCap.setModule_id(moduleId);
+                    dbCap.setModuleId(moduleId);
 
                     modCaps.add(dbCap);
                 }
@@ -582,16 +582,16 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
 
         Module module = moduleDao
                 .queryBuilder()
-                .where(ModuleDao.Properties.Package_name.eq(moduleId))
-                .where(ModuleDao.Properties.User_id.eq(user.getId()))
+                .where(ModuleDao.Properties.PackageName.eq(moduleId))
+                .where(ModuleDao.Properties.UserId.eq(user.getId()))
                 .limit(1)
                 .build()
                 .unique();
 
         ModuleInstallation moduleInstallation = new ModuleInstallation();
 
-        moduleInstallation.setModule_id(module.getId());
-        moduleInstallation.setUser_id(user.getId());
+        moduleInstallation.setModuleId(module.getId());
+        moduleInstallation.setUserId(user.getId());
         moduleInstallation.setActive(true);
         moduleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 

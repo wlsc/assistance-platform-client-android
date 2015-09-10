@@ -289,8 +289,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             List<Device> userDevices = user.getDeviceList();
 
             for (Device device : userDevices) {
-                if (device.getDevice_identifier().equals(currentAndroidId)) {
-                    serverDeviceId = device.getLogin().getServer_device_id();
+                if (device.getDeviceIdentifier().equals(currentAndroidId)) {
+                    serverDeviceId = device.getLogin().getServerDeviceId();
                     break;
                 }
             }
@@ -376,8 +376,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             Login newLogin = new Login();
 
-            newLogin.setServer_device_id(loginResponse.getDeviceId());
-            newLogin.setLast_email(email);
+            newLogin.setServerDeviceId(loginResponse.getDeviceId());
+            newLogin.setLastEmail(email);
             newLogin.setToken(loginResponse.getUserToken());
             newLogin.setCreated(createdDate);
 
@@ -385,12 +385,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             Device device = new Device();
             device.setOs(Constants.PLATFORM_NAME);
-            device.setOs_version(HardwareUtils.getAndroidVersion());
+            device.setOsVersion(HardwareUtils.getAndroidVersion());
             device.setBrand(HardwareUtils.getDeviceBrandName());
             device.setModel(HardwareUtils.getDeviceModelName());
-            device.setDevice_identifier(HardwareUtils.getAndroidId(this));
+            device.setDeviceIdentifier(HardwareUtils.getAndroidId(this));
             device.setCreated(createdDate);
-            device.setLogin_id(loginId);
+            device.setLoginId(loginId);
 
             currentDeviceId = deviceDao.insert(device);
 
@@ -404,7 +404,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             boolean isDeviceAlreadyCreated = false;
 
             for (Device device : userDevices) {
-                if (device.getDevice_identifier().equals(currentAndroidId)) {
+                if (device.getDeviceIdentifier().equals(currentAndroidId)) {
                     isDeviceAlreadyCreated = true;
                     currentDeviceId = device.getId();
                     break;
@@ -416,12 +416,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 Device device = new Device();
                 device.setOs(Constants.PLATFORM_NAME);
-                device.setOs_version(HardwareUtils.getAndroidVersion());
+                device.setOsVersion(HardwareUtils.getAndroidVersion());
                 device.setBrand(HardwareUtils.getDeviceBrandName());
                 device.setModel(HardwareUtils.getDeviceModelName());
-                device.setDevice_identifier(HardwareUtils.getAndroidId(this));
+                device.setDeviceIdentifier(HardwareUtils.getAndroidId(this));
                 device.setCreated(createdDate);
-                device.setLogin_id(loginId);
+                device.setLoginId(loginId);
 
                 currentDeviceId = deviceDao.insert(device);
             }

@@ -420,7 +420,7 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
 
                     if (module != null) {
 
-                        navigationItems.add(new DrawerItem(module.getTitle(), module.getLogo_url()));
+                        navigationItems.add(new DrawerItem(module.getTitle(), module.getLogoUrl()));
                     }
                 }
             }

@@ -29,12 +29,12 @@ public class ConverterUtils {
         AvailableModuleResponse availableModuleResponse = new AvailableModuleResponse();
 
         availableModuleResponse.setTitle(dbModule.getTitle());
-        availableModuleResponse.setLogo(dbModule.getLogo_url());
+        availableModuleResponse.setLogo(dbModule.getLogoUrl());
         availableModuleResponse.setCopyright(dbModule.getCopyright());
-        availableModuleResponse.setDescriptionShort(dbModule.getDescription_short());
-        availableModuleResponse.setDescriptionFull(dbModule.getDescription_full());
-        availableModuleResponse.setModulePackage(dbModule.getPackage_name());
-        availableModuleResponse.setSupportEmail(dbModule.getSupport_email());
+        availableModuleResponse.setDescriptionShort(dbModule.getDescriptionShort());
+        availableModuleResponse.setDescriptionFull(dbModule.getDescriptionFull());
+        availableModuleResponse.setModulePackage(dbModule.getPackageName());
+        availableModuleResponse.setSupportEmail(dbModule.getSupportEmail());
 
         return availableModuleResponse;
     }
@@ -50,12 +50,12 @@ public class ConverterUtils {
         Module dbModule = new Module();
 
         dbModule.setTitle(availableModuleResponse.getTitle() == null ? "" : availableModuleResponse.getTitle());
-        dbModule.setLogo_url(availableModuleResponse.getLogo() == null ? "" : availableModuleResponse.getLogo());
+        dbModule.setLogoUrl(availableModuleResponse.getLogo() == null ? "" : availableModuleResponse.getLogo());
         dbModule.setCopyright(availableModuleResponse.getCopyright() == null ? "" : availableModuleResponse.getCopyright());
-        dbModule.setDescription_short(availableModuleResponse.getDescriptionShort() == null ? "" : availableModuleResponse.getDescriptionShort());
-        dbModule.setDescription_full(availableModuleResponse.getDescriptionFull() == null ? "" : availableModuleResponse.getDescriptionFull());
-        dbModule.setPackage_name(availableModuleResponse.getModulePackage() == null ? "" : availableModuleResponse.getModulePackage());
-        dbModule.setSupport_email(availableModuleResponse.getSupportEmail() == null ? "" : availableModuleResponse.getSupportEmail());
+        dbModule.setDescriptionShort(availableModuleResponse.getDescriptionShort() == null ? "" : availableModuleResponse.getDescriptionShort());
+        dbModule.setDescriptionFull(availableModuleResponse.getDescriptionFull() == null ? "" : availableModuleResponse.getDescriptionFull());
+        dbModule.setPackageName(availableModuleResponse.getModulePackage() == null ? "" : availableModuleResponse.getModulePackage());
+        dbModule.setSupportEmail(availableModuleResponse.getSupportEmail() == null ? "" : availableModuleResponse.getSupportEmail());
         dbModule.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
         return dbModule;
