@@ -170,7 +170,7 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
                 .build()
                 .unique();
 
-        // check for user existance in the db
+        // check for user existence in the db
         if (user == null) {
             // no user found -> create one
 
