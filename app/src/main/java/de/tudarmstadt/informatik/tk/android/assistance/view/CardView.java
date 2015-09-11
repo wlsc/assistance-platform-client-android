@@ -13,6 +13,7 @@ import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleShowMoreInfoEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleUninstallEvent;
 import it.gmariotti.cardslib.library.internal.Card;
 
 /**
@@ -30,6 +31,9 @@ public class CardView extends Card {
 
     @Bind(R.id.install_module)
     protected Button install;
+
+    @Bind(R.id.uninstall_module)
+    protected Button uninstall;
 
     public CardView(Context context) {
         super(context, R.layout.card_row);
@@ -52,6 +56,14 @@ public class CardView extends Card {
 
         // propagate event to activity
         EventBus.getDefault().post(new ModuleInstallEvent(getModuleId()));
+    }
+
+    @OnClick(R.id.uninstall_module)
+    void onUninstallClicked() {
+        Log.d(TAG, "Module installation button clicked");
+
+        // propagate event to activity
+        EventBus.getDefault().post(new ModuleUninstallEvent(getModuleId()));
     }
 
     @OnClick(R.id.more_info_module)

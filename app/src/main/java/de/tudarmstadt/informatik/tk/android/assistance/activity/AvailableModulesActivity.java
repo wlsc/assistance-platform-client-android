@@ -236,8 +236,9 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
         // calling api service
-        AssistanceService service = ServiceGenerator.createService(AssistanceService.class);
-        service.getAvailableModules(userToken, new Callback<List<AvailableModuleResponse>>() {
+        AssistanceService assistanceService = ServiceGenerator.createService(AssistanceService.class);
+        assistanceService.getAvailableModules(userToken, new Callback<List<AvailableModuleResponse>>() {
+
             /**
              * Successful HTTP response.
              *

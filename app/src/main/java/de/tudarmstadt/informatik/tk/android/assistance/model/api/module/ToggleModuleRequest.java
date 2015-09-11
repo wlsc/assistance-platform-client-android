@@ -4,7 +4,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Wladimir Schmidt on 14.07.2015.
+ * Error class for JSON response
+ *
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 14.07.2015
  */
 public class ToggleModuleRequest {
 
@@ -13,6 +16,10 @@ public class ToggleModuleRequest {
     private String moduleId;
 
     public ToggleModuleRequest() {
+    }
+
+    public ToggleModuleRequest(String moduleId) {
+        this.moduleId = moduleId;
     }
 
     public String getModuleId() {

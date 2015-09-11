@@ -6,20 +6,21 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Error class for JSON response
  *
- * Created by Wladimir Schmidt on 28.06.2015.
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 28.06.2015
  */
 public class ErrorResponse {
 
     /**
      * Error pattern
-     *
-     *   HTTP/1.1 400 Bad Request
-     *   Content-Length: 39
-     *
-     *   {
-     *      "code" : integer,
-     *      "message" : string
-     *   }
+     * <p/>
+     * HTTP/1.1 400 Bad Request
+     * Content-Length: 39
+     * <p/>
+     * {
+     * "code" : integer,
+     * "message" : string
+     * }
      */
 
     private int statusCode;

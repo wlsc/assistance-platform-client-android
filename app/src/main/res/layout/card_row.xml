@@ -39,4 +39,16 @@
         android:text="@string/module_action_install"
         android:textStyle="bold" />
 
+    <Button
+        android:id="@+id/uninstall_module"
+        style="@style/BtnSuccess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/module_action_install"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
 </RelativeLayout>

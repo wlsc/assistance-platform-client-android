@@ -84,6 +84,7 @@
     <!-- MODULE LIST SCREEN -->
     <string name="module_list_activity_title">Available modules</string>
     <string name="module_action_install">INSTALL</string>
+    <string name="module_action_uninstall">UNINSTALL</string>
     <string name="module_action_more_info">MORE</string>
 
     <!-- MODULE LIST PERMISSION DIALOG -->
