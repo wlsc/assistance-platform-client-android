@@ -31,6 +31,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleShowMoreInfoE
 import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.service.AssistanceService;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
@@ -567,9 +568,43 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
      *
      * @param moduleId
      */
-    private void installModule(String moduleId) {
+    private void installModule(final String moduleId) {
 
         Log.d(TAG, "Installation of a module " + moduleId + " started...");
+        Log.d(TAG, "Requesting service...");
+
+        String userToken = UserUtils.getUserToken(getApplicationContext());
+
+        ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
+        toggleModuleRequest.setModuleId(moduleId);
+
+        AssistanceService assistanceService = ServiceGenerator.createService(AssistanceService.class);
+        assistanceService.activateModule(userToken, toggleModuleRequest, new Callback<Void>() {
+
+            @Override
+            public void success(Void aVoid, Response response) {
+                if (response.getStatus() == 200) {
+                    Log.d(TAG, "Module was activated!");
+                    saveInstallationOnDevice(moduleId);
+                    Log.d(TAG, "Installation of a module " + moduleId + " finished!");
+                } else {
+                    Log.d(TAG, "FAIL: service responded with code: " + response.getStatus());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                showErrorMessages(TAG, error);
+
+                Log.d(TAG, "Installation of a module " + moduleId + " has failed!");
+            }
+        });
+    }
+
+    /**
+     * Saves module installations status on device
+     */
+    private void saveInstallationOnDevice(final String moduleId) {
 
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
@@ -607,7 +642,7 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
             Toaster.showLong(getApplicationContext(), R.string.module_installation_unsuccessful);
         }
 
-        Log.d(TAG, "Installation of a module " + moduleId + " finished! Installation id: " + installId);
+        Log.d(TAG, "Installation id: " + installId);
     }
 
     @Override
