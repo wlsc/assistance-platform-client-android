@@ -122,15 +122,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private UserDao userDao;
 
-    private long currentDeviceId = -1;
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
-        if (userToken != null && !userToken.isEmpty()) {
+        if (!userToken.isEmpty()) {
             Log.d(TAG, "User token found. Launching main activity!");
             loadMainActivity();
             return;
@@ -395,7 +393,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             device.setCreated(createdDate);
             device.setLoginId(loginId);
 
-            currentDeviceId = deviceDao.insert(device);
+            long currentDeviceId = deviceDao.insert(device);
+            UserUtils.saveCurrentUserId(getApplicationContext(), currentDeviceId);
 
         } else {
 
@@ -409,7 +408,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             for (Device device : userDevices) {
                 if (device.getDeviceIdentifier().equals(currentAndroidId)) {
                     isDeviceAlreadyCreated = true;
-                    currentDeviceId = device.getId();
+                    UserUtils.saveCurrentUserId(getApplicationContext(), device.getId());
                     break;
                 }
             }
@@ -426,7 +425,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 device.setCreated(createdDate);
                 device.setLoginId(loginId);
 
-                currentDeviceId = deviceDao.insert(device);
+                long currentDeviceId = deviceDao.insert(device);
+                UserUtils.saveCurrentUserId(getApplicationContext(), currentDeviceId);
             }
         }
     }
@@ -444,7 +444,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (InputValidation.isUserTokenValid(token)) {
             Log.d(TAG, "Token is valid. Proceeding with login...");
 
-            showProgress(false);
+//            showProgress(false);
 
             saveLoginIntoDb(loginApiResponse);
 
@@ -583,6 +583,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void loadMainActivity() {
 
+        long currentDeviceId = UserUtils.getCurrentUserId(getApplicationContext());
+
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Constants.INTENT_CURRENT_DEVICE_ID, currentDeviceId);
@@ -638,6 +640,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
+        mSplashView = null;
+        uiThreadHandler = null;
+        loginDao = null;
+        deviceDao = null;
+        userDao = null;
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }
