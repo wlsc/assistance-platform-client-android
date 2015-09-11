@@ -45,7 +45,10 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.User;
 import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
 
 /**
- * Fragment used for managing interactions for and presentation of a navigation drawer.
+ * Fragment used for managing interactions and presentation of a navigation drawer
+ *
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 28.06.2015
  */
 public class DrawerFragment extends Fragment implements DrawerHandler {
 

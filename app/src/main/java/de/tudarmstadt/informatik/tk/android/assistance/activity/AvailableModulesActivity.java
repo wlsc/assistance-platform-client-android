@@ -56,6 +56,10 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+/**
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 28.06.2015
+ */
 public class AvailableModulesActivity extends DrawerActivity implements DrawerHandler {
 
     private String TAG = AvailableModulesActivity.class.getSimpleName();

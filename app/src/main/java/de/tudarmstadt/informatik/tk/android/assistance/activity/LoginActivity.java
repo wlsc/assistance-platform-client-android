@@ -62,7 +62,10 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via email/password
+ *
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 28.06.2015
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 

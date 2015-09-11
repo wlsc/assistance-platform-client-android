@@ -35,6 +35,9 @@ import retrofit.client.Response;
 
 /**
  * Base activity for common stuff
+ *
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 28.06.2015
  */
 public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
