@@ -89,6 +89,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/drawer_no_module_data_available"
+            android:textAllCaps="true"
             android:textStyle="bold"
             android:visibility="gone" />
 

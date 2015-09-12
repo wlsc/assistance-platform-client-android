@@ -41,6 +41,8 @@
     <color name="teal300">#4db6ac</color>
     <color name="teal700">#00796b</color>
 
+    <color name="pink">#e91e63</color>
+
     <!-- SPLASH VIEW -->
     <color name="splashScreenBackground">#F1F1F1</color>
 

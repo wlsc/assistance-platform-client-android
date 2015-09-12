@@ -36,6 +36,17 @@
         <item name="android:background">@drawable/btn_default_material</item>
     </style>
 
+    <style name="BtnDanger" parent="android:style/Widget.Material.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:minWidth">88dp</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:translationZ">1dp</item>
+        <item name="android:background">@drawable/btn_pink_material</item>
+    </style>
+
     <style name="Btn" parent="android:style/Widget.Material.Button">
         <item name="android:textColor">@color/black</item>
         <item name="android:padding">0dp</item>

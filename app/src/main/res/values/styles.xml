@@ -42,6 +42,15 @@
         <item name="android:background">@color/teal300</item>
     </style>
 
+    <style name="BtnDanger" parent="android:style/Widget.Material.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:minWidth">88dp</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:background">@color/pink</item>
+    </style>
+
     <style name="Btn" parent="android:style/Widget.Material.Button">
         <item name="android:textColor">@color/white</item>
         <item name="android:padding">0dp</item>

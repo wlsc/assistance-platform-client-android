@@ -37,6 +37,7 @@
             android:paddingLeft="10dp"
             android:paddingTop="20dp"
             android:text="@string/splash_loading"
+            android:textAllCaps="true"
             android:textColor="#CCC"
             android:textSize="26sp"
             android:textStyle="bold" />

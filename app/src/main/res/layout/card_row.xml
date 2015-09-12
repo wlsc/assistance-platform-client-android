@@ -26,6 +26,7 @@
         android:layout_toLeftOf="@+id/install_module"
         android:layout_toStartOf="@+id/install_module"
         android:text="@string/module_action_more_info"
+        android:textAllCaps="true"
         android:textStyle="bold" />
 
     <Button
@@ -37,17 +38,19 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:text="@string/module_action_install"
+        android:textAllCaps="true"
         android:textStyle="bold" />
 
     <Button
         android:id="@+id/uninstall_module"
-        style="@style/BtnSuccess"
+        style="@style/BtnDanger"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:text="@string/module_action_install"
+        android:text="@string/module_action_uninstall"
+        android:textAllCaps="true"
         android:textStyle="bold"
         android:visibility="gone" />
 

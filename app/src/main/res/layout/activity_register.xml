@@ -28,6 +28,7 @@
                 android:gravity="center_horizontal"
                 android:hint="@string/register_header"
                 android:paddingTop="8dp"
+                android:textAllCaps="true"
                 android:textColorHint="@color/loginHeader"
                 android:textSize="@dimen/abc_text_size_headline_material" />
 
@@ -84,6 +85,7 @@
                 android:layout_marginTop="16dp"
                 android:enabled="true"
                 android:text="@string/register_action_sign_up"
+                android:textAllCaps="true"
                 android:textStyle="bold" />
 
         </LinearLayout>
