@@ -384,7 +384,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                 for (ModuleCapabilityResponse capability : moduleReqSensors) {
                     Log.d(TAG, "Type: " + capability.getType());
-                    Log.d(TAG, "Frequency: " + capability.getFrequency());
+                    Log.d(TAG, "Frequency: " + capability.getCollectionFrequency());
                 }
             } else {
                 Log.d(TAG, "Empty");
@@ -396,7 +396,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                 for (ModuleCapabilityResponse capability : moduleOptSensors) {
                     Log.d(TAG, "Type: " + capability.getType());
-                    Log.d(TAG, "Frequency: " + capability.getFrequency());
+                    Log.d(TAG, "Frequency: " + capability.getCollectionFrequency());
                 }
             } else {
                 Log.d(TAG, "Empty");
