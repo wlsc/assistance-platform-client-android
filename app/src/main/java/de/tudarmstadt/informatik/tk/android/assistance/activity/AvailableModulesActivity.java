@@ -35,7 +35,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.error.ErrorResp
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
-import de.tudarmstadt.informatik.tk.android.assistance.service.AssistanceService;
+import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
@@ -234,8 +234,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
         // calling api service
-        AssistanceService assistanceService = ServiceGenerator.createService(AssistanceService.class);
-        assistanceService.getAvailableModules(userToken, new Callback<List<AvailableModuleResponse>>() {
+        ModuleService moduleService = ServiceGenerator.createService(ModuleService.class);
+        moduleService.getAvailableModules(userToken, new Callback<List<AvailableModuleResponse>>() {
 
             /**
              * Successful HTTP response.
@@ -572,8 +572,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
         toggleModuleRequest.setModuleId(moduleId);
 
-        AssistanceService assistanceService = ServiceGenerator.createService(AssistanceService.class);
-        assistanceService.activateModule(userToken, toggleModuleRequest, new Callback<Void>() {
+        ModuleService moduleService = ServiceGenerator.createService(ModuleService.class);
+        moduleService.activateModule(userToken, toggleModuleRequest, new Callback<Void>() {
 
             @Override
             public void success(Void aVoid, Response response) {

@@ -15,7 +15,7 @@ import retrofit.http.POST;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 30.06.2015
  */
-public interface AssistanceService {
+public interface ModuleService {
 
     @GET(Config.ASSISTANCE_MODULE_LIST_ENDPOINT)
     void getAvailableModules(@Header("X-AUTH-TOKEN") String userToken,
