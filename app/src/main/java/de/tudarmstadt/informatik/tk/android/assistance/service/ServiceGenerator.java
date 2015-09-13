@@ -2,8 +2,9 @@ package de.tudarmstadt.informatik.tk.android.assistance.service;
 
 import com.google.gson.GsonBuilder;
 
-import de.tudarmstadt.informatik.tk.android.assistance.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.model.httpclient.UntrustedOkHttpClient;
+import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
+import de.tudarmstadt.informatik.tk.android.kraken.KrakenSdkSettings;
 import retrofit.RestAdapter;
 import retrofit.android.AndroidLog;
 import retrofit.client.OkClient;
@@ -18,7 +19,7 @@ public class ServiceGenerator {
     }
 
     /**
-     * Creates request service
+     * Generates retrofit custom API HTTP request services
      *
      * @param serviceClass
      * @param <T>
@@ -31,9 +32,9 @@ public class ServiceGenerator {
         RestAdapter adapter = new RestAdapter.Builder()
 //                .setErrorHandler(new AssistanceErrorHandler())
                 .setLogLevel(RestAdapter.LogLevel.FULL) // enabling log traces
-                .setLog(new AndroidLog("HTTPS_CLIENT"))
+                .setLog(new AndroidLog(Constants.HTTP_LOGGER_NAME))
                 .setConverter(new GsonConverter(gsonBuilder.create()))
-                .setEndpoint(Config.ASSISTANCE_ENDPOINT)
+                .setEndpoint(KrakenSdkSettings.ASSISTANCE_ENDPOINT)
                 .setClient(new OkClient(new UntrustedOkHttpClient().getClient()))
                 .build();
 

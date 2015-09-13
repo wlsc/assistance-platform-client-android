@@ -17,6 +17,11 @@ public class Constants {
     public static final int BACK_BUTTON_DELAY_MILLIS = 2000;
 
     /**
+     * Android http logger custom name
+     */
+    public static final String HTTP_LOGGER_NAME = "HTTPS_CLIENT";
+
+    /**
      * Remember the position of the selected item.
      */
     public static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
