@@ -72,7 +72,9 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
         mDrawerLayout = ButterKnife.findById(this, R.id.drawer_layout);
 
         setSupportActionBar(mToolbar);
-        setupDrawer(mToolbar);
+
+        mDrawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.drawer_fragment);
+        mDrawerFragment.setup(mDrawerLayout, mToolbar);
 
         // if user data was not cached, request new
 
@@ -199,17 +201,6 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
 
             userDao.update(user);
         }
-    }
-
-    /**
-     * Setup navigation drawer
-     *
-     * @param mToolbar
-     */
-    protected void setupDrawer(Toolbar mToolbar) {
-
-        mDrawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.drawer_fragment);
-        mDrawerFragment.setup(R.id.drawer_fragment, mDrawerLayout, mToolbar);
     }
 
     /**

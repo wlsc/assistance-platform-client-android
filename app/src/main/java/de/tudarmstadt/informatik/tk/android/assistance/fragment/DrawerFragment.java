@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -166,19 +167,17 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
     /**
      * Users of this fragment must call this method to set up the navigation drawer interactions.
      *
-     * @param fragmentId   The android:id of this fragment in its activity's layout.
-     * @param drawerLayout The DrawerLayout containing this fragment's UI.
+     * @param drawerLayout
      * @param toolbar      The Toolbar of the activity.
      */
-
-    public void setup(int fragmentId, DrawerLayout drawerLayout, final Toolbar toolbar) {
+    public void setup(DrawerLayout drawerLayout, final Toolbar toolbar) {
 
         ButterKnife.bind(getActivity());
 
-        mFragmentContainerView = getActivity().findViewById(R.id.drawer_fragment);
         mDrawerLayout = drawerLayout;
+        mFragmentContainerView = getActivity().findViewById(R.id.drawer_fragment);
 
-        mDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.myPrimaryColor700));
+        mDrawerLayout.setStatusBarBackgroundColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.myPrimaryColor700));
 
         mActionBarDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
 
@@ -220,18 +219,18 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
         // If the user hasn't 'learned' about the drawer, open it to introduce them to the drawer,
         // per the navigation drawer design guidelines.
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
-            mDrawerLayout.openDrawer(mFragmentContainerView);
+            this.mDrawerLayout.openDrawer(mFragmentContainerView);
         }
 
         // Defer code dependent on restoration of previous instance state.
-        mDrawerLayout.post(new Runnable() {
+        this.mDrawerLayout.post(new Runnable() {
             @Override
             public void run() {
                 mActionBarDrawerToggle.syncState();
             }
         });
 
-        mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
+        this.mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
 
         ButterKnife.bind(this, mFragmentContainerView);
     }
