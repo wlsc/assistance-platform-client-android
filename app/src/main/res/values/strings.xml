@@ -55,6 +55,10 @@
 
     <!-- MAIN SCREEN -->
     <string name="main_activity_title">Module name</string>
+    <string name="main_activity_module_menu_enabled">Module enabled</string>
+    <string name="main_activity_module_menu_enable">Enable</string>
+    <string name="main_activity_module_menu_disable">Disable</string>
+    <string name="main_activity_module_menu_uninstall">Uninstall module</string>
 
     <!-- LOGIN SCREEN -->
     <string name="login_header">Welcome back!</string>

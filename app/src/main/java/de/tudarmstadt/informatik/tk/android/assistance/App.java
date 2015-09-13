@@ -2,8 +2,6 @@ package de.tudarmstadt.informatik.tk.android.assistance;
 
 import android.app.Application;
 
-import com.squareup.leakcanary.LeakCanary;
-
 /**
  * Main application
  *
@@ -17,6 +15,6 @@ public class App extends Application {
         super.onCreate();
 
         // init of a memory leak finder library
-        LeakCanary.install(this);
+//        LeakCanary.install(this);
     }
 }
