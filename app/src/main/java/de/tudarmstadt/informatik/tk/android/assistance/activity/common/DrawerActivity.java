@@ -16,7 +16,6 @@ import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.LoginActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.DrawerFragment;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ServiceGenerator;
@@ -39,7 +38,7 @@ import retrofit.client.Response;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
+public class DrawerActivity extends AppCompatActivity {
 
     private static final String TAG = DrawerActivity.class.getSimpleName();
 
@@ -290,7 +289,4 @@ public class DrawerActivity extends AppCompatActivity implements DrawerHandler {
         }
     }
 
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-    }
 }

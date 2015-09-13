@@ -37,13 +37,33 @@ public class UserUtils {
     }
 
     /**
-     * Saves current user id saved into SharedPreferences
+     * Saves current user id into SharedPreferences
      *
      * @param context
      * @param value
      */
     public static void saveCurrentUserId(Context context, long value) {
         PreferencesUtils.savePreference(context, Constants.PREF_USER_ID, value);
+    }
+
+    /**
+     * Returns current module id saved in SharedPreferences
+     *
+     * @param context
+     * @return
+     */
+    public static long getCurrentModuleId(Context context) {
+        return PreferencesUtils.getPreference(context, Constants.PREF_MODULE_ID, -1);
+    }
+
+    /**
+     * Saves current module id into SharedPreferences
+     *
+     * @param context
+     * @param value
+     */
+    public static void saveCurrentModuleId(Context context, long value) {
+        PreferencesUtils.savePreference(context, Constants.PREF_MODULE_ID, value);
     }
 
     /**

@@ -631,6 +631,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         Long installId = moduleInstallationDao.insert(moduleInstallation);
 
         if (installId != null) {
+            UserUtils.saveUserHasModules(getApplicationContext(), true);
             Toaster.showLong(getApplicationContext(), R.string.module_installation_successful);
         } else {
             Toaster.showLong(getApplicationContext(), R.string.module_installation_unsuccessful);
@@ -656,7 +657,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
                 finish();
                 return true;
             default:

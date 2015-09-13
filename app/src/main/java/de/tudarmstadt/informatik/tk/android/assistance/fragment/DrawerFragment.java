@@ -35,7 +35,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.activity.LoginActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.DrawerAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.event.DrawerUpdateEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerHandler;
+import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
@@ -51,14 +51,14 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class DrawerFragment extends Fragment implements DrawerHandler {
+public class DrawerFragment extends Fragment implements DrawerClickHandler {
 
     private static final String TAG = DrawerFragment.class.getSimpleName();
 
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
-    private DrawerHandler mCallbacks;
+    private DrawerClickHandler mCallbacks;
 
     /**
      * Helper component that ties the action bar to the navigation drawer.
@@ -135,33 +135,17 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
             mDrawerNoModules.setVisibility(View.GONE);
         }
 
-        Log.d(TAG, "Drawer items size: " + navigationItems.size());
-
-        DrawerAdapter adapter = new DrawerAdapter(getActivity().getApplicationContext(), navigationItems);
-        adapter.setNavigationDrawerCallbacks(this);
+        DrawerAdapter adapter = new DrawerAdapter(getActivity().getApplicationContext(), navigationItems, this);
 
         mDrawerList.setAdapter(adapter);
 
-        selectItem(mCurrentSelectedPosition);
+        selectItem(view, mCurrentSelectedPosition);
 
         return view;
     }
 
     public boolean isDrawerOpen() {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
-    }
-
-    public ActionBarDrawerToggle getActionBarDrawerToggle() {
-        return mActionBarDrawerToggle;
-    }
-
-    public DrawerLayout getDrawerLayout() {
-        return mDrawerLayout;
-    }
-
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        selectItem(position);
     }
 
     /**
@@ -238,9 +222,10 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
     /**
      * Selects item on position
      *
+     * @param v
      * @param position
      */
-    private void selectItem(int position) {
+    private void selectItem(View v, int position) {
 
         mCurrentSelectedPosition = position;
         if (mDrawerLayout != null) {
@@ -248,7 +233,7 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
         }
 
         if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position);
+            mCallbacks.onNavigationDrawerItemSelected(v, position);
         }
 
         ((DrawerAdapter) mDrawerList.getAdapter()).selectPosition(position);
@@ -297,9 +282,9 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
         super.onAttach(context);
 
         try {
-            mCallbacks = (DrawerHandler) context;
+            mCallbacks = (DrawerClickHandler) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException("Activity must implement DrawerHandler!");
+            throw new ClassCastException("Activity must implement DrawerClickHandler!");
         }
     }
 
@@ -427,8 +412,7 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
 
             if (!navigationItems.isEmpty()) {
 
-                DrawerAdapter adapter = new DrawerAdapter(getActivity().getApplicationContext(), navigationItems);
-                adapter.setNavigationDrawerCallbacks(this);
+                DrawerAdapter adapter = new DrawerAdapter(getActivity().getApplicationContext(), navigationItems, this);
 
                 mDrawerList.setAdapter(adapter);
                 mDrawerList.getAdapter().notifyDataSetChanged();
@@ -487,5 +471,11 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
         ButterKnife.unbind(this);
         EventBus.getDefault().unregister(this);
         userDao = null;
+    }
+
+    @Override
+    public void onNavigationDrawerItemSelected(View v, int position) {
+        selectItem(v, position);
+        Log.d(TAG, "Drawer position selected: " + position);
     }
 }

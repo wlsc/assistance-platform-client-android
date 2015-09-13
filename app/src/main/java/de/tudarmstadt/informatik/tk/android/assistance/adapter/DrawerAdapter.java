@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pkmmte.view.CircularImageView;
@@ -16,7 +17,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerHandler;
+import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 
 
@@ -28,21 +29,14 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
     private Context mContext;
 
     private List<DrawerItem> mData;
-    private DrawerHandler mDrawerHandler;
+    private static DrawerClickHandler mDrawerClickHandler;
     private View mSelectedView;
     private int mSelectedPosition;
 
-    public DrawerAdapter(Context context, List<DrawerItem> data) {
+    public DrawerAdapter(Context context, List<DrawerItem> data, DrawerClickHandler drawerClickHandler) {
         this.mContext = context;
         mData = data;
-    }
-
-    public DrawerHandler getNavigationDrawerCallbacks() {
-        return mDrawerHandler;
-    }
-
-    public void setNavigationDrawerCallbacks(DrawerHandler drawerHandler) {
-        mDrawerHandler = drawerHandler;
+        this.mDrawerClickHandler = drawerClickHandler;
     }
 
     @Override
@@ -52,27 +46,6 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
 
         final ViewHolder viewHolder = new ViewHolder(v);
 
-        viewHolder.itemView.setClickable(true);
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-
-                                                   @Override
-                                                   public void onClick(View v) {
-
-                                                       if (mSelectedView != null) {
-                                                           mSelectedView.setSelected(false);
-                                                       }
-
-                                                       mSelectedPosition = viewHolder.getAdapterPosition();
-                                                       v.setSelected(true);
-
-                                                       mSelectedView = v;
-                                                       if (mDrawerHandler != null) {
-                                                           mDrawerHandler.onNavigationDrawerItemSelected(viewHolder.getAdapterPosition());
-                                                       }
-                                                   }
-                                               }
-        );
-
         viewHolder.itemView.setBackgroundResource(R.drawable.row_selector);
 
         return viewHolder;
@@ -81,9 +54,12 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
     @Override
     public void onBindViewHolder(DrawerAdapter.ViewHolder viewHolder, int position) {
 
+        String iconUrl = mData.get(position).getIconUrl();
+
         Picasso
                 .with(mContext)
-                .load(mData.get(position).getIconUrl())
+                .load(iconUrl)
+                .placeholder(R.drawable.no_image)
                 .into(viewHolder.icon);
 
         viewHolder.textView.setText(mData.get(position).getText());
@@ -113,7 +89,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
     /**
      * Drawer item holder
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @Bind(R.id.item_icon)
         protected CircularImageView icon;
@@ -125,6 +101,21 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
             super(itemView);
 
             ButterKnife.bind(this, itemView);
+
+            itemView.setOnClickListener(this);
+
+            icon.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            icon.setMaxHeight(10);
+        }
+
+        /**
+         * Called when a view has been clicked.
+         *
+         * @param v The view that was clicked.
+         */
+        @Override
+        public void onClick(View v) {
+            mDrawerClickHandler.onNavigationDrawerItemSelected(v, this.getLayoutPosition());
         }
     }
 
