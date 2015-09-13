@@ -1,12 +1,16 @@
 package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -24,17 +28,17 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.event.DrawerUpdateEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleShowMoreInfoEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerHandler;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.service.AssistanceService;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CardView;
@@ -58,12 +62,16 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
+ * Shows a list of available assistance modules
+ *
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class AvailableModulesActivity extends DrawerActivity implements DrawerHandler {
+public class AvailableModulesActivity extends AppCompatActivity {
 
-    private String TAG = AvailableModulesActivity.class.getSimpleName();
+    private static final String TAG = AvailableModulesActivity.class.getSimpleName();
+
+    protected Toolbar mToolbar;
 
     protected CardListView mModuleList;
 
@@ -82,26 +90,16 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_available_modules);
 
-        boolean userHasModulesInstalled = UserUtils.isUserHasModules(getApplicationContext());
+        mToolbar = ButterKnife.findById(this, R.id.toolbar_actionbar);
+        setSupportActionBar(mToolbar);
 
-        // locking or unlocking drawer
-        if (userHasModulesInstalled) {
-//            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-//            mDrawerFragment.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
-        } else {
-//            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-//            mDrawerFragment.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
-        }
-
-        //Inflate this layout into drawer container
-        getLayoutInflater().inflate(R.layout.activity_available_modules, mFrameLayout);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mModuleList = ButterKnife.findById(this, R.id.module_list);
         mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);
-
-        // hide available modules menu item
-        ButterKnife.findById(this, R.id.available_modules).setVisibility(View.GONE);
 
         setTitle(R.string.module_list_activity_title);
 
@@ -435,11 +433,6 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
         }
     }
 
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-
-    }
-
     /**
      * On module install event
      *
@@ -656,5 +649,69 @@ public class AvailableModulesActivity extends DrawerActivity implements DrawerHa
         userDao = null;
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Processes error response from server
+     *
+     * @param TAG
+     * @param retrofitError
+     */
+    protected void showErrorMessages(String TAG, RetrofitError retrofitError) {
+
+        Response response = retrofitError.getResponse();
+
+        if (response != null) {
+
+            int httpCode = response.getStatus();
+
+            switch (httpCode) {
+                case 400:
+                    ErrorResponse errorResponse = (ErrorResponse) retrofitError.getBodyAs(ErrorResponse.class);
+                    errorResponse.setStatusCode(httpCode);
+
+                    Integer apiResponseCode = errorResponse.getCode();
+                    String apiMessage = errorResponse.getMessage();
+                    int httpResponseCode = errorResponse.getStatusCode();
+
+                    Log.d(TAG, "Response status: " + httpResponseCode);
+                    Log.d(TAG, "Response code: " + apiResponseCode);
+                    Log.d(TAG, "Response message: " + apiMessage);
+
+                    break;
+                case 401:
+                    Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+                    PreferencesUtils.clearUserCredentials(getApplicationContext());
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                    break;
+                case 404:
+                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+                    break;
+                case 503:
+                    Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
+                    break;
+                default:
+                    Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+                    break;
+            }
+        } else {
+            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+        }
     }
 }

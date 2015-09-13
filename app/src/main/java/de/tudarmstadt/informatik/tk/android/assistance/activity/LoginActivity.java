@@ -583,11 +583,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void loadMainActivity() {
 
-        long currentDeviceId = UserUtils.getCurrentUserId(getApplicationContext());
-
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(Constants.INTENT_CURRENT_DEVICE_ID, currentDeviceId);
         startActivity(intent);
         finish();
     }

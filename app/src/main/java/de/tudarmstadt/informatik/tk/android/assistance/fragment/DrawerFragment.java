@@ -334,9 +334,7 @@ public class DrawerFragment extends Fragment implements DrawerHandler {
     @OnClick(R.id.available_modules)
     protected void onAvailableModulesClicked() {
         Intent intent = new Intent(getActivity(), AvailableModulesActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        getActivity().finish();
     }
 
     @OnClick(R.id.settings)
