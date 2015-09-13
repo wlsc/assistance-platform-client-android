@@ -33,12 +33,12 @@ public class ModuleCapabilityResponse {
     // so the module can keep up with processing.
     @SerializedName("min_required_readings_on_update")
     @Expose
-    private Double minRequiredReadingsOnUpdate;
+    private Integer minRequiredReadingsOnUpdate;
 
     public ModuleCapabilityResponse() {
     }
 
-    public ModuleCapabilityResponse(String type, Double collectionFrequency, Double requiredUpdateFrequency, Double minRequiredReadingsOnUpdate) {
+    public ModuleCapabilityResponse(String type, Double collectionFrequency, Double requiredUpdateFrequency, Integer minRequiredReadingsOnUpdate) {
         this.type = type;
         this.collectionFrequency = collectionFrequency;
         this.requiredUpdateFrequency = requiredUpdateFrequency;
@@ -69,11 +69,11 @@ public class ModuleCapabilityResponse {
         this.requiredUpdateFrequency = requiredUpdateFrequency;
     }
 
-    public Double getMinRequiredReadingsOnUpdate() {
+    public Integer getMinRequiredReadingsOnUpdate() {
         return this.minRequiredReadingsOnUpdate;
     }
 
-    public void setMinRequiredReadingsOnUpdate(Double minRequiredReadingsOnUpdate) {
+    public void setMinRequiredReadingsOnUpdate(Integer minRequiredReadingsOnUpdate) {
         this.minRequiredReadingsOnUpdate = minRequiredReadingsOnUpdate;
     }
 

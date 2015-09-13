@@ -72,7 +72,9 @@ public class ConverterUtils {
         ModuleCapabilityResponse moduleCapabilityResponse = new ModuleCapabilityResponse();
 
         moduleCapabilityResponse.setType(moduleCapability.getType());
-        moduleCapabilityResponse.setCollectionFrequency(moduleCapability.getFrequency());
+        moduleCapabilityResponse.setCollectionFrequency(moduleCapability.getCollectionFrequency());
+        moduleCapabilityResponse.setRequiredUpdateFrequency(moduleCapability.getRequiredUpdateFrequency());
+        moduleCapabilityResponse.setMinRequiredReadingsOnUpdate(moduleCapability.getMinRequiredReadingsOnUpdate());
 
         return moduleCapabilityResponse;
     }
@@ -88,7 +90,9 @@ public class ConverterUtils {
         ModuleCapability moduleCapability = new ModuleCapability();
 
         moduleCapability.setType(moduleCapabilityResponse.getType());
-        moduleCapability.setFrequency(moduleCapabilityResponse.getCollectionFrequency());
+        moduleCapability.setCollectionFrequency(moduleCapabilityResponse.getCollectionFrequency());
+        moduleCapability.setRequiredUpdateFrequency(moduleCapabilityResponse.getRequiredUpdateFrequency());
+        moduleCapability.setMinRequiredReadingsOnUpdate(moduleCapabilityResponse.getMinRequiredReadingsOnUpdate());
         moduleCapability.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
         return moduleCapability;
