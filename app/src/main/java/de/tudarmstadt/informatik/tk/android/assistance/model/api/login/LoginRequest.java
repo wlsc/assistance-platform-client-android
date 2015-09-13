@@ -25,6 +25,12 @@ public class LoginRequest {
     public LoginRequest() {
     }
 
+    public LoginRequest(String userEmail, String password, UserDevice device) {
+        this.userEmail = userEmail;
+        this.password = password;
+        this.device = device;
+    }
+
     public String getPassword() {
         return password;
     }

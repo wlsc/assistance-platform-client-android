@@ -15,6 +15,10 @@ public class ResetPasswordRequest {
     public ResetPasswordRequest() {
     }
 
+    public ResetPasswordRequest(String email) {
+        this.email = email;
+    }
+
     public String getEmail() {
         return email;
     }

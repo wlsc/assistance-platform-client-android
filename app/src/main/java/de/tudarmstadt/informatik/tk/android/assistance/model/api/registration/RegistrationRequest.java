@@ -19,6 +19,11 @@ public class RegistrationRequest {
     public RegistrationRequest() {
     }
 
+    public RegistrationRequest(String userEmail, String password) {
+        this.userEmail = userEmail;
+        this.password = password;
+    }
+
     public String getUserEmail() {
         return userEmail;
     }

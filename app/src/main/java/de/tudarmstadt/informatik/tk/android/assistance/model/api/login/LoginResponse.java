@@ -19,6 +19,11 @@ public class LoginResponse {
     public LoginResponse() {
     }
 
+    public LoginResponse(String userToken, Long deviceId) {
+        this.userToken = userToken;
+        this.deviceId = deviceId;
+    }
+
     public String getUserToken() {
         return userToken;
     }

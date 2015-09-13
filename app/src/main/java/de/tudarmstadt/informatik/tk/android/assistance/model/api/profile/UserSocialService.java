@@ -41,6 +41,15 @@ public class UserSocialService {
     public UserSocialService() {
     }
 
+    public UserSocialService(String name, String firstname, String lastname, String email, Long updated, Long created) {
+        this.name = name;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.updated = updated;
+        this.created = created;
+    }
+
     public Long getCreated() {
         return created;
     }

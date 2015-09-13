@@ -38,6 +38,15 @@ public class UserDevice {
     public UserDevice() {
     }
 
+    public UserDevice(Long id, String deviceId, String os, String osVersion, String brand, String model) {
+        this.id = id;
+        this.deviceId = deviceId;
+        this.os = os;
+        this.osVersion = osVersion;
+        this.brand = brand;
+        this.model = model;
+    }
+
     public Long getId() {
         return this.id;
     }

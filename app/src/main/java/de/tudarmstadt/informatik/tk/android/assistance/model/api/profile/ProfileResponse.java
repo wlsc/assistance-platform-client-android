@@ -37,6 +37,15 @@ public class ProfileResponse {
     public ProfileResponse() {
     }
 
+    public ProfileResponse(String firstname, String lastname, String primaryEmail, Long lastLogin, Long joinedSince, List<UserSocialService> socialServices) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.primaryEmail = primaryEmail;
+        this.lastLogin = lastLogin;
+        this.joinedSince = joinedSince;
+        this.socialServices = socialServices;
+    }
+
     public String getFirstname() {
         return firstname;
     }

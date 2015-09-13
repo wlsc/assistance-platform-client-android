@@ -25,6 +25,12 @@ public class UpdateProfileRequest {
     public UpdateProfileRequest() {
     }
 
+    public UpdateProfileRequest(String firstname, String lastname, List<UserSocialService> services) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.services = services;
+    }
+
     public String getFirstname() {
         return firstname;
     }

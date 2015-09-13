@@ -15,6 +15,10 @@ public class RegistrationResponse {
     public RegistrationResponse() {
     }
 
+    public RegistrationResponse(Long userId) {
+        this.userId = userId;
+    }
+
     public Long getUserId() {
         return userId;
     }

@@ -49,6 +49,18 @@ public class AvailableModuleResponse {
     public AvailableModuleResponse() {
     }
 
+    public AvailableModuleResponse(String modulePackage, String title, String logo, String descriptionShort, String descriptionFull, String copyright, List<ModuleCapabilityResponse> sensorsRequired, List<ModuleCapabilityResponse> sensorsOptional, String supportEmail) {
+        this.modulePackage = modulePackage;
+        this.title = title;
+        this.logo = logo;
+        this.descriptionShort = descriptionShort;
+        this.descriptionFull = descriptionFull;
+        this.copyright = copyright;
+        this.sensorsRequired = sensorsRequired;
+        this.sensorsOptional = sensorsOptional;
+        this.supportEmail = supportEmail;
+    }
+
     public String getModulePackage() {
         return modulePackage;
     }
