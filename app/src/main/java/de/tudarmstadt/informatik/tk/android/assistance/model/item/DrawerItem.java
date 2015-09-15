@@ -1,32 +1,48 @@
 package de.tudarmstadt.informatik.tk.android.assistance.model.item;
 
 
+import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
+
 /**
  * Item for navigation drawer
  */
 public class DrawerItem {
 
-    private String mText;
-    private String mIconUrl;
+    private Module module;
 
-    public DrawerItem(String text, String url) {
-        mText = text;
-        mIconUrl = url;
+    private String title;
+    private String iconUrl;
+
+    public DrawerItem() {
     }
 
-    public String getText() {
-        return mText;
+    public DrawerItem(String title, String iconUrl, Module module) {
+        this.module = module;
+        this.title = title;
+        this.iconUrl = iconUrl;
     }
 
-    public void setText(String text) {
-        mText = text;
+    public Module getModule() {
+        return this.module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getIconUrl() {
-        return mIconUrl;
+        return this.iconUrl;
     }
 
-    public void setIconUrl(String drawable) {
-        mIconUrl = drawable;
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 }

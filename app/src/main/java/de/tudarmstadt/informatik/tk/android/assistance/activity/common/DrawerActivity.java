@@ -16,7 +16,6 @@ import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.LoginActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.DrawerFragment;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
@@ -218,17 +217,7 @@ public class DrawerActivity extends AppCompatActivity {
 
             switch (httpCode) {
                 case 400:
-                    ErrorResponse errorResponse = (ErrorResponse) retrofitError.getBodyAs(ErrorResponse.class);
-                    errorResponse.setStatusCode(httpCode);
-
-                    Integer apiResponseCode = errorResponse.getCode();
-                    String apiMessage = errorResponse.getMessage();
-                    int httpResponseCode = errorResponse.getStatusCode();
-
-                    Log.d(TAG, "Response status: " + httpResponseCode);
-                    Log.d(TAG, "Response code: " + apiResponseCode);
-                    Log.d(TAG, "Response message: " + apiMessage);
-
+                    Toaster.showLong(getApplicationContext(), R.string.error_service_bad_request);
                     break;
                 case 401:
                     Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);

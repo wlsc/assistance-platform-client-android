@@ -13,7 +13,7 @@ public class UserDevice {
 
     @SerializedName("id")
     @Expose
-    private Long id;
+    private Long serverId;
 
     @SerializedName("device_identifier")
     @Expose
@@ -38,8 +38,8 @@ public class UserDevice {
     public UserDevice() {
     }
 
-    public UserDevice(Long id, String deviceId, String os, String osVersion, String brand, String model) {
-        this.id = id;
+    public UserDevice(Long serverId, String deviceId, String os, String osVersion, String brand, String model) {
+        this.serverId = serverId;
         this.deviceId = deviceId;
         this.os = os;
         this.osVersion = osVersion;
@@ -47,12 +47,12 @@ public class UserDevice {
         this.model = model;
     }
 
-    public Long getId() {
-        return this.id;
+    public Long getServerId() {
+        return this.serverId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setServerId(Long serverId) {
+        this.serverId = serverId;
     }
 
     public String getDeviceId() {
@@ -98,7 +98,7 @@ public class UserDevice {
     @Override
     public String toString() {
         return "UserDevice{" +
-                "id=" + id +
+                "id=" + serverId +
                 ", deviceId='" + deviceId + '\'' +
                 ", os='" + os + '\'' +
                 ", osVersion='" + osVersion + '\'' +

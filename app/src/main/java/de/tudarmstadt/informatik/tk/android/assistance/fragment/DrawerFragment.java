@@ -73,12 +73,6 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
     @Bind(R.id.drawer_no_modules)
     protected TextView mDrawerNoModules;
 
-    private View mFragmentContainerView;
-
-    private int mCurrentSelectedPosition = 0;
-    private boolean mFromSavedInstanceState;
-    private boolean mUserLearnedDrawer;
-
     @Bind(R.id.imgAvatar)
     protected CircularImageView userPicView;
 
@@ -87,6 +81,12 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
 
     @Bind(R.id.txtUsername)
     protected TextView usernameView;
+
+    private View mFragmentContainerView;
+
+    private int mCurrentSelectedPosition = 0;
+    private boolean mFromSavedInstanceState;
+    private boolean mUserLearnedDrawer;
 
     private static List<DrawerItem> navigationItems;
 
@@ -398,14 +398,14 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
             for (ModuleInstallation moduleInstalled : userModules) {
 
                 if (!moduleInstalled.getActive()) {
-                    userModules.remove(moduleInstalled);
+//                    userModules.remove(moduleInstalled);
                 } else {
 
                     Module module = moduleInstalled.getModule();
 
                     if (module != null) {
 
-                        navigationItems.add(new DrawerItem(module.getTitle(), module.getLogoUrl()));
+                        navigationItems.add(new DrawerItem(module.getTitle(), module.getLogoUrl(), module));
                     }
                 }
             }
@@ -477,5 +477,9 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
     public void onNavigationDrawerItemSelected(View v, int position) {
         selectItem(v, position);
         Log.d(TAG, "Drawer position selected: " + position);
+
+        long currentModuleId = navigationItems.get(position).getModule().getId();
+
+        UserUtils.saveCurrentModuleId(getActivity().getApplicationContext(), currentModuleId);
     }
 }

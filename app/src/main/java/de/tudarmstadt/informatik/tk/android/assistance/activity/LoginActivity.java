@@ -52,8 +52,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Device;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DeviceDao;
-import de.tudarmstadt.informatik.tk.android.kraken.db.Login;
-import de.tudarmstadt.informatik.tk.android.kraken.db.LoginDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.User;
 import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
@@ -116,11 +114,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private String email;
     private String password;
 
-    private LoginDao loginDao;
+    private UserDao userDao;
 
     private DeviceDao deviceDao;
-
-    private UserDao userDao;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -281,6 +277,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         Long serverDeviceId = null;
 
         if (user != null) {
+
+            UserUtils.saveCurrentUserId(getApplicationContext(), user.getId());
             UserUtils.saveUserEmail(getApplicationContext(), user.getPrimaryEmail());
             UserUtils.saveUserFirstname(getApplicationContext(), user.getFirstname());
             UserUtils.saveUserLastname(getApplicationContext(), user.getLastname());
@@ -291,7 +289,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             for (Device device : userDevices) {
                 if (device.getDeviceIdentifier().equals(currentAndroidId)) {
-                    serverDeviceId = device.getLogin().getServerDeviceId();
+                    serverDeviceId = device.getServerDeviceId();
                     break;
                 }
             }
@@ -307,7 +305,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         UserDevice userDevice = new UserDevice();
 
         if (serverDeviceId != null) {
-            userDevice.setId(serverDeviceId);
+            userDevice.setServerId(serverDeviceId);
         }
 
         userDevice.setOs(Constants.PLATFORM_NAME);
@@ -353,54 +351,56 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
 
-        if (loginDao == null) {
-            loginDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getLoginDao();
+        if (userDao == null) {
+            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
         }
 
         if (deviceDao == null) {
             deviceDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDeviceDao();
         }
 
-        Login login = loginDao
+        User user = userDao
                 .queryBuilder()
-                .where(LoginDao.Properties.Token.eq(loginResponse.getUserToken()))
+                .where(UserDao.Properties.Token.eq(loginResponse.getUserToken()))
                 .limit(1)
                 .build()
                 .unique();
 
 
-        long loginId = -1;
+        // check if that user was already saved in the system
+        if (user == null) {
+            // no such user found -> insert new user into db
 
-        // check if that login was already saved in the system
-        if (login == null) {
-            // no such login found -> insert new login information into db
+            User newUser = new User();
 
-            Login newLogin = new Login();
+            newUser.setToken(loginResponse.getUserToken());
+            newUser.setPrimaryEmail(email);
+            newUser.setToken(loginResponse.getUserToken());
+            newUser.setCreated(createdDate);
 
-            newLogin.setServerDeviceId(loginResponse.getDeviceId());
-            newLogin.setLastEmail(email);
-            newLogin.setToken(loginResponse.getUserToken());
-            newLogin.setCreated(createdDate);
+            long newUserId = userDao.insert(newUser);
 
-            loginId = loginDao.insert(newLogin);
+            UserUtils.saveCurrentUserId(getApplicationContext(), newUserId);
+
+            // saving device info into db
 
             Device device = new Device();
+            device.setServerDeviceId(loginResponse.getDeviceId());
             device.setOs(Constants.PLATFORM_NAME);
             device.setOsVersion(HardwareUtils.getAndroidVersion());
             device.setBrand(HardwareUtils.getDeviceBrandName());
             device.setModel(HardwareUtils.getDeviceModelName());
             device.setDeviceIdentifier(HardwareUtils.getAndroidId(this));
             device.setCreated(createdDate);
-            device.setLoginId(loginId);
+            device.setUserId(newUserId);
 
             long currentDeviceId = deviceDao.insert(device);
-            UserUtils.saveCurrentUserId(getApplicationContext(), currentDeviceId);
+
+            UserUtils.saveCurrentDeviceId(getApplicationContext(), currentDeviceId);
 
         } else {
 
-            loginId = login.getId();
-
-            List<Device> userDevices = login.getDeviceList();
+            List<Device> userDevices = user.getDeviceList();
 
             String currentAndroidId = HardwareUtils.getAndroidId(this);
             boolean isDeviceAlreadyCreated = false;
@@ -408,7 +408,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             for (Device device : userDevices) {
                 if (device.getDeviceIdentifier().equals(currentAndroidId)) {
                     isDeviceAlreadyCreated = true;
-                    UserUtils.saveCurrentUserId(getApplicationContext(), device.getId());
+
+                    UserUtils.saveCurrentDeviceId(getApplicationContext(), device.getId());
+
                     break;
                 }
             }
@@ -417,17 +419,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // no such device found in db -> insert new
 
                 Device device = new Device();
+                device.setServerDeviceId(loginResponse.getDeviceId());
                 device.setOs(Constants.PLATFORM_NAME);
                 device.setOsVersion(HardwareUtils.getAndroidVersion());
                 device.setBrand(HardwareUtils.getDeviceBrandName());
                 device.setModel(HardwareUtils.getDeviceModelName());
                 device.setDeviceIdentifier(HardwareUtils.getAndroidId(this));
                 device.setCreated(createdDate);
-                device.setLoginId(loginId);
+                device.setUserId(user.getId());
 
                 long currentDeviceId = deviceDao.insert(device);
-                UserUtils.saveCurrentUserId(getApplicationContext(), currentDeviceId);
+
+                UserUtils.saveCurrentDeviceId(getApplicationContext(), currentDeviceId);
             }
+
+            UserUtils.saveCurrentUserId(getApplicationContext(), user.getId());
         }
     }
 
@@ -639,9 +645,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         ButterKnife.unbind(this);
         mSplashView = null;
         uiThreadHandler = null;
-        loginDao = null;
-        deviceDao = null;
         userDao = null;
+        deviceDao = null;
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }

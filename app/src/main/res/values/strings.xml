@@ -116,6 +116,7 @@
     <string name="error_field_required">This field is required</string>
     <string name="error_email_exists">This email is already exists</string>
     <string name="error_no_internet_connection">No internet connection</string>
+    <string name="error_service_bad_request">Bad request to service</string>
     <string name="error_service_not_available">Service not available! Try again later</string>
     <string name="error_server_temporary_unavailable">Server is temporarily unavailable</string>
     <string name="error_no_response">No response received</string>

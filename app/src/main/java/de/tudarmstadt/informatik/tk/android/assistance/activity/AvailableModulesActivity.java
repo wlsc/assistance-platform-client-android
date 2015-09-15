@@ -77,7 +77,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     protected SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private Map<String, AvailableModuleResponse> availableModuleResponses;
+    private Map<String, AvailableModuleResponse> mAvailableModuleResponses;
 
     private UserDao userDao;
 
@@ -86,6 +86,10 @@ public class AvailableModulesActivity extends AppCompatActivity {
     private ModuleCapabilityDao moduleCapabilityDao;
 
     private ModuleInstallationDao moduleInstallationDao;
+
+    private List<String> mActiveModules;
+
+    private ArrayList<Card> mModuleCards;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,8 +154,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
             return;
         }
 
-        UserUtils.saveCurrentUserId(getApplicationContext(), user.getId());
-
         if (moduleDao == null) {
             moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleDao();
         }
@@ -164,10 +166,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
             Log.d(TAG, "Module list not found in db. Requesting from server...");
 
             requestAvailableModules();
+
         } else {
             // there are modules were found -> populate a list
 
-            availableModuleResponses = new ArrayMap<>();
+            mAvailableModuleResponses = new ArrayMap<>();
 
             ArrayList<Card> cards = new ArrayList<>();
 
@@ -186,10 +189,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 String logoUrl = module.getLogoUrl();
 
                 if (logoUrl.isEmpty()) {
-                    Log.d(TAG, "Logo URL: NO LOGO supplied");
                     thumb.setDrawableResource(R.drawable.no_image);
                 } else {
-                    Log.d(TAG, "Logo URL: " + logoUrl);
                     thumb.setUrlResource(logoUrl);
                 }
 
@@ -197,6 +198,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 cards.add(card);
 
                 AvailableModuleResponse availableModule = ConverterUtils.convertModule(module);
+
                 List<ModuleCapabilityResponse> reqCaps = new ArrayList<>();
                 List<ModuleCapabilityResponse> optCaps = new ArrayList<>();
 
@@ -215,13 +217,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 availableModule.setSensorsOptional(optCaps);
 
                 // for easy access later on
-                availableModuleResponses.put(availableModule.getModulePackage(), availableModule);
+                mAvailableModuleResponses.put(availableModule.getModulePackage(), availableModule);
             }
 
-            CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, cards);
-
             if (mModuleList != null) {
-                mModuleList.setAdapter(mCardArrayAdapter);
+                mModuleList.setAdapter(new CardArrayAdapter(this, cards));
             }
         }
     }
@@ -231,10 +231,10 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void requestAvailableModules() {
 
-        String userToken = UserUtils.getUserToken(getApplicationContext());
+        final String userToken = UserUtils.getUserToken(getApplicationContext());
 
         // calling api service
-        ModuleService moduleService = ServiceGenerator.createService(ModuleService.class);
+        final ModuleService moduleService = ServiceGenerator.createService(ModuleService.class);
         moduleService.getAvailableModules(userToken, new Callback<List<AvailableModuleResponse>>() {
 
             /**
@@ -244,23 +244,42 @@ public class AvailableModulesActivity extends AppCompatActivity {
              * @param response
              */
             @Override
-            public void success(List<AvailableModuleResponse> availableModulesResponse, Response response) {
+            public void success(final List<AvailableModuleResponse> availableModulesResponse, Response response) {
 
                 if (availableModulesResponse != null && !availableModulesResponse.isEmpty()) {
 
-                    // show them to user
-                    populateAvailableModuleList(availableModulesResponse);
+                    Log.d(TAG, availableModulesResponse.toString());
 
-                    // save module information into db
-                    saveModulesIntoDb(availableModulesResponse);
+                    // get list of already activated modules
+                    moduleService.getActiveModules(userToken, new Callback<List<String>>() {
 
-                    mSwipeRefreshLayout.setRefreshing(false);
+                        @Override
+                        public void success(List<String> activeModules, Response response) {
+
+                            mSwipeRefreshLayout.setRefreshing(false);
+
+                            if (activeModules != null && !activeModules.isEmpty()) {
+
+                                Log.d(TAG, activeModules.toString());
+
+                                mActiveModules = activeModules;
+                            }
+
+                            processAvailableModules(availableModulesResponse);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            showErrorMessages(TAG, error);
+                            processAvailableModules(availableModulesResponse);
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
 
                 } else {
                     // TODO: show no modules available
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
-
-                Log.d(TAG, "successfully received available modules! size: " + availableModulesResponse.size());
             }
 
             /**
@@ -271,12 +290,24 @@ public class AvailableModulesActivity extends AppCompatActivity {
              */
             @Override
             public void failure(RetrofitError error) {
-
-                mSwipeRefreshLayout.setRefreshing(false);
-
                 showErrorMessages(TAG, error);
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    /**
+     * Populates and saves available modules
+     *
+     * @param availableModulesResponse
+     */
+    private void processAvailableModules(List<AvailableModuleResponse> availableModulesResponse) {
+
+        // show list of modules to user
+        populateAvailableModuleList(availableModulesResponse);
+
+        // save module information into db
+        saveModulesIntoDb(availableModulesResponse);
     }
 
     /**
@@ -290,6 +321,14 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
+        if (userDao == null) {
+            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
+        }
+
+        if (moduleDao == null) {
+            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleDao();
+        }
+
         if (moduleCapabilityDao == null) {
             moduleCapabilityDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleCapabilityDao();
         }
@@ -301,19 +340,20 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 .build()
                 .unique();
 
-        if (moduleDao == null) {
-            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleDao();
-        }
-
         for (AvailableModuleResponse availableModule : availableModulesResponse) {
 
-            Log.d(TAG, "Inserting following...");
             Log.d(TAG, availableModule.toString());
 
             Module module = ConverterUtils.convertModule(availableModule);
             module.setUser(user);
 
             long moduleId = moduleDao.insert(module);
+
+            // check if that module was already installed
+            // if so -> insert new module installation into db
+            if (mActiveModules != null && !mActiveModules.isEmpty()) {
+                createActiveModuleInstallation(user.getId(), moduleId, availableModule.getModulePackage());
+            }
 
             List<ModuleCapabilityResponse> reqCaps = availableModule.getSensorsRequired();
             List<ModuleCapabilityResponse> optCaps = availableModule.getSensorsOptional();
@@ -354,7 +394,37 @@ public class AvailableModulesActivity extends AppCompatActivity {
             }
         }
 
-        Log.d(TAG, "Finished saving modules into db!");
+        Log.d(TAG, "Finished saving modules into db.");
+    }
+
+    /**
+     * Inserts new module installation
+     *
+     * @param userId
+     * @param moduleId
+     * @param modulePackage
+     */
+    private void createActiveModuleInstallation(Long userId, long moduleId, String modulePackage) {
+
+        if (moduleInstallationDao == null) {
+            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleInstallationDao();
+        }
+
+        for (String activeModule : mActiveModules) {
+            if (activeModule.equals(modulePackage)) {
+
+                ModuleInstallation moduleInstallation = new ModuleInstallation();
+
+                moduleInstallation.setActive(true);
+                moduleInstallation.setModuleId(moduleId);
+                moduleInstallation.setUserId(userId);
+                moduleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+
+                moduleInstallationDao.insert(moduleInstallation);
+
+                break;
+            }
+        }
     }
 
     /**
@@ -364,43 +434,18 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void populateAvailableModuleList(List<AvailableModuleResponse> availableModulesResponse) {
 
-        this.availableModuleResponses = new ArrayMap<>();
-        ArrayList<Card> cards = new ArrayList<>();
+        mAvailableModuleResponses = new ArrayMap<>();
+
+        if (mModuleCards == null) {
+            mModuleCards = new ArrayList<>();
+        }
 
         for (AvailableModuleResponse module : availableModulesResponse) {
 
-            List<ModuleCapabilityResponse> moduleReqSensors = module.getSensorsRequired();
-            List<ModuleCapabilityResponse> moduleOptSensors = module.getSensorsOptional();
-
+            Log.d(TAG, module.toString());
 
             CardView card = new CardView(getApplicationContext());
             CardHeader header = new CardHeader(this);
-
-            Log.d(TAG, module.toString());
-
-            if (moduleReqSensors != null && !moduleReqSensors.isEmpty()) {
-
-                Log.d(TAG, "Req. sensors:");
-
-                for (ModuleCapabilityResponse capability : moduleReqSensors) {
-                    Log.d(TAG, "Type: " + capability.getType());
-                    Log.d(TAG, "Frequency: " + capability.getCollectionFrequency());
-                }
-            } else {
-                Log.d(TAG, "Empty");
-            }
-
-            if (moduleOptSensors != null && !moduleOptSensors.isEmpty()) {
-
-                Log.d(TAG, "Optional sensors:");
-
-                for (ModuleCapabilityResponse capability : moduleOptSensors) {
-                    Log.d(TAG, "Type: " + capability.getType());
-                    Log.d(TAG, "Frequency: " + capability.getCollectionFrequency());
-                }
-            } else {
-                Log.d(TAG, "Empty");
-            }
 
             header.setTitle(module.getTitle());
             card.setTitle(module.getDescriptionShort());
@@ -412,21 +457,20 @@ public class AvailableModulesActivity extends AppCompatActivity {
             String logoUrl = module.getLogo();
 
             if (logoUrl.isEmpty()) {
-                Log.d(TAG, "Logo URL: NO LOGO supplied");
                 thumb.setDrawableResource(R.drawable.no_image);
             } else {
-                Log.d(TAG, "Logo URL: " + logoUrl);
                 thumb.setUrlResource(logoUrl);
             }
 
             card.addCardThumbnail(thumb);
-            cards.add(card);
+
+            mModuleCards.add(card);
 
             // for easy access later on
-            this.availableModuleResponses.put(module.getModulePackage(), module);
+            mAvailableModuleResponses.put(module.getModulePackage(), module);
         }
 
-        CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, cards);
+        CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, mModuleCards);
 
         if (mModuleList != null) {
             mModuleList.setAdapter(mCardArrayAdapter);
@@ -469,7 +513,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         View dialogView = inflater.inflate(R.layout.alert_dialog_more_info_module, null);
         dialogBuilder.setView(dialogView);
 
-        final AvailableModuleResponse selectedModule = availableModuleResponses.get(moduleId);
+        final AvailableModuleResponse selectedModule = mAvailableModuleResponses.get(moduleId);
 
         dialogBuilder.setPositiveButton(R.string.button_ok_text, new DialogInterface.OnClickListener() {
 
@@ -515,7 +559,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
             }
         });
 
-        AvailableModuleResponse selectedModule = availableModuleResponses.get(moduleId);
+        AvailableModuleResponse selectedModule = mAvailableModuleResponses.get(moduleId);
 
         TextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
         title.setText(selectedModule.getTitle());

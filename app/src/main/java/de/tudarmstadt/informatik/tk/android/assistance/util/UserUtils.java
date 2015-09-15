@@ -47,6 +47,26 @@ public class UserUtils {
     }
 
     /**
+     * Returns current device id saved in SharedPreferences
+     *
+     * @param context
+     * @return
+     */
+    public static long getCurrentDeviceId(Context context) {
+        return PreferencesUtils.getPreference(context, Constants.PREF_DEVICE_ID, -1);
+    }
+
+    /**
+     * Saves current device id into SharedPreferences
+     *
+     * @param context
+     * @param value
+     */
+    public static void saveCurrentDeviceId(Context context, long value) {
+        PreferencesUtils.savePreference(context, Constants.PREF_DEVICE_ID, value);
+    }
+
+    /**
      * Returns current module id saved in SharedPreferences
      *
      * @param context

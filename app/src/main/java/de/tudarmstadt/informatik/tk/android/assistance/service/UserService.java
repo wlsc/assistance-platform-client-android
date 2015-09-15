@@ -17,6 +17,8 @@ import retrofit.http.PUT;
 
 
 /**
+ * User service API endpoint
+ *
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */

@@ -1,13 +1,17 @@
 package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.Toolbar;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
@@ -15,7 +19,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerAct
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ServiceGenerator;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Snacker;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
@@ -80,7 +83,7 @@ public class MainActivity extends DrawerActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // if we have no modules installed -> no module menu will be showed
-        if (!userHasModulesInstalled) {
+        if (userHasModulesInstalled) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.module_menu, menu);
         }
@@ -131,27 +134,6 @@ public class MainActivity extends DrawerActivity {
      * Uninstalls currently selected module
      */
     private void moduleUninstall() {
-//        uninstallModuleFromDb();
-        unregisterModuleService();
-    }
-
-    /**
-     * Removes module installation
-     */
-    private void uninstallModuleFromDb() {
-
-        long currentModuleId = UserUtils.getCurrentModuleId(getApplicationContext());
-
-        ModuleInstallation moduleInstallation = new ModuleInstallation();
-        moduleInstallation.setModuleId(currentModuleId);
-
-        moduleInstallationDao.delete(moduleInstallation);
-    }
-
-    /**
-     * Unregisters current module on server
-     */
-    private void unregisterModuleService() {
 
         String userToken = UserUtils.getUserToken(getApplicationContext());
         long currentModuleId = UserUtils.getCurrentModuleId(getApplicationContext());
@@ -174,7 +156,6 @@ public class MainActivity extends DrawerActivity {
         toggleModuleRequest.setModuleId(modulePackageId);
 
         ModuleService moduleService = ServiceGenerator.createService(ModuleService.class);
-
         moduleService.deactivateModule(userToken, toggleModuleRequest, new Callback<Void>() {
 
             @Override
@@ -182,16 +163,64 @@ public class MainActivity extends DrawerActivity {
 
                 // deactivation successful
                 if (response.getStatus() == 200) {
+
+                    uninstallModuleFromDb();
+
                     CoordinatorLayout snackbarCoordinatorLayout = ButterKnife.findById(MainActivity.this, R.id.snackbarCoordinatorLayout);
-                    Snacker.showLong(snackbarCoordinatorLayout, R.string.about, R.string.button_ok_text, null);
+//                    Snacker.showLong(snackbarCoordinatorLayout, R.string.about, R.string.button_ok_text, new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            Log.d(TAG, "HEEEY");
+//                        }
+//                    });
+
+                    Snackbar.make(findViewById(android.R.id.content), "Had a snack at Snackbar", Snackbar.LENGTH_LONG)
+                            .setAction("Undo", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Log.d(TAG, "HEEEY");
+                                }
+                            })
+                            .setActionTextColor(Color.RED)
+                            .show();
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
                 showErrorMessages(TAG, error);
+
+                // no such installed module -> remove it immediately
+                if (error.getResponse().getStatus() == 400) {
+                    uninstallModuleFromDb();
+                }
             }
         });
+    }
+
+    /**
+     * Removes module installation
+     */
+    private void uninstallModuleFromDb() {
+
+        long currentUserId = UserUtils.getCurrentUserId(getApplicationContext());
+        long currentModuleId = UserUtils.getCurrentModuleId(getApplicationContext());
+
+        Log.d(TAG, "Current user id: " + currentUserId);
+        Log.d(TAG, "Current module id: " + currentModuleId);
+
+        List<ModuleInstallation> installedModules = moduleInstallationDao
+                .queryBuilder()
+                .where(ModuleInstallationDao.Properties.ModuleId.eq(currentModuleId))
+                .where(ModuleInstallationDao.Properties.UserId.eq(currentUserId))
+                .list();
+
+        for (ModuleInstallation i : installedModules) {
+            Log.d(TAG, "hmm: " + i.getModule().getPackageName());
+        }
+
+        moduleInstallationDao.deleteInTx(installedModules);
+
     }
 
     @Override
@@ -203,7 +232,4 @@ public class MainActivity extends DrawerActivity {
         super.onDestroy();
     }
 
-    public Toolbar getToolbar() {
-        return mToolbar;
-    }
 }

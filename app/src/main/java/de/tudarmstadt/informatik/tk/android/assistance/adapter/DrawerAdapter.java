@@ -62,7 +62,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
                 .placeholder(R.drawable.no_image)
                 .into(viewHolder.icon);
 
-        viewHolder.textView.setText(mData.get(position).getText());
+        viewHolder.textView.setText(mData.get(position).getTitle());
 
         if (mSelectedPosition == position) {
             if (mSelectedView != null) {

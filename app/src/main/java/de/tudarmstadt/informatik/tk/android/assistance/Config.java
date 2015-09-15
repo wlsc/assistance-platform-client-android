@@ -11,8 +11,9 @@ public class Config {
     private Config() {
     }
 
-
     public static final String ASSISTANCE_MODULE_LIST_ENDPOINT = "/assistance/list";
+
+    public static final String ASSISTANCE_MODULE_ACTIVE_ENDPOINT = "/assistance/activations";
 
     public static final String ASSISTANCE_MODULE_ACTIVATE_ENDPOINT = "/assistance/activate";
 
