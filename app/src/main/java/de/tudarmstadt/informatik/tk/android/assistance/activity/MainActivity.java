@@ -19,6 +19,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerAct
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
@@ -31,7 +32,7 @@ import retrofit.client.Response;
 
 
 /**
- * User home
+ * Module information dashboard
  */
 public class MainActivity extends DrawerActivity {
 
@@ -96,7 +97,9 @@ public class MainActivity extends DrawerActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_module_toggle_state:
+
                 boolean moduleState = item.isChecked();
+
                 if (moduleState) {
                     item.setChecked(false);
                     Log.d(TAG, "User DISABLED a module");
@@ -104,11 +107,15 @@ public class MainActivity extends DrawerActivity {
                     item.setChecked(true);
                     Log.d(TAG, "User ENABLED a module");
                 }
+
                 toggleModuleState(moduleState);
+
                 return true;
             case R.id.menu_module_uninstall:
                 Log.d(TAG, "User clicked module uninstall");
+
                 moduleUninstall();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -123,10 +130,26 @@ public class MainActivity extends DrawerActivity {
      */
     private void toggleModuleState(boolean moduleState) {
 
-        if (moduleState) {
+        long moduleId = UserUtils.getCurrentModuleId(getApplicationContext());
+        long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
+        if (moduleInstallationDao == null) {
+            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleInstallationDao();
+        }
+
+        ModuleInstallation moduleInstallation = moduleInstallationDao
+                .queryBuilder()
+                .where(ModuleInstallationDao.Properties.UserId.eq(userId))
+                .where(ModuleInstallationDao.Properties.ModuleId.eq(moduleId))
+                .limit(1)
+                .build()
+                .unique();
+
+        if (moduleInstallation == null) {
+            Toaster.showLong(getApplicationContext(), R.string.error_module_not_installed);
         } else {
-
+            moduleInstallation.setActive(moduleState);
+            moduleInstallationDao.update(moduleInstallation);
         }
     }
 
@@ -199,7 +222,7 @@ public class MainActivity extends DrawerActivity {
     }
 
     /**
-     * Removes module installation
+     * Removes module installation for user and module ids
      */
     private void uninstallModuleFromDb() {
 
@@ -215,12 +238,7 @@ public class MainActivity extends DrawerActivity {
                 .where(ModuleInstallationDao.Properties.UserId.eq(currentUserId))
                 .list();
 
-        for (ModuleInstallation i : installedModules) {
-            Log.d(TAG, "hmm: " + i.getModule().getPackageName());
-        }
-
         moduleInstallationDao.deleteInTx(installedModules);
-
     }
 
     @Override
