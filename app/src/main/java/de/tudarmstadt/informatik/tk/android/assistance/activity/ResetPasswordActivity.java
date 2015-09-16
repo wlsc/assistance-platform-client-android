@@ -12,8 +12,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.resetpassword.ResetPasswordRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.error.ErrorResponse;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.resetpassword.ResetPasswordRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
@@ -79,7 +79,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
             @Override
             public void success(Void aVoid, Response response) {
-                if (response.getStatus() == 200) {
+                if (response.getStatus() == 200 || response.getStatus() == 204) {
                     Toaster.showLong(getApplicationContext(), R.string.reset_successful_reset);
                 }
             }

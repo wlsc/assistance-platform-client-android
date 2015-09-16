@@ -608,7 +608,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void installModule(final String moduleId) {
 
-        Log.d(TAG, "Installation of a module " + moduleId + " started...");
+        Log.d(TAG, "Installation of a module " + moduleId + " has started...");
         Log.d(TAG, "Requesting service...");
 
         String userToken = UserUtils.getUserToken(getApplicationContext());
@@ -621,7 +621,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
             @Override
             public void success(Void aVoid, Response response) {
-                if (response.getStatus() == 200) {
+                if (response.getStatus() == 200 || response.getStatus() == 204) {
                     Log.d(TAG, "Module was activated!");
                     saveInstallationOnDevice(moduleId);
                     Log.d(TAG, "Installation of a module " + moduleId + " finished!");
@@ -653,6 +653,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 .build()
                 .unique();
 
+        if (user == null) {
+            Log.d(TAG, "Installation cancelled: user is null");
+            return;
+        }
+
         if (moduleInstallationDao == null) {
             moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleInstallationDao();
         }
@@ -665,14 +670,34 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 .build()
                 .unique();
 
-        ModuleInstallation moduleInstallation = new ModuleInstallation();
+        if (module == null) {
+            Log.d(TAG, "Installation cancelled: module is null");
+            return;
+        }
 
-        moduleInstallation.setModuleId(module.getId());
-        moduleInstallation.setUserId(user.getId());
-        moduleInstallation.setActive(true);
-        moduleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+        // check module is already installed
+        ModuleInstallation moduleInstallation = moduleInstallationDao
+                .queryBuilder()
+                .where(ModuleInstallationDao.Properties.ModuleId.eq(moduleId))
+                .where(ModuleInstallationDao.Properties.UserId.eq(user.getId()))
+                .limit(1)
+                .build()
+                .unique();
 
-        Long installId = moduleInstallationDao.insert(moduleInstallation);
+        if (moduleInstallation == null) {
+
+            moduleInstallation = new ModuleInstallation();
+
+            moduleInstallation.setModuleId(module.getId());
+            moduleInstallation.setUserId(user.getId());
+            moduleInstallation.setActive(true);
+            moduleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+        } else {
+            // activate existing module installation
+            moduleInstallation.setActive(true);
+        }
+
+        Long installId = moduleInstallationDao.insertOrReplace(moduleInstallation);
 
         if (installId != null) {
             UserUtils.saveUserHasModules(getApplicationContext(), true);

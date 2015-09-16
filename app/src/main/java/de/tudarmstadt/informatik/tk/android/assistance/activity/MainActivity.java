@@ -111,15 +111,17 @@ public class MainActivity extends DrawerActivity {
                 toggleModuleState(moduleState);
 
                 return true;
+
             case R.id.menu_module_uninstall:
+
                 Log.d(TAG, "User clicked module uninstall");
 
                 moduleUninstall();
 
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
-
         }
     }
 
