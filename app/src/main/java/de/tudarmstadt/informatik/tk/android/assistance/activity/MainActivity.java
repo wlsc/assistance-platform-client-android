@@ -22,10 +22,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.service.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
-import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
-import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleDao;
-import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallation;
-import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallationDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -40,9 +40,9 @@ public class MainActivity extends DrawerActivity {
 
     private boolean userHasModulesInstalled;
 
-    private ModuleDao moduleDao;
+    private DbModuleDao moduleDao;
 
-    private ModuleInstallationDao moduleInstallationDao;
+    private DbModuleInstallationDao moduleInstallationDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +70,11 @@ public class MainActivity extends DrawerActivity {
     private void loadModules() {
 
         if (moduleDao == null) {
-            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleDao();
+            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
         }
 
         if (moduleInstallationDao == null) {
-            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleInstallationDao();
+            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
 
 
@@ -136,13 +136,13 @@ public class MainActivity extends DrawerActivity {
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
         if (moduleInstallationDao == null) {
-            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleInstallationDao();
+            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
 
-        ModuleInstallation moduleInstallation = moduleInstallationDao
+        DbModuleInstallation moduleInstallation = moduleInstallationDao
                 .queryBuilder()
-                .where(ModuleInstallationDao.Properties.UserId.eq(userId))
-                .where(ModuleInstallationDao.Properties.ModuleId.eq(moduleId))
+                .where(DbModuleInstallationDao.Properties.UserId.eq(userId))
+                .where(DbModuleInstallationDao.Properties.ModuleId.eq(moduleId))
                 .limit(1)
                 .build()
                 .unique();
@@ -163,9 +163,9 @@ public class MainActivity extends DrawerActivity {
         String userToken = UserUtils.getUserToken(getApplicationContext());
         long currentModuleId = UserUtils.getCurrentModuleId(getApplicationContext());
 
-        Module module = moduleDao
+        DbModule module = moduleDao
                 .queryBuilder()
-                .where(ModuleDao.Properties.Id.eq(currentModuleId))
+                .where(DbModuleDao.Properties.Id.eq(currentModuleId))
                 .limit(1)
                 .build()
                 .unique();
@@ -234,10 +234,10 @@ public class MainActivity extends DrawerActivity {
         Log.d(TAG, "Current user id: " + currentUserId);
         Log.d(TAG, "Current module id: " + currentModuleId);
 
-        List<ModuleInstallation> installedModules = moduleInstallationDao
+        List<DbModuleInstallation> installedModules = moduleInstallationDao
                 .queryBuilder()
-                .where(ModuleInstallationDao.Properties.ModuleId.eq(currentModuleId))
-                .where(ModuleInstallationDao.Properties.UserId.eq(currentUserId))
+                .where(DbModuleInstallationDao.Properties.ModuleId.eq(currentModuleId))
+                .where(DbModuleInstallationDao.Properties.UserId.eq(currentUserId))
                 .list();
 
         moduleInstallationDao.deleteInTx(installedModules);

@@ -43,14 +43,14 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CardView;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
-import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
-import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleCapability;
-import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleCapabilityDao;
-import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleDao;
-import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallation;
-import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallationDao;
-import de.tudarmstadt.informatik.tk.android.kraken.db.User;
-import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapabilityDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
@@ -79,13 +79,13 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     private Map<String, AvailableModuleResponse> mAvailableModuleResponses;
 
-    private UserDao userDao;
+    private DbUserDao userDao;
 
-    private ModuleDao moduleDao;
+    private DbModuleDao moduleDao;
 
-    private ModuleCapabilityDao moduleCapabilityDao;
+    private DbModuleCapabilityDao moduleCapabilityDao;
 
-    private ModuleInstallationDao moduleInstallationDao;
+    private DbModuleInstallationDao moduleInstallationDao;
 
     private List<String> mActiveModules;
 
@@ -139,12 +139,12 @@ public class AvailableModulesActivity extends AppCompatActivity {
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
         if (userDao == null) {
-            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
+            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
-        User user = userDao
+        DbUser user = userDao
                 .queryBuilder()
-                .where(UserDao.Properties.PrimaryEmail.eq(userEmail))
+                .where(DbUserDao.Properties.PrimaryEmail.eq(userEmail))
                 .limit(1)
                 .build()
                 .unique();
@@ -155,10 +155,10 @@ public class AvailableModulesActivity extends AppCompatActivity {
         }
 
         if (moduleDao == null) {
-            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleDao();
+            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
         }
 
-        List<Module> userModules = user.getModuleList();
+        List<DbModule> userModules = user.getDbModuleList();
 
 
         // no modules was found -> request from server
@@ -174,7 +174,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
             ArrayList<Card> cards = new ArrayList<>();
 
-            for (Module module : userModules) {
+            for (DbModule module : userModules) {
 
                 CardView card = new CardView(getApplicationContext());
                 CardHeader header = new CardHeader(this);
@@ -202,9 +202,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 List<ModuleCapabilityResponse> reqCaps = new ArrayList<>();
                 List<ModuleCapabilityResponse> optCaps = new ArrayList<>();
 
-                List<ModuleCapability> moduleCapabilities = module.getModuleCapabilityList();
+                List<DbModuleCapability> moduleCapabilities = module.getDbModuleCapabilityList();
 
-                for (ModuleCapability capability : moduleCapabilities) {
+                for (DbModuleCapability capability : moduleCapabilities) {
 
                     if (capability.getRequired()) {
                         reqCaps.add(ConverterUtils.convertModuleCapability(capability));
@@ -322,20 +322,20 @@ public class AvailableModulesActivity extends AppCompatActivity {
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
         if (userDao == null) {
-            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
+            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
         if (moduleDao == null) {
-            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleDao();
+            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
         }
 
         if (moduleCapabilityDao == null) {
-            moduleCapabilityDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleCapabilityDao();
+            moduleCapabilityDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleCapabilityDao();
         }
 
-        User user = userDao
+        DbUser user = userDao
                 .queryBuilder()
-                .where(UserDao.Properties.PrimaryEmail.eq(userEmail))
+                .where(DbUserDao.Properties.PrimaryEmail.eq(userEmail))
                 .limit(1)
                 .build()
                 .unique();
@@ -344,8 +344,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
             Log.d(TAG, availableModule.toString());
 
-            Module module = ConverterUtils.convertModule(availableModule);
-            module.setUser(user);
+            DbModule module = ConverterUtils.convertModule(availableModule);
+            module.setDbUser(user);
 
             long moduleId = moduleDao.insert(module);
 
@@ -358,14 +358,14 @@ public class AvailableModulesActivity extends AppCompatActivity {
             List<ModuleCapabilityResponse> reqCaps = availableModule.getSensorsRequired();
             List<ModuleCapabilityResponse> optCaps = availableModule.getSensorsOptional();
 
-            List<ModuleCapability> modCaps = new ArrayList<>();
+            List<DbModuleCapability> modCaps = new ArrayList<>();
 
             if (reqCaps != null && !reqCaps.isEmpty()) {
 
                 // process required capabilities
                 for (ModuleCapabilityResponse cap : reqCaps) {
 
-                    ModuleCapability dbCap = ConverterUtils.convertModuleCapability(cap);
+                    DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(cap);
 
                     dbCap.setRequired(true);
                     dbCap.setModuleId(moduleId);
@@ -379,7 +379,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 // process optional capabilities
                 for (ModuleCapabilityResponse cap : optCaps) {
 
-                    ModuleCapability dbCap = ConverterUtils.convertModuleCapability(cap);
+                    DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(cap);
 
                     dbCap.setRequired(false);
                     dbCap.setModuleId(moduleId);
@@ -407,13 +407,13 @@ public class AvailableModulesActivity extends AppCompatActivity {
     private void createActiveModuleInstallation(Long userId, long moduleId, String modulePackage) {
 
         if (moduleInstallationDao == null) {
-            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleInstallationDao();
+            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
 
         for (String activeModule : mActiveModules) {
             if (activeModule.equals(modulePackage)) {
 
-                ModuleInstallation moduleInstallation = new ModuleInstallation();
+                DbModuleInstallation moduleInstallation = new DbModuleInstallation();
 
                 moduleInstallation.setActive(true);
                 moduleInstallation.setModuleId(moduleId);
@@ -646,9 +646,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
-        User user = userDao
+        DbUser user = userDao
                 .queryBuilder()
-                .where(UserDao.Properties.PrimaryEmail.eq(userEmail))
+                .where(DbUserDao.Properties.PrimaryEmail.eq(userEmail))
                 .limit(1)
                 .build()
                 .unique();
@@ -659,13 +659,13 @@ public class AvailableModulesActivity extends AppCompatActivity {
         }
 
         if (moduleInstallationDao == null) {
-            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getModuleInstallationDao();
+            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
 
-        Module module = moduleDao
+        DbModule module = moduleDao
                 .queryBuilder()
-                .where(ModuleDao.Properties.PackageName.eq(moduleId))
-                .where(ModuleDao.Properties.UserId.eq(user.getId()))
+                .where(DbModuleDao.Properties.PackageName.eq(moduleId))
+                .where(DbModuleDao.Properties.UserId.eq(user.getId()))
                 .limit(1)
                 .build()
                 .unique();
@@ -676,17 +676,17 @@ public class AvailableModulesActivity extends AppCompatActivity {
         }
 
         // check module is already installed
-        ModuleInstallation moduleInstallation = moduleInstallationDao
+        DbModuleInstallation moduleInstallation = moduleInstallationDao
                 .queryBuilder()
-                .where(ModuleInstallationDao.Properties.ModuleId.eq(moduleId))
-                .where(ModuleInstallationDao.Properties.UserId.eq(user.getId()))
+                .where(DbModuleInstallationDao.Properties.ModuleId.eq(moduleId))
+                .where(DbModuleInstallationDao.Properties.UserId.eq(user.getId()))
                 .limit(1)
                 .build()
                 .unique();
 
         if (moduleInstallation == null) {
 
-            moduleInstallation = new ModuleInstallation();
+            moduleInstallation = new DbModuleInstallation();
 
             moduleInstallation.setModuleId(module.getId());
             moduleInstallation.setUserId(user.getId());
@@ -725,10 +725,13 @@ public class AvailableModulesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+
             case android.R.id.home:
+
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

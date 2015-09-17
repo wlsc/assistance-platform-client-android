@@ -1,14 +1,14 @@
 package de.tudarmstadt.informatik.tk.android.assistance.model.item;
 
 
-import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 
 /**
  * Item for navigation drawer
  */
 public class DrawerItem {
 
-    private Module module;
+    private DbModule module;
 
     private String title;
     private String iconUrl;
@@ -16,17 +16,17 @@ public class DrawerItem {
     public DrawerItem() {
     }
 
-    public DrawerItem(String title, String iconUrl, Module module) {
+    public DrawerItem(String title, String iconUrl, DbModule module) {
         this.module = module;
         this.title = title;
         this.iconUrl = iconUrl;
     }
 
-    public Module getModule() {
+    public DbModule getModule() {
         return this.module;
     }
 
-    public void setModule(Module module) {
+    public void setModule(DbModule module) {
         this.module = module;
     }
 

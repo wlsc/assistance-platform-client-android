@@ -50,10 +50,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
-import de.tudarmstadt.informatik.tk.android.kraken.db.Device;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DeviceDao;
-import de.tudarmstadt.informatik.tk.android.kraken.db.User;
-import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbDeviceDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -114,9 +114,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private String email;
     private String password;
 
-    private UserDao userDao;
+    private DbUserDao userDao;
 
-    private DeviceDao deviceDao;
+    private DbDeviceDao deviceDao;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -264,12 +264,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         UserUtils.saveUserEmail(getApplicationContext(), userEmail);
 
         if (userDao == null) {
-            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
+            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
-        User user = userDao
+        DbUser user = userDao
                 .queryBuilder()
-                .where(UserDao.Properties.PrimaryEmail.eq(userEmail))
+                .where(DbUserDao.Properties.PrimaryEmail.eq(userEmail))
                 .limit(1)
                 .build()
                 .unique();
@@ -285,9 +285,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             String currentAndroidId = HardwareUtils.getAndroidId(this);
 
-            List<Device> userDevices = user.getDeviceList();
+            List<DbDevice> userDevices = user.getDbDeviceList();
 
-            for (Device device : userDevices) {
+            for (DbDevice device : userDevices) {
                 if (device.getDeviceIdentifier().equals(currentAndroidId)) {
                     serverDeviceId = device.getServerDeviceId();
                     break;
@@ -352,16 +352,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
 
         if (userDao == null) {
-            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
+            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
         if (deviceDao == null) {
-            deviceDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDeviceDao();
+            deviceDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbDeviceDao();
         }
 
-        User user = userDao
+        DbUser user = userDao
                 .queryBuilder()
-                .where(UserDao.Properties.Token.eq(loginResponse.getUserToken()))
+                .where(DbUserDao.Properties.Token.eq(loginResponse.getUserToken()))
                 .limit(1)
                 .build()
                 .unique();
@@ -371,7 +371,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (user == null) {
             // no such user found -> insert new user into db
 
-            User newUser = new User();
+            DbUser newUser = new DbUser();
 
             newUser.setToken(loginResponse.getUserToken());
             newUser.setPrimaryEmail(email);
@@ -384,7 +384,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             // saving device info into db
 
-            Device device = new Device();
+            DbDevice device = new DbDevice();
             device.setServerDeviceId(loginResponse.getDeviceId());
             device.setOs(Constants.PLATFORM_NAME);
             device.setOsVersion(HardwareUtils.getAndroidVersion());
@@ -400,12 +400,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         } else {
 
-            List<Device> userDevices = user.getDeviceList();
+            List<DbDevice> userDevices = user.getDbDeviceList();
 
             String currentAndroidId = HardwareUtils.getAndroidId(this);
             boolean isDeviceAlreadyCreated = false;
 
-            for (Device device : userDevices) {
+            for (DbDevice device : userDevices) {
                 if (device.getDeviceIdentifier().equals(currentAndroidId)) {
                     isDeviceAlreadyCreated = true;
 
@@ -418,7 +418,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (!isDeviceAlreadyCreated) {
                 // no such device found in db -> insert new
 
-                Device device = new Device();
+                DbDevice device = new DbDevice();
                 device.setServerDeviceId(loginResponse.getDeviceId());
                 device.setOs(Constants.PLATFORM_NAME);
                 device.setOsVersion(HardwareUtils.getAndroidVersion());

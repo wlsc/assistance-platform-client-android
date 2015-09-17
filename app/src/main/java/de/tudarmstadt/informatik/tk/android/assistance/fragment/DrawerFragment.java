@@ -40,10 +40,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
-import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
-import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleInstallation;
-import de.tudarmstadt.informatik.tk.android.kraken.db.User;
-import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
 
 /**
  * Fragment used for managing interactions and presentation of a navigation drawer
@@ -90,7 +90,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
 
     private static List<DrawerItem> navigationItems;
 
-    private UserDao userDao;
+    private DbUserDao userDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -341,7 +341,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
         super.onResume();
 
         if (userDao == null) {
-            userDao = DatabaseManager.getInstance(getActivity().getApplicationContext()).getDaoSession().getUserDao();
+            userDao = DatabaseManager.getInstance(getActivity().getApplicationContext()).getDaoSession().getDbUserDao();
         }
     }
 
@@ -372,12 +372,12 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
         }
 
         if (userDao == null) {
-            userDao = DatabaseManager.getInstance(getActivity().getApplicationContext()).getDaoSession().getUserDao();
+            userDao = DatabaseManager.getInstance(getActivity().getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
-        User user = userDao
+        DbUser user = userDao
                 .queryBuilder()
-                .where(UserDao.Properties.PrimaryEmail.eq(userEmail))
+                .where(DbUserDao.Properties.PrimaryEmail.eq(userEmail))
                 .limit(1)
                 .build()
                 .unique();
@@ -387,7 +387,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
             return;
         }
 
-        List<ModuleInstallation> userModules = user.getModuleInstallationList();
+        List<DbModuleInstallation> userModules = user.getDbModuleInstallationList();
 
         if (userModules == null || userModules.isEmpty()) {
             navigationItems = new ArrayList<>(0);
@@ -395,13 +395,13 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
         } else {
             navigationItems = new ArrayList<>();
 
-            for (ModuleInstallation moduleInstalled : userModules) {
+            for (DbModuleInstallation moduleInstalled : userModules) {
 
                 if (!moduleInstalled.getActive()) {
 //                    userModules.remove(moduleInstalled);
                 } else {
 
-                    Module module = moduleInstalled.getModule();
+                    DbModule module = moduleInstalled.getDbModule();
 
                     if (module != null) {
 

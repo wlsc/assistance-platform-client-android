@@ -24,8 +24,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
-import de.tudarmstadt.informatik.tk.android.kraken.db.User;
-import de.tudarmstadt.informatik.tk.android.kraken.db.UserDao;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -89,11 +89,11 @@ public class DrawerActivity extends AppCompatActivity {
 
                 Log.d(TAG, "No user info found cached. Checking db...");
 
-                UserDao userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
+                DbUserDao userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
 
-                User user = userDao
+                DbUser user = userDao
                         .queryBuilder()
-                        .where(UserDao.Properties.PrimaryEmail.eq(userEmail))
+                        .where(DbUserDao.Properties.PrimaryEmail.eq(userEmail))
                         .limit(1)
                         .build()
                         .unique();
@@ -163,12 +163,12 @@ public class DrawerActivity extends AppCompatActivity {
      */
     private void persistLogin(ProfileResponse profileResponse) {
 
-        UserDao userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getUserDao();
+        DbUserDao userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
 
         // check already available user in db
-        User user = userDao
+        DbUser user = userDao
                 .queryBuilder()
-                .where(UserDao.Properties.PrimaryEmail.eq(profileResponse.getPrimaryEmail()))
+                .where(DbUserDao.Properties.PrimaryEmail.eq(profileResponse.getPrimaryEmail()))
                 .limit(1)
                 .build()
                 .unique();
@@ -177,7 +177,7 @@ public class DrawerActivity extends AppCompatActivity {
         if (user == null) {
             // no user found -> create one
 
-            user = new User();
+            user = new DbUser();
 
             user.setFirstname(profileResponse.getFirstname());
             user.setLastname(profileResponse.getLastname());

@@ -5,11 +5,13 @@ import java.util.Locale;
 
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
-import de.tudarmstadt.informatik.tk.android.kraken.db.Module;
-import de.tudarmstadt.informatik.tk.android.kraken.db.ModuleCapability;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
 
 /**
+ * Converter between various models
+ *
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 08.09.2015
  */
@@ -24,7 +26,7 @@ public class ConverterUtils {
      * @param dbModule
      * @return
      */
-    public static final AvailableModuleResponse convertModule(Module dbModule) {
+    public static final AvailableModuleResponse convertModule(DbModule dbModule) {
 
         AvailableModuleResponse availableModuleResponse = new AvailableModuleResponse();
 
@@ -45,9 +47,9 @@ public class ConverterUtils {
      * @param availableModuleResponse
      * @return
      */
-    public static final Module convertModule(AvailableModuleResponse availableModuleResponse) {
+    public static final DbModule convertModule(AvailableModuleResponse availableModuleResponse) {
 
-        Module dbModule = new Module();
+        DbModule dbModule = new DbModule();
 
         dbModule.setTitle(availableModuleResponse.getTitle() == null ? "" : availableModuleResponse.getTitle());
         dbModule.setLogoUrl(availableModuleResponse.getLogo() == null ? "" : availableModuleResponse.getLogo());
@@ -67,7 +69,7 @@ public class ConverterUtils {
      * @param moduleCapability
      * @return
      */
-    public static final ModuleCapabilityResponse convertModuleCapability(ModuleCapability moduleCapability) {
+    public static final ModuleCapabilityResponse convertModuleCapability(DbModuleCapability moduleCapability) {
 
         ModuleCapabilityResponse moduleCapabilityResponse = new ModuleCapabilityResponse();
 
@@ -85,9 +87,9 @@ public class ConverterUtils {
      * @param moduleCapabilityResponse
      * @return
      */
-    public static final ModuleCapability convertModuleCapability(ModuleCapabilityResponse moduleCapabilityResponse) {
+    public static final DbModuleCapability convertModuleCapability(ModuleCapabilityResponse moduleCapabilityResponse) {
 
-        ModuleCapability moduleCapability = new ModuleCapability();
+        DbModuleCapability moduleCapability = new DbModuleCapability();
 
         moduleCapability.setType(moduleCapabilityResponse.getType());
         moduleCapability.setCollectionFrequency(moduleCapabilityResponse.getCollectionFrequency());
