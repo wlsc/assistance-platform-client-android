@@ -12,14 +12,7 @@ public class Constants {
      * COMMON
      */
 
-    public static final String PLATFORM_NAME = "android";
-
     public static final int BACK_BUTTON_DELAY_MILLIS = 2000;
-
-    /**
-     * Android http logger custom name
-     */
-    public static final String HTTP_LOGGER_NAME = "HTTPS_CLIENT";
 
     /**
      * Remember the position of the selected item.
