@@ -413,14 +413,33 @@ public class AvailableModulesActivity extends AppCompatActivity {
         for (String activeModule : mActiveModules) {
             if (activeModule.equals(modulePackage)) {
 
-                DbModuleInstallation moduleInstallation = new DbModuleInstallation();
+                // check for existing installation
+                // if so -> just activate it
+                DbModuleInstallation moduleInstallation = moduleInstallationDao
+                        .queryBuilder()
+                        .where(DbModuleInstallationDao.Properties.ModuleId.eq(moduleId))
+                        .where(DbModuleInstallationDao.Properties.UserId.eq(userId))
+                        .limit(1)
+                        .build()
+                        .unique();
 
-                moduleInstallation.setActive(true);
-                moduleInstallation.setModuleId(moduleId);
-                moduleInstallation.setUserId(userId);
-                moduleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+                if (moduleInstallation == null) {
 
-                moduleInstallationDao.insert(moduleInstallation);
+                    moduleInstallation = new DbModuleInstallation();
+
+                    moduleInstallation.setActive(true);
+                    moduleInstallation.setModuleId(moduleId);
+                    moduleInstallation.setUserId(userId);
+                    moduleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+
+                    moduleInstallationDao.insert(moduleInstallation);
+
+                } else {
+
+                    moduleInstallation.setActive(true);
+
+                    moduleInstallationDao.update(moduleInstallation);
+                }
 
                 break;
             }
