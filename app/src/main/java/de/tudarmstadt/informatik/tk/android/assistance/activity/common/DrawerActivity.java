@@ -98,8 +98,8 @@ public class DrawerActivity extends AppCompatActivity {
                         .build()
                         .unique();
 
-                // found cached user in the db
-                if (user != null) {
+                // found saved user in the db
+                if (user != null && user.getLastLogin() != null) {
 
                     Log.d(TAG, "Found user in the db");
 
@@ -107,12 +107,14 @@ public class DrawerActivity extends AppCompatActivity {
                     UserUtils.saveUserLastname(getApplicationContext(), user.getLastname());
 
                     mDrawerFragment.updateDrawer();
+
                 } else {
                     // no user profile found -> request from server
                     Log.d(TAG, "No user found in db");
 
 //                    if (!isUserProfileRequestSent) {
                     Log.d(TAG, "Requesting from server...");
+
                     requestUserProfile();
 //                    }
                 }
@@ -182,19 +184,33 @@ public class DrawerActivity extends AppCompatActivity {
             user.setFirstname(profileResponse.getFirstname());
             user.setLastname(profileResponse.getLastname());
             user.setPrimaryEmail(profileResponse.getPrimaryEmail());
-            user.setJoinedSince(DateUtils.dateToISO8601String(new Date(profileResponse.getJoinedSince()), Locale.getDefault()));
-            user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
+
+            if (profileResponse.getJoinedSince() != null) {
+                user.setJoinedSince(DateUtils.dateToISO8601String(new Date(profileResponse.getJoinedSince()), Locale.getDefault()));
+            }
+
+            if (profileResponse.getLastLogin() != null) {
+                user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
+            }
+
             user.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
             userDao.insertOrReplace(user);
+
         } else {
             // found a user -> update for device and user information
 
             user.setFirstname(profileResponse.getFirstname());
             user.setLastname(profileResponse.getLastname());
             user.setPrimaryEmail(profileResponse.getPrimaryEmail());
-            user.setJoinedSince(DateUtils.dateToISO8601String(new Date(profileResponse.getJoinedSince()), Locale.getDefault()));
-            user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
+
+            if (profileResponse.getJoinedSince() != null) {
+                user.setJoinedSince(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+            }
+
+            if (profileResponse.getLastLogin() != null) {
+                user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
+            }
 //            user.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
             userDao.update(user);

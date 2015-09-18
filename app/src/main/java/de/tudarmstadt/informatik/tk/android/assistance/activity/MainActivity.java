@@ -216,7 +216,7 @@ public class MainActivity extends DrawerActivity {
                 showErrorMessages(TAG, error);
 
                 // no such installed module -> remove it immediately
-                if (error.getResponse().getStatus() == 400) {
+                if (error.getResponse() == null || error.getResponse().getStatus() == 400) {
                     uninstallModuleFromDb();
                 }
             }
