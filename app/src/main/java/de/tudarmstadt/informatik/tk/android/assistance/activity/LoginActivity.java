@@ -39,7 +39,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.error.ErrorResp
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.UserDevice;
-import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
@@ -49,6 +48,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
+import de.tudarmstadt.informatik.tk.android.kraken.KrakenConfig;
+import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDeviceDao;
@@ -308,7 +309,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             userDevice.setServerId(serverDeviceId);
         }
 
-        userDevice.setOs(Constants.PLATFORM_NAME);
+        userDevice.setOs(KrakenConfig.PLATFORM_NAME);
         userDevice.setOsVersion(HardwareUtils.getAndroidVersion());
         userDevice.setBrand(HardwareUtils.getDeviceBrandName());
         userDevice.setModel(HardwareUtils.getDeviceModelName());
@@ -386,7 +387,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             DbDevice device = new DbDevice();
             device.setServerDeviceId(loginResponse.getDeviceId());
-            device.setOs(Constants.PLATFORM_NAME);
+            device.setOs(KrakenConfig.PLATFORM_NAME);
             device.setOsVersion(HardwareUtils.getAndroidVersion());
             device.setBrand(HardwareUtils.getDeviceBrandName());
             device.setModel(HardwareUtils.getDeviceModelName());
@@ -420,7 +421,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 DbDevice device = new DbDevice();
                 device.setServerDeviceId(loginResponse.getDeviceId());
-                device.setOs(Constants.PLATFORM_NAME);
+                device.setOs(KrakenConfig.PLATFORM_NAME);
                 device.setOsVersion(HardwareUtils.getAndroidVersion());
                 device.setBrand(HardwareUtils.getDeviceBrandName());
                 device.setModel(HardwareUtils.getDeviceModelName());
