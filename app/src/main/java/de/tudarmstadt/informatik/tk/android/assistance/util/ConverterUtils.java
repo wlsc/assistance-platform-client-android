@@ -7,7 +7,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.Availabl
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
-import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 
 /**
  * Converter between various models

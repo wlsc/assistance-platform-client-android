@@ -17,16 +17,16 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.LoginActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.DrawerFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
-import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
-import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -106,7 +106,7 @@ public class DrawerActivity extends AppCompatActivity {
                     UserUtils.saveUserFirstname(getApplicationContext(), user.getFirstname());
                     UserUtils.saveUserLastname(getApplicationContext(), user.getLastname());
 
-                    mDrawerFragment.updateDrawer();
+                    mDrawerFragment.updateDrawer(getApplicationContext());
 
                 } else {
                     // no user profile found -> request from server
@@ -119,7 +119,7 @@ public class DrawerActivity extends AppCompatActivity {
 //                    }
                 }
             } else {
-                mDrawerFragment.updateDrawer();
+                mDrawerFragment.updateDrawer(getApplicationContext());
             }
         } else {
             Log.d(TAG, "User email is EMPTY!");
@@ -148,7 +148,7 @@ public class DrawerActivity extends AppCompatActivity {
                 UserUtils.saveUserEmail(getApplicationContext(), profileResponse.getPrimaryEmail());
 
                 persistLogin(profileResponse);
-                mDrawerFragment.updateDrawer();
+                mDrawerFragment.updateDrawer(getApplicationContext());
             }
 
             @Override

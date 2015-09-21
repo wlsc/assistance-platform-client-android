@@ -18,9 +18,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
-import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
@@ -38,29 +38,50 @@ public class MainActivity extends DrawerActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private boolean userHasModulesInstalled;
-
     private DbModuleDao moduleDao;
 
     private DbModuleInstallationDao moduleInstallationDao;
+
+    private List<DbModuleInstallation> dbModuleInstallations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        userHasModulesInstalled = UserUtils.isUserHasModules(getApplicationContext());
+        long currentuserId = UserUtils.getCurrentUserId(getApplicationContext());
 
-        if (userHasModulesInstalled) {
+        if (moduleInstallationDao == null) {
+            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
+        }
+
+        if (dbModuleInstallations == null) {
+            dbModuleInstallations = moduleInstallationDao
+                    .queryBuilder()
+                    .where(DbModuleInstallationDao.Properties.UserId.eq(currentuserId))
+                    .build()
+                    .list();
+
+            // user has got some active modules -> activate module menu
+            if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
+
+                getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
+                setTitle(R.string.main_activity_title);
+
+                loadModules();
+
+            } else {
+
+                Intent intent = new Intent(this, AvailableModulesActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+        } else {
 
             getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
             setTitle(R.string.main_activity_title);
 
             loadModules();
-        } else {
-
-            Intent intent = new Intent(this, AvailableModulesActivity.class);
-            startActivity(intent);
-            finish();
         }
     }
 
@@ -73,18 +94,14 @@ public class MainActivity extends DrawerActivity {
             moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
         }
 
-        if (moduleInstallationDao == null) {
-            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
-        }
-
-
+        mDrawerFragment.updateDrawerBody(getApplicationContext());
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // if we have no modules installed -> no module menu will be showed
-        if (userHasModulesInstalled) {
+        if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.module_menu, menu);
         }
@@ -163,6 +180,8 @@ public class MainActivity extends DrawerActivity {
         String userToken = UserUtils.getUserToken(getApplicationContext());
         long currentModuleId = UserUtils.getCurrentModuleId(getApplicationContext());
 
+        Log.d(TAG, "Uninstall module. ModuleId: " + currentModuleId);
+
         DbModule module = moduleDao
                 .queryBuilder()
                 .where(DbModuleDao.Properties.Id.eq(currentModuleId))
@@ -171,7 +190,7 @@ public class MainActivity extends DrawerActivity {
                 .unique();
 
         if (module == null) {
-            Log.e(TAG, "Module DB entry is NULL! Cannot send deactivate request to module service!");
+            Log.e(TAG, "Not found any module with that id: " + currentModuleId + ". Cannot send deactivate request to module service!");
             return;
         }
 

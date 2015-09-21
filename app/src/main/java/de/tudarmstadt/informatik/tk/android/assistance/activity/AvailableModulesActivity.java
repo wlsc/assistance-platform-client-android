@@ -51,7 +51,8 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
-import de.tudarmstadt.informatik.tk.android.kraken.utils.DateUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.service.KrakenServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
@@ -441,6 +442,10 @@ public class AvailableModulesActivity extends AppCompatActivity {
                     moduleInstallationDao.update(moduleInstallation);
                 }
 
+                // start monitoring service
+                KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
+                service.startKrakenService();
+
                 break;
             }
         }
@@ -726,6 +731,10 @@ public class AvailableModulesActivity extends AppCompatActivity {
         }
 
         Log.d(TAG, "Installation id: " + installId);
+
+        // start monitoring service
+        KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
+        service.startKrakenService();
     }
 
     @Override

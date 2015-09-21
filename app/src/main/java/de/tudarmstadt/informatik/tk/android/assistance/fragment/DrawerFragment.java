@@ -260,7 +260,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
                 break;
             case R.id.settings:
                 Log.d(TAG, "User left settings activity");
-                updateDrawer();
+                updateDrawer(getActivity().getApplicationContext());
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -271,10 +271,10 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
     /**
      * Updates complete navigation drawer information
      */
-    public void updateDrawer() {
+    public void updateDrawer(Context context) {
 
-        updateDrawerHeader();
-        updateDrawerBody();
+        updateDrawerHeader(context);
+        updateDrawerBody(context);
     }
 
     @Override
@@ -355,7 +355,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
 
         UserUtils.saveUserEmail(getActivity().getApplicationContext(), event.getUserEmail());
 
-        updateDrawerBody();
+        updateDrawerBody(getActivity().getApplicationContext());
 
         Log.d(TAG, "Finished processing drawer update event!");
     }
@@ -363,16 +363,16 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
     /**
      * Updates navigation drawer list of active modules
      */
-    public void updateDrawerBody() {
+    public void updateDrawerBody(Context context) {
 
-        String userEmail = UserUtils.getUserEmail(getActivity().getApplicationContext());
+        String userEmail = UserUtils.getUserEmail(context);
 
         if (userEmail.isEmpty()) {
             return;
         }
 
         if (userDao == null) {
-            userDao = DatabaseManager.getInstance(getActivity().getApplicationContext()).getDaoSession().getDbUserDao();
+            userDao = DatabaseManager.getInstance(context).getDaoSession().getDbUserDao();
         }
 
         DbUser user = userDao
@@ -412,7 +412,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
 
             if (!navigationItems.isEmpty()) {
 
-                DrawerAdapter adapter = new DrawerAdapter(getActivity().getApplicationContext(), navigationItems, this);
+                DrawerAdapter adapter = new DrawerAdapter(context, navigationItems, this);
 
                 mDrawerList.setAdapter(adapter);
                 mDrawerList.getAdapter().notifyDataSetChanged();
@@ -425,10 +425,10 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
 
     /**
      * Updates navigation drawer header layout
+     *
+     * @param context
      */
-    public void updateDrawerHeader() {
-
-        Context context = getActivity().getApplicationContext();
+    public void updateDrawerHeader(Context context) {
 
         String firstname = UserUtils.getUserFirstname(context);
         String lastname = UserUtils.getUserLastname(context);
