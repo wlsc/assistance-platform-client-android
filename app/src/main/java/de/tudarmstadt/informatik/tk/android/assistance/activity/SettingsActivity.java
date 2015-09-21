@@ -23,6 +23,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.Sensors
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDeviceInfoSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 
 /**
  * Core user settings activity
@@ -81,7 +82,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     @OnClick(R.id.toolbar)
     protected void onBackClicked() {
-        Log.d(TAG, "On Toolbar back pressed");
+        Log.d(TAG, "On toolbar back pressed");
         setResult(R.id.settings);
         finish();
     }
@@ -96,6 +97,20 @@ public class SettingsActivity extends PreferenceActivity {
     @Override
     public void onBuildHeaders(List<Header> headers) {
         loadHeadersFromResource(R.xml.preference_headers, headers);
+
+        boolean isUserDeveloper = UserUtils.isUserDeveloper(getApplicationContext());
+
+        for (Header header : headers) {
+            if (header.id == R.id.development_settings) {
+
+                // user not developer -> remove developer menu entry
+                if (!isUserDeveloper) {
+                    headers.remove(header);
+                }
+
+                break;
+            }
+        }
     }
 
     @Override

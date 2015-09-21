@@ -41,6 +41,7 @@ public class Constants {
     public static final String PREF_USER_ID = "current_user_id";
     public static final String PREF_DEVICE_ID = "current_device_id";
     public static final String PREF_MODULE_ID = "current_module_id";
+    public static final String PREF_DEVELOPER_STATUS = "developer_status";
 
     /**
      * Per the design guidelines, you should show the drawer on launch until the user manually

@@ -38,4 +38,9 @@
 
     </Preference>
 
+    <Preference
+        android:key="pref_build_number"
+        android:summary="@string/settings_build_version_summary"
+        android:title="@string/settings_build_version" />
+
 </PreferenceScreen>

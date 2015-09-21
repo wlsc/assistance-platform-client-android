@@ -234,4 +234,24 @@ public class UserUtils {
         File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + userPicFilename + ".jpg");
         return file;
     }
+
+    /**
+     * Returns user is a developer status
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isUserDeveloper(Context context) {
+        return PreferencesUtils.getPreference(context, Constants.PREF_DEVELOPER_STATUS, false);
+    }
+
+    /**
+     * Saves user developer status into SharedPreferences
+     *
+     * @param context
+     * @param value
+     */
+    public static void saveDeveloperStatus(Context context, boolean value) {
+        PreferencesUtils.savePreference(context, Constants.PREF_DEVELOPER_STATUS, value);
+    }
 }
