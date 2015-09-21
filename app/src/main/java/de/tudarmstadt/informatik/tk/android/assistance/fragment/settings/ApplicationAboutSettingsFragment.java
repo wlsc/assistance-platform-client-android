@@ -46,39 +46,20 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
         mParentToolbar.setTitle(R.string.settings_about_title);
 
-        Preference aboutPref = findPreference("pref_about_app");
-        Preference buildNumberPref = findPreference("pref_build_number");
-
-        if (aboutClickHandler == null) {
-
-            aboutClickHandler = new Preference.OnPreferenceClickListener() {
-
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    showAboutInformation();
-                    return false;
-                }
-            };
-        }
-
-        if (buildNumberClickHandler == null) {
-
-            buildNumberClickHandler = new Preference.OnPreferenceClickListener() {
-
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    return processBuildButton();
-                }
-            };
-        }
-
-        aboutPref.setOnPreferenceClickListener(aboutClickHandler);
-        buildNumberPref.setOnPreferenceClickListener(buildNumberClickHandler);
+        addSettingsActions();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        addSettingsActions();
+    }
+
+    /**
+     * Adds handlers to various settings headers
+     */
+    private void addSettingsActions() {
 
         Preference aboutPref = findPreference("pref_about_app");
         Preference buildNumberPref = findPreference("pref_build_number");
