@@ -3,12 +3,13 @@ package de.tudarmstadt.informatik.tk.android.assistance.fragment.settings;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 
 /**
  * Created by Wladimir Schmidt on 29.06.2015.
@@ -30,6 +31,11 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
 
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
         mParentToolbar.setTitle(R.string.settings_header_development_title);
+
+        boolean isUserDeveloper = UserUtils.isUserDeveloper(getActivity().getApplicationContext());
+
+        SwitchPreference beDevPref = (SwitchPreference) findPreference("pref_be_developer");
+        beDevPref.setChecked(isUserDeveloper);
     }
 
     @Override
@@ -45,7 +51,7 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
                 Log.d(TAG, "Developer mode is DISABLED.");
             }
 
-            PreferencesUtils.savePreference(getActivity().getApplicationContext(), key, isDeveloper);
+            UserUtils.saveDeveloperStatus(getActivity().getApplicationContext(), isDeveloper);
         }
     }
 
