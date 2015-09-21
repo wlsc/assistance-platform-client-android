@@ -8,4 +8,9 @@
         android:summary="@string/settings_be_developer_summary"
         android:title="@string/settings_be_developer_title" />
 
+    <Preference
+        android:key="pref_export_database"
+        android:summary="@string/settings_export_database_summary"
+        android:title="@string/settings_export_database" />
+
 </PreferenceScreen>

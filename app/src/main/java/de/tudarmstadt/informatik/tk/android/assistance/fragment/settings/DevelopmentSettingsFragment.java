@@ -2,14 +2,21 @@ package de.tudarmstadt.informatik.tk.android.assistance.fragment.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import java.io.IOException;
+
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.KrakenSdkSettings;
+import de.tudarmstadt.informatik.tk.android.kraken.util.StorageUtils;
 
 /**
  * Created by Wladimir Schmidt on 29.06.2015.
@@ -43,7 +50,7 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
 
         if (key.equalsIgnoreCase("pref_be_developer")) {
 
-            boolean isDeveloper = sharedPreferences.getBoolean(key, false);
+            boolean isDeveloper = UserUtils.isUserDeveloper(getActivity().getApplicationContext());
 
             if (isDeveloper) {
                 Log.d(TAG, "Developer mode is ENABLED.");
@@ -53,6 +60,25 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
 
             UserUtils.saveDeveloperStatus(getActivity().getApplicationContext(), isDeveloper);
         }
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+
+        if (preference.getKey().equals("pref_export_database")) {
+
+            Log.d(TAG, "User tapped export database menu");
+
+            try {
+                StorageUtils.exportDatabase(
+                        getActivity().getApplicationContext(),
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/" + KrakenSdkSettings.DATABASE_NAME);
+            } catch (IOException e) {
+                Log.e(TAG, "Cannot export database to public folder. Error: ", e);
+            }
+        }
+
+        return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
     @Override

@@ -32,6 +32,8 @@
     <!-- SETTINGS: DEVELOPER -->
     <string name="settings_be_developer_title">Developer</string>
     <string name="settings_be_developer_summary">I am generous god!</string>
+    <string name="settings_export_database">Export database</string>
+    <string name="settings_export_database_summary">Export application sqlite database to downloads directory</string>
 
     <!-- SETTINGS: HELP / ABOUT -->
     <string name="settings_about_title">About</string>
