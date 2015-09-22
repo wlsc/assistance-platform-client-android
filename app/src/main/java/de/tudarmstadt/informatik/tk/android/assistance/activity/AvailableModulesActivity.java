@@ -36,12 +36,12 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.Availabl
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
-import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CardView;
+import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
@@ -407,6 +407,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void createActiveModuleInstallation(Long userId, long moduleId, String modulePackage) {
 
+        boolean entryWasInserted = false;
+
         if (moduleInstallationDao == null) {
             moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
@@ -442,12 +444,22 @@ public class AvailableModulesActivity extends AppCompatActivity {
                     moduleInstallationDao.update(moduleInstallation);
                 }
 
+                entryWasInserted = true;
+
                 // start monitoring service
                 KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
                 service.startKrakenService();
 
                 break;
             }
+        }
+
+        // immediately finish and proceed to main activity
+        if (entryWasInserted) {
+
+            Intent mainIntent = new Intent(this, MainActivity.class);
+            startActivity(mainIntent);
+            finish();
         }
     }
 

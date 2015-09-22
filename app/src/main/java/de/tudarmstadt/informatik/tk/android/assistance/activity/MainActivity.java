@@ -3,7 +3,6 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Menu;
@@ -16,7 +15,9 @@ import java.util.List;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
+import de.tudarmstadt.informatik.tk.android.assistance.adapter.DrawerAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
+import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
@@ -71,6 +72,7 @@ public class MainActivity extends DrawerActivity {
                 getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
                 setTitle(R.string.main_activity_title);
 
+                ((DrawerAdapter) mDrawerFragment.getDrawerList().getAdapter()).selectPosition(2);
                 mDrawerFragment.updateDrawerBody(getApplicationContext());
 
             } else {
@@ -170,26 +172,14 @@ public class MainActivity extends DrawerActivity {
     private void moduleUninstall() {
 
         String userToken = UserUtils.getUserToken(getApplicationContext());
-        long currentModuleId = UserUtils.getCurrentModuleId(getApplicationContext());
 
-        Log.d(TAG, "Uninstall module. ModuleId: " + currentModuleId);
+        DrawerItem item = mDrawerFragment.getNavigationItems().get(mDrawerFragment.getCurrentSelectedPosition());
+        DbModule currentModule = item.getModule();
 
-        DbModule module = moduleDao
-                .queryBuilder()
-                .where(DbModuleDao.Properties.Id.eq(currentModuleId))
-                .limit(1)
-                .build()
-                .unique();
-
-        if (module == null) {
-            Log.e(TAG, "Not found any module with that id: " + currentModuleId + ". Cannot send deactivate request to module service!");
-            return;
-        }
-
-        String modulePackageId = module.getPackageName();
+        Log.d(TAG, "Uninstall module. ModuleId: " + currentModule.getId() + " package: " + currentModule.getPackageName());
 
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
-        toggleModuleRequest.setModuleId(modulePackageId);
+        toggleModuleRequest.setModuleId(currentModule.getPackageName());
 
         ModuleService moduleService = ServiceGenerator.createService(ModuleService.class);
         moduleService.deactivateModule(userToken, toggleModuleRequest, new Callback<Void>() {
@@ -202,23 +192,19 @@ public class MainActivity extends DrawerActivity {
 
                     uninstallModuleFromDb();
 
-                    CoordinatorLayout snackbarCoordinatorLayout = ButterKnife.findById(MainActivity.this, R.id.snackbarCoordinatorLayout);
-//                    Snacker.showLong(snackbarCoordinatorLayout, R.string.about, R.string.button_ok_text, new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            Log.d(TAG, "HEEEY");
-//                        }
-//                    });
+                    Snackbar
+                            .make(findViewById(android.R.id.content), R.string.main_activity_undo_uninstall, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.main_activity_undo_uninstall_button_title, new View.OnClickListener() {
 
-                    Snackbar.make(findViewById(android.R.id.content), "Had a snack at Snackbar", Snackbar.LENGTH_LONG)
-                            .setAction("Undo", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Log.d(TAG, "HEEEY");
+                                    Log.d(TAG, "User tapped UNDO uninstall of a module.");
                                 }
                             })
                             .setActionTextColor(Color.RED)
                             .show();
+
+                    mDrawerFragment.updateDrawerBody(getApplicationContext());
                 }
             }
 
@@ -229,6 +215,8 @@ public class MainActivity extends DrawerActivity {
                 // no such installed module -> remove it immediately
                 if (error.getResponse() == null || error.getResponse().getStatus() == 400) {
                     uninstallModuleFromDb();
+
+                    mDrawerFragment.updateDrawerBody(getApplicationContext());
                 }
             }
         });
@@ -239,19 +227,26 @@ public class MainActivity extends DrawerActivity {
      */
     private void uninstallModuleFromDb() {
 
-        long currentUserId = UserUtils.getCurrentUserId(getApplicationContext());
-        long currentModuleId = UserUtils.getCurrentModuleId(getApplicationContext());
+        DrawerItem item = mDrawerFragment.getNavigationItems().get(mDrawerFragment.getCurrentSelectedPosition());
+        DbModule currentModule = item.getModule();
+        long currentUserId = currentModule.getUserId();
+        long currentModuleId = currentModule.getId();
 
         Log.d(TAG, "Current user id: " + currentUserId);
         Log.d(TAG, "Current module id: " + currentModuleId);
+
+        Log.d(TAG, "Removing module from db...");
 
         List<DbModuleInstallation> installedModules = moduleInstallationDao
                 .queryBuilder()
                 .where(DbModuleInstallationDao.Properties.ModuleId.eq(currentModuleId))
                 .where(DbModuleInstallationDao.Properties.UserId.eq(currentUserId))
+                .build()
                 .list();
 
         moduleInstallationDao.deleteInTx(installedModules);
+
+        Log.d(TAG, "Finished removing module from db!");
     }
 
     @Override

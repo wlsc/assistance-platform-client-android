@@ -68,6 +68,8 @@
     <string name="main_activity_module_menu_enable">Enable</string>
     <string name="main_activity_module_menu_disable">Disable</string>
     <string name="main_activity_module_menu_uninstall">Uninstall module</string>
+    <string name="main_activity_undo_uninstall">Cancel uninstall?</string>
+    <string name="main_activity_undo_uninstall_button_title">UNDO</string>
 
     <!-- LOGIN SCREEN -->
     <string name="login_header">Welcome back!</string>

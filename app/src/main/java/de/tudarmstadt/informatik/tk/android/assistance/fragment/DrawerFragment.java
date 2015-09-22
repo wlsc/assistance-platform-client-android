@@ -22,7 +22,7 @@ import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -96,8 +96,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Read in the flag indicating whether or not the user has demonstrated awareness of the
-        // drawer. See PREF_USER_LEARNED_DRAWER for details.
+        // Read in the flag indicating whether or not the user has demonstrated awareness of the drawer
         mUserLearnedDrawer = UserUtils.getUserHasLearnedDrawer(getActivity().getApplicationContext());
 
         if (savedInstanceState != null) {
@@ -123,7 +122,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
         mDrawerList.setHasFixedSize(true);
 
         if (navigationItems == null) {
-            navigationItems = new ArrayList<>();
+            navigationItems = new LinkedList<>();
         }
 
         if (navigationItems.size() == 0) {
@@ -380,17 +379,17 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
                 .unique();
 
         if (user == null) {
-            navigationItems = new ArrayList<>(0);
+            navigationItems = new LinkedList<>();
             return;
         }
 
         List<DbModuleInstallation> userModules = user.getDbModuleInstallationList();
 
         if (userModules == null || userModules.isEmpty()) {
-            navigationItems = new ArrayList<>(0);
+            navigationItems = new LinkedList<>();
             return;
         } else {
-            navigationItems = new ArrayList<>();
+            navigationItems = new LinkedList<>();
 
             for (DbModuleInstallation moduleInstalled : userModules) {
 
@@ -401,7 +400,6 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
                     DbModule module = moduleInstalled.getDbModule();
 
                     if (module != null) {
-
                         navigationItems.add(new DrawerItem(module.getTitle(), module.getLogoUrl(), module));
                     }
                 }
@@ -416,6 +414,8 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
 
                 mDrawerList.setVisibility(View.VISIBLE);
                 mDrawerNoModules.setVisibility(View.GONE);
+
+                mCurrentSelectedPosition = 0;
             }
         }
     }
@@ -462,6 +462,18 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
         }
     }
 
+    public RecyclerView getDrawerList() {
+        return this.mDrawerList;
+    }
+
+    public int getCurrentSelectedPosition() {
+        return this.mCurrentSelectedPosition;
+    }
+
+    public static List<DrawerItem> getNavigationItems() {
+        return DrawerFragment.navigationItems;
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -473,6 +485,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
     @Override
     public void onNavigationDrawerItemSelected(View v, int position) {
         selectItem(v, position);
+
         Log.d(TAG, "Drawer position selected: " + position);
 
         long currentModuleId = navigationItems.get(position).getModule().getId();
