@@ -48,7 +48,11 @@ public class MainActivity extends DrawerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        long currentuserId = UserUtils.getCurrentUserId(getApplicationContext());
+        long userId = UserUtils.getCurrentUserId(getApplicationContext());
+
+        if (moduleDao == null) {
+            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
+        }
 
         if (moduleInstallationDao == null) {
             moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
@@ -57,7 +61,7 @@ public class MainActivity extends DrawerActivity {
         if (dbModuleInstallations == null) {
             dbModuleInstallations = moduleInstallationDao
                     .queryBuilder()
-                    .where(DbModuleInstallationDao.Properties.UserId.eq(currentuserId))
+                    .where(DbModuleInstallationDao.Properties.UserId.eq(userId))
                     .build()
                     .list();
 
@@ -67,7 +71,7 @@ public class MainActivity extends DrawerActivity {
                 getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
                 setTitle(R.string.main_activity_title);
 
-                loadModules();
+                mDrawerFragment.updateDrawerBody(getApplicationContext());
 
             } else {
 
@@ -81,20 +85,8 @@ public class MainActivity extends DrawerActivity {
             getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
             setTitle(R.string.main_activity_title);
 
-            loadModules();
+            mDrawerFragment.updateDrawerBody(getApplicationContext());
         }
-    }
-
-    /**
-     * Loads all information about running assistance modules
-     */
-    private void loadModules() {
-
-        if (moduleDao == null) {
-            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
-        }
-
-        mDrawerFragment.updateDrawerBody(getApplicationContext());
     }
 
     @Override
@@ -265,8 +257,10 @@ public class MainActivity extends DrawerActivity {
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
+
         moduleDao = null;
         moduleInstallationDao = null;
+
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }

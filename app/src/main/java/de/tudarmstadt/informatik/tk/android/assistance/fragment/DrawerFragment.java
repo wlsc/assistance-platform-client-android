@@ -306,10 +306,6 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
         mActionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    public View getGoogleDrawer() {
-        return ButterKnife.findById(mFragmentContainerView, R.id.googleDrawer);
-    }
-
     @OnClick({R.id.imgAvatar, R.id.txtUserEmail, R.id.txtUsername})
     protected void onUserPicClicked() {
         launchSettings();
@@ -317,6 +313,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
 
     @OnClick(R.id.available_modules)
     protected void onAvailableModulesClicked() {
+
         Intent intent = new Intent(getActivity(), AvailableModulesActivity.class);
         startActivity(intent);
     }
