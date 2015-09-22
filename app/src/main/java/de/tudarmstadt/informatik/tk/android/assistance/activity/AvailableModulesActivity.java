@@ -159,6 +159,10 @@ public class AvailableModulesActivity extends AppCompatActivity {
             moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
         }
 
+        if (moduleInstallationDao == null) {
+            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
+        }
+
         List<DbModule> userModules = user.getDbModuleList();
 
 
@@ -640,27 +644,28 @@ public class AvailableModulesActivity extends AppCompatActivity {
     /**
      * Saves information into db / install a module for user
      *
-     * @param moduleId
+     * @param modulePackageName
      */
-    private void installModule(final String moduleId) {
+    private void installModule(final String modulePackageName) {
 
-        Log.d(TAG, "Installation of a module " + moduleId + " has started...");
+        Log.d(TAG, "Installation of a module " + modulePackageName + " has started...");
         Log.d(TAG, "Requesting service...");
 
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
-        toggleModuleRequest.setModuleId(moduleId);
+        toggleModuleRequest.setModuleId(modulePackageName);
 
         ModuleService moduleService = ServiceGenerator.createService(ModuleService.class);
         moduleService.activateModule(userToken, toggleModuleRequest, new Callback<Void>() {
 
             @Override
             public void success(Void aVoid, Response response) {
+
                 if (response.getStatus() == 200 || response.getStatus() == 204) {
-                    Log.d(TAG, "Module was activated!");
-                    saveInstallationOnDevice(moduleId);
-                    Log.d(TAG, "Installation of a module " + moduleId + " finished!");
+                    Log.d(TAG, "Module is activated!");
+                    saveModuleInstallationInDb(modulePackageName);
+                    Log.d(TAG, "Installation has finished!");
                 } else {
                     Log.d(TAG, "FAIL: service responded with code: " + response.getStatus());
                 }
@@ -670,7 +675,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
             public void failure(RetrofitError error) {
                 showErrorMessages(TAG, error);
 
-                Log.d(TAG, "Installation of a module " + moduleId + " has failed!");
+                Log.d(TAG, "Installation has failed!");
             }
         });
     }
@@ -678,7 +683,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
     /**
      * Saves module installations status on device
      */
-    private void saveInstallationOnDevice(final String moduleId) {
+    private void saveModuleInstallationInDb(final String modulePackageName) {
 
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
@@ -694,27 +699,24 @@ public class AvailableModulesActivity extends AppCompatActivity {
             return;
         }
 
-        if (moduleInstallationDao == null) {
-            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
-        }
-
         DbModule module = moduleDao
                 .queryBuilder()
-                .where(DbModuleDao.Properties.PackageName.eq(moduleId))
+                .where(DbModuleDao.Properties.PackageName.eq(modulePackageName))
                 .where(DbModuleDao.Properties.UserId.eq(user.getId()))
                 .limit(1)
                 .build()
                 .unique();
 
         if (module == null) {
-            Log.d(TAG, "Installation cancelled: module is null");
+
+            Log.d(TAG, "Installation cancelled: now such module found in db!");
             return;
         }
 
         // check module is already installed
         DbModuleInstallation moduleInstallation = moduleInstallationDao
                 .queryBuilder()
-                .where(DbModuleInstallationDao.Properties.ModuleId.eq(moduleId))
+                .where(DbModuleInstallationDao.Properties.ModuleId.eq(module.getId()))
                 .where(DbModuleInstallationDao.Properties.UserId.eq(user.getId()))
                 .limit(1)
                 .build()
@@ -736,9 +738,12 @@ public class AvailableModulesActivity extends AppCompatActivity {
         Long installId = moduleInstallationDao.insertOrReplace(moduleInstallation);
 
         if (installId != null) {
+
             UserUtils.saveUserHasModules(getApplicationContext(), true);
             Toaster.showLong(getApplicationContext(), R.string.module_installation_successful);
+
         } else {
+
             Toaster.showLong(getApplicationContext(), R.string.module_installation_unsuccessful);
         }
 
@@ -747,6 +752,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         // start monitoring service
         KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
         service.startKrakenService();
+        
     }
 
     @Override
