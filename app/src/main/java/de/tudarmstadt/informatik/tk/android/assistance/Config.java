@@ -11,6 +11,10 @@ public class Config {
     private Config() {
     }
 
+    /**
+     * ENDPOINTS
+     */
+
     public static final String ASSISTANCE_MODULE_LIST_ENDPOINT = "/assistance/list";
 
     public static final String ASSISTANCE_MODULE_ACTIVE_ENDPOINT = "/assistance/activations";
@@ -30,6 +34,23 @@ public class Config {
     public static final String ASSISTANCE_USER_PROFILE_FULL_ENDPOINT = "/users/profile/long";
 
     public static final String ASSISTANCE_USER_PROFILE_UPDATE_ENDPOINT = "/users/profile";
+
+    /**
+     * GOOGLE ANALYTICS
+     */
+
+    // Replace the tracker-id with your app one from https://www.google.com/analytics/web/
+    public static final String GOOGLE_ANALYTICS_TRACKING_ID = "UA-67996977-1";
+
+    // Provide unhandled exceptions reports. Do that first after creating the tracker
+    public static final boolean GOOGLE_ANALYTICS_EXCEPTION_REPORTING = true;
+
+    // Enable Remarketing, Demographics & Interests reports
+    // https://developers.google.com/analytics/devguides/collection/android/display-features
+    public static final boolean GOOGLE_ANALYTICS_ADVERTISING_COLLECTION = true;
+
+    // Enable automatic activity tracking for your app
+    public static final boolean GOOGLE_ANALYTICS_AUTO_ACTIVITY_TRACKING = true;
 
     /**
      * Min password length
