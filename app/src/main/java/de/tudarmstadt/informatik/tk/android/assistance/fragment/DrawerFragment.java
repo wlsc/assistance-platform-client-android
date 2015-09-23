@@ -400,7 +400,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
                     DbModule module = moduleInstalled.getDbModule();
 
                     if (module != null) {
-                        navigationItems.add(new DrawerItem(module.getTitle(), module.getLogoUrl(), module));
+                        navigationItems.add(new DrawerItem(module.getTitle(), module.getLogoUrl(), moduleInstalled));
                     }
                 }
             }

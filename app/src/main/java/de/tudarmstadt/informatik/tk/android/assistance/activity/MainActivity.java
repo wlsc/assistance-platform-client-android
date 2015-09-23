@@ -15,7 +15,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
-import de.tudarmstadt.informatik.tk.android.assistance.adapter.DrawerAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
@@ -34,10 +33,15 @@ import retrofit.client.Response;
 
 /**
  * Module information dashboard
+ *
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 28.06.2015
  */
 public class MainActivity extends DrawerActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private Menu menu;
 
     private DbModuleDao moduleDao;
 
@@ -72,7 +76,6 @@ public class MainActivity extends DrawerActivity {
                 getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
                 setTitle(R.string.main_activity_title);
 
-                ((DrawerAdapter) mDrawerFragment.getDrawerList().getAdapter()).selectPosition(2);
                 mDrawerFragment.updateDrawerBody(getApplicationContext());
 
             } else {
@@ -94,10 +97,15 @@ public class MainActivity extends DrawerActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        // if we have no modules installed -> no module menu will be showed
+        // if we have no modules installed -> no menu will be visible
         if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
+
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.module_menu, menu);
+
+            this.menu = menu;
+
+            return true;
         }
 
         return super.onCreateOptionsMenu(menu);
@@ -109,17 +117,18 @@ public class MainActivity extends DrawerActivity {
         switch (item.getItemId()) {
             case R.id.menu_module_toggle_state:
 
-                boolean moduleState = item.isChecked();
+                int result = toggleModuleState(item.isChecked());
 
-                if (moduleState) {
-                    item.setChecked(false);
-                    Log.d(TAG, "User DISABLED a module");
-                } else {
-                    item.setChecked(true);
-                    Log.d(TAG, "User ENABLED a module");
+                switch (result) {
+                    case 0:
+                        item.setChecked(false);
+                        break;
+                    case 1:
+                        item.setChecked(true);
+                        break;
+                    default:
+                        break;
                 }
-
-                toggleModuleState(moduleState);
 
                 return true;
 
@@ -136,15 +145,43 @@ public class MainActivity extends DrawerActivity {
         }
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+//        updateMenu();
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    /**
+     * Updates module menu
+     */
+    private void updateMenu() {
+
+        Log.d(TAG, "Updating menu..");
+
+        if (menu != null) {
+
+            DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
+            List<DbModuleInstallation> moduleInstallations = currentModule.getDbModuleInstallationList();
+
+            MenuItem toggleModuleStateItem = menu.findItem(R.id.menu_module_toggle_state);
+
+            for (DbModuleInstallation installedModule : moduleInstallations) {
+
+                if (installedModule.getModuleId().equals(currentModule.getId())) {
+                    toggleModuleStateItem.setChecked(installedModule.getActive());
+                }
+            }
+        }
+    }
+
     /**
      * Enables or disables currently selected module
      *
      * @param moduleState
      */
-    private void toggleModuleState(boolean moduleState) {
+    private int toggleModuleState(boolean moduleState) {
 
-        long moduleId = UserUtils.getCurrentModuleId(getApplicationContext());
-        long userId = UserUtils.getCurrentUserId(getApplicationContext());
+        DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
 
         if (moduleInstallationDao == null) {
             moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
@@ -152,8 +189,8 @@ public class MainActivity extends DrawerActivity {
 
         DbModuleInstallation moduleInstallation = moduleInstallationDao
                 .queryBuilder()
-                .where(DbModuleInstallationDao.Properties.UserId.eq(userId))
-                .where(DbModuleInstallationDao.Properties.ModuleId.eq(moduleId))
+                .where(DbModuleInstallationDao.Properties.UserId.eq(currentModule.getUserId()))
+                .where(DbModuleInstallationDao.Properties.ModuleId.eq(currentModule.getId()))
                 .limit(1)
                 .build()
                 .unique();
@@ -161,9 +198,32 @@ public class MainActivity extends DrawerActivity {
         if (moduleInstallation == null) {
             Toaster.showLong(getApplicationContext(), R.string.error_module_not_installed);
         } else {
+
             moduleInstallation.setActive(moduleState);
             moduleInstallationDao.update(moduleInstallation);
+
+            if (moduleState) {
+                Log.d(TAG, "User DISABLED a module");
+                return 0;
+            } else {
+                Log.d(TAG, "User ENABLED a module");
+                return 1;
+            }
+
         }
+
+        return -1;
+    }
+
+    /**
+     * Gives current selected module by user via navigation drawer
+     *
+     * @return
+     */
+    private DbModuleInstallation getCurrentActiveModuleFromDrawer() {
+
+        DrawerItem item = mDrawerFragment.getNavigationItems().get(mDrawerFragment.getCurrentSelectedPosition());
+        return item.getModule();
     }
 
     /**
@@ -173,8 +233,7 @@ public class MainActivity extends DrawerActivity {
 
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
-        DrawerItem item = mDrawerFragment.getNavigationItems().get(mDrawerFragment.getCurrentSelectedPosition());
-        DbModule currentModule = item.getModule();
+        DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
 
         Log.d(TAG, "Uninstall module. ModuleId: " + currentModule.getId() + " package: " + currentModule.getPackageName());
 
@@ -227,10 +286,10 @@ public class MainActivity extends DrawerActivity {
      */
     private void uninstallModuleFromDb() {
 
-        DrawerItem item = mDrawerFragment.getNavigationItems().get(mDrawerFragment.getCurrentSelectedPosition());
-        DbModule currentModule = item.getModule();
+        DbModuleInstallation currentModule = getCurrentActiveModuleFromDrawer();
+
         long currentUserId = currentModule.getUserId();
-        long currentModuleId = currentModule.getId();
+        long currentModuleId = currentModule.getModuleId();
 
         Log.d(TAG, "Current user id: " + currentUserId);
         Log.d(TAG, "Current module id: " + currentModuleId);
