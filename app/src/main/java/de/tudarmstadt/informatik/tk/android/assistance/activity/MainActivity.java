@@ -26,6 +26,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
+import de.tudarmstadt.informatik.tk.android.kraken.service.KrakenServiceManager;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -52,6 +53,8 @@ public class MainActivity extends DrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        startSensingService();
 
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
@@ -92,6 +95,15 @@ public class MainActivity extends DrawerActivity {
 
             mDrawerFragment.updateDrawerBody(getApplicationContext());
         }
+    }
+
+    /**
+     * Releases the Kraken.
+     */
+    private void startSensingService() {
+
+        KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
+        service.startKrakenService();
     }
 
     @Override
