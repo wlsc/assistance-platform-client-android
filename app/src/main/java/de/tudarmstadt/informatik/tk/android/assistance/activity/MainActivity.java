@@ -83,6 +83,8 @@ public class MainActivity extends DrawerActivity {
 
             } else {
 
+                stopSensingService();
+
                 Intent intent = new Intent(this, AvailableModulesActivity.class);
                 startActivity(intent);
                 finish();
@@ -104,6 +106,15 @@ public class MainActivity extends DrawerActivity {
 
         KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
         service.startKrakenService();
+    }
+
+    /**
+     * Calms down the Kraken.
+     */
+    private void stopSensingService() {
+
+        KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
+        service.stopKrakenService();
     }
 
     @Override
