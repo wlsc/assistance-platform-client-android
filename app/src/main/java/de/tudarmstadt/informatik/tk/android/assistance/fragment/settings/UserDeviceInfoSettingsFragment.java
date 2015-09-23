@@ -121,7 +121,7 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
                 @Override
                 public void success(Void aVoid, Response response) {
 
-                    if (response != null && response.getStatus() == 200 || response.getStatus() == 204) {
+                    if (response != null && (response.getStatus() == 200 || response.getStatus() == 204)) {
                         updateDevice(currentDeviceId, deviceName);
                     }
                 }
