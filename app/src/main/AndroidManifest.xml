@@ -20,6 +20,10 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
+        <meta-data
+            android:name="com.google.android.gms.analytics.globalConfigResource"
+            android:resource="@xml/analytics_global_config" />
+
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/main_activity_title"

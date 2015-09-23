@@ -62,6 +62,7 @@ public class App extends Application {
         analytics = GoogleAnalytics.getInstance(this);
 
         tracker = analytics.newTracker(Config.GOOGLE_ANALYTICS_TRACKING_ID);
+        tracker.setAppName(getString(R.string.app_name));
         tracker.enableExceptionReporting(Config.GOOGLE_ANALYTICS_EXCEPTION_REPORTING);
         tracker.enableAdvertisingIdCollection(Config.GOOGLE_ANALYTICS_ADVERTISING_COLLECTION);
         tracker.enableAutoActivityTracking(Config.GOOGLE_ANALYTICS_AUTO_ACTIVITY_TRACKING);
