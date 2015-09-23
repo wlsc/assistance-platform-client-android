@@ -21,7 +21,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.Applica
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DevelopmentSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorsListFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDeviceInfoSettingsFragment;
-import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileSettingsFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 
@@ -37,7 +37,7 @@ public class SettingsActivity extends PreferenceActivity {
             ApplicationSettingsFragment.class.getName(),
             DevelopmentSettingsFragment.class.getName(),
             UserDeviceInfoSettingsFragment.class.getName(),
-            UserProfileSettingsFragment.class.getName(),
+            UserProfileFragment.class.getName(),
             SensorsListFragment.class.getName()
     };
 
@@ -96,6 +96,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     @Override
     public void onBuildHeaders(List<Header> headers) {
+
         loadHeadersFromResource(R.xml.preference_headers, headers);
 
         boolean isUserDeveloper = UserUtils.isUserDeveloper(getApplicationContext());

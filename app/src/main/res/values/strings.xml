@@ -28,6 +28,8 @@
     <!-- SETTINGS: USER DEVICE INFORMATION -->
     <string name="settings_list_of_sensors_title">List of sensors</string>
     <string name="settings_list_of_sensors_summary">All available sensors on your device</string>
+    <string name="settings_device_name_title">Set device name</string>
+    <string name="settings_device_name_summary">Name your device as you want it!</string>
 
     <!-- SETTINGS: DEVELOPER -->
     <string name="settings_be_developer_title">Developer</string>

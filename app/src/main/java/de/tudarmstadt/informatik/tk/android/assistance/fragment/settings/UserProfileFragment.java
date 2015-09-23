@@ -48,9 +48,9 @@ import retrofit.client.Response;
 /**
  * Created by Wladimir Schmidt on 29.06.2015.
  */
-public class UserProfileSettingsFragment extends Fragment {
+public class UserProfileFragment extends Fragment {
 
-    private static final String TAG = UserProfileSettingsFragment.class.getSimpleName();
+    private static final String TAG = UserProfileFragment.class.getSimpleName();
 
     private static final String IMAGE_TYPE_FILTER = "image/*";
     private static final String USER_PIC_NAME = "user_pic";
@@ -97,7 +97,7 @@ public class UserProfileSettingsFragment extends Fragment {
 
     private String socialAccountGithub;
 
-    public UserProfileSettingsFragment() {
+    public UserProfileFragment() {
     }
 
     @Override
