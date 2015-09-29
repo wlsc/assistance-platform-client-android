@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="pref_screen_app_about">
+
+    <Preference
+        android:key="pref_about_app"
+        android:summary="@string/settings_about_summary"
+        android:title="@string/settings_about_title" />
+
+    <Preference
+        android:key="pref_faq"
+        android:summary="@string/settings_faq_summary"
+        android:title="@string/settings_faq_title">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="@string/user_faq_url" />
+
+    </Preference>
+
+    <Preference
+        android:key="pref_feedback"
+        android:summary="@string/settings_feedback_summary"
+        android:title="@string/settings_feedback_title">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="@string/user_feedback_url">
+
+            <extra
+                android:name="android.intent.extra.SUBJECT"
+                android:value="@string/user_feedback_subject" />
+
+            <extra
+                android:name="android.intent.extra.TEXT"
+                android:value="@string/user_feedback_body" />
+        </intent>
+
+    </Preference>
+
+    <Preference
+        android:key="pref_build_number"
+        android:summary="@string/settings_build_version_summary"
+        android:title="@string/settings_build_version" />
+
+</PreferenceScreen>

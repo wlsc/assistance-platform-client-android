@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="pref_screen_user_device_info">
+
+    <Preference
+        android:fragment="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorsListFragment"
+        android:key="pref_list_of_sensors"
+        android:summary="@string/settings_list_of_sensors_summary"
+        android:title="@string/settings_list_of_sensors_title" />
+
+    <EditTextPreference
+        android:key="pref_device_set_title"
+        android:summary="@string/settings_device_name_summary"
+        android:title="@string/settings_device_name_title" />
+
+</PreferenceScreen>

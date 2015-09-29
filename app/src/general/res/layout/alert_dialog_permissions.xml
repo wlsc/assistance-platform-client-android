@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/AlertDialog.AppCompat.Light"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/alertDialogBackground"
+    android:padding="@dimen/dialog_padding_material"
+    android:paddingTop="@dimen/dialog_padding_top_material">
+
+    <LinearLayout
+        android:id="@+id/module_permission_header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:padding="15dp">
+
+        <com.pkmmte.view.CircularImageView
+            android:id="@+id/module_permission_icon"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:background="@color/alertDialogBackground"
+            android:contentDescription="@string/module_permission_dialog_icon_description"
+            android:gravity="center_vertical|start"
+            android:scaleType="centerCrop"
+            android:src="@drawable/no_image" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingStart="30dp">
+
+            <TextView
+                android:id="@+id/module_permission_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/alertDialogBackground"
+                android:text="Title"
+                android:textColor="@color/alertDialogTitle" />
+
+            <TextView
+                android:id="@+id/module_permission_narration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/alertDialogBackground"
+                android:text="@string/module_permission_dialog_narration"
+                android:textColor="@color/alertDialogNarration" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/module_permission_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/module_permission_header"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
+        android:paddingTop="@dimen/dialog_list_padding_vertical_material" />
+
+</RelativeLayout>

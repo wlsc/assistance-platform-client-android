@@ -1,0 +1,9 @@
+<resources>
+
+    <!-- COMMON -->
+    <string name="app_name">Assistance SE</string>
+
+    <!-- MAIN SCREEN -->
+    <string name="main_activity_title">Quantified Self</string>
+
+</resources>
