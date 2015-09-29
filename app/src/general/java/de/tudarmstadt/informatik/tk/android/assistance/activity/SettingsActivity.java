@@ -24,6 +24,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDev
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.service.KrakenServiceManager;
 
 /**
  * Core user settings activity
@@ -161,7 +162,20 @@ public class SettingsActivity extends PreferenceActivity {
         PreferencesUtils.clearUserCredentials(this);
 
         setResult(R.id.logout_settings);
+
+        // stop the kraken
+        stopSensingService();
+
         finish();
+    }
+
+    /**
+     * Calms down the Kraken.
+     */
+    private void stopSensingService() {
+
+        KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
+        service.stopKrakenService();
     }
 
     public Toolbar getToolBar() {

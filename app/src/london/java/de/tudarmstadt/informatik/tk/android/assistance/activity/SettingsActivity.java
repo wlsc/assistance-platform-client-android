@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.service.KrakenServiceManager;
 
 /**
  * Core user settings activity
@@ -111,10 +112,23 @@ public class SettingsActivity extends PreferenceActivity {
      */
     private void doLogout() {
 
-        PreferencesUtils.clearUserCredentials(this);
+        PreferencesUtils.clearUserCredentials(getApplicationContext());
 
         setResult(R.id.logout_settings);
+
+        // stop the kraken
+        stopSensingService();
+
         finish();
+    }
+
+    /**
+     * Calms down the Kraken.
+     */
+    private void stopSensingService() {
+
+        KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
+        service.stopKrakenService();
     }
 
     public Toolbar getToolBar() {

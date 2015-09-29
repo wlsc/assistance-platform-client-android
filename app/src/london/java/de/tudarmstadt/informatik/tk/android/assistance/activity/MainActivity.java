@@ -196,23 +196,6 @@ public class MainActivity extends DrawerActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.menu_module_toggle_state:
-
-                return true;
-
-            case R.id.menu_module_uninstall:
-
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     /**
      * Gives current selected module by user via navigation drawer
      *

@@ -44,6 +44,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
+import de.tudarmstadt.informatik.tk.android.kraken.service.KrakenServiceManager;
 
 /**
  * Fragment used for managing interactions and presentation of a navigation drawer
@@ -251,6 +252,9 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
         switch (resultCode) {
             case R.id.logout_settings:
                 Log.d(TAG, "User logged out");
+
+                // stop the kraken
+                stopSensingService();
 
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -486,5 +490,14 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
         long currentModuleId = navigationItems.get(position).getModule().getId();
 
         UserUtils.saveCurrentModuleId(getActivity().getApplicationContext(), currentModuleId);
+    }
+
+    /**
+     * Calms down the Kraken.
+     */
+    private void stopSensingService() {
+
+        KrakenServiceManager service = KrakenServiceManager.getInstance(getActivity().getApplicationContext());
+        service.stopKrakenService();
     }
 }
