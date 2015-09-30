@@ -40,7 +40,7 @@ public class Config {
      */
 
     // Replace the tracker-id with your app one from https://www.google.com/analytics/web/
-    public static final String GOOGLE_ANALYTICS_TRACKING_ID = "UA-67996977-1";
+    public static final String GOOGLE_ANALYTICS_TRACKING_ID = "UA-58106124-4";
 
     // Provide unhandled exceptions reports. Do that first after creating the tracker
     public static final boolean GOOGLE_ANALYTICS_EXCEPTION_REPORTING = true;
