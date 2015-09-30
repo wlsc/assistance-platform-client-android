@@ -20,13 +20,15 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
-import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.service.RegistrationIntentService;
+import de.tudarmstadt.informatik.tk.android.kraken.util.GcmUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -53,6 +55,8 @@ public class MainActivity extends DrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        registerForPush();
 
         startSensingService();
 
@@ -96,6 +100,25 @@ public class MainActivity extends DrawerActivity {
             setTitle(R.string.main_activity_title);
 
             mDrawerFragment.updateDrawerBody(getApplicationContext());
+        }
+    }
+
+    /**
+     * Registers for GCM push notifications
+     */
+    private void registerForPush() {
+
+        // check for play services installation
+        if (GcmUtils.isPlayServicesInstalled(this)) {
+
+            Log.d(TAG, "Google Play Services are installed.");
+
+            // starting registration GCM service
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService(intent);
+
+        } else {
+            Log.d(TAG, "Google Play Services NOT installed.");
         }
     }
 
