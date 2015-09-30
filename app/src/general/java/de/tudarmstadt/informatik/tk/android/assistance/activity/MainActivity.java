@@ -26,7 +26,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
-import de.tudarmstadt.informatik.tk.android.kraken.service.KrakenServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

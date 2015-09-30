@@ -24,7 +24,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDev
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.service.KrakenServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
 
 /**
  * Core user settings activity
