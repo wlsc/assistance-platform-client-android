@@ -30,7 +30,7 @@ public class App extends Application {
      * set android:name="&lt;this.class.name&gt;" attribute on your application element in
      * AndroidManifest.xml or you are not setting this.analytics field in onCreate method override.
      */
-    public static GoogleAnalytics analytics() {
+    public static GoogleAnalytics getAnalytics() {
         return analytics;
     }
 
@@ -39,7 +39,7 @@ public class App extends Application {
      * android:name="&lt;this.class.name&gt;" attribute on your application element in
      * AndroidManifest.xml or you are not setting this.tracker field in onCreate method override.
      */
-    public static Tracker tracker() {
+    public static Tracker getTracker() {
         return tracker;
     }
 
