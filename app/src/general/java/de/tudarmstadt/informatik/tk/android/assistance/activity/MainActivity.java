@@ -127,8 +127,8 @@ public class MainActivity extends DrawerActivity {
      */
     private void startSensingService() {
 
-        KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
-        service.startKrakenService();
+        KrakenServiceManager manager = KrakenServiceManager.getInstance(getApplicationContext());
+        manager.startKrakenService();
     }
 
     /**
