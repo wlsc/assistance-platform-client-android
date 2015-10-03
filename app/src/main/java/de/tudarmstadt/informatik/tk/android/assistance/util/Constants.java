@@ -42,6 +42,7 @@ public class Constants {
     public static final String PREF_DEVICE_ID = "current_device_id";
     public static final String PREF_SERVER_DEVICE_ID = "server_device_id";
     public static final String PREF_MODULE_ID = "current_module_id";
+    public static final String PREF_GCM_TOKEN_SENT = "gcm_token_sent";
     public static final String PREF_DEVELOPER_STATUS = "developer_status";
 
     /**

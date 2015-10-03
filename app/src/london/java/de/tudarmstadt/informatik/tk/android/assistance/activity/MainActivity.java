@@ -201,6 +201,12 @@ public class MainActivity extends DrawerActivity {
      */
     private void registerForPush() {
 
+        boolean isTokenWasSent = UserUtils.isGcmTokenWasSent(getApplicationContext());
+
+        if (isTokenWasSent) {
+            return;
+        }
+
         // check for play services installation
         if (GcmUtils.isPlayServicesInstalled(this)) {
 

@@ -274,4 +274,24 @@ public class UserUtils {
     public static void saveDeveloperStatus(Context context, boolean value) {
         PreferencesUtils.savePreference(context, Constants.PREF_DEVELOPER_STATUS, value);
     }
+
+    /**
+     * Returns GCM was sent flag
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isGcmTokenWasSent(Context context) {
+        return PreferencesUtils.getPreference(context, Constants.PREF_GCM_TOKEN_SENT, false);
+    }
+
+    /**
+     * Saves GCM was sent flag into SharedPreferences
+     *
+     * @param context
+     * @param value
+     */
+    public static void setGcmTokenWasSent(Context context, boolean value) {
+        PreferencesUtils.savePreference(context, Constants.PREF_GCM_TOKEN_SENT, value);
+    }
 }
