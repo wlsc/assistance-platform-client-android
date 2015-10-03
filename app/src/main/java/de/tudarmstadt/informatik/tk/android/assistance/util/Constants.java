@@ -40,6 +40,7 @@ public class Constants {
     public static final String PREF_USER_HAS_MODULES = "user_has_modules";
     public static final String PREF_USER_ID = "current_user_id";
     public static final String PREF_DEVICE_ID = "current_device_id";
+    public static final String PREF_SERVER_DEVICE_ID = "server_device_id";
     public static final String PREF_MODULE_ID = "current_module_id";
     public static final String PREF_DEVELOPER_STATUS = "developer_status";
 

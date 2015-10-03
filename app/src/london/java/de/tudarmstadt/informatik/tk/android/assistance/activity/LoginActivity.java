@@ -398,6 +398,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             long currentDeviceId = deviceDao.insert(device);
 
             UserUtils.saveCurrentDeviceId(getApplicationContext(), currentDeviceId);
+            UserUtils.saveServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
 
         } else {
 
@@ -411,6 +412,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     isDeviceAlreadyCreated = true;
 
                     UserUtils.saveCurrentDeviceId(getApplicationContext(), device.getId());
+                    UserUtils.saveServerDeviceId(getApplicationContext(), device.getServerDeviceId());
 
                     break;
                 }
@@ -432,6 +434,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 long currentDeviceId = deviceDao.insert(device);
 
                 UserUtils.saveCurrentDeviceId(getApplicationContext(), currentDeviceId);
+                UserUtils.saveServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
             }
 
             UserUtils.saveCurrentUserId(getApplicationContext(), user.getId());
