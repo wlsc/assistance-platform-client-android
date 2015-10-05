@@ -5,7 +5,7 @@
     <string name="ga_appName">Assistance TUD</string>
 
     <!-- Replace with your tracking ID -->
-    <string name="ga_trackingId">UA-58106124-4</string>
+    <string name="ga_trackingId">UA-58106124-5</string>
 
     <!-- Automatic activity tracking feature -->
     <bool name="ga_autoActivityTracking">true</bool>
