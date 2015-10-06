@@ -291,7 +291,7 @@ public class UserUtils {
      * @param context
      * @param value
      */
-    public static void setGcmTokenWasSent(Context context, boolean value) {
+    public static void saveGcmTokenWasSent(Context context, boolean value) {
         PreferencesUtils.savePreference(context, Constants.PREF_GCM_TOKEN_SENT, value);
     }
 }

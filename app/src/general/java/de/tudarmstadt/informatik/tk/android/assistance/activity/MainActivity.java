@@ -123,8 +123,12 @@ public class MainActivity extends DrawerActivity {
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
 
+            UserUtils.saveGcmTokenWasSent(getApplicationContext(), true);
+
         } else {
             Log.d(TAG, "Google Play Services NOT installed.");
+
+            UserUtils.saveGcmTokenWasSent(getApplicationContext(), false);
         }
     }
 
