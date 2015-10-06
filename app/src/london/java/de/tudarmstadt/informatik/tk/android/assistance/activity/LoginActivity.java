@@ -2,15 +2,15 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -66,7 +66,7 @@ import retrofit.client.Response;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final String TAG = LoginActivity.class.getSimpleName();
 
@@ -190,7 +190,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Get user's emails
      */
     private void populateAutoComplete() {
-        getLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(0, null, this);
     }
 
 
