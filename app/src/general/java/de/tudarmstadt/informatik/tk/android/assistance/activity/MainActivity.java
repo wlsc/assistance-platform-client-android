@@ -15,6 +15,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
+import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
@@ -40,7 +41,7 @@ import retrofit.client.Response;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class MainActivity extends DrawerActivity {
+public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -375,4 +376,8 @@ public class MainActivity extends DrawerActivity {
         super.onDestroy();
     }
 
+    @Override
+    public void onNavigationDrawerItemSelected(View v, int position) {
+        // TODO
+    }
 }
