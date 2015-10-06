@@ -140,7 +140,4 @@
     <string name="error_select_new_user_photo">Error occurred while selecting user photo!</string>
     <string name="error_module_not_installed">Error: sorry, unable to enable/disable module!</string>
 
-    <!-- PERMISSIONS -->
-    <string name="permission_is_mandatory">This permission is crucial for program operation</string>
-
 </resources>
