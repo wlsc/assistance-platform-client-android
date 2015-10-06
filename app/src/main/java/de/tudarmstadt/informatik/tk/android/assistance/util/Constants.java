@@ -60,9 +60,4 @@ public class Constants {
     public static final String INTENT_USER_ID = "user_id";
     public static final String INTENT_CURRENT_DEVICE_ID = "current_device_id";
 
-    /**
-     * PERMISSION IDs
-     */
-    public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
-
 }

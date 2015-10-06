@@ -54,6 +54,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.KrakenConfig;
+import de.tudarmstadt.informatik.tk.android.kraken.KrakenSdkSettings;
 import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
@@ -137,8 +138,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             Log.d(TAG, "READ_CONTACTS permission was granted.");
 
-            // proceed with login screen
-            initLogin();
+            checkLocationPermissionGranted();
 
         } else {
 
@@ -157,7 +157,45 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_CONTACTS},
-                    Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
+                    KrakenSdkSettings.PERMISSIONS_REQUEST_READ_CONTACTS);
+
+        }
+    }
+
+    /**
+     * Checks location permission
+     */
+    private void checkLocationPermissionGranted() {
+
+        boolean isLocationGranted = PermissionUtils
+                .getInstance(getApplicationContext())
+                .isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        if (isLocationGranted) {
+
+            Log.d(TAG, "COARSE_LOCATION permission was granted.");
+
+            // proceed with login screen
+            initLogin();
+
+        } else {
+
+            Log.d(TAG, "COARSE_LOCATION permission NOT granted!");
+
+            // check if explanation is needed for this permission
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+                Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
+            }
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    KrakenSdkSettings.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
 
         }
     }
@@ -207,7 +245,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
 
     /**
-     * Setup main activity
+     * Setup view
      */
     public void showView() {
 
@@ -811,7 +849,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         switch (requestCode) {
 
-            case Constants.PERMISSIONS_REQUEST_READ_CONTACTS: {
+            case KrakenSdkSettings.PERMISSIONS_REQUEST_READ_CONTACTS:
+            case KrakenSdkSettings.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION:
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -833,10 +872,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 }
 
                 return;
-            }
-
         }
-
     }
 }
 

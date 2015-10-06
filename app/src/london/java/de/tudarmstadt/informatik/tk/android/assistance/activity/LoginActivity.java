@@ -1,13 +1,16 @@
 package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -49,6 +52,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.KrakenConfig;
+import de.tudarmstadt.informatik.tk.android.kraken.KrakenSdkSettings;
 import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
@@ -56,6 +60,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbDeviceDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -123,6 +128,81 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        boolean isReadContactsGranted = PermissionUtils
+                .getInstance(getApplicationContext())
+                .isPermissionGranted(Manifest.permission.READ_CONTACTS);
+
+        if (isReadContactsGranted) {
+
+            Log.d(TAG, "READ_CONTACTS permission was granted.");
+
+            checkLocationPermissionGranted();
+
+        } else {
+
+            Log.d(TAG, "READ_CONTACTS permission NOT granted!");
+
+            // check if explanation is needed for this permission
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_CONTACTS)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+                Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
+            }
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    KrakenSdkSettings.PERMISSIONS_REQUEST_READ_CONTACTS);
+
+        }
+    }
+
+    /**
+     * Checks location permission
+     */
+    private void checkLocationPermissionGranted() {
+
+        boolean isLocationGranted = PermissionUtils
+                .getInstance(getApplicationContext())
+                .isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        if (isLocationGranted) {
+
+            Log.d(TAG, "COARSE_LOCATION permission was granted.");
+
+            // proceed with login screen
+            initLogin();
+
+        } else {
+
+            Log.d(TAG, "COARSE_LOCATION permission NOT granted!");
+
+            // check if explanation is needed for this permission
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+                Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
+            }
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    KrakenSdkSettings.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+
+        }
+    }
+
+    /**
+     * Inits login view
+     */
+    private void initLogin() {
+
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
         if (!userToken.isEmpty()) {
@@ -151,7 +231,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 uiThreadHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        launchMainView(savedInstanceState);
+                        showView();
                     }
                 });
             }
@@ -162,11 +242,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     }
 
     /**
-     * Setup main activity
-     *
-     * @param savedInstanceState
+     * Setup view
      */
-    public void launchMainView(Bundle savedInstanceState) {
+    public void showView() {
 
         showSystemUI();
 
@@ -713,6 +791,37 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             }
         } else {
             Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        switch (requestCode) {
+
+            case KrakenSdkSettings.PERMISSIONS_REQUEST_READ_CONTACTS:
+            case KrakenSdkSettings.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION:
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.d(TAG, "User granted permission");
+
+                    // proceed with login screen
+                    initLogin();
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                    Log.d(TAG, "User DENIED permission!");
+
+                    Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
+
+                    // TODO: show crucial permission view
+                }
+
+                return;
         }
     }
 }
