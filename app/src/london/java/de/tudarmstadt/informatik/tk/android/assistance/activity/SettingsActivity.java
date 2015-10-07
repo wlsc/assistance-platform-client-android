@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.ServiceManager;
 
 /**
  * Core user settings activity
@@ -127,7 +127,7 @@ public class SettingsActivity extends PreferenceActivity {
      */
     private void stopSensingService() {
 
-        KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
+        ServiceManager service = ServiceManager.getInstance(getApplicationContext());
         service.stopKrakenService();
     }
 

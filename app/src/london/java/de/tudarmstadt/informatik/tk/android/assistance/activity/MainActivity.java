@@ -16,7 +16,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapabilityDao;
@@ -60,15 +60,15 @@ public class MainActivity extends DrawerActivity {
         Log.d(TAG, "UserId: " + userId);
 
         if (moduleDao == null) {
-            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
+            moduleDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
         }
 
         if (moduleCapabilityDao == null) {
-            moduleCapabilityDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleCapabilityDao();
+            moduleCapabilityDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleCapabilityDao();
         }
 
         if (moduleInstallationDao == null) {
-            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
+            moduleInstallationDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
 
         if (dbModuleInstallations == null) {

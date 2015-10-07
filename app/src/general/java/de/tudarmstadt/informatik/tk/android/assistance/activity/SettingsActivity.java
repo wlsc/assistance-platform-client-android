@@ -24,7 +24,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDev
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.ServiceManager;
 
 /**
  * Core user settings activity
@@ -174,7 +174,7 @@ public class SettingsActivity extends PreferenceActivity {
      */
     private void stopSensingService() {
 
-        KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
+        ServiceManager service = ServiceManager.getInstance(getApplicationContext());
         service.stopKrakenService();
     }
 

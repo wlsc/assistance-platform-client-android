@@ -12,7 +12,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.communication.endpoint.DeviceEndpoint;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDeviceDao;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.device.DeviceUserDefinedNameRequest;
@@ -44,7 +44,7 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
         mParentToolbar.setTitle(R.string.settings_header_user_device_title);
 
         if (dbDeviceDao == null) {
-            dbDeviceDao = DatabaseManager.getInstance(getActivity().getApplicationContext()).getDaoSession().getDbDeviceDao();
+            dbDeviceDao = DbManager.getInstance(getActivity().getApplicationContext()).getDaoSession().getDbDeviceDao();
         }
 
         long currentDeviceId = UserUtils.getCurrentDeviceId(getActivity().getApplicationContext());

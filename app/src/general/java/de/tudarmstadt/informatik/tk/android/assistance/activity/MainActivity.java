@@ -23,7 +23,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
@@ -66,11 +66,11 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
         if (moduleDao == null) {
-            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
+            moduleDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
         }
 
         if (moduleInstallationDao == null) {
-            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
+            moduleInstallationDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
 
         if (dbModuleInstallations == null) {
@@ -225,7 +225,7 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
         DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
 
         if (moduleInstallationDao == null) {
-            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
+            moduleInstallationDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
 
         DbModuleInstallation moduleInstallation = moduleInstallationDao

@@ -41,9 +41,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CardView;
-import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.ServiceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapabilityDao;
@@ -141,7 +141,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
         if (userDao == null) {
-            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
+            userDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
         DbUser user = userDao
@@ -157,11 +157,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
         }
 
         if (moduleDao == null) {
-            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
+            moduleDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
         }
 
         if (moduleInstallationDao == null) {
-            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
+            moduleInstallationDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
 
         List<DbModule> userModules = user.getDbModuleList();
@@ -331,15 +331,15 @@ public class AvailableModulesActivity extends AppCompatActivity {
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
         if (userDao == null) {
-            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
+            userDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
         if (moduleDao == null) {
-            moduleDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
+            moduleDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
         }
 
         if (moduleCapabilityDao == null) {
-            moduleCapabilityDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleCapabilityDao();
+            moduleCapabilityDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleCapabilityDao();
         }
 
         DbUser user = userDao
@@ -418,7 +418,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         boolean entryWasInserted = false;
 
         if (moduleInstallationDao == null) {
-            moduleInstallationDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
+            moduleInstallationDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
 
         for (String activeModule : mActiveModules) {
@@ -455,7 +455,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 entryWasInserted = true;
 
                 // start monitoring service
-                KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
+                ServiceManager service = ServiceManager.getInstance(getApplicationContext());
                 service.startKrakenService();
 
                 break;
@@ -754,7 +754,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         Log.d(TAG, "Installation id: " + installId);
 
         // start monitoring service
-        KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
+        ServiceManager service = ServiceManager.getInstance(getApplicationContext());
         service.startKrakenService();
 
     }

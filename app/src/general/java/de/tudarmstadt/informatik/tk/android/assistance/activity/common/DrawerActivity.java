@@ -23,7 +23,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
@@ -89,7 +89,7 @@ public class DrawerActivity extends AppCompatActivity {
 
                 Log.d(TAG, "No user info found cached. Checking db...");
 
-                DbUserDao userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
+                DbUserDao userDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
 
                 DbUser user = userDao
                         .queryBuilder()
@@ -165,7 +165,7 @@ public class DrawerActivity extends AppCompatActivity {
      */
     private void persistLogin(ProfileResponse profileResponse) {
 
-        DbUserDao userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
+        DbUserDao userDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
 
         // check already available user in db
         DbUser user = userDao

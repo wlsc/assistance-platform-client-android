@@ -16,7 +16,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.KrakenSdkSettings;
+import de.tudarmstadt.informatik.tk.android.kraken.Settings;
 import de.tudarmstadt.informatik.tk.android.kraken.util.StorageUtils;
 
 /**
@@ -73,7 +73,7 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
             try {
                 StorageUtils.exportDatabase(
                         getActivity().getApplicationContext(),
-                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/" + KrakenSdkSettings.DATABASE_NAME);
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/" + Settings.DATABASE_NAME);
 
                 Toaster.showLong(getActivity().getApplicationContext(), R.string.settings_export_database_successful);
 

@@ -55,11 +55,11 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
-import de.tudarmstadt.informatik.tk.android.kraken.KrakenConfig;
-import de.tudarmstadt.informatik.tk.android.kraken.KrakenSdkSettings;
-import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.Config;
+import de.tudarmstadt.informatik.tk.android.kraken.Settings;
+import de.tudarmstadt.informatik.tk.android.kraken.ServiceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDeviceDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         super.onCreate(savedInstanceState);
 
         // just init EventBus there
-        KrakenServiceManager.getInstance(getApplicationContext());
+        ServiceManager.getInstance(getApplicationContext());
 
         if (eventBus == null) {
             eventBus = EventBus.getDefault();
@@ -178,7 +178,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_CONTACTS},
-                    KrakenSdkSettings.PERMISSIONS_REQUEST_READ_CONTACTS);
+                    Settings.PERMISSIONS_REQUEST_READ_CONTACTS);
 
         }
     }
@@ -215,7 +215,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    KrakenSdkSettings.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+                    Settings.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
 
         }
     }
@@ -366,7 +366,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         UserUtils.saveUserEmail(getApplicationContext(), userEmail);
 
         if (userDao == null) {
-            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
+            userDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
         DbUser user = userDao
@@ -410,7 +410,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             userDevice.setServerId(serverDeviceId);
         }
 
-        userDevice.setOs(KrakenConfig.PLATFORM_NAME);
+        userDevice.setOs(Config.PLATFORM_NAME);
         userDevice.setOsVersion(HardwareUtils.getAndroidVersion());
         userDevice.setBrand(HardwareUtils.getDeviceBrandName());
         userDevice.setModel(HardwareUtils.getDeviceModelName());
@@ -454,11 +454,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
 
         if (userDao == null) {
-            userDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
+            userDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
         if (deviceDao == null) {
-            deviceDao = DatabaseManager.getInstance(getApplicationContext()).getDaoSession().getDbDeviceDao();
+            deviceDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbDeviceDao();
         }
 
         DbUser user = userDao
@@ -488,7 +488,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             DbDevice device = new DbDevice();
             device.setServerDeviceId(loginResponse.getDeviceId());
-            device.setOs(KrakenConfig.PLATFORM_NAME);
+            device.setOs(Config.PLATFORM_NAME);
             device.setOsVersion(HardwareUtils.getAndroidVersion());
             device.setBrand(HardwareUtils.getDeviceBrandName());
             device.setModel(HardwareUtils.getDeviceModelName());
@@ -524,7 +524,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
                 DbDevice device = new DbDevice();
                 device.setServerDeviceId(loginResponse.getDeviceId());
-                device.setOs(KrakenConfig.PLATFORM_NAME);
+                device.setOs(Config.PLATFORM_NAME);
                 device.setOsVersion(HardwareUtils.getAndroidVersion());
                 device.setBrand(HardwareUtils.getDeviceBrandName());
                 device.setModel(HardwareUtils.getDeviceModelName());
@@ -890,7 +890,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         switch (requestCode) {
 
-            case KrakenSdkSettings.PERMISSIONS_REQUEST_READ_CONTACTS:
+            case Settings.PERMISSIONS_REQUEST_READ_CONTACTS:
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -911,7 +911,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 }
 
                 break;
-            case KrakenSdkSettings.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION:
+            case Settings.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION:
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
