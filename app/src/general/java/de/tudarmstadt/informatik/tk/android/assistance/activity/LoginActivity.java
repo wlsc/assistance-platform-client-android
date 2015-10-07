@@ -57,6 +57,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.KrakenConfig;
 import de.tudarmstadt.informatik.tk.android.kraken.KrakenSdkSettings;
+import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
@@ -134,8 +135,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // just init EventBus there
+        KrakenServiceManager.getInstance(getApplicationContext());
+
         if (eventBus == null) {
             eventBus = EventBus.getDefault();
+            eventBus.register(this);
         }
 
         checkReadContactsPermissionGranted();

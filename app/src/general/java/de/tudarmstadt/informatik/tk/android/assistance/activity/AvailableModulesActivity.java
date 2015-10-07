@@ -7,13 +7,13 @@ import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.internal.widget.ListViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pkmmte.view.CircularImageView;
@@ -638,7 +638,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 R.id.permission_item_title,
                 allModuleSensors);
 
-        ListView listView = ButterKnife.findById(dialogView, R.id.module_permission_list);
+        ListViewCompat listView = ButterKnife.findById(dialogView, R.id.module_permission_list);
         listView.setAdapter(arrayAdapter);
 
         AlertDialog alertDialog = dialogBuilder.create();

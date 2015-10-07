@@ -55,7 +55,7 @@
 
     </LinearLayout>
 
-    <ListView
+    <ListViewCompat
         android:id="@+id/module_permission_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
