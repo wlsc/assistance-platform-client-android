@@ -58,8 +58,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.Settings;
 import de.tudarmstadt.informatik.tk.android.kraken.ServiceManager;
-import de.tudarmstadt.informatik.tk.android.kraken.api.ServiceGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbManager;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDeviceDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
@@ -366,7 +366,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         UserUtils.saveUserEmail(getApplicationContext(), userEmail);
 
         if (userDao == null) {
-            userDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
+            userDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
         DbUser user = userDao
@@ -454,11 +454,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
 
         if (userDao == null) {
-            userDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
+            userDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
         if (deviceDao == null) {
-            deviceDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbDeviceDao();
+            deviceDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbDeviceDao();
         }
 
         DbUser user = userDao

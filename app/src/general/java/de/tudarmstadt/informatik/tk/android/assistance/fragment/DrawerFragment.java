@@ -39,7 +39,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandle
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbManager;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
@@ -336,7 +336,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
         super.onResume();
 
         if (userDao == null) {
-            userDao = DbManager.getInstance(getActivity().getApplicationContext()).getDaoSession().getDbUserDao();
+            userDao = DbProvider.getInstance(getActivity().getApplicationContext()).getDaoSession().getDbUserDao();
         }
     }
 
@@ -367,7 +367,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
         }
 
         if (userDao == null) {
-            userDao = DbManager.getInstance(context).getDaoSession().getDbUserDao();
+            userDao = DbProvider.getInstance(context).getDaoSession().getDbUserDao();
         }
 
         DbUser user = userDao

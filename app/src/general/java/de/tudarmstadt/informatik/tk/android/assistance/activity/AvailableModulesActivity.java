@@ -42,8 +42,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CardView;
 import de.tudarmstadt.informatik.tk.android.kraken.ServiceManager;
-import de.tudarmstadt.informatik.tk.android.kraken.api.ServiceGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbManager;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapabilityDao;
@@ -141,7 +141,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
         if (userDao == null) {
-            userDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
+            userDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
         DbUser user = userDao
@@ -157,11 +157,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
         }
 
         if (moduleDao == null) {
-            moduleDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
+            moduleDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
         }
 
         if (moduleInstallationDao == null) {
-            moduleInstallationDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
+            moduleInstallationDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
 
         List<DbModule> userModules = user.getDbModuleList();
@@ -331,15 +331,15 @@ public class AvailableModulesActivity extends AppCompatActivity {
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
         if (userDao == null) {
-            userDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
+            userDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
         }
 
         if (moduleDao == null) {
-            moduleDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
+            moduleDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
         }
 
         if (moduleCapabilityDao == null) {
-            moduleCapabilityDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleCapabilityDao();
+            moduleCapabilityDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleCapabilityDao();
         }
 
         DbUser user = userDao
@@ -418,7 +418,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         boolean entryWasInserted = false;
 
         if (moduleInstallationDao == null) {
-            moduleInstallationDao = DbManager.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
+            moduleInstallationDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
 
         for (String activeModule : mActiveModules) {
