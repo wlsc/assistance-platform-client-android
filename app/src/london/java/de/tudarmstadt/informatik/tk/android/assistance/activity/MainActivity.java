@@ -24,7 +24,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
 import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
-import de.tudarmstadt.informatik.tk.android.kraken.service.RegistrationIntentService;
+import de.tudarmstadt.informatik.tk.android.kraken.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.GcmUtils;
 
@@ -198,7 +198,7 @@ public class MainActivity extends DrawerActivity {
             Log.d(TAG, "Google Play Services are installed.");
 
             // starting registration GCM service
-            Intent intent = new Intent(this, RegistrationIntentService.class);
+            Intent intent = new Intent(this, GcmRegistrationIntentService.class);
             startService(intent);
 
             UserUtils.saveGcmTokenWasSent(getApplicationContext(), true);
