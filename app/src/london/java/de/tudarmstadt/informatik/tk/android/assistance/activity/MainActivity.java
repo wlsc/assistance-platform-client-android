@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
@@ -23,6 +23,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapabilityDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
+import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.service.RegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.GcmUtils;
@@ -52,7 +53,7 @@ public class MainActivity extends DrawerActivity {
 
         registerForPush();
 
-        startSensingService();
+        EventBus.getDefault().post(new StartSensingEvent(getApplicationContext()));
 
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
@@ -96,6 +97,8 @@ public class MainActivity extends DrawerActivity {
 
                 // demo data
                 installDemoData(userId);
+
+                EventBus.getDefault().post(new StartSensingEvent(getApplicationContext()));
 
                 getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
                 setTitle(R.string.main_activity_title);
@@ -161,24 +164,6 @@ public class MainActivity extends DrawerActivity {
         dbModuleInstallations.add(dbModuleInstallation);
 
         Log.d(TAG, "Finished installing example data!");
-    }
-
-    /**
-     * Releases the Kraken.
-     */
-    private void startSensingService() {
-
-        KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
-        service.startKrakenService();
-    }
-
-    /**
-     * Calms down the Kraken.
-     */
-    private void stopSensingService() {
-
-        KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
-        service.stopKrakenService();
     }
 
     @Override

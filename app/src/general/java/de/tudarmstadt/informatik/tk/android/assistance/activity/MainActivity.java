@@ -13,6 +13,7 @@ import android.view.View;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandler;
@@ -21,13 +22,14 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
+import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
+import de.tudarmstadt.informatik.tk.android.kraken.event.StopSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.service.RegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.kraken.util.GcmUtils;
 import retrofit.Callback;
@@ -59,7 +61,7 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
         registerForPush();
 
-        startSensingService();
+        EventBus.getDefault().post(new StartSensingEvent(getApplicationContext()));
 
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
@@ -88,7 +90,7 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
             } else {
 
-                stopSensingService();
+                EventBus.getDefault().post(new StopSensingEvent(getApplicationContext()));
 
                 Intent intent = new Intent(this, AvailableModulesActivity.class);
                 startActivity(intent);
@@ -131,24 +133,6 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
             UserUtils.saveGcmTokenWasSent(getApplicationContext(), false);
         }
-    }
-
-    /**
-     * Releases the Kraken.
-     */
-    private void startSensingService() {
-
-        KrakenServiceManager manager = KrakenServiceManager.getInstance(getApplicationContext());
-        manager.startKrakenService();
-    }
-
-    /**
-     * Calms down the Kraken.
-     */
-    private void stopSensingService() {
-
-        KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
-        service.stopKrakenService();
     }
 
     @Override

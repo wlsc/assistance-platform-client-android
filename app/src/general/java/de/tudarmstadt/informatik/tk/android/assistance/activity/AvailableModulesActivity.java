@@ -41,6 +41,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CardView;
+import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DatabaseManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
@@ -51,7 +52,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
-import de.tudarmstadt.informatik.tk.android.kraken.KrakenServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
@@ -313,6 +314,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         // save module information into db
         saveModulesIntoDb(availableModulesResponse);
+
+        // start sensing service
+        EventBus.getDefault().post(new StartSensingEvent(getApplicationContext()));
     }
 
     /**
@@ -752,7 +756,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         // start monitoring service
         KrakenServiceManager service = KrakenServiceManager.getInstance(getApplicationContext());
         service.startKrakenService();
-        
+
     }
 
     @Override

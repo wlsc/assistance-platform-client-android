@@ -62,8 +62,6 @@ dependencies {
     compile 'com.pkmmte.view:circularimageview:1.1'
     // dependency injection on compile
     compile 'com.jakewharton:butterknife:7.0.1'
-    // event bus system
-    compile 'de.greenrobot:eventbus:2.4.0'
     // core card library
     compile 'com.github.gabrielemariotti.cards:cardslib-core:2.1.0'
     compile 'com.github.gabrielemariotti.cards:cardslib-cards:2.1.0'
