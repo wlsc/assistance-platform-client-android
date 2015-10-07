@@ -42,7 +42,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CardView;
 import de.tudarmstadt.informatik.tk.android.kraken.ServiceManager;
-import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.api.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;

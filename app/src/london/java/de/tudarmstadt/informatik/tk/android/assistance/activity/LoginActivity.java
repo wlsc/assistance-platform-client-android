@@ -56,7 +56,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.Settings;
 import de.tudarmstadt.informatik.tk.android.kraken.ServiceManager;
-import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.api.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDeviceDao;

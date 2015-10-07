@@ -35,7 +35,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UpdateProfileRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UserSocialService;
-import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.api.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;

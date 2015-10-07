@@ -20,7 +20,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
-import de.tudarmstadt.informatik.tk.android.kraken.communication.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.api.ServiceGenerator;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
