@@ -39,7 +39,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginResponse;
@@ -119,6 +121,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     private Handler uiThreadHandler = new Handler();
     private SplashView mSplashView;
 
+    private EventBus eventBus;
+
     private String email;
     private String password;
 
@@ -130,6 +134,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (eventBus == null) {
+            eventBus = EventBus.getDefault();
+        }
+
+        checkReadContactsPermissionGranted();
+    }
+
+    /**
+     * Checks read contacts permission
+     */
+    private void checkReadContactsPermissionGranted() {
+
         boolean isReadContactsGranted = PermissionUtils
                 .getInstance(getApplicationContext())
                 .isPermissionGranted(Manifest.permission.READ_CONTACTS);
@@ -138,7 +154,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             Log.d(TAG, "READ_CONTACTS permission was granted.");
 
-            checkLocationPermissionGranted();
+            eventBus.post(new PermissionGrantedEvent(Manifest.permission.READ_CONTACTS));
 
         } else {
 
@@ -175,8 +191,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             Log.d(TAG, "COARSE_LOCATION permission was granted.");
 
-            // proceed with login screen
-            initLogin();
+            eventBus.post(new PermissionGrantedEvent(Manifest.permission.ACCESS_COARSE_LOCATION));
 
         } else {
 
@@ -774,7 +789,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
     @Override
     protected void onDestroy() {
+
         ButterKnife.unbind(this);
+        eventBus.unregister(this);
+        eventBus = null;
         mSplashView = null;
         uiThreadHandler = null;
         userDao = null;
@@ -845,20 +863,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (eventBus != null && !eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (eventBus != null && eventBus.isRegistered(this)) {
+            eventBus.unregister(this);
+        }
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         switch (requestCode) {
 
             case KrakenSdkSettings.PERMISSIONS_REQUEST_READ_CONTACTS:
-            case KrakenSdkSettings.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION:
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     Log.d(TAG, "User granted permission");
 
-                    // proceed with login screen
-                    initLogin();
+                    eventBus.post(new PermissionGrantedEvent(Manifest.permission.READ_CONTACTS));
 
                 } else {
                     // permission denied, boo! Disable the
@@ -871,7 +905,54 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                     // TODO: show crucial permission view
                 }
 
-                return;
+                break;
+            case KrakenSdkSettings.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION:
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.d(TAG, "User granted permission");
+
+                    eventBus.post(new PermissionGrantedEvent(Manifest.permission.ACCESS_COARSE_LOCATION));
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                    Log.d(TAG, "User DENIED permission!");
+
+                    Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
+
+                    // TODO: show crucial permission view
+                }
+
+                break;
+        }
+    }
+
+    /**
+     * On permission granted event
+     *
+     * @param event
+     */
+    public void onEvent(PermissionGrantedEvent event) {
+
+        String permission = event.getPermission();
+
+        Log.d(TAG, "Permission granted: " + permission);
+
+        if (permission == null) {
+            return;
+        }
+
+        if (permission.equals(Manifest.permission.READ_CONTACTS)) {
+            checkLocationPermissionGranted();
+        }
+
+        if (permission.equals(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+            // proceed with login screen
+            initLogin();
         }
     }
 }
