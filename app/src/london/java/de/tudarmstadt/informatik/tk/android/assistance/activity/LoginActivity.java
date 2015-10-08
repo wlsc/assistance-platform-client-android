@@ -144,7 +144,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
             checkReadContactsPermissionGranted();
-        }else{
+        } else {
             // proceed with login screen
             initLogin();
         }
@@ -776,6 +776,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
      * @param retrofitError
      */
     protected void showErrorMessages(String TAG, RetrofitError retrofitError) {
+
+        if (retrofitError.getKind() == RetrofitError.Kind.NETWORK) {
+            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+            return;
+        }
 
         Response response = retrofitError.getResponse();
 

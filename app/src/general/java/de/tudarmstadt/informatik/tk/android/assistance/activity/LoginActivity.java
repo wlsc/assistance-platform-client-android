@@ -831,7 +831,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     protected void showErrorMessages(String TAG, RetrofitError retrofitError) {
 
         if (retrofitError.getKind() == RetrofitError.Kind.NETWORK) {
-            Toaster.showLong(getApplicationContext(), R.string.error_no_internet_connection);
+            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
             return;
         }
 
