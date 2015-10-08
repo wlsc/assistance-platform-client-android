@@ -41,7 +41,7 @@ import butterknife.OnEditorAction;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.error.ErrorResponse;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.UserDevice;

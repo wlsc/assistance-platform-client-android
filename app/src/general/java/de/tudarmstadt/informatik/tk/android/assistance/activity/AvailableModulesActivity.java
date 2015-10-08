@@ -31,7 +31,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.event.DrawerUpdateEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleShowMoreInfoEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.error.ErrorResponse;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;

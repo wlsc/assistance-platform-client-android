@@ -12,7 +12,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.error.ErrorResponse;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.registration.RegistrationRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.registration.RegistrationResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;

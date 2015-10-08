@@ -12,7 +12,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.error.ErrorResponse;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.resetpassword.ResetPasswordRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
