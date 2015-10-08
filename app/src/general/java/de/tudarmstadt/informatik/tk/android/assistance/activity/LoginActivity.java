@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
@@ -56,14 +57,14 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
-import de.tudarmstadt.informatik.tk.android.kraken.Settings;
 import de.tudarmstadt.informatik.tk.android.kraken.HarvesterServiceManager;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.ServiceGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.Settings;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDeviceDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
 import retrofit.Callback;
@@ -143,7 +144,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             eventBus.register(this);
         }
 
-        checkReadContactsPermissionGranted();
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+            checkReadContactsPermissionGranted();
+        } else {
+            // proceed with login screen
+            initLogin();
+        }
     }
 
     /**
@@ -823,6 +829,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
      * @param retrofitError
      */
     protected void showErrorMessages(String TAG, RetrofitError retrofitError) {
+
+        if (retrofitError.getKind() == RetrofitError.Kind.NETWORK) {
+            Toaster.showLong(getApplicationContext(), R.string.error_no_internet_connection);
+            return;
+        }
 
         Response response = retrofitError.getResponse();
 
