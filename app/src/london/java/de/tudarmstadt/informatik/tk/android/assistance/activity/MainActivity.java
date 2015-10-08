@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
+import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
@@ -35,7 +37,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.util.GcmUtils;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class MainActivity extends DrawerActivity {
+public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -232,4 +234,8 @@ public class MainActivity extends DrawerActivity {
         super.onDestroy();
     }
 
+    @Override
+    public void onNavigationDrawerItemSelected(View v, int position) {
+
+    }
 }
