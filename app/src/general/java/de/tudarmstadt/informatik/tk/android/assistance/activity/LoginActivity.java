@@ -63,7 +63,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDeviceDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
@@ -427,7 +427,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         /**
          * Logging in the user
          */
-        UserService userService = ServiceGenerator.createService(UserService.class);
+        UserService userService = EndpointGenerator.create(UserService.class);
         userService.loginUser(request, new Callback<LoginResponse>() {
 
             @Override

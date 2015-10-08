@@ -51,7 +51,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import it.gmariotti.cardslib.library.internal.Card;
@@ -240,7 +240,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         final String userToken = UserUtils.getUserToken(getApplicationContext());
 
         // calling api service
-        final ModuleService moduleService = ServiceGenerator.createService(ModuleService.class);
+        final ModuleService moduleService = EndpointGenerator.create(ModuleService.class);
         moduleService.getAvailableModules(userToken, new Callback<List<AvailableModuleResponse>>() {
 
             /**
@@ -660,7 +660,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
         toggleModuleRequest.setModuleId(modulePackageName);
 
-        ModuleService moduleService = ServiceGenerator.createService(ModuleService.class);
+        ModuleService moduleService = EndpointGenerator.create(ModuleService.class);
         moduleService.activateModule(userToken, toggleModuleRequest, new Callback<Void>() {
 
             @Override

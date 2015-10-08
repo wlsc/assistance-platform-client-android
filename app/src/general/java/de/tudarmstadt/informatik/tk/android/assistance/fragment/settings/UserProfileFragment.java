@@ -35,7 +35,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UpdateProfileRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UserSocialService;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
@@ -142,7 +142,7 @@ public class UserProfileFragment extends Fragment {
                 userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_image));
             }
 
-            UserService userService = ServiceGenerator.createService(UserService.class);
+            UserService userService = EndpointGenerator.create(UserService.class);
             userService.getUserProfileFull(userToken, new Callback<ProfileResponse>() {
 
                 @Override
@@ -359,7 +359,7 @@ public class UserProfileFragment extends Fragment {
         /**
          * SEND UPDATED USER PROFILE TO SERVER
          */
-        UserService userService = ServiceGenerator.createService(UserService.class);
+        UserService userService = EndpointGenerator.create(UserService.class);
         userService.updateUserProfile(userToken, request, new Callback<Void>() {
 
             @Override

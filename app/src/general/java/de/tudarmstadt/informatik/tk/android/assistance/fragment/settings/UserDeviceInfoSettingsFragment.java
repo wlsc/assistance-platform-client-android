@@ -10,7 +10,7 @@ import android.util.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.DeviceEndpoint;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
@@ -115,7 +115,7 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
             deviceUserDefinedNameRequest.setDeviceId(currentDeviceId);
             deviceUserDefinedNameRequest.setUserDefinedName(deviceName);
 
-            DeviceEndpoint deviceEndpoint = ServiceGenerator.createService(DeviceEndpoint.class);
+            DeviceEndpoint deviceEndpoint = EndpointGenerator.create(DeviceEndpoint.class);
             deviceEndpoint.setUserDefinedName(userToken, deviceUserDefinedNameRequest, new Callback<Void>() {
 
                 @Override

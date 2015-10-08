@@ -18,7 +18,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -80,7 +80,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         ResetPasswordRequest request = new ResetPasswordRequest();
         request.setEmail(mUserEmail);
 
-        UserService service = ServiceGenerator.createService(UserService.class);
+        UserService service = EndpointGenerator.create(UserService.class);
         service.resetUserPassword(request, new Callback<Void>() {
 
             @Override

@@ -22,7 +22,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
@@ -133,7 +133,7 @@ public class DrawerActivity extends AppCompatActivity {
 
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
-        UserService userservice = ServiceGenerator.createService(UserService.class);
+        UserService userservice = EndpointGenerator.create(UserService.class);
         userservice.getUserProfileShort(userToken, new Callback<ProfileResponse>() {
 
             @Override

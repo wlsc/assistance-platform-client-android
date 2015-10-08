@@ -22,7 +22,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.ServiceGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
@@ -281,7 +281,7 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
         toggleModuleRequest.setModuleId(currentModule.getPackageName());
 
-        ModuleService moduleService = ServiceGenerator.createService(ModuleService.class);
+        ModuleService moduleService = EndpointGenerator.create(ModuleService.class);
         moduleService.deactivateModule(userToken, toggleModuleRequest, new Callback<Void>() {
 
             @Override
