@@ -44,7 +44,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
-import de.tudarmstadt.informatik.tk.android.kraken.ServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.HarvesterServiceManager;
 
 /**
  * Fragment used for managing interactions and presentation of a navigation drawer
@@ -497,7 +497,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
      */
     private void stopSensingService() {
 
-        ServiceManager service = ServiceManager.getInstance(getActivity().getApplicationContext());
-        service.stopKrakenService();
+        HarvesterServiceManager service = HarvesterServiceManager.getInstance(getActivity().getApplicationContext());
+        service.stopService();
     }
 }

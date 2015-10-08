@@ -41,7 +41,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CardView;
-import de.tudarmstadt.informatik.tk.android.kraken.ServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.HarvesterServiceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.ServiceGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
@@ -455,8 +455,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 entryWasInserted = true;
 
                 // start monitoring service
-                ServiceManager service = ServiceManager.getInstance(getApplicationContext());
-                service.startKrakenService();
+                HarvesterServiceManager service = HarvesterServiceManager.getInstance(getApplicationContext());
+                service.startService();
 
                 break;
             }
@@ -754,8 +754,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
         Log.d(TAG, "Installation id: " + installId);
 
         // start monitoring service
-        ServiceManager service = ServiceManager.getInstance(getApplicationContext());
-        service.startKrakenService();
+        HarvesterServiceManager service = HarvesterServiceManager.getInstance(getApplicationContext());
+        service.startService();
 
     }
 
