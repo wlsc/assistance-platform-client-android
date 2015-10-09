@@ -919,6 +919,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                     Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
 
                     // TODO: show crucial permission view
+                    finish();   // for now
                 }
 
                 break;
@@ -940,9 +941,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                     Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
 
                     // TODO: show crucial permission view
+                    finish();   // for now
                 }
 
                 break;
+
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 

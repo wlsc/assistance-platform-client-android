@@ -41,7 +41,6 @@ import butterknife.OnEditorAction;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.UserDevice;
@@ -62,6 +61,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbDeviceDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
@@ -866,6 +866,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                     Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
 
                     // TODO: show crucial permission view
+                    finish();   // for now
                 }
 
                 break;
@@ -887,9 +888,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                     Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
 
                     // TODO: show crucial permission view
+                    finish();   // for now
                 }
 
                 break;
+
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 

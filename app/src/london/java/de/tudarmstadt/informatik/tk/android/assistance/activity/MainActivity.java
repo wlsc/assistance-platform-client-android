@@ -17,8 +17,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
+import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.PreferenceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapabilityDao;
@@ -26,6 +27,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
 import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.GcmUtils;
@@ -52,6 +54,25 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        boolean accessibilityServiceActivated = PreferenceManager.getInstance(getApplicationContext()).getActivated();
+
+        if (accessibilityServiceActivated) {
+            initView();
+        } else {
+
+            Log.d(TAG, "Accessibility Service is NOT active! Requesting...");
+
+            // request user to switch permission for the service
+            Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLE_RESULT);
+        }
+    }
+
+    /**
+     * Initializes this activity
+     */
+    private void initView() {
 
         registerForPush();
 
@@ -232,6 +253,18 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch (requestCode) {
+            case Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLE_RESULT:
+                initView();
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
