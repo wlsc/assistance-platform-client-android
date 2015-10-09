@@ -57,9 +57,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.HarvesterServiceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.Settings;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbDeviceDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
@@ -126,13 +124,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     private String email;
     private String password;
 
-    private DbUserDao userDao;
-
-    private DbDeviceDao deviceDao;
+    private DbProvider dbProvider;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (dbProvider == null) {
+            dbProvider = DbProvider.getInstance(getApplicationContext());
+        }
 
         // just init EventBus there
         HarvesterServiceManager.getInstance(getApplicationContext());
@@ -368,16 +368,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         String userEmail = mEmailTextView.getText().toString();
         UserUtils.saveUserEmail(getApplicationContext(), userEmail);
 
-        if (userDao == null) {
-            userDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
-        }
 
-        DbUser user = userDao
-                .queryBuilder()
-                .where(DbUserDao.Properties.PrimaryEmail.eq(userEmail))
-                .limit(1)
-                .build()
-                .unique();
+        DbUser user = dbProvider.getUserByEmail(userEmail);
 
         Long serverDeviceId = null;
 
@@ -456,21 +448,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
 
-        if (userDao == null) {
-            userDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
-        }
-
-        if (deviceDao == null) {
-            deviceDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbDeviceDao();
-        }
-
-        DbUser user = userDao
-                .queryBuilder()
-                .where(DbUserDao.Properties.Token.eq(loginResponse.getUserToken()))
-                .limit(1)
-                .build()
-                .unique();
-
+        DbUser user = dbProvider.getUserByToken(loginResponse.getUserToken());
 
         // check if that user was already saved in the system
         if (user == null) {
@@ -480,10 +458,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             newUser.setToken(loginResponse.getUserToken());
             newUser.setPrimaryEmail(email);
-            newUser.setToken(loginResponse.getUserToken());
             newUser.setCreated(createdDate);
 
-            long newUserId = userDao.insert(newUser);
+            long newUserId = dbProvider.insertUser(newUser);
 
             UserUtils.saveCurrentUserId(getApplicationContext(), newUserId);
 
@@ -499,7 +476,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             device.setCreated(createdDate);
             device.setUserId(newUserId);
 
-            long currentDeviceId = deviceDao.insert(device);
+            long currentDeviceId = dbProvider.insertDevice(device);
 
             UserUtils.saveCurrentDeviceId(getApplicationContext(), currentDeviceId);
             UserUtils.saveServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
@@ -535,7 +512,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 device.setCreated(createdDate);
                 device.setUserId(user.getId());
 
-                long currentDeviceId = deviceDao.insert(device);
+                long currentDeviceId = dbProvider.insertDevice(device);
 
                 UserUtils.saveCurrentDeviceId(getApplicationContext(), currentDeviceId);
                 UserUtils.saveServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
@@ -753,8 +730,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         ButterKnife.unbind(this);
         mSplashView = null;
         uiThreadHandler = null;
-        userDao = null;
-        deviceDao = null;
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }
