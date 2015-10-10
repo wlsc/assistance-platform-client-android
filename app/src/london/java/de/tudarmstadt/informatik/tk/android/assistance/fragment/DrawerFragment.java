@@ -37,12 +37,11 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandle
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.HarvesterServiceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
-import de.tudarmstadt.informatik.tk.android.kraken.HarvesterServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 
 /**
  * Fragment used for managing interactions and presentation of a navigation drawer
@@ -53,6 +52,8 @@ import de.tudarmstadt.informatik.tk.android.kraken.HarvesterServiceManager;
 public class DrawerFragment extends Fragment implements DrawerClickHandler {
 
     private static final String TAG = DrawerFragment.class.getSimpleName();
+
+    private DbProvider dbProvider;
 
     /**
      * A pointer to the current callbacks instance (the Activity).
@@ -86,11 +87,13 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
 
     private static List<DrawerItem> navigationItems;
 
-    private DbUserDao userDao;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (dbProvider == null) {
+            dbProvider = DbProvider.getInstance(getActivity().getApplicationContext());
+        }
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the drawer
         mUserLearnedDrawer = UserUtils.getUserHasLearnedDrawer(getActivity().getApplicationContext());
@@ -328,15 +331,6 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
         startActivityForResult(intent, R.id.settings);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (userDao == null) {
-            userDao = DbProvider.getInstance(getActivity().getApplicationContext()).getDaoSession().getDbUserDao();
-        }
-    }
-
     /**
      * Process drawer update procedure and refresh the drawer with new information
      *
@@ -366,16 +360,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
             return;
         }
 
-        if (userDao == null) {
-            userDao = DbProvider.getInstance(context).getDaoSession().getDbUserDao();
-        }
-
-        DbUser user = userDao
-                .queryBuilder()
-                .where(DbUserDao.Properties.PrimaryEmail.eq(userEmail))
-                .limit(1)
-                .build()
-                .unique();
+        DbUser user = dbProvider.getUserByEmail(userEmail);
 
         if (user == null) {
             Log.d(TAG, "User is EMPTY!");
@@ -460,7 +445,6 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
         super.onDestroyView();
         ButterKnife.unbind(this);
         EventBus.getDefault().unregister(this);
-        userDao = null;
     }
 
     @Override

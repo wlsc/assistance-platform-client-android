@@ -22,10 +22,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -40,6 +39,8 @@ import retrofit.client.Response;
 public class DrawerActivity extends AppCompatActivity {
 
     private static final String TAG = DrawerActivity.class.getSimpleName();
+
+    private DbProvider dbProvider;
 
     private boolean mBackButtonPressedOnce;
 
@@ -61,6 +62,10 @@ public class DrawerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_base);
+
+        if (dbProvider == null) {
+            dbProvider = DbProvider.getInstance(getApplicationContext());
+        }
 
         mToolbar = ButterKnife.findById(this, R.id.toolbar_actionbar);
 
@@ -89,14 +94,7 @@ public class DrawerActivity extends AppCompatActivity {
 
                 Log.d(TAG, "No user info found cached. Checking db...");
 
-                DbUserDao userDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
-
-                DbUser user = userDao
-                        .queryBuilder()
-                        .where(DbUserDao.Properties.PrimaryEmail.eq(userEmail))
-                        .limit(1)
-                        .build()
-                        .unique();
+                DbUser user = dbProvider.getUserByEmail(userEmail);
 
                 // found saved user in the db
                 if (user != null && user.getLastLogin() != null) {
@@ -165,15 +163,8 @@ public class DrawerActivity extends AppCompatActivity {
      */
     private void persistLogin(ProfileResponse profileResponse) {
 
-        DbUserDao userDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
-
         // check already available user in db
-        DbUser user = userDao
-                .queryBuilder()
-                .where(DbUserDao.Properties.PrimaryEmail.eq(profileResponse.getPrimaryEmail()))
-                .limit(1)
-                .build()
-                .unique();
+        DbUser user = dbProvider.getUserByEmail(profileResponse.getPrimaryEmail());
 
         // check for user existence in the db
         if (user == null) {
@@ -195,7 +186,7 @@ public class DrawerActivity extends AppCompatActivity {
 
             user.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
-            userDao.insertOrReplace(user);
+            dbProvider.insertUser(user);
 
         } else {
             // found a user -> update for device and user information
@@ -211,9 +202,8 @@ public class DrawerActivity extends AppCompatActivity {
             if (profileResponse.getLastLogin() != null) {
                 user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
             }
-//            user.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
-            userDao.update(user);
+            dbProvider.updateUser(user);
         }
     }
 

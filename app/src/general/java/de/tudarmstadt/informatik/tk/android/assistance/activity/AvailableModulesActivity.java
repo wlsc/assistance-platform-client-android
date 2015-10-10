@@ -31,7 +31,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.event.DrawerUpdateEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleShowMoreInfoEvent;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
@@ -44,14 +43,11 @@ import de.tudarmstadt.informatik.tk.android.assistance.view.CardView;
 import de.tudarmstadt.informatik.tk.android.kraken.HarvesterServiceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapabilityDao;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbUserDao;
 import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import it.gmariotti.cardslib.library.internal.Card;
@@ -73,6 +69,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     private static final String TAG = AvailableModulesActivity.class.getSimpleName();
 
+    private DbProvider dbProvider;
+
     protected Toolbar mToolbar;
 
     protected CardListView mModuleList;
@@ -80,14 +78,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
     protected SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Map<String, AvailableModuleResponse> mAvailableModuleResponses;
-
-    private DbUserDao userDao;
-
-    private DbModuleDao moduleDao;
-
-    private DbModuleCapabilityDao moduleCapabilityDao;
-
-    private DbModuleInstallationDao moduleInstallationDao;
 
     private List<String> mActiveModules;
 
@@ -97,6 +87,10 @@ public class AvailableModulesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_available_modules);
+
+        if (dbProvider == null) {
+            dbProvider = DbProvider.getInstance(getApplicationContext());
+        }
 
         mToolbar = ButterKnife.findById(this, R.id.toolbar_actionbar);
         setSupportActionBar(mToolbar);
@@ -140,28 +134,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
-        if (userDao == null) {
-            userDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
-        }
-
-        DbUser user = userDao
-                .queryBuilder()
-                .where(DbUserDao.Properties.PrimaryEmail.eq(userEmail))
-                .limit(1)
-                .build()
-                .unique();
+        DbUser user = dbProvider.getUserByEmail(userEmail);
 
         if (user == null) {
             requestAvailableModules();
             return;
-        }
-
-        if (moduleDao == null) {
-            moduleDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
-        }
-
-        if (moduleInstallationDao == null) {
-            moduleInstallationDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
         }
 
         List<DbModule> userModules = user.getDbModuleList();
@@ -330,24 +307,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
-        if (userDao == null) {
-            userDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbUserDao();
-        }
-
-        if (moduleDao == null) {
-            moduleDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
-        }
-
-        if (moduleCapabilityDao == null) {
-            moduleCapabilityDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleCapabilityDao();
-        }
-
-        DbUser user = userDao
-                .queryBuilder()
-                .where(DbUserDao.Properties.PrimaryEmail.eq(userEmail))
-                .limit(1)
-                .build()
-                .unique();
+        DbUser user = dbProvider.getUserByEmail(userEmail);
 
         for (AvailableModuleResponse availableModule : availableModulesResponse) {
 
@@ -356,7 +316,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
             DbModule module = ConverterUtils.convertModule(availableModule);
             module.setDbUser(user);
 
-            long moduleId = moduleDao.insert(module);
+            long moduleId = dbProvider.insertModule(module);
 
             // check if that module was already installed
             // if so -> insert new module installation into db
@@ -399,7 +359,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
             // insert entries
             if (!modCaps.isEmpty()) {
-                moduleCapabilityDao.insertInTx(modCaps);
+                dbProvider.insertModuleCapabilities(modCaps);
             }
         }
 
@@ -417,22 +377,13 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         boolean entryWasInserted = false;
 
-        if (moduleInstallationDao == null) {
-            moduleInstallationDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
-        }
-
         for (String activeModule : mActiveModules) {
             if (activeModule.equals(modulePackage)) {
 
                 // check for existing installation
                 // if so -> just activate it
-                DbModuleInstallation moduleInstallation = moduleInstallationDao
-                        .queryBuilder()
-                        .where(DbModuleInstallationDao.Properties.ModuleId.eq(moduleId))
-                        .where(DbModuleInstallationDao.Properties.UserId.eq(userId))
-                        .limit(1)
-                        .build()
-                        .unique();
+                DbModuleInstallation moduleInstallation = dbProvider
+                        .getModuleInstallationForModuleByUserId(userId, moduleId);
 
                 if (moduleInstallation == null) {
 
@@ -443,13 +394,13 @@ public class AvailableModulesActivity extends AppCompatActivity {
                     moduleInstallation.setUserId(userId);
                     moduleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
-                    moduleInstallationDao.insert(moduleInstallation);
+                    dbProvider.insertModuleInstallation(moduleInstallation);
 
                 } else {
 
                     moduleInstallation.setActive(true);
 
-                    moduleInstallationDao.update(moduleInstallation);
+                    dbProvider.updateModuleInstallation(moduleInstallation);
                 }
 
                 entryWasInserted = true;
@@ -691,25 +642,14 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
-        DbUser user = userDao
-                .queryBuilder()
-                .where(DbUserDao.Properties.PrimaryEmail.eq(userEmail))
-                .limit(1)
-                .build()
-                .unique();
+        DbUser user = dbProvider.getUserByEmail(userEmail);
 
         if (user == null) {
             Log.d(TAG, "Installation cancelled: user is null");
             return;
         }
 
-        DbModule module = moduleDao
-                .queryBuilder()
-                .where(DbModuleDao.Properties.PackageName.eq(modulePackageName))
-                .where(DbModuleDao.Properties.UserId.eq(user.getId()))
-                .limit(1)
-                .build()
-                .unique();
+        DbModule module = dbProvider.getModuleByPackageIdUserId(modulePackageName, user.getId());
 
         if (module == null) {
 
@@ -718,13 +658,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
         }
 
         // check module is already installed
-        DbModuleInstallation moduleInstallation = moduleInstallationDao
-                .queryBuilder()
-                .where(DbModuleInstallationDao.Properties.ModuleId.eq(module.getId()))
-                .where(DbModuleInstallationDao.Properties.UserId.eq(user.getId()))
-                .limit(1)
-                .build()
-                .unique();
+        DbModuleInstallation moduleInstallation = dbProvider
+                .getModuleInstallationForModuleByUserId(user.getId(), module.getId());
 
         if (moduleInstallation == null) {
 
@@ -739,7 +674,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
             moduleInstallation.setActive(true);
         }
 
-        Long installId = moduleInstallationDao.insertOrReplace(moduleInstallation);
+        Long installId = dbProvider.insertModuleInstallation(moduleInstallation);
 
         if (installId != null) {
 
@@ -763,10 +698,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
     protected void onDestroy() {
         ButterKnife.unbind(this);
         EventBus.getDefault().unregister(this);
-        moduleDao = null;
-        moduleInstallationDao = null;
-        moduleCapabilityDao = null;
-        userDao = null;
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }

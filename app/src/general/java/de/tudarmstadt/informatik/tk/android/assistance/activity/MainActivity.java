@@ -25,9 +25,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.PreferenceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
 import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.event.StopSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
@@ -49,11 +47,9 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private DbProvider dbProvider;
+
     private Menu menu;
-
-    private DbModuleDao moduleDao;
-
-    private DbModuleInstallationDao moduleInstallationDao;
 
     private List<DbModuleInstallation> dbModuleInstallations;
 
@@ -80,26 +76,19 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
      */
     private void initView() {
 
+        if (dbProvider == null) {
+            dbProvider = DbProvider.getInstance(getApplicationContext());
+        }
+
         registerForPush();
 
         EventBus.getDefault().post(new StartSensingEvent(getApplicationContext()));
 
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
-        if (moduleDao == null) {
-            moduleDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
-        }
-
-        if (moduleInstallationDao == null) {
-            moduleInstallationDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
-        }
-
         if (dbModuleInstallations == null) {
-            dbModuleInstallations = moduleInstallationDao
-                    .queryBuilder()
-                    .where(DbModuleInstallationDao.Properties.UserId.eq(userId))
-                    .build()
-                    .list();
+
+            dbModuleInstallations = dbProvider.getModuleInstallationsByUserId(userId);
 
             // user has got some active modules -> activate module menu
             if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
@@ -245,24 +234,17 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
         DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
 
-        if (moduleInstallationDao == null) {
-            moduleInstallationDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
-        }
-
-        DbModuleInstallation moduleInstallation = moduleInstallationDao
-                .queryBuilder()
-                .where(DbModuleInstallationDao.Properties.UserId.eq(currentModule.getUserId()))
-                .where(DbModuleInstallationDao.Properties.ModuleId.eq(currentModule.getId()))
-                .limit(1)
-                .build()
-                .unique();
+        DbModuleInstallation moduleInstallation = dbProvider.getModuleInstallationForModuleByUserId(
+                currentModule.getUserId(),
+                currentModule.getId());
 
         if (moduleInstallation == null) {
             Toaster.showLong(getApplicationContext(), R.string.error_module_not_installed);
         } else {
 
             moduleInstallation.setActive(moduleState);
-            moduleInstallationDao.update(moduleInstallation);
+
+            dbProvider.updateModuleInstallation(moduleInstallation);
 
             if (moduleState) {
                 Log.d(TAG, "User DISABLED a module");
@@ -358,14 +340,11 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
         Log.d(TAG, "Removing module from db...");
 
-        List<DbModuleInstallation> installedModules = moduleInstallationDao
-                .queryBuilder()
-                .where(DbModuleInstallationDao.Properties.ModuleId.eq(currentModuleId))
-                .where(DbModuleInstallationDao.Properties.UserId.eq(currentUserId))
-                .build()
-                .list();
+        List<DbModuleInstallation> installedModules = dbProvider.getModuleInstallationsByUserId(
+                currentUserId,
+                currentModuleId);
 
-        moduleInstallationDao.deleteInTx(installedModules);
+        dbProvider.removeInstalledModules(installedModules);
 
         Log.d(TAG, "Finished removing module from db!");
     }
@@ -373,10 +352,6 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
-
-        moduleDao = null;
-        moduleInstallationDao = null;
-
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }

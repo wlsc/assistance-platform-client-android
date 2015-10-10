@@ -22,10 +22,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.PreferenceManager;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapabilityDao;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallationDao;
 import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.service.GcmRegistrationIntentService;
@@ -43,11 +40,7 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private DbModuleDao moduleDao;
-
-    private DbModuleCapabilityDao moduleCapabilityDao;
-
-    private DbModuleInstallationDao moduleInstallationDao;
+    private DbProvider dbProvider;
 
     private List<DbModuleInstallation> dbModuleInstallations;
 
@@ -74,6 +67,10 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
      */
     private void initView() {
 
+        if (dbProvider == null) {
+            dbProvider = DbProvider.getInstance(getApplicationContext());
+        }
+
         registerForPush();
 
         EventBus.getDefault().post(new StartSensingEvent(getApplicationContext()));
@@ -82,27 +79,11 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
         Log.d(TAG, "UserId: " + userId);
 
-        if (moduleDao == null) {
-            moduleDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleDao();
-        }
-
-        if (moduleCapabilityDao == null) {
-            moduleCapabilityDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleCapabilityDao();
-        }
-
-        if (moduleInstallationDao == null) {
-            moduleInstallationDao = DbProvider.getInstance(getApplicationContext()).getDaoSession().getDbModuleInstallationDao();
-        }
-
         if (dbModuleInstallations == null) {
 
             Log.d(TAG, "dbModuleInstallations cached list IS empty");
 
-            dbModuleInstallations = moduleInstallationDao
-                    .queryBuilder()
-                    .where(DbModuleInstallationDao.Properties.UserId.eq(userId))
-                    .build()
-                    .list();
+            dbModuleInstallations = dbProvider.getModuleInstallationsByUserId(userId);
 
             // user has got some active modules -> activate module menu
             if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
@@ -149,6 +130,8 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
         Log.d(TAG, "Installing example data...");
 
+        String currentDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
+
         DbModule dbModule = new DbModule();
 
         dbModule.setUserId(userId);
@@ -159,9 +142,9 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
         dbModule.setPackageName("de.tudarmstadt.tk.assistance.quantifiedself");
         dbModule.setSupportEmail("developer@kraken.me");
         dbModule.setCopyright("TK Informtik TU Darmstadt");
-        dbModule.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+        dbModule.setCreated(currentDate);
 
-        long moduleId = moduleDao.insertOrReplace(dbModule);
+        long moduleId = dbProvider.insertModule(dbModule);
 
         DbModuleCapability dbModuleCapability1 = new DbModuleCapability();
 
@@ -171,18 +154,18 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
         dbModuleCapability1.setCollectionFrequency(0.2);
         dbModuleCapability1.setRequiredUpdateFrequency(2.0);
         dbModuleCapability1.setRequired(true);
-        dbModuleCapability1.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+        dbModuleCapability1.setCreated(currentDate);
 
-        moduleCapabilityDao.insertOrReplace(dbModuleCapability1);
+        dbProvider.insertModuleCapability(dbModuleCapability1);
 
         DbModuleInstallation dbModuleInstallation = new DbModuleInstallation();
 
         dbModuleInstallation.setUserId(userId);
         dbModuleInstallation.setModuleId(moduleId);
         dbModuleInstallation.setActive(true);
-        dbModuleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+        dbModuleInstallation.setCreated(currentDate);
 
-        moduleInstallationDao.insertOrReplace(dbModuleInstallation);
+        dbProvider.insertModuleInstallation(dbModuleInstallation);
 
         dbModuleInstallations.add(dbModuleInstallation);
 
@@ -247,10 +230,6 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
-
-        moduleDao = null;
-        moduleInstallationDao = null;
-
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }

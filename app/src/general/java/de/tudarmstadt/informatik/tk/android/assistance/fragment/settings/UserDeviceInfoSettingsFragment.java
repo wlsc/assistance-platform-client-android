@@ -10,12 +10,11 @@ import android.util.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.DeviceEndpoint;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbDeviceDao;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.device.DeviceUserDefinedNameRequest;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.DeviceEndpoint;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -27,9 +26,9 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
 
     private static final String TAG = UserDeviceInfoSettingsFragment.class.getSimpleName();
 
-    private Toolbar mParentToolbar;
+    private DbProvider dbProvider;
 
-    private static DbDeviceDao dbDeviceDao;
+    private Toolbar mParentToolbar;
 
     public UserDeviceInfoSettingsFragment() {
     }
@@ -38,23 +37,18 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (dbProvider == null) {
+            dbProvider = DbProvider.getInstance(getActivity().getApplicationContext());
+        }
+
         addPreferencesFromResource(R.xml.preference_user_device_info);
 
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
         mParentToolbar.setTitle(R.string.settings_header_user_device_title);
 
-        if (dbDeviceDao == null) {
-            dbDeviceDao = DbProvider.getInstance(getActivity().getApplicationContext()).getDaoSession().getDbDeviceDao();
-        }
-
         long currentDeviceId = UserUtils.getCurrentDeviceId(getActivity().getApplicationContext());
 
-        DbDevice dbDevice = dbDeviceDao
-                .queryBuilder()
-                .where(DbDeviceDao.Properties.Id.eq(currentDeviceId))
-                .limit(1)
-                .build()
-                .unique();
+        DbDevice dbDevice = dbProvider.getDeviceById(currentDeviceId);
 
         if (dbDevice != null) {
 
@@ -80,14 +74,6 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
         super.onPause();
 
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-
-    public void onDestroy() {
-        Log.d(TAG, "Destroying device info fragment. Unbinding data...");
-        dbDeviceDao = null;
-        super.onDestroy();
     }
 
     /**
@@ -144,18 +130,13 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
 
         Log.d(TAG, "Updating device's user defined name...");
 
-        DbDevice dbDevice = dbDeviceDao
-                .queryBuilder()
-                .where(DbDeviceDao.Properties.Id.eq(currentDeviceId))
-                .limit(1)
-                .build()
-                .unique();
+        DbDevice dbDevice = dbProvider.getDeviceById(currentDeviceId);
 
         if (dbDevice != null) {
 
             dbDevice.setUserDefinedName(deviceName);
 
-            dbDeviceDao.update(dbDevice);
+            dbProvider.updateDevice(dbDevice);
 
             Log.d(TAG, "Successful finished updating device's user defined name!");
 
