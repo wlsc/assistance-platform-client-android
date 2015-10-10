@@ -54,13 +54,12 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
-import de.tudarmstadt.informatik.tk.android.kraken.Settings;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
 import retrofit.Callback;
@@ -182,7 +181,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_CONTACTS},
-                    Settings.PERMISSIONS_REQUEST_READ_CONTACTS);
+                    Config.PERMISSIONS_REQUEST_READ_CONTACTS);
 
         }
     }
@@ -219,7 +218,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    Settings.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+                    Config.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
 
         }
     }
@@ -823,7 +822,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         switch (requestCode) {
 
-            case Settings.PERMISSIONS_REQUEST_READ_CONTACTS:
+            case Config.PERMISSIONS_REQUEST_READ_CONTACTS:
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -845,7 +844,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 }
 
                 break;
-            case Settings.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION:
+            case Config.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION:
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
