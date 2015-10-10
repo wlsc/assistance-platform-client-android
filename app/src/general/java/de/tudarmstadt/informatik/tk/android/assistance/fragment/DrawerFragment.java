@@ -39,7 +39,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandle
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.HarvesterServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
@@ -481,7 +481,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
      */
     private void stopSensingService() {
 
-        HarvesterServiceManager service = HarvesterServiceManager.getInstance(getActivity().getApplicationContext());
+        HarvesterServiceProvider service = HarvesterServiceProvider.getInstance(getActivity().getApplicationContext());
         service.stopService();
     }
 }

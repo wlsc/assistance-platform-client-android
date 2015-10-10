@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.HarvesterServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 
 /**
  * Core user settings activity
@@ -127,7 +127,7 @@ public class SettingsActivity extends PreferenceActivity {
      */
     private void stopSensingService() {
 
-        HarvesterServiceManager service = HarvesterServiceManager.getInstance(getApplicationContext());
+        HarvesterServiceProvider service = HarvesterServiceProvider.getInstance(getApplicationContext());
         service.stopService();
     }
 

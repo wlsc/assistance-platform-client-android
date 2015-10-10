@@ -54,7 +54,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
-import de.tudarmstadt.informatik.tk.android.kraken.HarvesterServiceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.Settings;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         }
 
         // just init EventBus there
-        HarvesterServiceManager.getInstance(getApplicationContext());
+        HarvesterServiceProvider.getInstance(getApplicationContext());
 
         if (eventBus == null) {
             eventBus = EventBus.getDefault();

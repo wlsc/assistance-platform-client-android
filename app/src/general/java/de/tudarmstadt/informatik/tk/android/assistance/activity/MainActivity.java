@@ -23,7 +23,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.PreferenceManager;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
@@ -57,7 +57,7 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        boolean accessibilityServiceActivated = PreferenceManager.getInstance(getApplicationContext()).getActivated();
+        boolean accessibilityServiceActivated = PreferenceProvider.getInstance(getApplicationContext()).getActivated();
 
         if (accessibilityServiceActivated) {
             initView();
