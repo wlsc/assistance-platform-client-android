@@ -12,7 +12,6 @@ import android.view.View;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
@@ -23,13 +22,13 @@ import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.event.StopSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.kraken.util.GcmUtils;
 import retrofit.Callback;
@@ -63,11 +62,10 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
             initView();
         } else {
 
-            Log.d(TAG, "Accessibility Service is NOT active! Requesting...");
+            Log.d(TAG, "Accessibility Service is NOT active! Showing tutorial...");
 
-            // request user to switch permission for the service
-            Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLE_RESULT);
+            Intent intent = new Intent(this, AccessibilityTutorialActivity.class);
+            startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
         }
     }
 
@@ -351,7 +349,6 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
     @Override
     protected void onDestroy() {
-        ButterKnife.unbind(this);
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }
@@ -360,7 +357,7 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
-            case Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLE_RESULT:
+            case Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT:
                 initView();
                 break;
             default:

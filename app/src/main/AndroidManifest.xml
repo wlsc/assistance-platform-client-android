@@ -55,7 +55,16 @@
                 android:value=".activity.LoginActivity" />
         </activity>
         <activity android:name=".activity.SettingsActivity" />
-
+        <activity
+            android:name=".activity.AccessibilityTutorialActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_accessibility_tutorial"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/FullscreenTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.tudarmstadt.informatik.tk.android.assistance.activity.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
