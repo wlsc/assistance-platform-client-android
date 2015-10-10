@@ -18,7 +18,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.provider.PreferenceProvider;
  * extended application context sensing
  *
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
- * @date 28.06.2015
+ * @date 10.10.2015
  */
 public class AccessibilityTutorialActivity extends AppCompatActivity {
 
