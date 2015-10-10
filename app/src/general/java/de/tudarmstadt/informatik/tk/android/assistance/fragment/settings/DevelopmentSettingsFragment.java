@@ -38,7 +38,10 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
         addPreferencesFromResource(R.xml.preference_development);
 
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
-        mParentToolbar.setTitle(R.string.settings_header_development_title);
+
+        if (mParentToolbar != null) {
+            mParentToolbar.setTitle(R.string.settings_header_development_title);
+        }
 
         boolean isUserDeveloper = UserUtils.isUserDeveloper(getActivity().getApplicationContext());
 
