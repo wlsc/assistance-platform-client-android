@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.greenrobot.event.EventBus;
+import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginRequest;
@@ -276,6 +277,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         setTitle(R.string.login_activity_title);
 
         ButterKnife.bind(this);
+
+        if (BuildConfig.DEBUG) {
+            mEmailTextView.setText("test@test.com");
+            mPasswordView.setText("test12345");
+        }
 
         Intent intent = getIntent();
         if (intent != null) {
