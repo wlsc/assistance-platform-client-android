@@ -51,7 +51,8 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
+    // sensor information gathering
+    compile project(':AssistanceSDK')
     // support libraries
     compile 'com.android.support:support-v4:23.0.1'
     compile 'com.android.support:cardview-v7:23.0.1'
@@ -73,8 +74,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     // user interface builder
     compile 'org.metawidget:metawidget-parent:4.1'
-    // sensor information gathering
-    compile project(':krakenSDK')
     // memory leaks finder
     //debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     //releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'

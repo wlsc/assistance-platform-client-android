@@ -18,7 +18,3 @@ allprojects {
         mavenCentral()
     }
 }
-
-dependencies {
-    project(":app")
-}

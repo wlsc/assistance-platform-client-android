@@ -1,4 +1,4 @@
-include ':app', ':krakenSDK', ':krakenSDK:liveSDK'
+include ':app', ':AssistanceSDK', ':LiveSDK'
 
-project(':krakenSDK').projectDir = new File(settingsDir, '../client_android_krakensdk/Kraken.MeSDK/')
-project(':krakenSDK:liveSDK').projectDir = new File(settingsDir, '../client_android_krakensdk/Kraken.MeSDK/libs/LiveSDK/src')
+project(':AssistanceSDK').projectDir = new File(settingsDir, '../client_android_krakensdk/AssistanceSDK/app')
+project(':LiveSDK').projectDir = new File(settingsDir, '../client_android_krakensdk/AssistanceSDK/libs/LiveSDK/src')
