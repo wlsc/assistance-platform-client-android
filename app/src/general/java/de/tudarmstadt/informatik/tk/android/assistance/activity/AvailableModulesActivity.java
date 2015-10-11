@@ -40,7 +40,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CardView;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
@@ -49,6 +48,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
@@ -121,7 +121,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
         mSwipeRefreshLayout.setRefreshing(true);
 
         // register this activity to events
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
 
         loadModules();
     }
@@ -697,7 +699,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
-        EventBus.getDefault().unregister(this);
+
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }

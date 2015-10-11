@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
+import android.Manifest;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -15,7 +16,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.ApplicationAboutSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.ApplicationSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DevelopmentSettingsFragment;
@@ -24,6 +27,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDev
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 
 /**
@@ -180,5 +184,17 @@ public class SettingsActivity extends PreferenceActivity {
 
     public Toolbar getToolBar() {
         return mToolBar;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        switch (requestCode) {
+            case Config.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:
+                EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.WRITE_EXTERNAL_STORAGE));
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }

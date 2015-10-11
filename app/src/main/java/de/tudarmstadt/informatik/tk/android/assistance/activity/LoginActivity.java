@@ -118,8 +118,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     private Handler uiThreadHandler = new Handler();
     private SplashView mSplashView;
 
-    private EventBus eventBus;
-
     private String email;
     private String password;
 
@@ -136,9 +134,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         // just init EventBus there
         HarvesterServiceProvider.getInstance(getApplicationContext());
 
-        if (eventBus == null) {
-            eventBus = EventBus.getDefault();
-            eventBus.register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
         }
 
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
@@ -162,7 +159,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             Log.d(TAG, "READ_CONTACTS permission was granted.");
 
-            eventBus.post(new PermissionGrantedEvent(Manifest.permission.READ_CONTACTS));
+            EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.READ_CONTACTS));
 
         } else {
 
@@ -199,7 +196,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             Log.d(TAG, "COARSE_LOCATION permission was granted.");
 
-            eventBus.post(new PermissionGrantedEvent(Manifest.permission.ACCESS_COARSE_LOCATION));
+            EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.ACCESS_COARSE_LOCATION));
 
         } else {
 
@@ -798,8 +795,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     protected void onStart() {
         super.onStart();
 
-        if (eventBus != null && !eventBus.isRegistered(this)) {
-            eventBus.register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
         }
     }
 
@@ -807,8 +804,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     protected void onStop() {
         super.onStop();
 
-        if (eventBus != null && eventBus.isRegistered(this)) {
-            eventBus.unregister(this);
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
         }
     }
 
@@ -824,7 +821,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
                     Log.d(TAG, "User granted permission");
 
-                    eventBus.post(new PermissionGrantedEvent(Manifest.permission.READ_CONTACTS));
+                    EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.READ_CONTACTS));
 
                 } else {
                     // permission denied, boo! Disable the
@@ -846,7 +843,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
                     Log.d(TAG, "User granted permission");
 
-                    eventBus.post(new PermissionGrantedEvent(Manifest.permission.ACCESS_COARSE_LOCATION));
+                    EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.ACCESS_COARSE_LOCATION));
 
                 } else {
                     // permission denied, boo! Disable the

@@ -56,7 +56,7 @@ public class Constants {
      */
 
     public static final int INTENT_CURRENT_DEVICE_ID_RESULT = 723;
-    public static final int INTENT_ACCESSIBILITY_SERVICE_ENABLE_RESULT = 888;
+    public static final int INTENT_ACCESSIBILITY_SERVICE_ENABLED_RESULT = 888;
     public static final int INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT = 889;
 
     public static final String INTENT_USER_ID = "user_id";

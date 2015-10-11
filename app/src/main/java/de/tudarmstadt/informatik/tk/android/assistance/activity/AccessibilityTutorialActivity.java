@@ -65,14 +65,14 @@ public class AccessibilityTutorialActivity extends AppCompatActivity {
 
         // request user to switch permission for the service
         Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLE_RESULT);
+        startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLED_RESULT);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
-            case Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLE_RESULT:
+            case Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLED_RESULT:
 
                 boolean isActivated = PreferenceProvider
                         .getInstance(getApplicationContext())
@@ -81,7 +81,7 @@ public class AccessibilityTutorialActivity extends AppCompatActivity {
                 // if user has activated an accessibility service
                 // finish tutorial
                 if (isActivated) {
-                    setResult(Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLE_RESULT);
+                    setResult(Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLED_RESULT);
                     finish();
                 }
 

@@ -25,10 +25,14 @@ android {
             debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            productFlavors.london.buildConfigField "String", "ASSISTANCE_ENDPOINT", "\"https://130.83.163.146\""
+//            productFlavors.general.buildConfigField "String", "ASSISTANCE_ENDPOINT", "\"https://130.83.163.115\""
         }
         debug {
             debuggable true
             minifyEnabled false
+//            productFlavors.london.buildConfigField "String", "ASSISTANCE_ENDPOINT", "\"https://130.83.163.146\""
+//            productFlavors.general.buildConfigField "String", "ASSISTANCE_ENDPOINT", "\"https://130.83.163.115\""
         }
     }
     dexOptions {
