@@ -57,7 +57,6 @@ import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
@@ -764,17 +763,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
             switch (httpCode) {
                 case 400:
-                    ErrorResponse errorResponse = (ErrorResponse) retrofitError.getBodyAs(ErrorResponse.class);
-                    errorResponse.setStatusCode(httpCode);
-
-                    Integer apiResponseCode = errorResponse.getCode();
-                    String apiMessage = errorResponse.getMessage();
-                    int httpResponseCode = errorResponse.getStatusCode();
-
-                    Log.d(TAG, "Response status: " + httpResponseCode);
-                    Log.d(TAG, "Response code: " + apiResponseCode);
-                    Log.d(TAG, "Response message: " + apiMessage);
-
+                    Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
                     break;
                 case 401:
                     Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
