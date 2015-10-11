@@ -10,6 +10,16 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    productFlavors {
+        london {
+            applicationId 'de.tudarmstadt.informatik.tk.android.assistance.london'
+            versionName '1.0 beta London Edititon'
+        }
+        general {
+            applicationId 'de.tudarmstadt.informatik.tk.android.assistance.general'
+            versionName '1.0 beta'
+        }
+    }
     buildTypes {
         release {
             debuggable false
@@ -36,16 +46,6 @@ android {
     }
     lintOptions {
         disable 'InvalidPackage'
-    }
-    productFlavors {
-        london {
-            applicationId 'de.tudarmstadt.informatik.tk.android.assistance.london'
-            versionName '1.0 beta London Edititon'
-        }
-        general {
-            applicationId 'de.tudarmstadt.informatik.tk.android.assistance.general'
-            versionName '1.0 beta'
-        }
     }
 }
 
