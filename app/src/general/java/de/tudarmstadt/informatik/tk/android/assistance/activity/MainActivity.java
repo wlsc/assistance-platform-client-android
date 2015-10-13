@@ -12,7 +12,6 @@ import android.view.View;
 
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandler;
@@ -24,10 +23,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
-import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
-import de.tudarmstadt.informatik.tk.android.kraken.event.StopSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.kraken.util.GcmUtils;
@@ -80,7 +78,7 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
         registerForPush();
 
-        EventBus.getDefault().post(new StartSensingEvent(getApplicationContext()));
+        HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
 
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
@@ -98,7 +96,7 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
             } else {
 
-                EventBus.getDefault().post(new StopSensingEvent(getApplicationContext()));
+                HarvesterServiceProvider.getInstance(getApplicationContext()).stopSensingService();
 
                 Intent intent = new Intent(this, AvailableModulesActivity.class);
                 startActivity(intent);

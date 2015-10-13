@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandler;
@@ -21,8 +20,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
-import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
@@ -71,8 +70,6 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
         registerForPush();
 
-        EventBus.getDefault().post(new StartSensingEvent(getApplicationContext()));
-
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
         Log.d(TAG, "UserId: " + userId);
@@ -100,8 +97,6 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
                 // demo data
                 installDemoData(userId);
 
-                EventBus.getDefault().post(new StartSensingEvent(getApplicationContext()));
-
                 getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
                 setTitle(R.string.main_activity_title);
 
@@ -117,6 +112,8 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
             mDrawerFragment.updateDrawerBody(getApplicationContext());
         }
+
+        HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
     }
 
     /**

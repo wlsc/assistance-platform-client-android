@@ -13,10 +13,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.event.StopSensingEvent;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 
 /**
  * Core user settings activity
@@ -120,7 +119,7 @@ public class SettingsActivity extends PreferenceActivity {
         setResult(R.id.logout_settings);
 
         // stop the kraken
-        EventBus.getDefault().post(new StopSensingEvent(getApplicationContext()));
+        HarvesterServiceProvider.getInstance(getApplicationContext()).stopSensingService();
 
         finish();
     }

@@ -179,7 +179,7 @@ public class SettingsActivity extends PreferenceActivity {
     private void stopSensingService() {
 
         HarvesterServiceProvider service = HarvesterServiceProvider.getInstance(getApplicationContext());
-        service.stopService();
+        service.stopSensingService();
     }
 
     public Toolbar getToolBar() {

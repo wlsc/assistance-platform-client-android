@@ -275,7 +275,7 @@ public class DrawerFragment extends Fragment implements DrawerClickHandler {
     private void stopSensingService() {
 
         HarvesterServiceProvider service = HarvesterServiceProvider.getInstance(getActivity().getApplicationContext());
-        service.stopService();
+        service.stopSensingService();
     }
 
     /**

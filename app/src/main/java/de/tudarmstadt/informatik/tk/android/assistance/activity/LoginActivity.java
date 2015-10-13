@@ -369,7 +369,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         String userEmail = mEmailTextView.getText().toString();
         UserUtils.saveUserEmail(getApplicationContext(), userEmail);
 
-
         DbUser user = dbProvider.getUserByEmail(userEmail);
 
         Long serverDeviceId = null;

@@ -44,7 +44,6 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
-import de.tudarmstadt.informatik.tk.android.kraken.event.StartSensingEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
@@ -291,11 +290,18 @@ public class AvailableModulesActivity extends AppCompatActivity {
         // show list of modules to user
         populateAvailableModuleList(availableModulesResponse);
 
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
+
         // save module information into db
         saveModulesIntoDb(availableModulesResponse);
 
         // start sensing service
-        EventBus.getDefault().post(new StartSensingEvent(getApplicationContext()));
+        HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
     }
 
     /**
@@ -409,7 +415,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                 // start monitoring service
                 HarvesterServiceProvider service = HarvesterServiceProvider.getInstance(getApplicationContext());
-                service.startService();
+                service.startSensingService();
 
                 break;
             }
@@ -692,7 +698,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         // start monitoring service
         HarvesterServiceProvider service = HarvesterServiceProvider.getInstance(getApplicationContext());
-        service.startService();
+        service.startSensingService();
 
     }
 
