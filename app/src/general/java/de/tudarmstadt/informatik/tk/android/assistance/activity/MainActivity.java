@@ -78,8 +78,6 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
         registerForPush();
 
-        HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
-
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
         if (dbModuleInstallations == null) {
@@ -88,6 +86,8 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
             // user has got some active modules -> activate module menu
             if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
+
+                HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
 
                 getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
                 setTitle(R.string.main_activity_title);
@@ -104,6 +104,8 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
             }
 
         } else {
+
+            HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
 
             getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
             setTitle(R.string.main_activity_title);
