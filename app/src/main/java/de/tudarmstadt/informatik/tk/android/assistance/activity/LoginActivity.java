@@ -276,8 +276,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         ButterKnife.bind(this);
 
         if (BuildConfig.DEBUG) {
-            mEmailTextView.setText("test@test.com");
-            mPasswordView.setText("test12345");
+            mEmailTextView.setText("test123@test.de");
+            mPasswordView.setText("test123");
         }
 
         Intent intent = getIntent();
