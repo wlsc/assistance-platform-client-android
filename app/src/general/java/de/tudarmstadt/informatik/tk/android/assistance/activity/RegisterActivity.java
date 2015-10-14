@@ -15,7 +15,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.registration.RegistrationRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.registration.RegistrationResponse;
-import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
@@ -141,7 +141,7 @@ public class RegisterActivity extends AppCompatActivity {
         request.setPassword(passwordHashed);
 
         // calling api service
-        UserService service = EndpointGenerator.create(UserService.class);
+        UserEndpoint service = EndpointGenerator.create(UserEndpoint.class);
         service.registerUser(request, new Callback<RegistrationResponse>() {
 
             @Override

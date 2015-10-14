@@ -34,7 +34,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleShowMoreInfoE
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
-import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
@@ -218,8 +218,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
         final String userToken = UserUtils.getUserToken(getApplicationContext());
 
         // calling api service
-        final ModuleService moduleService = EndpointGenerator.create(ModuleService.class);
-        moduleService.getAvailableModules(userToken, new Callback<List<AvailableModuleResponse>>() {
+        final ModuleEndpoint moduleEndpoint = EndpointGenerator.create(ModuleEndpoint.class);
+        moduleEndpoint.getAvailableModules(userToken, new Callback<List<AvailableModuleResponse>>() {
 
             /**
              * Successful HTTP response.
@@ -235,7 +235,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                     Log.d(TAG, availableModulesResponse.toString());
 
                     // get list of already activated modules
-                    moduleService.getActiveModules(userToken, new Callback<List<String>>() {
+                    moduleEndpoint.getActiveModules(userToken, new Callback<List<String>>() {
 
                         @Override
                         public void success(List<String> activeModules, Response response) {
@@ -619,8 +619,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
         toggleModuleRequest.setModuleId(modulePackageName);
 
-        ModuleService moduleService = EndpointGenerator.create(ModuleService.class);
-        moduleService.activateModule(userToken, toggleModuleRequest, new Callback<Void>() {
+        ModuleEndpoint moduleEndpoint = EndpointGenerator.create(ModuleEndpoint.class);
+        moduleEndpoint.activateModule(userToken, toggleModuleRequest, new Callback<Void>() {
 
             @Override
             public void success(Void aVoid, Response response) {

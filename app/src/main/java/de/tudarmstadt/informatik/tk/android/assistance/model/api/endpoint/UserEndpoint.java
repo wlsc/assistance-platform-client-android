@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.service;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint;
 
 import de.tudarmstadt.informatik.tk.android.assistance.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginRequest;
@@ -22,7 +22,7 @@ import retrofit.http.PUT;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public interface UserService {
+public interface UserEndpoint {
 
     @POST(Config.ASSISTANCE_USER_REGISTER_ENDPOINT)
     void registerUser(@Body RegistrationRequest body,

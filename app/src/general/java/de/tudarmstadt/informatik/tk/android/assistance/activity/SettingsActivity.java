@@ -168,18 +168,9 @@ public class SettingsActivity extends PreferenceActivity {
         setResult(R.id.logout_settings);
 
         // stop the kraken
-        stopSensingService();
+        HarvesterServiceProvider.getInstance(getApplicationContext()).stopSensingService();
 
         finish();
-    }
-
-    /**
-     * Calms down the Kraken.
-     */
-    private void stopSensingService() {
-
-        HarvesterServiceProvider service = HarvesterServiceProvider.getInstance(getApplicationContext());
-        service.stopSensingService();
     }
 
     public Toolbar getToolBar() {

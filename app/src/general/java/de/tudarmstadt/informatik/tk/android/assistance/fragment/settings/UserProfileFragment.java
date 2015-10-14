@@ -36,7 +36,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.Profile
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UpdateProfileRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UserSocialService;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
-import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
@@ -142,8 +142,8 @@ public class UserProfileFragment extends Fragment {
                 userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_image));
             }
 
-            UserService userService = EndpointGenerator.create(UserService.class);
-            userService.getUserProfileFull(userToken, new Callback<ProfileResponse>() {
+            UserEndpoint userEndpoint = EndpointGenerator.create(UserEndpoint.class);
+            userEndpoint.getUserProfileFull(userToken, new Callback<ProfileResponse>() {
 
                 @Override
                 public void success(ProfileResponse profileResponse, Response response) {
@@ -359,8 +359,8 @@ public class UserProfileFragment extends Fragment {
         /**
          * SEND UPDATED USER PROFILE TO SERVER
          */
-        UserService userService = EndpointGenerator.create(UserService.class);
-        userService.updateUserProfile(userToken, request, new Callback<Void>() {
+        UserEndpoint userEndpoint = EndpointGenerator.create(UserEndpoint.class);
+        userEndpoint.updateUserProfile(userToken, request, new Callback<Void>() {
 
             @Override
             public void success(Void aVoid, Response response) {

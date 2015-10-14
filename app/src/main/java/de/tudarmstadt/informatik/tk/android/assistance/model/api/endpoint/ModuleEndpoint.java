@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.service;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import retrofit.http.POST;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 30.06.2015
  */
-public interface ModuleService {
+public interface ModuleEndpoint {
 
     @GET(Config.ASSISTANCE_MODULE_LIST_ENDPOINT)
     void getAvailableModules(@Header("X-AUTH-TOKEN") String userToken,

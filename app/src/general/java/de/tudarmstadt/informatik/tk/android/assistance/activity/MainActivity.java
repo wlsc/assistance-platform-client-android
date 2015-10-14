@@ -17,7 +17,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerAct
 import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
-import de.tudarmstadt.informatik.tk.android.assistance.service.ModuleService;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
@@ -282,8 +282,8 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
         toggleModuleRequest.setModuleId(currentModule.getPackageName());
 
-        ModuleService moduleService = EndpointGenerator.create(ModuleService.class);
-        moduleService.deactivateModule(userToken, toggleModuleRequest, new Callback<Void>() {
+        ModuleEndpoint moduleEndpoint = EndpointGenerator.create(ModuleEndpoint.class);
+        moduleEndpoint.deactivateModule(userToken, toggleModuleRequest, new Callback<Void>() {
 
             @Override
             public void success(Void aVoid, Response response) {

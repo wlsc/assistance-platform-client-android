@@ -14,7 +14,7 @@ import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.resetpassword.ResetPasswordRequest;
-import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
@@ -80,7 +80,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         ResetPasswordRequest request = new ResetPasswordRequest();
         request.setEmail(mUserEmail);
 
-        UserService service = EndpointGenerator.create(UserService.class);
+        UserEndpoint service = EndpointGenerator.create(UserEndpoint.class);
         service.resetUserPassword(request, new Callback<Void>() {
 
             @Override

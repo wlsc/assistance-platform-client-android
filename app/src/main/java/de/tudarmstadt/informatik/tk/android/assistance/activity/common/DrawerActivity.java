@@ -17,7 +17,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.LoginActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.DrawerFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
-import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
@@ -131,7 +131,7 @@ public class DrawerActivity extends AppCompatActivity {
 
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
-        UserService userservice = EndpointGenerator.create(UserService.class);
+        UserEndpoint userservice = EndpointGenerator.create(UserEndpoint.class);
         userservice.getUserProfileShort(userToken, new Callback<ProfileResponse>() {
 
             @Override

@@ -45,7 +45,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEv
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.UserDevice;
-import de.tudarmstadt.informatik.tk.android.assistance.service.UserService;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.HardwareUtils;
@@ -416,8 +416,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         /**
          * Logging in the user
          */
-        UserService userService = EndpointGenerator.create(UserService.class);
-        userService.loginUser(request, new Callback<LoginResponse>() {
+        UserEndpoint userEndpoint = EndpointGenerator.create(UserEndpoint.class);
+        userEndpoint.loginUser(request, new Callback<LoginResponse>() {
 
             @Override
             public void success(LoginResponse apiResponse, Response response) {
