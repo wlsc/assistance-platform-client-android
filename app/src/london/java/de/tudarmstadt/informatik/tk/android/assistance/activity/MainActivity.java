@@ -2,19 +2,18 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
@@ -34,17 +33,22 @@ import de.tudarmstadt.informatik.tk.android.kraken.util.GcmUtils;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class MainActivity extends DrawerActivity implements DrawerClickHandler {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private DbProvider dbProvider;
+
+    private Toolbar mToolbar;
 
     private List<DbModuleInstallation> dbModuleInstallations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mToolbar = ButterKnife.findById(this, R.id.toolbar_actionbar);
+        setSupportActionBar(mToolbar);
 
         boolean accessibilityServiceActivated = PreferenceProvider.getInstance(getApplicationContext()).getActivated();
 
@@ -85,11 +89,8 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
                 Log.d(TAG, "dbModuleInstallations found entries in db!");
 
-                getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
+                setContentView(R.layout.activity_main);
                 setTitle(dbModuleInstallations.get(0).getDbModule().getTitle());
-
-                mDrawerFragment.updateDrawerBody(getApplicationContext());
-
             } else {
 
                 Log.d(TAG, "dbModuleInstallations NO data in db");
@@ -97,20 +98,16 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
                 // demo data
                 installDemoData(userId);
 
-                getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
+                setContentView(R.layout.activity_main);
                 setTitle(R.string.main_activity_title);
-
-                mDrawerFragment.updateDrawerBody(getApplicationContext());
             }
 
         } else {
 
             Log.d(TAG, "dbModuleInstallations not empty");
 
-            getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
+            setContentView(R.layout.activity_main);
             setTitle(R.string.main_activity_title);
-
-            mDrawerFragment.updateDrawerBody(getApplicationContext());
         }
 
         HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
@@ -174,7 +171,7 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
         if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
 
             MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.module_menu, menu);
+            inflater.inflate(R.menu.news_menu, menu);
 
             return true;
         }
@@ -211,17 +208,6 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
         }
     }
 
-    /**
-     * Gives current selected module by user via navigation drawer
-     *
-     * @return
-     */
-    private DbModuleInstallation getCurrentActiveModuleFromDrawer() {
-
-        DrawerItem item = mDrawerFragment.getNavigationItems().get(mDrawerFragment.getCurrentSelectedPosition());
-        return item.getModule();
-    }
-
     @Override
     protected void onDestroy() {
         Log.d(TAG, "onDestroy -> unbound resources");
@@ -238,10 +224,5 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    @Override
-    public void onNavigationDrawerItemSelected(View v, int position) {
-
     }
 }

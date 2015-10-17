@@ -1,7 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.Manifest;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v7.widget.Toolbar;
@@ -72,30 +71,31 @@ public class SettingsActivity extends PreferenceActivity {
         mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
 
-        FragmentManager fm = getFragmentManager();
-        fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-
-            @Override
-            public void onBackStackChanged() {
-                if (getFragmentManager().getBackStackEntryCount() == 0) {
-                    setResult(R.id.settings);
-                    finish();
-                }
-            }
-        });
+        // TODO:
+//        FragmentManager fm = getFragmentManager();
+//        fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+//
+//            @Override
+//            public void onBackStackChanged() {
+//                if (getFragmentManager().getBackStackEntryCount() == 0) {
+//                    setResult(R.id.settings);
+//                    finish();
+//                }
+//            }
+//        });
     }
 
     @OnClick(R.id.toolbar)
     protected void onBackClicked() {
         Log.d(TAG, "On toolbar back pressed");
-        setResult(R.id.settings);
+        setResult(R.id.menu_settings);
         finish();
     }
 
     @Override
     public void onBackPressed() {
         Log.d(TAG, "On normal back pressed");
-        setResult(R.id.settings);
+        setResult(R.id.menu_settings);
         finish();
     }
 

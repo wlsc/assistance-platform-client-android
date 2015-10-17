@@ -3,31 +3,37 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.DrawerClickHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
-import de.tudarmstadt.informatik.tk.android.assistance.model.item.DrawerItem;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.service.GcmRegistrationIntentService;
+import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.GcmUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -40,11 +46,13 @@ import retrofit.client.Response;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class MainActivity extends DrawerActivity implements DrawerClickHandler {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private DbProvider dbProvider;
+
+    private Toolbar mToolbar;
 
     private Menu menu;
 
@@ -89,10 +97,16 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
                 HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
 
-                getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
+                setContentView(R.layout.activity_main);
                 setTitle(R.string.main_activity_title);
 
-                mDrawerFragment.updateDrawerBody(getApplicationContext());
+                mToolbar = ButterKnife.findById(this, R.id.toolbar);
+//                setSupportActionBar(mToolbar);
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+                CollapsingToolbarLayout collapsingToolbar = ButterKnife.findById(this, R.id.collapsing_toolbar);
+                collapsingToolbar.setTitle("yey");
 
             } else {
 
@@ -107,10 +121,16 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
             HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
 
-            getLayoutInflater().inflate(R.layout.activity_main, mFrameLayout);
+            setContentView(R.layout.activity_main);
             setTitle(R.string.main_activity_title);
 
-            mDrawerFragment.updateDrawerBody(getApplicationContext());
+            mToolbar = ButterKnife.findById(this, R.id.toolbar);
+//            setSupportActionBar(mToolbar);
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+            CollapsingToolbarLayout collapsingToolbar = ButterKnife.findById(this, R.id.collapsing_toolbar);
+            collapsingToolbar.setTitle("yey");
         }
     }
 
@@ -146,49 +166,17 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        // if we have no modules installed -> no menu will be visible
-        if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
-
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.module_menu, menu);
-
-            this.menu = menu;
-
-            return true;
-        }
-
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.news_menu, menu);
+        this.menu = menu;
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.menu_module_toggle_state:
-
-                int result = toggleModuleState(item.isChecked());
-
-                switch (result) {
-                    case 0:
-                        item.setChecked(false);
-                        break;
-                    case 1:
-                        item.setChecked(true);
-                        break;
-                    default:
-                        break;
-                }
-
+            case R.id.menu_settings:
                 return true;
-
-            case R.id.menu_module_uninstall:
-
-                Log.d(TAG, "User clicked module uninstall");
-
-                moduleUninstall();
-
-                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -208,18 +196,18 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
         Log.d(TAG, "Updating menu..");
 
         if (menu != null) {
-
-            DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
-            List<DbModuleInstallation> moduleInstallations = currentModule.getDbModuleInstallationList();
-
-            MenuItem toggleModuleStateItem = menu.findItem(R.id.menu_module_toggle_state);
-
-            for (DbModuleInstallation installedModule : moduleInstallations) {
-
-                if (installedModule.getModuleId().equals(currentModule.getId())) {
-                    toggleModuleStateItem.setChecked(installedModule.getActive());
-                }
-            }
+            // TODO:
+//            DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
+//            List<DbModuleInstallation> moduleInstallations = currentModule.getDbModuleInstallationList();
+//
+//            MenuItem toggleModuleStateItem = menu.findItem(R.id.menu_module_toggle_state);
+//
+//            for (DbModuleInstallation installedModule : moduleInstallations) {
+//
+//                if (installedModule.getModuleId().equals(currentModule.getId())) {
+//                    toggleModuleStateItem.setChecked(installedModule.getActive());
+//                }
+//            }
         }
     }
 
@@ -230,42 +218,32 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
      */
     private int toggleModuleState(boolean moduleState) {
 
-        DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
-
-        DbModuleInstallation moduleInstallation = dbProvider.getModuleInstallationForModuleByUserId(
-                currentModule.getUserId(),
-                currentModule.getId());
-
-        if (moduleInstallation == null) {
-            Toaster.showLong(getApplicationContext(), R.string.error_module_not_installed);
-        } else {
-
-            moduleInstallation.setActive(moduleState);
-
-            dbProvider.updateModuleInstallation(moduleInstallation);
-
-            if (moduleState) {
-                Log.d(TAG, "User DISABLED a module");
-                return 0;
-            } else {
-                Log.d(TAG, "User ENABLED a module");
-                return 1;
-            }
-
-        }
+        // TODO:
+//        DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
+//
+//        DbModuleInstallation moduleInstallation = dbProvider.getModuleInstallationForModuleByUserId(
+//                currentModule.getUserId(),
+//                currentModule.getId());
+//
+//        if (moduleInstallation == null) {
+//            Toaster.showLong(getApplicationContext(), R.string.error_module_not_installed);
+//        } else {
+//
+//            moduleInstallation.setActive(moduleState);
+//
+//            dbProvider.updateModuleInstallation(moduleInstallation);
+//
+//            if (moduleState) {
+//                Log.d(TAG, "User DISABLED a module");
+//                return 0;
+//            } else {
+//                Log.d(TAG, "User ENABLED a module");
+//                return 1;
+//            }
+//
+//        }
 
         return -1;
-    }
-
-    /**
-     * Gives current selected module by user via navigation drawer
-     *
-     * @return
-     */
-    private DbModuleInstallation getCurrentActiveModuleFromDrawer() {
-
-        DrawerItem item = mDrawerFragment.getNavigationItems().get(mDrawerFragment.getCurrentSelectedPosition());
-        return item.getModule();
     }
 
     /**
@@ -275,12 +253,13 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
 
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
-        DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
-
-        Log.d(TAG, "Uninstall module. ModuleId: " + currentModule.getId() + " package: " + currentModule.getPackageName());
+        // TODO:
+//        DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
+//
+//        Log.d(TAG, "Uninstall module. ModuleId: " + currentModule.getId() + " package: " + currentModule.getPackageName());
 
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
-        toggleModuleRequest.setModuleId(currentModule.getPackageName());
+//        toggleModuleRequest.setModuleId(currentModule.getPackageName());
 
         ModuleEndpoint moduleEndpoint = EndpointGenerator.create(ModuleEndpoint.class);
         moduleEndpoint.deactivateModule(userToken, toggleModuleRequest, new Callback<Void>() {
@@ -304,8 +283,6 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
                             })
                             .setActionTextColor(Color.RED)
                             .show();
-
-                    mDrawerFragment.updateDrawerBody(getApplicationContext());
                 }
             }
 
@@ -316,8 +293,6 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
                 // no such installed module -> remove it immediately
                 if (error.getResponse() == null || error.getResponse().getStatus() == 400) {
                     uninstallModuleFromDb();
-
-                    mDrawerFragment.updateDrawerBody(getApplicationContext());
                 }
             }
         });
@@ -328,23 +303,24 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
      */
     private void uninstallModuleFromDb() {
 
-        DbModuleInstallation currentModule = getCurrentActiveModuleFromDrawer();
+        // TODO:
+//        DbModuleInstallation currentModule = getCurrentActiveModuleFromDrawer();
+//
+//        long currentUserId = currentModule.getUserId();
+//        long currentModuleId = currentModule.getModuleId();
+//
+//        Log.d(TAG, "Current user id: " + currentUserId);
+//        Log.d(TAG, "Current module id: " + currentModuleId);
 
-        long currentUserId = currentModule.getUserId();
-        long currentModuleId = currentModule.getModuleId();
-
-        Log.d(TAG, "Current user id: " + currentUserId);
-        Log.d(TAG, "Current module id: " + currentModuleId);
-
-        Log.d(TAG, "Removing module from db...");
-
-        List<DbModuleInstallation> installedModules = dbProvider.getModuleInstallationsByUserId(
-                currentUserId,
-                currentModuleId);
-
-        dbProvider.removeInstalledModules(installedModules);
-
-        Log.d(TAG, "Finished removing module from db!");
+//        Log.d(TAG, "Removing module from db...");
+//
+//        List<DbModuleInstallation> installedModules = dbProvider.getModuleInstallationsByUserId(
+//                currentUserId,
+//                currentModuleId);
+//
+//        dbProvider.removeInstalledModules(installedModules);
+//
+//        Log.d(TAG, "Finished removing module from db!");
     }
 
     @Override
@@ -365,8 +341,126 @@ public class MainActivity extends DrawerActivity implements DrawerClickHandler {
         }
     }
 
-    @Override
-    public void onNavigationDrawerItemSelected(View v, int position) {
-        // TODO
+    /**
+     * Requests user profile information
+     */
+    private void requestUserProfile() {
+
+        String userToken = UserUtils.getUserToken(getApplicationContext());
+
+        UserEndpoint userservice = EndpointGenerator.create(UserEndpoint.class);
+        userservice.getUserProfileShort(userToken, new Callback<ProfileResponse>() {
+
+            @Override
+            public void success(ProfileResponse profileResponse, Response response) {
+
+                if (profileResponse == null) {
+                    return;
+                }
+
+                UserUtils.saveUserFirstname(getApplicationContext(), profileResponse.getFirstname());
+                UserUtils.saveUserLastname(getApplicationContext(), profileResponse.getLastname());
+                UserUtils.saveUserEmail(getApplicationContext(), profileResponse.getPrimaryEmail());
+
+                persistLogin(profileResponse);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                showErrorMessages(TAG, error);
+            }
+        });
+    }
+
+    /**
+     * Updates existent user login or creates one in db
+     *
+     * @param profileResponse
+     */
+    private void persistLogin(ProfileResponse profileResponse) {
+
+        // check already available user in db
+        DbUser user = dbProvider.getUserByEmail(profileResponse.getPrimaryEmail());
+
+        // check for user existence in the db
+        if (user == null) {
+            // no user found -> create one
+
+            user = new DbUser();
+
+            user.setFirstname(profileResponse.getFirstname());
+            user.setLastname(profileResponse.getLastname());
+            user.setPrimaryEmail(profileResponse.getPrimaryEmail());
+
+            if (profileResponse.getJoinedSince() != null) {
+                user.setJoinedSince(DateUtils.dateToISO8601String(new Date(profileResponse.getJoinedSince()), Locale.getDefault()));
+            }
+
+            if (profileResponse.getLastLogin() != null) {
+                user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
+            }
+
+            user.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+
+            dbProvider.insertUser(user);
+
+        } else {
+            // found a user -> update for device and user information
+
+            user.setFirstname(profileResponse.getFirstname());
+            user.setLastname(profileResponse.getLastname());
+            user.setPrimaryEmail(profileResponse.getPrimaryEmail());
+
+            if (profileResponse.getJoinedSince() != null) {
+                user.setJoinedSince(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+            }
+
+            if (profileResponse.getLastLogin() != null) {
+                user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
+            }
+
+            dbProvider.updateUser(user);
+        }
+    }
+
+    /**
+     * Processes error response from server
+     *
+     * @param TAG
+     * @param retrofitError
+     */
+    protected void showErrorMessages(String TAG, RetrofitError retrofitError) {
+
+        Response response = retrofitError.getResponse();
+
+        if (response != null) {
+
+            int httpCode = response.getStatus();
+
+            switch (httpCode) {
+                case 400:
+                    Toaster.showLong(getApplicationContext(), R.string.error_service_bad_request);
+                    break;
+                case 401:
+                    Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+                    PreferencesUtils.clearUserCredentials(getApplicationContext());
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                    break;
+                case 404:
+                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+                    break;
+                case 503:
+                    Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
+                    break;
+                default:
+                    Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+                    break;
+            }
+        } else {
+            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+        }
     }
 }
