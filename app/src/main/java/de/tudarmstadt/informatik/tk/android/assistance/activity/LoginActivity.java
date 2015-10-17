@@ -416,7 +416,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         /**
          * Logging in the user
          */
-        UserEndpoint userEndpoint = EndpointGenerator.create(UserEndpoint.class);
+        UserEndpoint userEndpoint = EndpointGenerator.getInstance(getApplicationContext()).create(UserEndpoint.class);
         userEndpoint.loginUser(request, new Callback<LoginResponse>() {
 
             @Override

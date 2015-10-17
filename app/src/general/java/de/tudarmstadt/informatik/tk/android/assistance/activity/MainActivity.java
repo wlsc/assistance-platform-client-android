@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
 //        toggleModuleRequest.setModuleId(currentModule.getPackageName());
 
-        ModuleEndpoint moduleEndpoint = EndpointGenerator.create(ModuleEndpoint.class);
+        ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(getApplicationContext()).create(ModuleEndpoint.class);
         moduleEndpoint.deactivateModule(userToken, toggleModuleRequest, new Callback<Void>() {
 
             @Override
@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
 
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
-        UserEndpoint userservice = EndpointGenerator.create(UserEndpoint.class);
+        UserEndpoint userservice = EndpointGenerator.getInstance(getApplicationContext()).create(UserEndpoint.class);
         userservice.getUserProfileShort(userToken, new Callback<ProfileResponse>() {
 
             @Override

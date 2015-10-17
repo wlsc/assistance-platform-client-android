@@ -101,7 +101,7 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
             deviceUserDefinedNameRequest.setDeviceId(currentDeviceId);
             deviceUserDefinedNameRequest.setUserDefinedName(deviceName);
 
-            DeviceEndpoint deviceEndpoint = EndpointGenerator.create(DeviceEndpoint.class);
+            DeviceEndpoint deviceEndpoint = EndpointGenerator.getInstance(getActivity().getApplicationContext()).create(DeviceEndpoint.class);
             deviceEndpoint.setUserDefinedName(userToken, deviceUserDefinedNameRequest, new Callback<Void>() {
 
                 @Override

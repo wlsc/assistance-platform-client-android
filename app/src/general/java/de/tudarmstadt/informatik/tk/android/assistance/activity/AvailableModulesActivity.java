@@ -217,7 +217,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         final String userToken = UserUtils.getUserToken(getApplicationContext());
 
         // calling api service
-        final ModuleEndpoint moduleEndpoint = EndpointGenerator.create(ModuleEndpoint.class);
+        final ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(getApplicationContext()).create(ModuleEndpoint.class);
         moduleEndpoint.getAvailableModules(userToken, new Callback<List<AvailableModuleResponse>>() {
 
             /**
@@ -614,7 +614,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
         toggleModuleRequest.setModuleId(modulePackageName);
 
-        ModuleEndpoint moduleEndpoint = EndpointGenerator.create(ModuleEndpoint.class);
+        ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(getApplicationContext()).create(ModuleEndpoint.class);
         moduleEndpoint.activateModule(userToken, toggleModuleRequest, new Callback<Void>() {
 
             @Override

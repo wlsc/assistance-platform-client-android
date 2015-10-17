@@ -142,7 +142,7 @@ public class UserProfileFragment extends Fragment {
                 userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_image));
             }
 
-            UserEndpoint userEndpoint = EndpointGenerator.create(UserEndpoint.class);
+            UserEndpoint userEndpoint = EndpointGenerator.getInstance(getActivity().getApplicationContext()).create(UserEndpoint.class);
             userEndpoint.getUserProfileFull(userToken, new Callback<ProfileResponse>() {
 
                 @Override
@@ -359,7 +359,7 @@ public class UserProfileFragment extends Fragment {
         /**
          * SEND UPDATED USER PROFILE TO SERVER
          */
-        UserEndpoint userEndpoint = EndpointGenerator.create(UserEndpoint.class);
+        UserEndpoint userEndpoint = EndpointGenerator.getInstance(getActivity().getApplicationContext()).create(UserEndpoint.class);
         userEndpoint.updateUserProfile(userToken, request, new Callback<Void>() {
 
             @Override

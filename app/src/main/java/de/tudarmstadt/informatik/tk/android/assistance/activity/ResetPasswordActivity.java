@@ -80,7 +80,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         ResetPasswordRequest request = new ResetPasswordRequest();
         request.setEmail(mUserEmail);
 
-        UserEndpoint service = EndpointGenerator.create(UserEndpoint.class);
+        UserEndpoint service = EndpointGenerator.getInstance(getApplicationContext()).create(UserEndpoint.class);
         service.resetUserPassword(request, new Callback<Void>() {
 
             @Override
