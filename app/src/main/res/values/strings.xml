@@ -71,7 +71,7 @@
     <string name="splash_copyright_year">Telecooperation\nTU Darmstadt\n2015</string>
 
     <!-- MAIN SCREEN -->
-    <string name="main_activity_title">Module name</string>
+    <string name="main_activity_title">Assistance</string>
     <string name="main_activity_module_menu_enabled">Module enabled</string>
     <string name="main_activity_module_menu_enable">Enable</string>
     <string name="main_activity_module_menu_disable">Disable</string>

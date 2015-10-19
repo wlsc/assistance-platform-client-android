@@ -24,6 +24,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.Develop
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorsListFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDeviceInfoSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
@@ -165,11 +166,10 @@ public class SettingsActivity extends PreferenceActivity {
 
         PreferencesUtils.clearUserCredentials(this);
 
-        setResult(R.id.logout_settings);
-
         // stop the kraken
         HarvesterServiceProvider.getInstance(getApplicationContext()).stopSensingService();
 
+        setResult(Constants.INTENT_SETTINGS_LOGOUT_RESULT);
         finish();
     }
 

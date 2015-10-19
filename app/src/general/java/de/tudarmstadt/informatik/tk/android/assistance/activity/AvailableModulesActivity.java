@@ -3,10 +3,11 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -28,6 +30,7 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.adapter.AvailableModulesAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
@@ -38,7 +41,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.view.CardView;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
@@ -48,11 +50,6 @@ import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
-import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
-import it.gmariotti.cardslib.library.internal.CardHeader;
-import it.gmariotti.cardslib.library.internal.CardThumbnail;
-import it.gmariotti.cardslib.library.view.CardListView;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -71,20 +68,26 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     protected Toolbar mToolbar;
 
-    protected CardListView mModuleList;
-
     protected SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Map<String, AvailableModuleResponse> mAvailableModuleResponses;
 
     private List<String> mActiveModules;
 
-    private ArrayList<Card> mModuleCards;
+    private List<DbModule> mModules;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_available_modules);
+
+        mRecyclerView = ButterKnife.findById(this, R.id.moduleListRecyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
 
         if (dbProvider == null) {
             dbProvider = DbProvider.getInstance(getApplicationContext());
@@ -96,7 +99,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mModuleList = ButterKnife.findById(this, R.id.module_list);
         mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);
 
         setTitle(R.string.module_list_activity_title);
@@ -143,7 +145,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         List<DbModule> userModules = user.getDbModuleList();
 
-
         // no modules was found -> request from server
         if (userModules.isEmpty()) {
             Log.d(TAG, "Module list not found in db. Requesting from server...");
@@ -153,32 +154,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
         } else {
             // there are modules were found -> populate a list
 
-            mAvailableModuleResponses = new ArrayMap<>();
-
-            ArrayList<Card> cards = new ArrayList<>();
+            mAvailableModuleResponses = new HashMap<>();
 
             for (DbModule module : userModules) {
-
-                CardView card = new CardView(getApplicationContext());
-                CardHeader header = new CardHeader(this);
-
-                header.setTitle(module.getTitle());
-                card.setTitle(module.getDescriptionShort());
-                card.addCardHeader(header);
-                card.setModuleId(module.getPackageName());
-
-                CardThumbnail thumb = new CardThumbnail(this);
-
-                String logoUrl = module.getLogoUrl();
-
-                if (logoUrl.isEmpty()) {
-                    thumb.setDrawableResource(R.drawable.no_image);
-                } else {
-                    thumb.setUrlResource(logoUrl);
-                }
-
-                card.addCardThumbnail(thumb);
-                cards.add(card);
 
                 AvailableModuleResponse availableModule = ConverterUtils.convertModule(module);
 
@@ -203,8 +181,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 mAvailableModuleResponses.put(availableModule.getModulePackage(), availableModule);
             }
 
-            if (mModuleList != null) {
-                mModuleList.setAdapter(new CardArrayAdapter(this, cards));
+            if (userModules != null) {
+                mRecyclerView.setAdapter(new AvailableModulesAdapter(userModules));
             }
         }
     }
@@ -436,47 +414,23 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void populateAvailableModuleList(List<AvailableModuleResponse> availableModulesResponse) {
 
-        mAvailableModuleResponses = new ArrayMap<>();
+        mAvailableModuleResponses = new HashMap<>();
 
-        if (mModuleCards == null) {
-            mModuleCards = new ArrayList<>();
+        if (mModules == null) {
+            mModules = new ArrayList<>();
         }
 
         for (AvailableModuleResponse module : availableModulesResponse) {
 
             Log.d(TAG, module.toString());
 
-            CardView card = new CardView(getApplicationContext());
-            CardHeader header = new CardHeader(this);
-
-            header.setTitle(module.getTitle());
-            card.setTitle(module.getDescriptionShort());
-            card.addCardHeader(header);
-            card.setModuleId(module.getModulePackage());
-
-            CardThumbnail thumb = new CardThumbnail(this);
-
-            String logoUrl = module.getLogo();
-
-            if (logoUrl.isEmpty()) {
-                thumb.setDrawableResource(R.drawable.no_image);
-            } else {
-                thumb.setUrlResource(logoUrl);
-            }
-
-            card.addCardThumbnail(thumb);
-
-            mModuleCards.add(card);
+            mModules.add(ConverterUtils.convertModule(module));
 
             // for easy access later on
             mAvailableModuleResponses.put(module.getModulePackage(), module);
         }
 
-        CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(this, mModuleCards);
-
-        if (mModuleList != null) {
-            mModuleList.setAdapter(mCardArrayAdapter);
-        }
+        mRecyclerView.setAdapter(new AvailableModulesAdapter(mModules));
     }
 
     /**
@@ -699,13 +653,14 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy -> unbound resources");
+
         ButterKnife.unbind(this);
 
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
 
-        Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }
 

@@ -3,7 +3,6 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
@@ -31,7 +31,6 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.GcmUtils;
@@ -62,17 +61,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        boolean accessibilityServiceActivated = PreferenceProvider.getInstance(getApplicationContext()).getActivated();
+        setContentView(R.layout.activity_main);
+        setTitle(R.string.main_activity_title);
 
-        if (accessibilityServiceActivated) {
-            initView();
-        } else {
+        ButterKnife.bind(this);
 
-            Log.d(TAG, "Accessibility Service is NOT active! Showing tutorial...");
+        mToolbar = ButterKnife.findById(this, R.id.toolbar);
+        setSupportActionBar(mToolbar);
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-            Intent intent = new Intent(this, AccessibilityTutorialActivity.class);
-            startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
-        }
+
+//        boolean accessibilityServiceActivated = PreferenceProvider.getInstance(getApplicationContext()).getActivated();
+//
+//        if (accessibilityServiceActivated) {
+//            initView();
+//        } else {
+//
+//            Log.d(TAG, "Accessibility Service is NOT active! Showing tutorial...");
+//
+//            Intent intent = new Intent(this, AccessibilityTutorialActivity.class);
+//            startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
+//        }
     }
 
     /**
@@ -101,12 +111,9 @@ public class MainActivity extends AppCompatActivity {
                 setTitle(R.string.main_activity_title);
 
                 mToolbar = ButterKnife.findById(this, R.id.toolbar);
-//                setSupportActionBar(mToolbar);
+                setSupportActionBar(mToolbar);
 //                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//                getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-                CollapsingToolbarLayout collapsingToolbar = ButterKnife.findById(this, R.id.collapsing_toolbar);
-                collapsingToolbar.setTitle("yey");
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
 
             } else {
 
@@ -125,12 +132,10 @@ public class MainActivity extends AppCompatActivity {
             setTitle(R.string.main_activity_title);
 
             mToolbar = ButterKnife.findById(this, R.id.toolbar);
-//            setSupportActionBar(mToolbar);
+            setSupportActionBar(mToolbar);
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-            CollapsingToolbarLayout collapsingToolbar = ButterKnife.findById(this, R.id.collapsing_toolbar);
-            collapsingToolbar.setTitle("yey");
         }
     }
 
@@ -160,6 +165,9 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Google Play Services NOT installed.");
 
             UserUtils.saveGcmTokenWasSent(getApplicationContext(), false);
+
+            // TODO: tell user that it is impossible without play services
+            // or just make here impl without play services.
         }
     }
 
@@ -176,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, Constants.INTENT_SETTINGS_LOGOUT_RESULT);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -326,15 +336,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Log.d(TAG, "onDestroy -> unbound resources");
+        ButterKnife.unbind(this);
         super.onDestroy();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        Log.d(TAG, "onActivityResult");
+
         switch (requestCode) {
             case Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT:
                 initView();
+                break;
+            case Constants.INTENT_SETTINGS_LOGOUT_RESULT:
+//                PreferencesUtils.clearUserCredentials(getApplicationContext());
+//                finish();
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -421,6 +438,13 @@ public class MainActivity extends AppCompatActivity {
 
             dbProvider.updateUser(user);
         }
+    }
+
+    @OnClick(R.id.show_available_modules)
+    protected void onShowAvailableModules() {
+
+        Intent intent = new Intent(this, AvailableModulesActivity.class);
+        startActivity(intent);
     }
 
     /**

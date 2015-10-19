@@ -25,7 +25,7 @@
     </style>
 
     <style name="ToolBarStyle" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
     <style name="splashScreenTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
