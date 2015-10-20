@@ -1,10 +1,10 @@
 package de.tudarmstadt.informatik.tk.android.assistance.fragment.settings;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
@@ -27,7 +27,7 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
     private static Preference.OnPreferenceClickListener aboutClickHandler;
     private static Preference.OnPreferenceClickListener buildNumberClickHandler;
 
-    private AlertDialog.Builder builder;
+    private AlertDialog dialog;
 
     private int beDeveloperCounter;
 
@@ -142,7 +142,7 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
 
         aboutClickHandler = null;
         buildNumberClickHandler = null;
-        builder = null;
+        dialog = null;
     }
 
     /**
@@ -150,14 +150,16 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
      */
     private void showAboutInformation() {
 
-        if (builder == null) {
-            builder = new AlertDialog.Builder(getActivity());
+        if (dialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage("This an about dialog!");
-            builder.create();
+
+            dialog = builder.create();
         }
 
         if (!getActivity().isFinishing()) {
-            builder.show();
+            dialog.show();
         }
     }
 }
