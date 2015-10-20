@@ -86,9 +86,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_available_modules);
 
-        mRecyclerView = ButterKnife.findById(this, R.id.moduleListRecyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
-
         if (dbProvider == null) {
             dbProvider = DbProvider.getInstance(getApplicationContext());
         }
@@ -99,10 +96,12 @@ public class AvailableModulesActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);
-
         setTitle(R.string.module_list_activity_title);
 
+        mRecyclerView = ButterKnife.findById(this, R.id.moduleListRecyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
+
+        mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -118,7 +117,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
             }
         });
 
-        mSwipeRefreshLayout.setRefreshing(true);
+        mSwipeRefreshLayout.setNestedScrollingEnabled(true);
 
         // register this activity to events
         if (!EventBus.getDefault().isRegistered(this)) {
