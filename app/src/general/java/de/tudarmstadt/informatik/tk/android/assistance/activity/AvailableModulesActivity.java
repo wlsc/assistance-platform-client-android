@@ -112,7 +112,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
             @Override
             public void onRefresh() {
-                loadModules();
+//                loadModules();
+                // request new modules infomation
+                requestAvailableModules();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -194,66 +196,70 @@ public class AvailableModulesActivity extends AppCompatActivity {
         final String userToken = UserUtils.getUserToken(getApplicationContext());
 
         // calling api service
-        final ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(getApplicationContext()).create(ModuleEndpoint.class);
-        moduleEndpoint.getAvailableModules(userToken, new Callback<List<AvailableModuleResponse>>() {
+        final ModuleEndpoint moduleEndpoint = EndpointGenerator
+                .getInstance(getApplicationContext())
+                .create(ModuleEndpoint.class);
 
-            /**
-             * Successful HTTP response.
-             *
-             * @param availableModulesResponse
-             * @param response
-             */
-            @Override
-            public void success(final List<AvailableModuleResponse> availableModulesResponse, Response response) {
+        moduleEndpoint.getAvailableModules(userToken,
+                new Callback<List<AvailableModuleResponse>>() {
 
-                if (availableModulesResponse != null && !availableModulesResponse.isEmpty()) {
+                    /**
+                     * Successful HTTP response.
+                     *
+                     * @param availableModulesResponse
+                     * @param response
+                     */
+                    @Override
+                    public void success(final List<AvailableModuleResponse> availableModulesResponse, Response response) {
 
-                    Log.d(TAG, availableModulesResponse.toString());
+                        if (availableModulesResponse != null && !availableModulesResponse.isEmpty()) {
 
-                    // get list of already activated modules
-                    moduleEndpoint.getActiveModules(userToken, new Callback<List<String>>() {
+                            Log.d(TAG, availableModulesResponse.toString());
 
-                        @Override
-                        public void success(List<String> activeModules, Response response) {
+                            // get list of already activated modules
+                            moduleEndpoint.getActiveModules(userToken, new Callback<List<String>>() {
 
+                                @Override
+                                public void success(List<String> activeModules, Response response) {
+
+                                    mSwipeRefreshLayout.setRefreshing(false);
+
+                                    if (activeModules != null && !activeModules.isEmpty()) {
+
+                                        Log.d(TAG, activeModules.toString());
+
+                                        mActiveModules = activeModules;
+                                    }
+
+                                    processAvailableModules(availableModulesResponse);
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    showErrorMessages(TAG, error);
+                                    processAvailableModules(availableModulesResponse);
+                                    mSwipeRefreshLayout.setRefreshing(false);
+                                }
+                            });
+
+                        } else {
+                            // TODO: show no modules available
                             mSwipeRefreshLayout.setRefreshing(false);
-
-                            if (activeModules != null && !activeModules.isEmpty()) {
-
-                                Log.d(TAG, activeModules.toString());
-
-                                mActiveModules = activeModules;
-                            }
-
-                            processAvailableModules(availableModulesResponse);
                         }
+                    }
 
-                        @Override
-                        public void failure(RetrofitError error) {
-                            showErrorMessages(TAG, error);
-                            processAvailableModules(availableModulesResponse);
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
-
-                } else {
-                    // TODO: show no modules available
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
-            }
-
-            /**
-             * Unsuccessful HTTP response due to network failure, non-2XX status code, or unexpected
-             * exception.
-             *
-             * @param error
-             */
-            @Override
-            public void failure(RetrofitError error) {
-                showErrorMessages(TAG, error);
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
+                    /**
+                     * Unsuccessful HTTP response due to network failure, non-2XX status code, or unexpected
+                     * exception.
+                     *
+                     * @param error
+                     */
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showErrorMessages(TAG, error);
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                });
     }
 
     /**
@@ -463,6 +469,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setInverseBackgroundForced(true);
+        dialogBuilder.setView(R.style.AppCompatAlertDialog);
 
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_dialog_more_info_module, null);
@@ -495,6 +502,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setInverseBackgroundForced(true);
+        dialogBuilder.setView(R.style.AppCompatAlertDialog);
 
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_dialog_permissions, null);
