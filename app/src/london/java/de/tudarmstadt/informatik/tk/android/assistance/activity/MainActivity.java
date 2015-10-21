@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mToolbar = ButterKnife.findById(this, R.id.toolbar_actionbar);
+        mToolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(mToolbar);
 
         boolean accessibilityServiceActivated = PreferenceProvider.getInstance(getApplicationContext()).getActivated();

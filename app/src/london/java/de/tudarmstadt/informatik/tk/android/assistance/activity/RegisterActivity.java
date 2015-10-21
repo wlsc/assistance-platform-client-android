@@ -146,7 +146,8 @@ public class RegisterActivity extends AppCompatActivity {
         request.setPassword(passwordHashed);
 
         // calling api service
-        UserEndpoint service = EndpointGenerator.create(UserEndpoint.class);
+        UserEndpoint service = EndpointGenerator.getInstance(getApplicationContext())
+                .create(UserEndpoint.class);
         service.registerUser(request, new Callback<RegistrationResponse>() {
 
             @Override
