@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
@@ -64,11 +65,16 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     private static final String TAG = AvailableModulesActivity.class.getSimpleName();
 
-    private DbProvider dbProvider;
-
+    @Bind(R.id.toolbar)
     protected Toolbar mToolbar;
 
+    @Bind(R.id.module_list_swipe_refresh_layout)
     protected SwipeRefreshLayout mSwipeRefreshLayout;
+
+    @Bind(R.id.moduleListRecyclerView)
+    protected RecyclerView mRecyclerView;
+
+    private DbProvider dbProvider;
 
     private Map<String, AvailableModuleResponse> mAvailableModuleResponses;
 
@@ -76,10 +82,10 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     private List<DbModule> mModules;
 
-    private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private SwipeRefreshLayout.OnRefreshListener onRefreshHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,35 +96,36 @@ public class AvailableModulesActivity extends AppCompatActivity {
             dbProvider = DbProvider.getInstance(getApplicationContext());
         }
 
-        mToolbar = ButterKnife.findById(this, R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        ButterKnife.bind(this);
 
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         setTitle(R.string.module_list_activity_title);
 
-        mRecyclerView = ButterKnife.findById(this, R.id.moduleListRecyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        if (onRefreshHandler == null) {
+            onRefreshHandler = new SwipeRefreshLayout.OnRefreshListener() {
 
-            @Override
-            public void onRefresh() {
+                @Override
+                public void onRefresh() {
 //                loadModules();
-                // request new modules infomation
-                requestAvailableModules();
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
+                    // request new modules infomation
+                    requestAvailableModules();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            };
+        }
 
+        mSwipeRefreshLayout.setOnRefreshListener(onRefreshHandler);
         mSwipeRefreshLayout.setNestedScrollingEnabled(true);
 
         // register this activity to events
@@ -182,9 +189,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 mAvailableModuleResponses.put(availableModule.getModulePackage(), availableModule);
             }
 
-            if (userModules != null) {
-                mRecyclerView.setAdapter(new AvailableModulesAdapter(userModules));
-            }
+            mRecyclerView.setAdapter(new AvailableModulesAdapter(userModules));
         }
     }
 

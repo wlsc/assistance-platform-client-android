@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -15,9 +17,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.adapter.NewsAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
@@ -27,6 +31,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
@@ -51,25 +56,41 @@ public class MainActivity extends AppCompatActivity {
 
     private DbProvider dbProvider;
 
-    private Toolbar mToolbar;
+    @Bind(R.id.toolbar)
+    protected Toolbar mToolbar;
+
+    @Bind(R.id.assistanceRecyclerView)
+    protected RecyclerView assistanceNewsRecyclerView;
 
     private Menu menu;
 
     private List<DbModuleInstallation> dbModuleInstallations;
+
+    private List<DbNews> assistanceNews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        setTitle(R.string.main_activity_title);
 
         ButterKnife.bind(this);
 
-        mToolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(mToolbar);
-//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        setTitle(R.string.main_activity_title);
+
+        if (dbProvider == null) {
+            dbProvider = DbProvider.getInstance(getApplicationContext());
+        }
+
+        long userId = UserUtils.getCurrentUserId(getApplicationContext());
+
+        assistanceNews = dbProvider.getNews(userId);
+
+        assistanceNewsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        assistanceNewsRecyclerView.setAdapter(new NewsAdapter(assistanceNews));
 
 
 //        boolean accessibilityServiceActivated = PreferenceProvider.getInstance(getApplicationContext()).getActivated();
@@ -90,10 +111,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initView() {
 
-        if (dbProvider == null) {
-            dbProvider = DbProvider.getInstance(getApplicationContext());
-        }
-
         registerForPush();
 
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
@@ -104,38 +121,12 @@ public class MainActivity extends AppCompatActivity {
 
             // user has got some active modules -> activate module menu
             if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
-
                 HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
-
-                setContentView(R.layout.activity_main);
-                setTitle(R.string.main_activity_title);
-
-                mToolbar = ButterKnife.findById(this, R.id.toolbar);
-                setSupportActionBar(mToolbar);
-//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getSupportActionBar().setDisplayShowHomeEnabled(true);
-
             } else {
-
                 HarvesterServiceProvider.getInstance(getApplicationContext()).stopSensingService();
-
-                Intent intent = new Intent(this, AvailableModulesActivity.class);
-                startActivity(intent);
-                finish();
             }
-
         } else {
-
             HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
-
-            setContentView(R.layout.activity_main);
-            setTitle(R.string.main_activity_title);
-
-            mToolbar = ButterKnife.findById(this, R.id.toolbar);
-            setSupportActionBar(mToolbar);
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-
         }
     }
 
