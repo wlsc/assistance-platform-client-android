@@ -28,8 +28,8 @@
     <!-- ******************************************** -->
 
     <!-- ACTIVITIES -->
-    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.activity.common.DrawerActivity">
-        Assistance Common Drawer View
+    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.activity.AccessibilityTutorialActivity">
+        Assistance Accessibility Tutorial View
     </screenName>
 
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.activity.LoginActivity">
@@ -53,8 +53,5 @@
     </screenName>
 
     <!-- FRAGMENTS -->
-    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.DrawerFragment">
-        Assistance Drawer Fragment View
-    </screenName>
 
 </resources>
