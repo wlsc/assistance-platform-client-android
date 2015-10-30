@@ -1,7 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,30 +33,28 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         if (viewType == EMPTY_VIEW_TYPE) {
             // list is empty
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_view, parent, false);
+            view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.empty_view, parent, false);
             EmptyViewHolder emptyView = new EmptyViewHolder(view);
 
             return emptyView;
-
-        } else {
-            // list has items
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.news_card_item, parent, false);
-
-            return new ViewHolder(view);
         }
+
+        // list has items
+        view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.news_card_item, parent, false);
+        NewsViewHolder newsHolder = new NewsViewHolder(view);
+
+        return newsHolder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        Log.d("lol", "lol: sukabla");
-
-        if (holder instanceof ViewHolder) {
+        if (holder instanceof NewsViewHolder) {
 
             final DbNews newsCard = getItem(position);
-
-            final ViewHolder viewHolder = (ViewHolder) holder;
+            final NewsViewHolder viewHolder = (NewsViewHolder) holder;
 
             viewHolder.mContent.setText(newsCard.getContent());
         }
@@ -94,11 +91,11 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /**
      * View holder for available module
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class NewsViewHolder extends RecyclerView.ViewHolder {
 
         protected final TextView mContent;
 
-        public ViewHolder(View view) {
+        public NewsViewHolder(View view) {
             super(view);
             mContent = ButterKnife.findById(view, R.id.content);
         }

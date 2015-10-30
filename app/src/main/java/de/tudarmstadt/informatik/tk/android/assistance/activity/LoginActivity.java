@@ -42,10 +42,10 @@ import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.UserDevice;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.HardwareUtils;
@@ -369,7 +369,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         String userEmail = mEmailTextView.getText().toString();
         UserUtils.saveUserEmail(getApplicationContext(), userEmail);
 
-        DbUser user = dbProvider.getUserByEmail(userEmail);
+        DbUser user = dbProvider.getUserDao().getUserByEmail(userEmail);
 
         Long serverDeviceId = null;
 
@@ -448,7 +448,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
 
-        DbUser user = dbProvider.getUserByToken(loginResponse.getUserToken());
+        DbUser user = dbProvider.getUserDao().getUserByToken(loginResponse.getUserToken());
 
         // check if that user was already saved in the system
         if (user == null) {
@@ -460,7 +460,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             newUser.setPrimaryEmail(email);
             newUser.setCreated(createdDate);
 
-            long newUserId = dbProvider.insertUser(newUser);
+            long newUserId = dbProvider.getUserDao().insertUser(newUser);
 
             UserUtils.saveCurrentUserId(getApplicationContext(), newUserId);
 
@@ -476,7 +476,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             device.setCreated(createdDate);
             device.setUserId(newUserId);
 
-            long currentDeviceId = dbProvider.insertDevice(device);
+            long currentDeviceId = dbProvider.getDeviceDao().insertDevice(device);
 
             UserUtils.saveCurrentDeviceId(getApplicationContext(), currentDeviceId);
             UserUtils.saveServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
@@ -512,7 +512,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 device.setCreated(createdDate);
                 device.setUserId(user.getId());
 
-                long currentDeviceId = dbProvider.insertDevice(device);
+                long currentDeviceId = dbProvider.getDeviceDao().insertDevice(device);
 
                 UserUtils.saveCurrentDeviceId(getApplicationContext(), currentDeviceId);
                 UserUtils.saveServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());

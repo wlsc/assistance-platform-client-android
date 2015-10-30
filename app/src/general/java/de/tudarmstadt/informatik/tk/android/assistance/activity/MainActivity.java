@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     protected Toolbar mToolbar;
 
     @Bind(R.id.assistanceRecyclerView)
-    protected RecyclerView assistanceNewsRecyclerView;
+    protected RecyclerView mRecyclerView;
 
     private Menu menu;
 
@@ -87,10 +87,10 @@ public class MainActivity extends AppCompatActivity {
 
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
-        assistanceNews = dbProvider.getNews(userId);
+        assistanceNews = dbProvider.getNewsDao().getNews(userId);
 
-        assistanceNewsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        assistanceNewsRecyclerView.setAdapter(new NewsAdapter(assistanceNews));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(new NewsAdapter(assistanceNews));
 
 
 //        boolean accessibilityServiceActivated = PreferenceProvider.getInstance(getApplicationContext()).getActivated();
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (dbModuleInstallations == null) {
 
-            dbModuleInstallations = dbProvider.getModuleInstallationsByUserId(userId);
+            dbModuleInstallations = dbProvider.getModuleInstallationDao().getModuleInstallationsByUserId(userId);
 
             // user has got some active modules -> activate module menu
             if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
     private void persistLogin(ProfileResponse profileResponse) {
 
         // check already available user in db
-        DbUser user = dbProvider.getUserByEmail(profileResponse.getPrimaryEmail());
+        DbUser user = dbProvider.getUserDao().getUserByEmail(profileResponse.getPrimaryEmail());
 
         // check for user existence in the db
         if (user == null) {
@@ -410,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
 
             user.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
-            dbProvider.insertUser(user);
+            dbProvider.getUserDao().insertUser(user);
 
         } else {
             // found a user -> update for device and user information
@@ -427,7 +427,7 @@ public class MainActivity extends AppCompatActivity {
                 user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
             }
 
-            dbProvider.updateUser(user);
+            dbProvider.getUserDao().updateUser(user);
         }
     }
 

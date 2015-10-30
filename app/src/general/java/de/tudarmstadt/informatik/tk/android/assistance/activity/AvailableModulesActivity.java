@@ -21,6 +21,7 @@ import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +51,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGe
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.dao.module.ModuleDao;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -75,15 +77,13 @@ public class AvailableModulesActivity extends AppCompatActivity {
     protected RecyclerView mRecyclerView;
 
     private DbProvider dbProvider;
+    private ModuleDao moduleDao;
 
     private Map<String, AvailableModuleResponse> mAvailableModuleResponses;
 
     private List<String> mActiveModules;
 
     private List<DbModule> mModules;
-
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
     private SwipeRefreshLayout.OnRefreshListener onRefreshHandler;
 
@@ -96,6 +96,10 @@ public class AvailableModulesActivity extends AppCompatActivity {
             dbProvider = DbProvider.getInstance(getApplicationContext());
         }
 
+        if (moduleDao == null) {
+            moduleDao = DbProvider.getInstance(getApplicationContext()).getModuleDao();
+        }
+
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
@@ -104,7 +108,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         setTitle(R.string.module_list_activity_title);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_bright,
@@ -144,7 +148,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
-        DbUser user = dbProvider.getUserByEmail(userEmail);
+        DbUser user = dbProvider.getUserDao().getUserByEmail(userEmail);
 
         if (user == null) {
             requestAvailableModules();
@@ -189,7 +193,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 mAvailableModuleResponses.put(availableModule.getModulePackage(), availableModule);
             }
 
-            mRecyclerView.setAdapter(new AvailableModulesAdapter(userModules));
+//            mRecyclerView.setAdapter(new AvailableModulesAdapter(userModules));
+            mRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
         }
     }
 
@@ -215,9 +220,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
                      * @param response
                      */
                     @Override
-                    public void success(final List<AvailableModuleResponse> availableModulesResponse, Response response) {
+                    public void success(final List<AvailableModuleResponse> availableModulesResponse,
+                                        Response response) {
 
-                        if (availableModulesResponse != null && !availableModulesResponse.isEmpty()) {
+                        if (availableModulesResponse != null &&
+                                !availableModulesResponse.isEmpty()) {
 
                             Log.d(TAG, availableModulesResponse.toString());
 
@@ -225,7 +232,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
                             moduleEndpoint.getActiveModules(userToken, new Callback<List<String>>() {
 
                                 @Override
-                                public void success(List<String> activeModules, Response response) {
+                                public void success(List<String> activeModules,
+                                                    Response response) {
 
                                     mSwipeRefreshLayout.setRefreshing(false);
 
@@ -248,7 +256,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                             });
 
                         } else {
-                            // TODO: show no modules available
+                            mRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
                     }
@@ -302,7 +310,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
-        DbUser user = dbProvider.getUserByEmail(userEmail);
+        DbUser user = dbProvider.getUserDao().getUserByEmail(userEmail);
 
         for (AvailableModuleResponse availableModule : availableModulesResponse) {
 
@@ -311,7 +319,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
             DbModule module = ConverterUtils.convertModule(availableModule);
             module.setDbUser(user);
 
-            long moduleId = dbProvider.insertModule(module);
+            long moduleId = moduleDao.insertModule(module);
 
             // check if that module was already installed
             // if so -> insert new module installation into db
@@ -354,7 +362,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
             // insert entries
             if (!modCaps.isEmpty()) {
-                dbProvider.insertModuleCapabilities(modCaps);
+                dbProvider.getModuleCapabilityDao().insertModuleCapabilities(modCaps);
             }
         }
 
@@ -378,6 +386,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 // check for existing installation
                 // if so -> just activate it
                 DbModuleInstallation moduleInstallation = dbProvider
+                        .getModuleInstallationDao()
                         .getModuleInstallationForModuleByUserId(userId, moduleId);
 
                 if (moduleInstallation == null) {
@@ -389,13 +398,13 @@ public class AvailableModulesActivity extends AppCompatActivity {
                     moduleInstallation.setUserId(userId);
                     moduleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
-                    dbProvider.insertModuleInstallation(moduleInstallation);
+                    dbProvider.getModuleInstallationDao().insertModuleInstallation(moduleInstallation);
 
                 } else {
 
                     moduleInstallation.setActive(true);
 
-                    dbProvider.updateModuleInstallation(moduleInstallation);
+                    dbProvider.getModuleInstallationDao().updateModuleInstallation(moduleInstallation);
                 }
 
                 entryWasInserted = true;
@@ -611,14 +620,14 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         String userEmail = UserUtils.getUserEmail(getApplicationContext());
 
-        DbUser user = dbProvider.getUserByEmail(userEmail);
+        DbUser user = dbProvider.getUserDao().getUserByEmail(userEmail);
 
         if (user == null) {
             Log.d(TAG, "Installation cancelled: user is null");
             return;
         }
 
-        DbModule module = dbProvider.getModuleByPackageIdUserId(modulePackageName, user.getId());
+        DbModule module = moduleDao.getModuleByPackageIdUserId(modulePackageName, user.getId());
 
         if (module == null) {
 
@@ -628,6 +637,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         // check module is already installed
         DbModuleInstallation moduleInstallation = dbProvider
+                .getModuleInstallationDao()
                 .getModuleInstallationForModuleByUserId(user.getId(), module.getId());
 
         if (moduleInstallation == null) {
@@ -643,7 +653,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
             moduleInstallation.setActive(true);
         }
 
-        Long installId = dbProvider.insertModuleInstallation(moduleInstallation);
+        Long installId = dbProvider.getModuleInstallationDao().insertModuleInstallation(moduleInstallation);
 
         if (installId != null) {
 

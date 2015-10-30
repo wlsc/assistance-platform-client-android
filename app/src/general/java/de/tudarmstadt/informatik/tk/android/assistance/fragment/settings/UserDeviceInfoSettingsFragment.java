@@ -48,7 +48,7 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
 
         long currentDeviceId = UserUtils.getCurrentDeviceId(getActivity().getApplicationContext());
 
-        DbDevice dbDevice = dbProvider.getDeviceById(currentDeviceId);
+        DbDevice dbDevice = dbProvider.getDeviceDao().getDeviceById(currentDeviceId);
 
         if (dbDevice != null) {
 
@@ -130,13 +130,13 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
 
         Log.d(TAG, "Updating device's user defined name...");
 
-        DbDevice dbDevice = dbProvider.getDeviceById(currentDeviceId);
+        DbDevice dbDevice = dbProvider.getDeviceDao().getDeviceById(currentDeviceId);
 
         if (dbDevice != null) {
 
             dbDevice.setUserDefinedName(deviceName);
 
-            dbProvider.updateDevice(dbDevice);
+            dbProvider.getDeviceDao().updateDevice(dbDevice);
 
             Log.d(TAG, "Successful finished updating device's user defined name!");
 

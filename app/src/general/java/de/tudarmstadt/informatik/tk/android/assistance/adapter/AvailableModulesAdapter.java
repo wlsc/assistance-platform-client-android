@@ -1,6 +1,7 @@
 package de.tudarmstadt.informatik.tk.android.assistance.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,9 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 18.10.2015
  */
-public class AvailableModulesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModulesAdapter.ViewHolder> {
+
+    private static final String TAG = AvailableModulesAdapter.class.getSimpleName();
 
     private static final int EMPTY_VIEW_TYPE = 10;
 
@@ -31,9 +34,11 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = null;
+
+
 
         if (viewType == EMPTY_VIEW_TYPE) {
             // list is empty
@@ -51,7 +56,9 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
+        Log.d(TAG, "SUKA");
 
         if (holder instanceof ViewHolder) {
 
@@ -102,7 +109,7 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<RecyclerView.V
     /**
      * An empty view holder if no items available
      */
-    public class EmptyViewHolder extends RecyclerView.ViewHolder {
+    public class EmptyViewHolder extends AvailableModulesAdapter.ViewHolder {
         public EmptyViewHolder(View view) {
             super(view);
         }

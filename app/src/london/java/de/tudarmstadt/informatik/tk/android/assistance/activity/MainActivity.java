@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d(TAG, "dbModuleInstallations cached list IS empty");
 
-            dbModuleInstallations = dbProvider.getModuleInstallationsByUserId(userId);
+            dbModuleInstallations = dbProvider.getModuleInstallationDao().getModuleInstallationsByUserId(userId);
 
             // user has got some active modules -> activate module menu
             if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         dbModule.setCopyright("TK Informtik TU Darmstadt");
         dbModule.setCreated(currentDate);
 
-        long moduleId = dbProvider.insertModule(dbModule);
+        long moduleId = dbProvider.getModuleDao().insertModule(dbModule);
 
         DbModuleCapability dbModuleCapability1 = new DbModuleCapability();
 
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         dbModuleCapability1.setRequired(true);
         dbModuleCapability1.setCreated(currentDate);
 
-        dbProvider.insertModuleCapability(dbModuleCapability1);
+        dbProvider.getModuleCapabilityDao().insertModuleCapability(dbModuleCapability1);
 
         DbModuleInstallation dbModuleInstallation = new DbModuleInstallation();
 
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         dbModuleInstallation.setActive(true);
         dbModuleInstallation.setCreated(currentDate);
 
-        dbProvider.insertModuleInstallation(dbModuleInstallation);
+        dbProvider.getModuleInstallationDao().insertModuleInstallation(dbModuleInstallation);
 
         dbModuleInstallations.add(dbModuleInstallation);
 
