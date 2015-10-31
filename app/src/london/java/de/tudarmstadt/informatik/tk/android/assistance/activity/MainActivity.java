@@ -47,9 +47,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mToolbar = ButterKnife.findById(this, R.id.toolbar);
-        setSupportActionBar(mToolbar);
-
         boolean accessibilityServiceActivated = PreferenceProvider.getInstance(getApplicationContext()).getActivated();
 
         if (accessibilityServiceActivated) {
@@ -91,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
                 setContentView(R.layout.activity_main);
                 setTitle(dbModuleInstallations.get(0).getDbModule().getTitle());
+
             } else {
 
                 Log.d(TAG, "dbModuleInstallations NO data in db");
@@ -109,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
             setContentView(R.layout.activity_main);
             setTitle(R.string.main_activity_title);
         }
+
+        mToolbar = ButterKnife.findById(this, R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
         HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
     }

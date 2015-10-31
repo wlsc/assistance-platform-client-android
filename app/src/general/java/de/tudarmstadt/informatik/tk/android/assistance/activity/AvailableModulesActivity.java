@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
@@ -67,14 +66,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     private static final String TAG = AvailableModulesActivity.class.getSimpleName();
 
-    @Bind(R.id.toolbar)
-    protected Toolbar mToolbar;
+    private Toolbar mToolbar;
 
-    @Bind(R.id.module_list_swipe_refresh_layout)
-    protected SwipeRefreshLayout mSwipeRefreshLayout;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    @Bind(R.id.moduleListRecyclerView)
-    protected RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
 
     private DbProvider dbProvider;
     private ModuleDao moduleDao;
@@ -100,16 +96,17 @@ public class AvailableModulesActivity extends AppCompatActivity {
             moduleDao = DbProvider.getInstance(getApplicationContext()).getModuleDao();
         }
 
-        ButterKnife.bind(this);
-
+        mToolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         setTitle(R.string.module_list_activity_title);
 
+        mRecyclerView = ButterKnife.findById(this, R.id.moduleListRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
