@@ -34,7 +34,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private DbProvider dbProvider;
+    private DaoProvider daoProvider;
 
     @Bind(R.id.toolbar)
     protected Toolbar mToolbar;
@@ -81,13 +81,13 @@ public class MainActivity extends AppCompatActivity {
 
         setTitle(R.string.main_activity_title);
 
-        if (dbProvider == null) {
-            dbProvider = DbProvider.getInstance(getApplicationContext());
+        if (daoProvider == null) {
+            daoProvider = DaoProvider.getInstance(getApplicationContext());
         }
 
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
-        assistanceNews = dbProvider.getNewsDao().getNews(userId);
+        assistanceNews = daoProvider.getNewsDao().getNews(userId);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new NewsAdapter(assistanceNews));
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (dbModuleInstallations == null) {
 
-            dbModuleInstallations = dbProvider.getModuleInstallationDao().getModuleInstallationsByUserId(userId);
+            dbModuleInstallations = daoProvider.getModuleInstallationDao().getModuleInstallationsByUserId(userId);
 
             // user has got some active modules -> activate module menu
             if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
     private void persistLogin(ProfileResponse profileResponse) {
 
         // check already available user in db
-        DbUser user = dbProvider.getUserDao().getUserByEmail(profileResponse.getPrimaryEmail());
+        DbUser user = daoProvider.getUserDao().getUserByEmail(profileResponse.getPrimaryEmail());
 
         // check for user existence in the db
         if (user == null) {
@@ -410,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
 
             user.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
-            dbProvider.getUserDao().insertUser(user);
+            daoProvider.getUserDao().insertUser(user);
 
         } else {
             // found a user -> update for device and user information
@@ -427,7 +427,7 @@ public class MainActivity extends AppCompatActivity {
                 user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
             }
 
-            dbProvider.getUserDao().updateUser(user);
+            daoProvider.getUserDao().updateUser(user);
         }
     }
 

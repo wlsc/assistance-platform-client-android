@@ -14,7 +14,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.device.DeviceUserDefinedNameRequest;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.DeviceEndpoint;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -26,7 +26,7 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
 
     private static final String TAG = UserDeviceInfoSettingsFragment.class.getSimpleName();
 
-    private DbProvider dbProvider;
+    private DaoProvider daoProvider;
 
     private Toolbar mParentToolbar;
 
@@ -37,8 +37,8 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (dbProvider == null) {
-            dbProvider = DbProvider.getInstance(getActivity().getApplicationContext());
+        if (daoProvider == null) {
+            daoProvider = DaoProvider.getInstance(getActivity().getApplicationContext());
         }
 
         addPreferencesFromResource(R.xml.preference_user_device_info);
@@ -48,7 +48,7 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
 
         long currentDeviceId = UserUtils.getCurrentDeviceId(getActivity().getApplicationContext());
 
-        DbDevice dbDevice = dbProvider.getDeviceDao().getDeviceById(currentDeviceId);
+        DbDevice dbDevice = daoProvider.getDeviceDao().getDeviceById(currentDeviceId);
 
         if (dbDevice != null) {
 
@@ -130,13 +130,13 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
 
         Log.d(TAG, "Updating device's user defined name...");
 
-        DbDevice dbDevice = dbProvider.getDeviceDao().getDeviceById(currentDeviceId);
+        DbDevice dbDevice = daoProvider.getDeviceDao().getDeviceById(currentDeviceId);
 
         if (dbDevice != null) {
 
             dbDevice.setUserDefinedName(deviceName);
 
-            dbProvider.getDeviceDao().updateDevice(dbDevice);
+            daoProvider.getDeviceDao().updateDevice(dbDevice);
 
             Log.d(TAG, "Successful finished updating device's user defined name!");
 

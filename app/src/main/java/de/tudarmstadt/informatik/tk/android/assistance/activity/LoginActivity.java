@@ -58,7 +58,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
@@ -121,14 +121,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     private String email;
     private String password;
 
-    private DbProvider dbProvider;
+    private DaoProvider daoProvider;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (dbProvider == null) {
-            dbProvider = DbProvider.getInstance(getApplicationContext());
+        if (daoProvider == null) {
+            daoProvider = DaoProvider.getInstance(getApplicationContext());
         }
 
         // just init EventBus there
@@ -369,7 +369,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         String userEmail = mEmailTextView.getText().toString();
         UserUtils.saveUserEmail(getApplicationContext(), userEmail);
 
-        DbUser user = dbProvider.getUserDao().getUserByEmail(userEmail);
+        DbUser user = daoProvider.getUserDao().getUserByEmail(userEmail);
 
         Long serverDeviceId = null;
 
@@ -448,7 +448,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
 
-        DbUser user = dbProvider.getUserDao().getUserByToken(loginResponse.getUserToken());
+        DbUser user = daoProvider.getUserDao().getUserByToken(loginResponse.getUserToken());
 
         // check if that user was already saved in the system
         if (user == null) {
@@ -460,7 +460,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             newUser.setPrimaryEmail(email);
             newUser.setCreated(createdDate);
 
-            long newUserId = dbProvider.getUserDao().insertUser(newUser);
+            long newUserId = daoProvider.getUserDao().insertUser(newUser);
 
             UserUtils.saveCurrentUserId(getApplicationContext(), newUserId);
 
@@ -476,7 +476,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             device.setCreated(createdDate);
             device.setUserId(newUserId);
 
-            long currentDeviceId = dbProvider.getDeviceDao().insertDevice(device);
+            long currentDeviceId = daoProvider.getDeviceDao().insertDevice(device);
 
             UserUtils.saveCurrentDeviceId(getApplicationContext(), currentDeviceId);
             UserUtils.saveServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
@@ -512,7 +512,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 device.setCreated(createdDate);
                 device.setUserId(user.getId());
 
-                long currentDeviceId = dbProvider.getDeviceDao().insertDevice(device);
+                long currentDeviceId = daoProvider.getDeviceDao().insertDevice(device);
 
                 UserUtils.saveCurrentDeviceId(getApplicationContext(), currentDeviceId);
                 UserUtils.saveServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());

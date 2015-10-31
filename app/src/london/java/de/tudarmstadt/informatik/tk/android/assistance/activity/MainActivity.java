@@ -19,7 +19,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.DbProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.service.GcmRegistrationIntentService;
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private DbProvider dbProvider;
+    private DaoProvider daoProvider;
 
     private Toolbar mToolbar;
 
@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initView() {
 
-        if (dbProvider == null) {
-            dbProvider = DbProvider.getInstance(getApplicationContext());
+        if (daoProvider == null) {
+            daoProvider = DaoProvider.getInstance(getApplicationContext());
         }
 
         registerForPush();
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d(TAG, "dbModuleInstallations cached list IS empty");
 
-            dbModuleInstallations = dbProvider.getModuleInstallationDao().getModuleInstallationsByUserId(userId);
+            dbModuleInstallations = daoProvider.getModuleInstallationDao().getModuleInstallationsByUserId(userId);
 
             // user has got some active modules -> activate module menu
             if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         dbModule.setCopyright("TK Informtik TU Darmstadt");
         dbModule.setCreated(currentDate);
 
-        long moduleId = dbProvider.getModuleDao().insertModule(dbModule);
+        long moduleId = daoProvider.getModuleDao().insertModule(dbModule);
 
         DbModuleCapability dbModuleCapability1 = new DbModuleCapability();
 
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         dbModuleCapability1.setRequired(true);
         dbModuleCapability1.setCreated(currentDate);
 
-        dbProvider.getModuleCapabilityDao().insertModuleCapability(dbModuleCapability1);
+        daoProvider.getModuleCapabilityDao().insertModuleCapability(dbModuleCapability1);
 
         DbModuleInstallation dbModuleInstallation = new DbModuleInstallation();
 
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         dbModuleInstallation.setActive(true);
         dbModuleInstallation.setCreated(currentDate);
 
-        dbProvider.getModuleInstallationDao().insertModuleInstallation(dbModuleInstallation);
+        daoProvider.getModuleInstallationDao().insertModuleInstallation(dbModuleInstallation);
 
         dbModuleInstallations.add(dbModuleInstallation);
 
