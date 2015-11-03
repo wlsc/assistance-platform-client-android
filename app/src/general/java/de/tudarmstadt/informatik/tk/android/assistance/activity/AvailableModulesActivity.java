@@ -47,7 +47,6 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.dao.module.ModuleDao;
@@ -190,8 +189,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 mAvailableModuleResponses.put(availableModule.getModulePackage(), availableModule);
             }
 
-//            mRecyclerView.setAdapter(new AvailableModulesAdapter(userModules));
-            mRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
+            mRecyclerView.setAdapter(new AvailableModulesAdapter(userModules));
         }
     }
 
@@ -716,16 +714,16 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
             switch (httpCode) {
                 case 400:
-                    ErrorResponse errorResponse = (ErrorResponse) retrofitError.getBodyAs(ErrorResponse.class);
-                    errorResponse.setStatusCode(httpCode);
-
-                    Integer apiResponseCode = errorResponse.getCode();
-                    String apiMessage = errorResponse.getMessage();
-                    int httpResponseCode = errorResponse.getStatusCode();
-
-                    Log.d(TAG, "Response status: " + httpResponseCode);
-                    Log.d(TAG, "Response code: " + apiResponseCode);
-                    Log.d(TAG, "Response message: " + apiMessage);
+//                    ErrorResponse errorResponse = (ErrorResponse) retrofitError.getBodyAs(ErrorResponse.class);
+//                    errorResponse.setStatusCode(httpCode);
+//
+//                    Integer apiResponseCode = errorResponse.getCode();
+//                    String apiMessage = errorResponse.getMessage();
+//                    int httpResponseCode = errorResponse.getStatusCode();
+//
+//                    Log.d(TAG, "Response status: " + httpResponseCode);
+//                    Log.d(TAG, "Response code: " + apiResponseCode);
+//                    Log.d(TAG, "Response message: " + apiMessage);
 
                     break;
                 case 401:
@@ -737,17 +735,17 @@ public class AvailableModulesActivity extends AppCompatActivity {
                     finish();
                     break;
                 case 404:
-                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+//                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
                     break;
                 case 503:
-                    Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
+//                    Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
                     break;
                 default:
-                    Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+//                    Toaster.showLong(getApplicationContext(), R.string.error_unknown);
                     break;
             }
         } else {
-            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+//            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
         }
     }
 }

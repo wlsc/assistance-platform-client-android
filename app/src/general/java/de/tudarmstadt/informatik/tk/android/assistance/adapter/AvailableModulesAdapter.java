@@ -1,7 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +37,6 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
 
         View view = null;
 
-
-
         if (viewType == EMPTY_VIEW_TYPE) {
             // list is empty
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_view, parent, false);
@@ -57,8 +54,6 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
-        Log.d(TAG, "SUKA");
 
         if (holder instanceof ViewHolder) {
 
