@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.Locale;
 
 import de.tudarmstadt.informatik.tk.android.assistance.Config;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 
 /**
  * Created by Wladimir Schmidt on 04.07.2015.
@@ -14,6 +15,17 @@ import de.tudarmstadt.informatik.tk.android.assistance.Config;
 public class UserUtils {
 
     private UserUtils() {
+    }
+
+    /**
+     * Reset user token/email and log him out
+     */
+    public static void doLogout(Context context) {
+
+        PreferencesUtils.clearUserCredentials(context);
+
+        // stop the kraken
+        HarvesterServiceProvider.getInstance(context).stopSensingService();
     }
 
     /**
@@ -241,6 +253,28 @@ public class UserUtils {
      */
     public static void saveUserHasModules(Context context, boolean value) {
         PreferencesUtils.savePreference(context, Constants.PREF_USER_HAS_MODULES, value);
+    }
+
+    /**
+     * Returns user has requested active modules for the first time app starts
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isUserRequestedActiveModules(Context context) {
+        return PreferencesUtils.getPreference(context,
+                Constants.PREF_USER_REQUESTED_ACTIVE_MODULES,
+                false);
+    }
+
+    /**
+     * Saves user has any modules installed
+     *
+     * @param context
+     * @param value
+     */
+    public static void saveUserRequestedActiveModules(Context context, boolean value) {
+        PreferencesUtils.savePreference(context, Constants.PREF_USER_REQUESTED_ACTIVE_MODULES, value);
     }
 
     /**

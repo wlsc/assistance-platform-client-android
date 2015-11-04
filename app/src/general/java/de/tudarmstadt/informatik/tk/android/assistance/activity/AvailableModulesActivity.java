@@ -22,10 +22,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -43,14 +41,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.dao.module.ModuleDao;
-import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -72,7 +66,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
 
     private DaoProvider daoProvider;
-    private ModuleDao moduleDao;
 
     private Map<String, AvailableModuleResponse> mAvailableModuleResponses;
 
@@ -89,10 +82,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         if (daoProvider == null) {
             daoProvider = DaoProvider.getInstance(getApplicationContext());
-        }
-
-        if (moduleDao == null) {
-            moduleDao = DaoProvider.getInstance(getApplicationContext()).getModuleDao();
         }
 
         mToolbar = ButterKnife.findById(this, R.id.toolbar);
@@ -117,10 +106,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                 @Override
                 public void onRefresh() {
-//                loadModules();
+
+                    mSwipeRefreshLayout.setRefreshing(true);
+
                     // request new modules infomation
                     requestAvailableModules();
-                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             };
         }
@@ -147,49 +137,18 @@ public class AvailableModulesActivity extends AppCompatActivity {
         DbUser user = daoProvider.getUserDao().getUserByEmail(userEmail);
 
         if (user == null) {
-            requestAvailableModules();
+            UserUtils.doLogout(getApplicationContext());
+            finish();
             return;
         }
 
-        List<DbModule> userModules = user.getDbModuleList();
+        List<DbModule> installedModules = user.getDbModuleList();
 
         // no modules was found -> request from server
-        if (userModules.isEmpty()) {
+        if (installedModules.isEmpty()) {
             Log.d(TAG, "Module list not found in db. Requesting from server...");
 
             requestAvailableModules();
-
-        } else {
-            // there are modules were found -> populate a list
-
-            mAvailableModuleResponses = new HashMap<>();
-
-            for (DbModule module : userModules) {
-
-                AvailableModuleResponse availableModule = ConverterUtils.convertModule(module);
-
-                List<ModuleCapabilityResponse> reqCaps = new ArrayList<>();
-                List<ModuleCapabilityResponse> optCaps = new ArrayList<>();
-
-                List<DbModuleCapability> moduleCapabilities = module.getDbModuleCapabilityList();
-
-                for (DbModuleCapability capability : moduleCapabilities) {
-
-                    if (capability.getRequired()) {
-                        reqCaps.add(ConverterUtils.convertModuleCapability(capability));
-                    } else {
-                        optCaps.add(ConverterUtils.convertModuleCapability(capability));
-                    }
-                }
-
-                availableModule.setSensorsRequired(reqCaps);
-                availableModule.setSensorsOptional(optCaps);
-
-                // for easy access later on
-                mAvailableModuleResponses.put(availableModule.getModulePackage(), availableModule);
-            }
-
-            mRecyclerView.setAdapter(new AvailableModulesAdapter(userModules));
         }
     }
 
@@ -223,6 +182,14 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                             Log.d(TAG, availableModulesResponse.toString());
 
+                            boolean hasUserRequestedActiveModules = UserUtils.isUserRequestedActiveModules(getApplicationContext());
+
+                            if (hasUserRequestedActiveModules) {
+                                mSwipeRefreshLayout.setRefreshing(false);
+                                processAvailableModules(availableModulesResponse);
+                                return;
+                            }
+
                             // get list of already activated modules
                             moduleEndpoint.getActiveModules(userToken, new Callback<List<String>>() {
 
@@ -231,6 +198,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                                                     Response response) {
 
                                     mSwipeRefreshLayout.setRefreshing(false);
+                                    UserUtils.saveUserRequestedActiveModules(getApplicationContext(), true);
 
                                     if (activeModules != null && !activeModules.isEmpty()) {
 
@@ -244,9 +212,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                                 @Override
                                 public void failure(RetrofitError error) {
-                                    showErrorMessages(TAG, error);
-                                    processAvailableModules(availableModulesResponse);
+                                    showErrorMessages(error);
                                     mSwipeRefreshLayout.setRefreshing(false);
+                                    processAvailableModules(availableModulesResponse);
                                 }
                             });
 
@@ -264,7 +232,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
                      */
                     @Override
                     public void failure(RetrofitError error) {
-                        showErrorMessages(TAG, error);
+                        showErrorMessages(error);
+                        mRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                 });
@@ -279,146 +248,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         // show list of modules to user
         populateAvailableModuleList(availableModulesResponse);
-
-        mSwipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(true);
-            }
-        });
-
-        // save module information into db
-        saveModulesIntoDb(availableModulesResponse);
-
-        // start sensing service
-        HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
-    }
-
-    /**
-     * Saves module information into db
-     *
-     * @param availableModulesResponse
-     */
-    private void saveModulesIntoDb(List<AvailableModuleResponse> availableModulesResponse) {
-
-        Log.d(TAG, "Saving modules into db...");
-
-        String userEmail = UserUtils.getUserEmail(getApplicationContext());
-
-        DbUser user = daoProvider.getUserDao().getUserByEmail(userEmail);
-
-        for (AvailableModuleResponse availableModule : availableModulesResponse) {
-
-            Log.d(TAG, availableModule.toString());
-
-            DbModule module = ConverterUtils.convertModule(availableModule);
-            module.setDbUser(user);
-
-            long moduleId = moduleDao.insertModule(module);
-
-            // check if that module was already installed
-            // if so -> insert new module installation into db
-            if (mActiveModules != null && !mActiveModules.isEmpty()) {
-                createActiveModuleInstallation(user.getId(), moduleId, availableModule.getModulePackage());
-            }
-
-            List<ModuleCapabilityResponse> reqCaps = availableModule.getSensorsRequired();
-            List<ModuleCapabilityResponse> optCaps = availableModule.getSensorsOptional();
-
-            List<DbModuleCapability> modCaps = new ArrayList<>();
-
-            if (reqCaps != null && !reqCaps.isEmpty()) {
-
-                // process required capabilities
-                for (ModuleCapabilityResponse cap : reqCaps) {
-
-                    DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(cap);
-
-                    dbCap.setRequired(true);
-                    dbCap.setModuleId(moduleId);
-
-                    modCaps.add(dbCap);
-                }
-            }
-
-            if (optCaps != null && !optCaps.isEmpty()) {
-
-                // process optional capabilities
-                for (ModuleCapabilityResponse cap : optCaps) {
-
-                    DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(cap);
-
-                    dbCap.setRequired(false);
-                    dbCap.setModuleId(moduleId);
-
-                    modCaps.add(dbCap);
-                }
-            }
-
-            // insert entries
-            if (!modCaps.isEmpty()) {
-                daoProvider.getModuleCapabilityDao().insertModuleCapabilities(modCaps);
-            }
-        }
-
-        Log.d(TAG, "Finished saving modules into db.");
-    }
-
-    /**
-     * Inserts new module installation
-     *
-     * @param userId
-     * @param moduleId
-     * @param modulePackage
-     */
-    private void createActiveModuleInstallation(Long userId, long moduleId, String modulePackage) {
-
-        boolean entryWasInserted = false;
-
-        for (String activeModule : mActiveModules) {
-            if (activeModule.equals(modulePackage)) {
-
-                // check for existing installation
-                // if so -> just activate it
-                DbModuleInstallation moduleInstallation = daoProvider
-                        .getModuleInstallationDao()
-                        .getModuleInstallationForModuleByUserId(userId, moduleId);
-
-                if (moduleInstallation == null) {
-
-                    moduleInstallation = new DbModuleInstallation();
-
-                    moduleInstallation.setActive(true);
-                    moduleInstallation.setModuleId(moduleId);
-                    moduleInstallation.setUserId(userId);
-                    moduleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
-
-                    daoProvider.getModuleInstallationDao().insertModuleInstallation(moduleInstallation);
-
-                } else {
-
-                    moduleInstallation.setActive(true);
-
-                    daoProvider.getModuleInstallationDao().updateModuleInstallation(moduleInstallation);
-                }
-
-                entryWasInserted = true;
-
-                // start monitoring service
-                HarvesterServiceProvider service = HarvesterServiceProvider.getInstance(getApplicationContext());
-                service.startSensingService();
-
-                break;
-            }
-        }
-
-        // immediately finish and proceed to main activity
-        if (entryWasInserted) {
-
-            Intent mainIntent = new Intent(this, MainActivity.class);
-            startActivity(mainIntent);
-            finish();
-        }
     }
 
     /**
@@ -584,28 +413,37 @@ public class AvailableModulesActivity extends AppCompatActivity {
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
         toggleModuleRequest.setModuleId(modulePackageName);
 
-        ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(getApplicationContext()).create(ModuleEndpoint.class);
-        moduleEndpoint.activateModule(userToken, toggleModuleRequest, new Callback<Void>() {
+        ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(
+                getApplicationContext())
+                .create(ModuleEndpoint.class);
 
-            @Override
-            public void success(Void aVoid, Response response) {
+        moduleEndpoint.activateModule(userToken, toggleModuleRequest,
+                new Callback<Void>() {
 
-                if (response.getStatus() == 200 || response.getStatus() == 204) {
-                    Log.d(TAG, "Module is activated!");
-                    saveModuleInstallationInDb(modulePackageName);
-                    Log.d(TAG, "Installation has finished!");
-                } else {
-                    Log.d(TAG, "FAIL: service responded with code: " + response.getStatus());
-                }
-            }
+                    @Override
+                    public void success(Void aVoid, Response response) {
 
-            @Override
-            public void failure(RetrofitError error) {
-                showErrorMessages(TAG, error);
+                        if (response.getStatus() == 200 || response.getStatus() == 204) {
+                            Log.d(TAG, "Module is activated!");
+                            saveModuleInstallationInDb(modulePackageName);
+                            Log.d(TAG, "Installation has finished!");
 
-                Log.d(TAG, "Installation has failed!");
-            }
-        });
+                            HarvesterServiceProvider
+                                    .getInstance(getApplicationContext())
+                                    .startSensingService();
+
+                        } else {
+                            Log.d(TAG, "FAIL: service responded with code: " + response.getStatus());
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showErrorMessages(error);
+
+                        Log.d(TAG, "Installation has failed!");
+                    }
+                });
     }
 
     /**
@@ -619,53 +457,32 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         if (user == null) {
             Log.d(TAG, "Installation cancelled: user is null");
+            UserUtils.doLogout(getApplicationContext());
+            finish();
             return;
         }
 
-        DbModule module = moduleDao.getModuleByPackageIdUserId(modulePackageName, user.getId());
+        DbModule module = daoProvider
+                .getModuleDao()
+                .getModuleByPackageIdUserId(modulePackageName, user.getId());
 
         if (module == null) {
-
-            Log.d(TAG, "Installation cancelled: now such module found in db!");
-            return;
+            AvailableModuleResponse moduleInfo = mAvailableModuleResponses.get(modulePackageName);
+            module = ConverterUtils.convertModule(moduleInfo);
         }
 
-        // check module is already installed
-        DbModuleInstallation moduleInstallation = daoProvider
-                .getModuleInstallationDao()
-                .getModuleInstallationForModuleByUserId(user.getId(), module.getId());
+        module.setActive(true);
 
-        if (moduleInstallation == null) {
+        Long installId = daoProvider.getModuleDao().insertModule(module);
 
-            moduleInstallation = new DbModuleInstallation();
-
-            moduleInstallation.setModuleId(module.getId());
-            moduleInstallation.setUserId(user.getId());
-            moduleInstallation.setActive(true);
-            moduleInstallation.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+        if (installId == null) {
+            Toaster.showLong(getApplicationContext(), R.string.module_installation_unsuccessful);
         } else {
-            // activate existing module installation
-            moduleInstallation.setActive(true);
-        }
-
-        Long installId = daoProvider.getModuleInstallationDao().insertModuleInstallation(moduleInstallation);
-
-        if (installId != null) {
-
             UserUtils.saveUserHasModules(getApplicationContext(), true);
             Toaster.showLong(getApplicationContext(), R.string.module_installation_successful);
-
-        } else {
-
-            Toaster.showLong(getApplicationContext(), R.string.module_installation_unsuccessful);
         }
 
         Log.d(TAG, "Installation id: " + installId);
-
-        // start monitoring service
-        HarvesterServiceProvider service = HarvesterServiceProvider.getInstance(getApplicationContext());
-        service.startSensingService();
-
     }
 
     @Override
@@ -688,8 +505,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
             case android.R.id.home:
 
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                onBackPressed();
                 finish();
 
                 return true;
@@ -701,10 +517,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
     /**
      * Processes error response from server
      *
-     * @param TAG
      * @param retrofitError
      */
-    protected void showErrorMessages(String TAG, RetrofitError retrofitError) {
+    protected void showErrorMessages(RetrofitError retrofitError) {
 
         Response response = retrofitError.getResponse();
 

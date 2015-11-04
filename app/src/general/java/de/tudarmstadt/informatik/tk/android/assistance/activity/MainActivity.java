@@ -30,7 +30,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Menu menu;
 
-    private List<DbModuleInstallation> dbModuleInstallations;
+    private List<DbModule> modulesInstallation;
 
     private List<DbNews> assistanceNews;
 
@@ -115,18 +115,21 @@ public class MainActivity extends AppCompatActivity {
 
         long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
-        if (dbModuleInstallations == null) {
+        if (modulesInstallation != null && !modulesInstallation.isEmpty()) {
 
-            dbModuleInstallations = daoProvider.getModuleInstallationDao().getModuleInstallationsByUserId(userId);
+            HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
 
-            // user has got some active modules -> activate module menu
-            if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
+        } else {
+
+            modulesInstallation = daoProvider.getModuleDao()
+                    .getAllActiveModules(userId);
+
+            // user got some active modules
+            if (modulesInstallation != null && !modulesInstallation.isEmpty()) {
                 HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
             } else {
                 HarvesterServiceProvider.getInstance(getApplicationContext()).stopSensingService();
             }
-        } else {
-            HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
         }
     }
 
@@ -199,11 +202,11 @@ public class MainActivity extends AppCompatActivity {
         if (menu != null) {
             // TODO:
 //            DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
-//            List<DbModuleInstallation> moduleInstallations = currentModule.getDbModuleInstallationList();
+//            List<DbModuleInstallation> modulesInstallation = currentModule.getDbModuleInstallationList();
 //
 //            MenuItem toggleModuleStateItem = menu.findItem(R.id.menu_module_toggle_state);
 //
-//            for (DbModuleInstallation installedModule : moduleInstallations) {
+//            for (DbModuleInstallation installedModule : modulesInstallation) {
 //
 //                if (installedModule.getModuleId().equals(currentModule.getId())) {
 //                    toggleModuleStateItem.setChecked(installedModule.getActive());

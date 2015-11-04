@@ -118,7 +118,9 @@ public class SettingsActivity extends PreferenceActivity {
                 }
                 break;
             case R.id.logout_settings:
-                doLogout();
+                UserUtils.doLogout(getApplicationContext());
+                setResult(Constants.INTENT_SETTINGS_LOGOUT_RESULT);
+                finish();
                 break;
         }
     }

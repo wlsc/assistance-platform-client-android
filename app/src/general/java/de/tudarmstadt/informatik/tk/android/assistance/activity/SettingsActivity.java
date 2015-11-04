@@ -25,10 +25,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.Sensors
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDeviceInfoSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 
 /**
  * Core user settings activity
@@ -147,7 +145,9 @@ public class SettingsActivity extends PreferenceActivity {
         switch ((int) header.id) {
 
             case R.id.logout_settings:
-                doLogout();
+                UserUtils.doLogout(getApplicationContext());
+                setResult(Constants.INTENT_SETTINGS_LOGOUT_RESULT);
+                finish();
                 break;
         }
     }
@@ -157,20 +157,6 @@ public class SettingsActivity extends PreferenceActivity {
         ButterKnife.unbind(this);
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
-    }
-
-    /**
-     * Reset user token/email and log him out
-     */
-    private void doLogout() {
-
-        PreferencesUtils.clearUserCredentials(this);
-
-        // stop the kraken
-        HarvesterServiceProvider.getInstance(getApplicationContext()).stopSensingService();
-
-        setResult(Constants.INTENT_SETTINGS_LOGOUT_RESULT);
-        finish();
     }
 
     public Toolbar getToolBar() {
