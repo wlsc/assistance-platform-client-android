@@ -182,7 +182,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                             Log.d(TAG, availableModulesResponse.toString());
 
-                            boolean hasUserRequestedActiveModules = UserUtils.isUserRequestedActiveModules(getApplicationContext());
+                            boolean hasUserRequestedActiveModules = UserUtils.hasUserRequestedActiveModules(getApplicationContext());
 
                             if (hasUserRequestedActiveModules) {
                                 mSwipeRefreshLayout.setRefreshing(false);
@@ -258,10 +258,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
     private void populateAvailableModuleList(List<AvailableModuleResponse> availableModulesResponse) {
 
         mAvailableModuleResponses = new HashMap<>();
-
-        if (mModules == null) {
-            mModules = new ArrayList<>();
-        }
+        mModules = new ArrayList<>();
 
         for (AvailableModuleResponse module : availableModulesResponse) {
 

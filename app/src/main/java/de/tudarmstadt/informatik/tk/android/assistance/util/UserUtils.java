@@ -261,7 +261,7 @@ public class UserUtils {
      * @param context
      * @return
      */
-    public static boolean isUserRequestedActiveModules(Context context) {
+    public static boolean hasUserRequestedActiveModules(Context context) {
         return PreferencesUtils.getPreference(context,
                 Constants.PREF_USER_REQUESTED_ACTIVE_MODULES,
                 false);
