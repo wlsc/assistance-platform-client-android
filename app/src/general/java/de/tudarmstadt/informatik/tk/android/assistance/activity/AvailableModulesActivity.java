@@ -298,19 +298,17 @@ public class AvailableModulesActivity extends AppCompatActivity {
     /**
      * Shows more information about an assistance module
      *
-     * @param moduleId
+     * @param modulePackageName
      */
-    private void showMoreModuleInformationDialog(String moduleId) {
+    private void showMoreModuleInformationDialog(String modulePackageName) {
+
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_dialog_more_info_module, null);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setInverseBackgroundForced(true);
-        dialogBuilder.setView(R.style.AppCompatAlertDialog);
-
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.alert_dialog_more_info_module, null);
         dialogBuilder.setView(dialogView);
 
-        final AvailableModuleResponse selectedModule = mAvailableModuleResponses.get(moduleId);
+        final AvailableModuleResponse selectedModule = mAvailableModuleResponses.get(modulePackageName);
 
         dialogBuilder.setPositiveButton(R.string.button_ok_text, new DialogInterface.OnClickListener() {
 
@@ -319,6 +317,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 Log.d(TAG, "User tapped more information about the " + selectedModule.getTitle() + " module");
             }
         });
+
+        dialogBuilder.setTitle(selectedModule.getTitle());
 
         TextView moreInfoFull = ButterKnife.findById(dialogView, R.id.module_more_info);
         moreInfoFull.setText(selectedModule.getDescriptionFull());
