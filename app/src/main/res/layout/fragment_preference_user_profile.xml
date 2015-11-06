@@ -25,19 +25,19 @@
             android:paddingRight="8dip"
             android:paddingStart="8dip">
 
-            <com.pkmmte.view.CircularImageView
-                android:id="@+id/userPicVIew"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_vertical|start"
-                android:scaleType="centerCrop"
-                app:border="true"
-                app:border_color="#EEEEEE"
-                app:border_width="2dp"
-                app:selector="true"
-                app:selector_stroke_color="@color/myPrimaryColor100"
-                app:selector_stroke_width="1dp" />
+            <!--<com.pkmmte.view.CircularImageView-->
+                <!--android:id="@+id/userPicVIew"-->
+                <!--android:layout_width="160dp"-->
+                <!--android:layout_height="160dp"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:gravity="center_vertical|start"-->
+                <!--android:scaleType="centerCrop"-->
+                <!--app:border="true"-->
+                <!--app:border_color="#EEEEEE"-->
+                <!--app:border_width="2dp"-->
+                <!--app:selector="true"-->
+                <!--app:selector_stroke_color="@color/myPrimaryColor100"-->
+                <!--app:selector_stroke_width="1dp" />-->
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="fill_parent"

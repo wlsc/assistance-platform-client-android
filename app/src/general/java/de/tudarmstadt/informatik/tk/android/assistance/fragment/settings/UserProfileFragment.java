@@ -1,13 +1,8 @@
 package de.tudarmstadt.informatik.tk.android.assistance.fragment.settings;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,12 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.pkmmte.view.CircularImageView;
-import com.squareup.picasso.Picasso;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,18 +18,15 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
-import de.tudarmstadt.informatik.tk.android.assistance.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UpdateProfileRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UserSocialService;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -59,8 +45,8 @@ public class UserProfileFragment extends Fragment {
 
     private String userToken;
 
-    @Bind(R.id.userPicVIew)
-    protected CircularImageView userPicView;
+//    @Bind(R.id.userPicVIew)
+//    protected CircularImageView userPicView;
 
     @Bind(R.id.firstname)
     protected EditText firstnameText;
@@ -122,25 +108,25 @@ public class UserProfileFragment extends Fragment {
 
             ButterKnife.bind(this, view);
 
-            String filename = UserUtils.getUserPicFilename(getActivity().getApplicationContext());
-
-            if (!filename.isEmpty()) {
-                File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + filename + ".jpg");
-
-                if (file.exists()) {
-                    Log.d(TAG, "File exists");
-
-                    Picasso.with(getActivity().getApplicationContext())
-                            .load(file)
-                            .placeholder(R.drawable.no_image)
-                            .into(userPicView);
-                } else {
-                    Log.d(TAG, "File NOT exists");
-                }
-            } else {
-                Log.d(TAG, "user pic filename NOT exists");
-                userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_image));
-            }
+//            String filename = UserUtils.getUserPicFilename(getActivity().getApplicationContext());
+//
+//            if (!filename.isEmpty()) {
+//                File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + filename + ".jpg");
+//
+//                if (file.exists()) {
+//                    Log.d(TAG, "File exists");
+//
+//                    Picasso.with(getActivity().getApplicationContext())
+//                            .load(file)
+//                            .placeholder(R.drawable.no_image)
+//                            .into(userPicView);
+//                } else {
+//                    Log.d(TAG, "File NOT exists");
+//                }
+//            } else {
+//                Log.d(TAG, "user pic filename NOT exists");
+//                userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_image));
+//            }
 
             UserEndpoint userEndpoint = EndpointGenerator.getInstance(getActivity().getApplicationContext()).create(UserEndpoint.class);
             userEndpoint.getUserProfileFull(userToken, new Callback<ProfileResponse>() {
@@ -378,30 +364,30 @@ public class UserProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == R.id.userPicVIew && resultCode == Activity.RESULT_OK) {
-            if (data == null) {
-                Toaster.showLong(getActivity(), R.string.error_select_new_user_photo);
-                return;
-            }
-
-            String oldFilename = UserUtils.getUserPicFilename(getActivity().getApplicationContext());
-            Log.d(TAG, "old user pic filename: " + (oldFilename.isEmpty() ? "empty" : oldFilename));
-
-            // process selected image and show it to user
-            try {
-                Uri uri = data.getData();
-
-                InputStream inputStream = getActivity().getApplicationContext().getContentResolver().openInputStream(uri);
-
-                CommonUtils.saveFile(getActivity().getApplicationContext(), uri, oldFilename);
-
-                CircularImageView image = ButterKnife.findById(getActivity(), R.id.userPicVIew);
-                image.setImageDrawable(Drawable.createFromStream(inputStream, USER_PIC_NAME));
-
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, "User pic file not found!");
-            }
-        }
+//        if (requestCode == R.id.userPicVIew && resultCode == Activity.RESULT_OK) {
+//            if (data == null) {
+//                Toaster.showLong(getActivity(), R.string.error_select_new_user_photo);
+//                return;
+//            }
+//
+//            String oldFilename = UserUtils.getUserPicFilename(getActivity().getApplicationContext());
+//            Log.d(TAG, "old user pic filename: " + (oldFilename.isEmpty() ? "empty" : oldFilename));
+//
+//            // process selected image and show it to user
+//            try {
+//                Uri uri = data.getData();
+//
+//                InputStream inputStream = getActivity().getApplicationContext().getContentResolver().openInputStream(uri);
+//
+//                CommonUtils.saveFile(getActivity().getApplicationContext(), uri, oldFilename);
+//
+//                CircularImageView image = ButterKnife.findById(getActivity(), R.id.userPicVIew);
+//                image.setImageDrawable(Drawable.createFromStream(inputStream, USER_PIC_NAME));
+//
+//            } catch (FileNotFoundException e) {
+//                Log.e(TAG, "User pic file not found!");
+//            }
+//        }
     }
 
     @Override
