@@ -15,16 +15,6 @@ public class Constants {
     public static final int BACK_BUTTON_DELAY_MILLIS = 2000;
 
     /**
-     * Remember the position of the selected item.
-     */
-    public static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
-
-    /**
-     * Drawer dimming threshold when drawer slides out
-     */
-    public static final double DRAWER_SLIDER_THRESHOLD = 0.4;
-
-    /**
      * SETTINGS CONSTANTS
      */
 
@@ -34,6 +24,7 @@ public class Constants {
      */
     public static final String PREF_USER_TOKEN = "user_token";
     public static final String PREF_USER_EMAIL = "user_email";
+    public static final String PREF_USER_PASSWORD = "user_password";
     public static final String PREF_USER_FIRSTNAME = "user_firstname";
     public static final String PREF_USER_LASTNAME = "user_lastname";
     public static final String PREF_USER_PIC = "user_picture";
@@ -42,7 +33,6 @@ public class Constants {
     public static final String PREF_USER_ID = "current_user_id";
     public static final String PREF_DEVICE_ID = "current_device_id";
     public static final String PREF_SERVER_DEVICE_ID = "server_device_id";
-    public static final String PREF_MODULE_ID = "current_module_id";
     public static final String PREF_GCM_TOKEN_SENT = "gcm_token_sent";
     public static final String PREF_DEVELOPER_STATUS = "developer_status";
 

@@ -227,12 +227,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         String userToken = UserUtils.getUserToken(getApplicationContext());
 
-        if (!userToken.isEmpty()) {
+        if (userToken.isEmpty()) {
+            Log.d(TAG, "User token NOT found");
+            Log.d(TAG, "Searching for autologin...");
+
+            String savedEmail = UserUtils.getUserEmail(getApplicationContext());
+            String savedPassword = UserUtils.getUserPassword(getApplicationContext());
+
+            if (!savedEmail.isEmpty() && !savedPassword.isEmpty()) {
+                Log.d(TAG, "Found email/password entries saved. Doing autologin...");
+
+                email = savedEmail;
+                password = savedPassword;
+
+                doLogin();
+            }
+        } else {
             Log.d(TAG, "User token found. Launching main activity!");
             loadMainActivity();
             return;
-        } else {
-            Log.d(TAG, "User token NOT found");
         }
 
         // first -> load splash screen
@@ -366,10 +379,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         showProgress(true);
 
-        String userEmail = mEmailTextView.getText().toString();
-        UserUtils.saveUserEmail(getApplicationContext(), userEmail);
-
-        DbUser user = daoProvider.getUserDao().getUserByEmail(userEmail);
+        DbUser user = daoProvider.getUserDao().getUserByEmail(email);
 
         Long serverDeviceId = null;
 
@@ -395,9 +405,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         /**
          * Forming a login request
          */
-        LoginRequest request = new LoginRequest();
-        request.setUserEmail(email);
-        request.setPassword(password);
+        LoginRequest loginRequest = new LoginRequest();
+
+        loginRequest.setUserEmail(email);
+        loginRequest.setPassword(password);
 
         UserDevice userDevice = new UserDevice();
 
@@ -411,13 +422,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         userDevice.setModel(HardwareUtils.getDeviceModelName());
         userDevice.setDeviceId(HardwareUtils.getAndroidId(this));
 
-        request.setDevice(userDevice);
+        loginRequest.setDevice(userDevice);
 
         /**
          * Logging in the user
          */
         UserEndpoint userEndpoint = EndpointGenerator.getInstance(getApplicationContext()).create(UserEndpoint.class);
-        userEndpoint.loginUser(request, new Callback<LoginResponse>() {
+        userEndpoint.loginUser(loginRequest, new Callback<LoginResponse>() {
 
             @Override
             public void success(LoginResponse apiResponse, Response response) {
@@ -530,16 +541,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     private void saveLoginGoNext(LoginResponse loginApiResponse) {
 
         String token = loginApiResponse.getUserToken();
-        UserUtils.saveUserEmail(getApplicationContext(), mEmailTextView.getText().toString());
 
         if (InputValidation.isUserTokenValid(token)) {
             Log.d(TAG, "Token is valid. Proceeding with login...");
 
-//            showProgress(false);
-
             saveLoginIntoDb(loginApiResponse);
 
             UserUtils.saveUserToken(getApplicationContext(), token);
+            UserUtils.saveUserEmail(getApplicationContext(), email);
+            UserUtils.saveUserPassword(getApplicationContext(), password);
 
             loadMainActivity();
 

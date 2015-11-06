@@ -1,12 +1,9 @@
 package de.tudarmstadt.informatik.tk.android.assistance.util;
 
 import android.content.Context;
-import android.os.Environment;
 
-import java.io.File;
 import java.util.Locale;
 
-import de.tudarmstadt.informatik.tk.android.assistance.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 
 /**
@@ -99,45 +96,6 @@ public class UserUtils {
     }
 
     /**
-     * Returns current module id saved in SharedPreferences
-     *
-     * @param context
-     * @return
-     */
-    public static long getCurrentModuleId(Context context) {
-        return PreferencesUtils.getPreference(context, Constants.PREF_MODULE_ID, -1);
-    }
-
-    /**
-     * Saves current module id into SharedPreferences
-     *
-     * @param context
-     * @param value
-     */
-    public static void saveCurrentModuleId(Context context, long value) {
-        PreferencesUtils.savePreference(context, Constants.PREF_MODULE_ID, value);
-    }
-
-    /**
-     * Returns user has learned navigation drawer saved in SharedPreferences
-     *
-     * @return
-     */
-    public static boolean getUserHasLearnedDrawer(Context context) {
-        return PreferencesUtils.getPreference(context, Constants.PREF_USER_LEARNED_DRAWER, false);
-    }
-
-    /**
-     * Saves user has learned navigation drawer in SharedPreferences
-     *
-     * @param context
-     * @param value
-     */
-    public static void saveUserHasLearnedDrawer(Context context, boolean value) {
-        PreferencesUtils.savePreference(context, Constants.PREF_USER_LEARNED_DRAWER, value);
-    }
-
-    /**
      * Returns user email saved in SharedPreferences
      *
      * @return
@@ -154,6 +112,25 @@ public class UserUtils {
      */
     public static void saveUserEmail(Context context, String value) {
         PreferencesUtils.savePreference(context, Constants.PREF_USER_EMAIL, value);
+    }
+
+    /**
+     * Returns user password saved in SharedPreferences
+     *
+     * @return
+     */
+    public static String getUserPassword(Context context) {
+        return PreferencesUtils.getPreference(context, Constants.PREF_USER_PASSWORD, "");
+    }
+
+    /**
+     * Saves user password to preferences
+     *
+     * @param context
+     * @param value
+     */
+    public static void saveUserPassword(Context context, String value) {
+        PreferencesUtils.savePreference(context, Constants.PREF_USER_PASSWORD, value);
     }
 
     /**
@@ -275,18 +252,6 @@ public class UserUtils {
      */
     public static void saveUserRequestedActiveModules(Context context, boolean value) {
         PreferencesUtils.savePreference(context, Constants.PREF_USER_REQUESTED_ACTIVE_MODULES, value);
-    }
-
-    /**
-     * Returns user profile picture
-     *
-     * @param context
-     * @param userPicFilename
-     * @return
-     */
-    public static File getUserPicture(Context context, String userPicFilename) {
-        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + userPicFilename + ".jpg");
-        return file;
     }
 
     /**
