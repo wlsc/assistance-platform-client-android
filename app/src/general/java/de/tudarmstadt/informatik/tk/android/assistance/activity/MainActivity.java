@@ -344,8 +344,9 @@ public class MainActivity extends AppCompatActivity {
                 initView();
                 break;
             case Constants.INTENT_SETTINGS_LOGOUT_RESULT:
-//                PreferencesUtils.clearUserCredentials(getApplicationContext());
-//                finish();
+                PreferencesUtils.clearUserCredentials(getApplicationContext());
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);

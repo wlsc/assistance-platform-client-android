@@ -112,6 +112,7 @@ public class PreferencesUtils {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit()
                 .remove(Constants.PREF_USER_TOKEN)
+                .remove(Constants.PREF_USER_PASSWORD)
                 .apply();
     }
 

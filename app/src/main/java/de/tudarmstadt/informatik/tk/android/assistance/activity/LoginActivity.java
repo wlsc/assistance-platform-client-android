@@ -226,6 +226,7 @@ public class LoginActivity extends AppCompatActivity {
                 password = savedPassword;
 
                 doLogin();
+                return;
             }
         } else {
             Log.d(TAG, "User token found. Launching main activity!");
@@ -333,16 +334,19 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (isAnyErrors) {
+
             // enables login button
             if (mLoginButton != null) {
                 mLoginButton.setEnabled(true);
             }
+
             focusView.requestFocus();
 
             // show again the keyboard
 //            CommonUtils.showKeyboard(this, focusView);
 
         } else {
+            showProgress(true);
             doLogin();
         }
     }
@@ -351,8 +355,6 @@ public class LoginActivity extends AppCompatActivity {
      * Login procedure
      */
     private void doLogin() {
-
-        showProgress(true);
 
         DbUser user = daoProvider.getUserDao().getUserByEmail(email);
 
