@@ -1,27 +1,16 @@
 package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -29,7 +18,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -38,10 +26,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
-import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginResponse;
@@ -61,7 +47,6 @@ import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGe
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -72,12 +57,12 @@ import retrofit.client.Response;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity {
 
     private final String TAG = LoginActivity.class.getSimpleName();
 
     @Bind(R.id.email)
-    protected AutoCompleteTextView mEmailTextView;
+    protected EditText mEmailTextView;
 
     @Bind(R.id.password)
     protected EditText mPasswordView;
@@ -134,91 +119,91 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         // just init EventBus there
         HarvesterServiceProvider.getInstance(getApplicationContext());
 
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+//        if (!EventBus.getDefault().isRegistered(this)) {
+//            EventBus.getDefault().register(this);
+//        }
 
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
-            checkReadContactsPermissionGranted();
-        } else {
-            // proceed with login screen
-            initLogin();
-        }
+//        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+//            checkLocationPermissionGranted();
+//        } else {
+        // proceed with login screen
+        initLogin();
+//        }
     }
 
     /**
      * Checks read contacts permission
      */
-    private void checkReadContactsPermissionGranted() {
-
-        boolean isReadContactsGranted = PermissionUtils
-                .getInstance(getApplicationContext())
-                .isPermissionGranted(Manifest.permission.READ_CONTACTS);
-
-        if (isReadContactsGranted) {
-
-            Log.d(TAG, "READ_CONTACTS permission was granted.");
-
-            EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.READ_CONTACTS));
-
-        } else {
-
-            Log.d(TAG, "READ_CONTACTS permission NOT granted!");
-
-            // check if explanation is needed for this permission
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_CONTACTS)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-                Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
-            }
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_CONTACTS},
-                    Config.PERMISSIONS_REQUEST_READ_CONTACTS);
-
-        }
-    }
+//    private void checkReadContactsPermissionGranted() {
+//
+//        boolean isReadContactsGranted = PermissionUtils
+//                .getInstance(getApplicationContext())
+//                .isPermissionGranted(Manifest.permission.READ_CONTACTS);
+//
+//        if (isReadContactsGranted) {
+//
+//            Log.d(TAG, "READ_CONTACTS permission was granted.");
+//
+//            EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.READ_CONTACTS));
+//
+//        } else {
+//
+//            Log.d(TAG, "READ_CONTACTS permission NOT granted!");
+//
+//            // check if explanation is needed for this permission
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                    Manifest.permission.READ_CONTACTS)) {
+//
+//                // Show an explanation to the user *asynchronously* -- don't block
+//                // this thread waiting for the user's response! After the user
+//                // sees the explanation, try again to request the permission.
+//
+//                Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
+//            }
+//
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.READ_CONTACTS},
+//                    Config.PERMISSIONS_REQUEST_READ_CONTACTS);
+//
+//        }
+//    }
 
     /**
      * Checks location permission
      */
-    private void checkLocationPermissionGranted() {
-
-        boolean isLocationGranted = PermissionUtils
-                .getInstance(getApplicationContext())
-                .isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
-
-        if (isLocationGranted) {
-
-            Log.d(TAG, "COARSE_LOCATION permission was granted.");
-
-            EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.ACCESS_COARSE_LOCATION));
-
-        } else {
-
-            Log.d(TAG, "COARSE_LOCATION permission NOT granted!");
-
-            // check if explanation is needed for this permission
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-                Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
-            }
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    Config.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
-
-        }
-    }
+//    private void checkLocationPermissionGranted() {
+//
+//        boolean isLocationGranted = PermissionUtils
+//                .getInstance(getApplicationContext())
+//                .isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
+//
+//        if (isLocationGranted) {
+//
+//            Log.d(TAG, "COARSE_LOCATION permission was granted.");
+//
+//            EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.ACCESS_COARSE_LOCATION));
+//
+//        } else {
+//
+//            Log.d(TAG, "COARSE_LOCATION permission NOT granted!");
+//
+//            // check if explanation is needed for this permission
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
+//
+//                // Show an explanation to the user *asynchronously* -- don't block
+//                // this thread waiting for the user's response! After the user
+//                // sees the explanation, try again to request the permission.
+//
+//                Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
+//            }
+//
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+//                    Config.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+//
+//        }
+//    }
 
     /**
      * Inits login view
@@ -300,17 +285,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 Toaster.showLong(this, R.string.register_successful);
             }
         }
-
-        populateAutoComplete();
     }
-
-    /**
-     * Get user's emails
-     */
-    private void populateAutoComplete() {
-        getSupportLoaderManager().initLoader(0, null, this);
-    }
-
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -587,49 +562,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<String>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailTextView.setAdapter(adapter);
-    }
-
     @OnClick(R.id.sign_in_button)
     protected void onUserLogin() {
         attemptLogin();
@@ -800,103 +732,103 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//
+//        if (!EventBus.getDefault().isRegistered(this)) {
+//            EventBus.getDefault().register(this);
+//        }
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//
+//        if (EventBus.getDefault().isRegistered(this)) {
+//            EventBus.getDefault().unregister(this);
+//        }
+//    }
 
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        switch (requestCode) {
-
-            case Config.PERMISSIONS_REQUEST_READ_CONTACTS:
-
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Log.d(TAG, "User granted permission");
-
-                    EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.READ_CONTACTS));
-
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-
-                    Log.d(TAG, "User DENIED permission!");
-
-                    Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
-
-                    // TODO: show crucial permission view
-                    finish();   // for now
-                }
-
-                break;
-            case Config.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION:
-
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Log.d(TAG, "User granted permission");
-
-                    EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.ACCESS_COARSE_LOCATION));
-
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-
-                    Log.d(TAG, "User DENIED permission!");
-
-                    Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
-
-                    // TODO: show crucial permission view
-                    finish();   // for now
-                }
-
-                break;
-
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+//
+//        switch (requestCode) {
+//
+//            case Config.PERMISSIONS_REQUEST_READ_CONTACTS:
+//
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                    Log.d(TAG, "User granted permission");
+//
+//                    EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.READ_CONTACTS));
+//
+//                } else {
+//                    // permission denied, boo! Disable the
+//                    // functionality that depends on this permission.
+//
+//                    Log.d(TAG, "User DENIED permission!");
+//
+//                    Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
+//
+//                    // TODO: show crucial permission view
+//                    finish();   // for now
+//                }
+//
+//                break;
+//            case Config.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION:
+//
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                    Log.d(TAG, "User granted permission");
+//
+//                    EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.ACCESS_COARSE_LOCATION));
+//
+//                } else {
+//                    // permission denied, boo! Disable the
+//                    // functionality that depends on this permission.
+//
+//                    Log.d(TAG, "User DENIED permission!");
+//
+//                    Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
+//
+//                    // TODO: show crucial permission view
+//                    finish();   // for now
+//                }
+//
+//                break;
+//
+//            default:
+//                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        }
+//    }
 
     /**
      * On permission granted event
      *
      * @param event
      */
-    public void onEvent(PermissionGrantedEvent event) {
-
-        String permission = event.getPermission();
-
-        Log.d(TAG, "Permission granted: " + permission);
-
-        if (permission == null) {
-            return;
-        }
-
-        if (permission.equals(Manifest.permission.READ_CONTACTS)) {
-            checkLocationPermissionGranted();
-        }
-
-        if (permission.equals(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-
-            // proceed with login screen
-            initLogin();
-        }
-    }
+//    public void onEvent(PermissionGrantedEvent event) {
+//
+//        String permission = event.getPermission();
+//
+//        Log.d(TAG, "Permission granted: " + permission);
+//
+//        if (permission == null) {
+//            return;
+//        }
+//
+//        if (permission.equals(Manifest.permission.READ_CONTACTS)) {
+//            checkLocationPermissionGranted();
+//        }
+//
+//        if (permission.equals(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+//
+//            // proceed with login screen
+//            initLogin();
+//        }
+//    }
 }
 
