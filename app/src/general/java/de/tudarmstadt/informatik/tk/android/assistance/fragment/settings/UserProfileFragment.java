@@ -16,7 +16,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
@@ -193,21 +192,21 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
-    @OnClick(R.id.userPicVIew)
-    protected void onUserPhotoClicked() {
-        Log.d(TAG, "User clicked selection of an image");
-        pickImage();
-    }
+//    @OnClick(R.id.userPicVIew)
+//    protected void onUserPhotoClicked() {
+//        Log.d(TAG, "User clicked selection of an image");
+//        pickImage();
+//    }
 
     /*
     *   Starts intent to pick some image
      */
-    public void pickImage() {
-
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType(IMAGE_TYPE_FILTER);
-        startActivityForResult(intent, R.id.userPicVIew);
-    }
+//    public void pickImage() {
+//
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        intent.setType(IMAGE_TYPE_FILTER);
+//        startActivityForResult(intent, R.id.userPicVIew);
+//    }
 
     @OnTextChanged({R.id.firstname,
             R.id.lastname,

@@ -18,7 +18,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleInstallation;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.PreferenceProvider;
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
 
-    private List<DbModuleInstallation> dbModuleInstallations;
+    private List<DbModule> dbModuleInstallations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d(TAG, "dbModuleInstallations cached list IS empty");
 
-            dbModuleInstallations = daoProvider.getModuleInstallationDao().getModuleInstallationsByUserId(userId);
+            dbModuleInstallations = daoProvider.getModuleDao().getAllModules(userId);
 
             // user has got some active modules -> activate module menu
             if (dbModuleInstallations != null && !dbModuleInstallations.isEmpty()) {
@@ -87,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "dbModuleInstallations found entries in db!");
 
                 setContentView(R.layout.activity_main);
-                setTitle(dbModuleInstallations.get(0).getDbModule().getTitle());
+                setTitle(dbModuleInstallations.get(0).getTitle());
 
             } else {
 
@@ -135,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         dbModule.setPackageName("de.tudarmstadt.tk.assistance.quantifiedself");
         dbModule.setSupportEmail("developer@kraken.me");
         dbModule.setCopyright("TK Informtik TU Darmstadt");
+        dbModule.setActive(true);
         dbModule.setCreated(currentDate);
 
         long moduleId = daoProvider.getModuleDao().insertModule(dbModule);
@@ -151,16 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
         daoProvider.getModuleCapabilityDao().insertModuleCapability(dbModuleCapability1);
 
-        DbModuleInstallation dbModuleInstallation = new DbModuleInstallation();
-
-        dbModuleInstallation.setUserId(userId);
-        dbModuleInstallation.setModuleId(moduleId);
-        dbModuleInstallation.setActive(true);
-        dbModuleInstallation.setCreated(currentDate);
-
-        daoProvider.getModuleInstallationDao().insertModuleInstallation(dbModuleInstallation);
-
-        dbModuleInstallations.add(dbModuleInstallation);
+        dbModuleInstallations.add(dbModule);
 
         Log.d(TAG, "Finished installing example data!");
     }
