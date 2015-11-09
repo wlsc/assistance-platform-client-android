@@ -39,7 +39,8 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
 
         if (viewType == EMPTY_VIEW_TYPE) {
             // list is empty
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_view, parent, false);
+            view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.empty_view, parent, false);
             EmptyViewHolder emptyView = new EmptyViewHolder(view);
 
             return emptyView;
@@ -113,7 +114,7 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
     /**
      * View holder for available module
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    protected static class ViewHolder extends RecyclerView.ViewHolder {
 
         protected final TextView mMainTitle;
         protected final TextView mMainSecondaryTitle;

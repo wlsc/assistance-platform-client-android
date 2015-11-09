@@ -91,7 +91,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /**
      * View holder for available module
      */
-    public static class NewsViewHolder extends RecyclerView.ViewHolder {
+    protected static class NewsViewHolder extends RecyclerView.ViewHolder {
 
         protected final TextView mContent;
 

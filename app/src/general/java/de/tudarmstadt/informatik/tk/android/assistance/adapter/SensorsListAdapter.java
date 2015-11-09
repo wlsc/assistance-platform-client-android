@@ -72,7 +72,7 @@ public class SensorsListAdapter extends RecyclerView.Adapter<SensorsListAdapter.
     /**
      * Sensors list item holder
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    protected static class ViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.sensor_list_item)
         protected TextView textView;

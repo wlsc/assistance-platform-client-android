@@ -13,8 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pkmmte.view.CircularImageView;
@@ -30,12 +28,14 @@ import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.AvailableModulesAdapter;
+import de.tudarmstadt.informatik.tk.android.assistance.adapter.PermissionAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
+import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
@@ -63,7 +63,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private RecyclerView mRecyclerView;
+    private RecyclerView mAvailableModulesRecyclerView;
+
+    private RecyclerView permissionRequiredRecyclerView;
+
+    private RecyclerView permissionOptionalRecyclerView;
 
     private DaoProvider daoProvider;
 
@@ -91,8 +95,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         setTitle(R.string.module_list_activity_title);
 
-        mRecyclerView = ButterKnife.findById(this, R.id.moduleListRecyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAvailableModulesRecyclerView = ButterKnife.findById(this, R.id.moduleListRecyclerView);
+        mAvailableModulesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(
@@ -219,7 +223,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                             });
 
                         } else {
-                            mRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
+                            mAvailableModulesRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
                     }
@@ -233,7 +237,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                     @Override
                     public void failure(RetrofitError error) {
                         showErrorMessages(error);
-                        mRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
+                        mAvailableModulesRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                 });
@@ -270,7 +274,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
             mAvailableModuleResponses.put(module.getModulePackage(), module);
         }
 
-        mRecyclerView.setAdapter(new AvailableModulesAdapter(mModules));
+        mAvailableModulesRecyclerView.setAdapter(new AvailableModulesAdapter(mModules));
     }
 
     /**
@@ -335,12 +339,10 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void showPermissionDialog(final String moduleId) {
 
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setInverseBackgroundForced(true);
-        dialogBuilder.setView(R.style.AppCompatAlertDialog);
-
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_dialog_permissions, null);
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setView(dialogView);
 
         dialogBuilder.setPositiveButton(R.string.button_accept_text, new DialogInterface.OnClickListener() {
@@ -368,28 +370,30 @@ public class AvailableModulesActivity extends AppCompatActivity {
         List<ModuleCapabilityResponse> requiredSensors = selectedModule.getSensorsRequired();
         List<ModuleCapabilityResponse> optionalSensors = selectedModule.getSensorsOptional();
 
-        List<String> allModuleSensors = new ArrayList<>();
+        List<PermissionListItem> requiredModuleSensors = new ArrayList<>();
+        List<PermissionListItem> optionalModuleSensors = new ArrayList<>();
 
         if (requiredSensors != null) {
             for (ModuleCapabilityResponse capability : requiredSensors) {
-                allModuleSensors.add(capability.getType());
+                PermissionListItem item = new PermissionListItem(capability.getType(), true);
+                requiredModuleSensors.add(item);
             }
         }
 
         if (optionalSensors != null) {
             for (ModuleCapabilityResponse capability : optionalSensors) {
-                allModuleSensors.add(capability.getType());
+                PermissionListItem item = new PermissionListItem(capability.getType(), false);
+                optionalModuleSensors.add(item);
             }
         }
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-                this,
-                R.layout.permission_item,
-                R.id.permission_item_title,
-                allModuleSensors);
+        permissionRequiredRecyclerView = ButterKnife.findById(dialogView, R.id.module_permission_required_list);
+        permissionRequiredRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        permissionRequiredRecyclerView.setAdapter(new PermissionAdapter(requiredModuleSensors));
 
-        ListView listView = ButterKnife.findById(dialogView, R.id.module_permission_list);
-        listView.setAdapter(arrayAdapter);
+        permissionOptionalRecyclerView = ButterKnife.findById(dialogView, R.id.module_permission_optional_list);
+        permissionOptionalRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(optionalModuleSensors));
 
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
