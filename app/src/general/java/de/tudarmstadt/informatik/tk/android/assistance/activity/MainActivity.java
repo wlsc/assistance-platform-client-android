@@ -37,7 +37,9 @@ import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGe
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.service.GcmRegistrationIntentService;
+import de.tudarmstadt.informatik.tk.android.kraken.service.HarvesterService;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.util.DeviceUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.GcmUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -117,7 +119,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (modulesInstallation != null && !modulesInstallation.isEmpty()) {
 
-            HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
+            if (!DeviceUtils.isServiceRunning(
+                    getApplicationContext(),
+                    HarvesterService.class)) {
+
+                HarvesterServiceProvider.getInstance(
+                        getApplicationContext())
+                        .startSensingService();
+            }
 
         } else {
 
@@ -126,9 +135,25 @@ public class MainActivity extends AppCompatActivity {
 
             // user got some active modules
             if (modulesInstallation != null && !modulesInstallation.isEmpty()) {
-                HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
+
+                if (!DeviceUtils.isServiceRunning(
+                        getApplicationContext(),
+                        HarvesterService.class)) {
+
+                    HarvesterServiceProvider.getInstance(
+                            getApplicationContext())
+                            .startSensingService();
+                }
             } else {
-                HarvesterServiceProvider.getInstance(getApplicationContext()).stopSensingService();
+
+                if (DeviceUtils.isServiceRunning(
+                        getApplicationContext(),
+                        HarvesterService.class)) {
+
+                    HarvesterServiceProvider.getInstance(
+                            getApplicationContext())
+                            .stopSensingService();
+                }
             }
         }
     }

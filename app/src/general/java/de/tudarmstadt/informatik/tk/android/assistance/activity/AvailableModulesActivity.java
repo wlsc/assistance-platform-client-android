@@ -45,6 +45,8 @@ import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.service.HarvesterService;
+import de.tudarmstadt.informatik.tk.android.kraken.util.DeviceUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -425,13 +427,21 @@ public class AvailableModulesActivity extends AppCompatActivity {
                     public void success(Void aVoid, Response response) {
 
                         if (response.getStatus() == 200 || response.getStatus() == 204) {
+
                             Log.d(TAG, "Module is activated!");
+
                             saveModuleInstallationInDb(modulePackageName);
+
                             Log.d(TAG, "Installation has finished!");
 
-                            HarvesterServiceProvider
-                                    .getInstance(getApplicationContext())
-                                    .startSensingService();
+                            if (!DeviceUtils.isServiceRunning(
+                                    getApplicationContext(),
+                                    HarvesterService.class)) {
+                                
+                                HarvesterServiceProvider
+                                        .getInstance(getApplicationContext())
+                                        .startSensingService();
+                            }
 
                         } else {
                             Log.d(TAG, "FAIL: service responded with code: " + response.getStatus());

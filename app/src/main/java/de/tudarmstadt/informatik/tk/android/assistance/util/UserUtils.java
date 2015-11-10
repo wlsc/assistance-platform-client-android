@@ -5,6 +5,8 @@ import android.content.Context;
 import java.util.Locale;
 
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.service.HarvesterService;
+import de.tudarmstadt.informatik.tk.android.kraken.util.DeviceUtils;
 
 /**
  * Created by Wladimir Schmidt on 04.07.2015.
@@ -22,7 +24,12 @@ public class UserUtils {
         PreferencesUtils.clearUserCredentials(context);
 
         // stop the kraken
-        HarvesterServiceProvider.getInstance(context).stopSensingService();
+        if (DeviceUtils.isServiceRunning(
+                context,
+                HarvesterService.class)) {
+
+            HarvesterServiceProvider.getInstance(context).stopSensingService();
+        }
     }
 
     /**
