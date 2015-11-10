@@ -80,7 +80,7 @@
     <string name="main_activity_undo_uninstall_button_title">UNDO</string>
 
     <!-- LOGIN SCREEN -->
-    <string name="login_header">Welcome back!</string>
+    <string name="login_header">Welcome!</string>
     <string name="login_activity_title">SIGN IN</string>
     <string name="login_prompt_email">Email</string>
     <string name="login_prompt_password">Password</string>

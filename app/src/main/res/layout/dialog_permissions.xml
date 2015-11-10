@@ -12,9 +12,6 @@
         android:id="@+id/module_permission_header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:orientation="horizontal"
         android:padding="15dp">
 
@@ -41,7 +38,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/alertDialogBackground"
-                android:textColor="@color/alertDialogTitle"/>
+                android:textColor="@color/alertDialogTitle"
+                android:textSize="18sp"/>
 
             <TextView
                 android:id="@+id/module_permission_narration"
@@ -56,56 +54,53 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/module_permission_required"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/module_permission_header"
-        android:orientation="vertical"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingStart="30dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/module_required_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/alertDialogBackground"
-            android:text="@string/module_permission_dialog_required_title"
-            android:textColor="@color/alertDialogTitle"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/module_permission_required_list"
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
-            android:paddingTop="@dimen/dialog_list_padding_vertical_material"/>
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/module_required_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/alertDialogBackground"
+                android:text="@string/module_permission_dialog_required_title"
+                android:textColor="@color/alertDialogTitle"/>
 
-    <LinearLayout
-        android:id="@+id/module_permission_optional"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/module_permission_required"
-        android:orientation="vertical"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingStart="30dp">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/module_permission_required_list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
+                android:paddingTop="@dimen/dialog_list_padding_vertical_material"/>
 
-        <TextView
-            android:id="@+id/module_optional_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/alertDialogBackground"
-            android:text="@string/module_permission_dialog_optional_title"
-            android:textColor="@color/alertDialogTitle"/>
+        </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/module_permission_optional_list"
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
-            android:paddingTop="@dimen/dialog_list_padding_vertical_material"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/module_optional_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/alertDialogBackground"
+                android:text="@string/module_permission_dialog_optional_title"
+                android:textColor="@color/alertDialogTitle"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/module_permission_optional_list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
+                android:paddingTop="@dimen/dialog_list_padding_vertical_material"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
