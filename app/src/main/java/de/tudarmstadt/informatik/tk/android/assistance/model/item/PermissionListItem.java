@@ -8,16 +8,16 @@ public class PermissionListItem {
 
     String title;
 
-    boolean enabled;
+    boolean checked;
 
     public PermissionListItem() {
         this.title = "";
-        this.enabled = false;
+        this.checked = true;
     }
 
-    public PermissionListItem(String title, boolean enabled) {
+    public PermissionListItem(String title, boolean checked) {
         this.title = title;
-        this.enabled = enabled;
+        this.checked = checked;
     }
 
     public String getTitle() {
@@ -28,11 +28,11 @@ public class PermissionListItem {
         this.title = title;
     }
 
-    public boolean isEnabled() {
-        return this.enabled;
+    public boolean isChecked() {
+        return this.checked;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setChecked(boolean enabled) {
+        this.checked = enabled;
     }
 }
