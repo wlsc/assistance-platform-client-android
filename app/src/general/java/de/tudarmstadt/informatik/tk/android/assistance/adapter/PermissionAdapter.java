@@ -59,7 +59,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
         PermissionListItem item = mData.get(position);
 
         holder.mTitle.setText(item.getTitle());
-        holder.mEnablerSwitch.setChecked(item.isEnabled());
+        holder.mEnablerSwitch.setChecked(item.isChecked());
 
         if (requiredState == 1) {
             holder.mEnablerSwitch.setChecked(true);
