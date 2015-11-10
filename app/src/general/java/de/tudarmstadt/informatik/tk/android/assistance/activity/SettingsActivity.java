@@ -70,7 +70,6 @@ public class SettingsActivity extends PreferenceActivity {
         mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
 
-        // TODO:
 //        FragmentManager fm = getFragmentManager();
 //        fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
 //

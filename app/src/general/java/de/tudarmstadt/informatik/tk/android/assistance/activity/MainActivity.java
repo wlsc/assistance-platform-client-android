@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onActivityResult");
 
-        switch (requestCode) {
+        switch (resultCode) {
             case Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT:
                 initView();
                 break;
