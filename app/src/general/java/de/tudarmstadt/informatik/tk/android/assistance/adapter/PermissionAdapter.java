@@ -25,13 +25,21 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
 
     private final List<PermissionListItem> mData;
 
-    public PermissionAdapter(List<PermissionListItem> mData) {
+    private final int requiredState;
+
+    public static final int OPTIONAL = 0;
+
+    public static final int REQUIRED = 1;
+
+    public PermissionAdapter(List<PermissionListItem> mData, int requiredState) {
 
         if (mData == null) {
             this.mData = new ArrayList<>();
         } else {
             this.mData = mData;
         }
+
+        this.requiredState = requiredState;
     }
 
     @Override
@@ -52,6 +60,11 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
 
         holder.mTitle.setText(item.getTitle());
         holder.mEnablerSwitch.setChecked(item.isEnabled());
+
+        if (requiredState == 1) {
+            holder.mEnablerSwitch.setChecked(true);
+            holder.mEnablerSwitch.setEnabled(false);
+        }
     }
 
     /**

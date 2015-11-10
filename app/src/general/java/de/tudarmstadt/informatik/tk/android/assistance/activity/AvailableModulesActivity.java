@@ -377,25 +377,33 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         if (requiredSensors != null) {
             for (ModuleCapabilityResponse capability : requiredSensors) {
-                PermissionListItem item = new PermissionListItem(capability.getType(), true);
+
+                PermissionListItem item = new PermissionListItem(capability.getType());
                 requiredModuleSensors.add(item);
             }
         }
 
         if (optionalSensors != null) {
             for (ModuleCapabilityResponse capability : optionalSensors) {
-                PermissionListItem item = new PermissionListItem(capability.getType(), false);
+
+                PermissionListItem item = new PermissionListItem(capability.getType());
                 optionalModuleSensors.add(item);
             }
         }
 
-        permissionRequiredRecyclerView = ButterKnife.findById(dialogView, R.id.module_permission_required_list);
+        permissionRequiredRecyclerView = ButterKnife.findById(dialogView,
+                R.id.module_permission_required_list);
         permissionRequiredRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        permissionRequiredRecyclerView.setAdapter(new PermissionAdapter(requiredModuleSensors));
+        permissionRequiredRecyclerView.setAdapter(new PermissionAdapter(
+                requiredModuleSensors,
+                PermissionAdapter.REQUIRED));
 
-        permissionOptionalRecyclerView = ButterKnife.findById(dialogView, R.id.module_permission_optional_list);
+        permissionOptionalRecyclerView = ButterKnife.findById(dialogView,
+                R.id.module_permission_optional_list);
         permissionOptionalRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(optionalModuleSensors));
+        permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(
+                optionalModuleSensors,
+                PermissionAdapter.OPTIONAL));
 
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
@@ -437,7 +445,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                             if (!DeviceUtils.isServiceRunning(
                                     getApplicationContext(),
                                     HarvesterService.class)) {
-                                
+
                                 HarvesterServiceProvider
                                         .getInstance(getApplicationContext())
                                         .startSensingService();
