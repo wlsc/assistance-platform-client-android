@@ -40,14 +40,14 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
         if (viewType == EMPTY_VIEW_TYPE) {
             // list is empty
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.empty_view, parent, false);
+                    .inflate(R.layout.item_list_empty_view, parent, false);
             EmptyViewHolder emptyView = new EmptyViewHolder(view);
 
             return emptyView;
         } else {
             // list has items
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.available_module_card_item, parent, false);
+                    .inflate(R.layout.item_available_module_card, parent, false);
 
             return new ViewHolder(view);
         }

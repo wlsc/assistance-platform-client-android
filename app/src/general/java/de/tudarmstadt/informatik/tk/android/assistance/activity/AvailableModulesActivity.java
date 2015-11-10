@@ -307,7 +307,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
     private void showMoreModuleInformationDialog(String modulePackageName) {
 
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.alert_dialog_more_info_module, null);
+        View dialogView = inflater.inflate(R.layout.dialog_module_more_info, null);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setView(dialogView);
@@ -340,7 +340,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
     private void showPermissionDialog(final String moduleId) {
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.alert_dialog_permissions, null);
+        View dialogView = inflater.inflate(R.layout.dialog_permissions, null);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setView(dialogView);

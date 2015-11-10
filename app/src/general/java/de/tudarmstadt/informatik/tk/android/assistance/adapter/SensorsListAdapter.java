@@ -34,7 +34,7 @@ public class SensorsListAdapter extends RecyclerView.Adapter<SensorsListAdapter.
     @Override
     public SensorsListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.sensor_list_item, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_sensor, viewGroup, false);
 
         final ViewHolder viewHolder = new ViewHolder(view);
 

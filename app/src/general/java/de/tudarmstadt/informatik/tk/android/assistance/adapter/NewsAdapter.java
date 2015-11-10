@@ -34,7 +34,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (viewType == EMPTY_VIEW_TYPE) {
             // list is empty
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.empty_view, parent, false);
+                    .inflate(R.layout.item_list_empty_view, parent, false);
             EmptyViewHolder emptyView = new EmptyViewHolder(view);
 
             return emptyView;
@@ -42,7 +42,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         // list has items
         view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.news_card_item, parent, false);
+                .inflate(R.layout.item_news_card, parent, false);
         NewsViewHolder newsHolder = new NewsViewHolder(view);
 
         return newsHolder;
