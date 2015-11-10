@@ -15,6 +15,11 @@ public class PermissionListItem {
         this.checked = true;
     }
 
+    public PermissionListItem(String title) {
+        this.title = title;
+        this.checked = true;
+    }
+
     public PermissionListItem(String title, boolean checked) {
         this.title = title;
         this.checked = checked;
