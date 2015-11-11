@@ -15,7 +15,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.resetpassword.ResetPasswordRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
+import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
@@ -69,7 +69,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
             return;
         }
 
-        if (!InputValidation.isValidEmail(mUserEmail)) {
+        if (!ValidationUtils.isValidEmail(mUserEmail)) {
             mUserEmailEditText.setError(getString(R.string.error_invalid_email));
             mUserEmailEditText.requestFocus();
             return;

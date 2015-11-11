@@ -25,7 +25,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.Sensors
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDeviceInfoSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
-import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
 
 /**
@@ -102,7 +103,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         loadHeadersFromResource(R.xml.preference_headers, headers);
 
-        boolean isUserDeveloper = UserUtils.isUserDeveloper(getApplicationContext());
+        boolean isUserDeveloper = PreferencesUtils.isUserDeveloper(getApplicationContext());
 
         for (Header header : headers) {
             if (header.id == R.id.development_settings) {
@@ -144,7 +145,7 @@ public class SettingsActivity extends PreferenceActivity {
         switch ((int) header.id) {
 
             case R.id.logout_settings:
-                UserUtils.doLogout(getApplicationContext());
+                LoginUtils.doLogout(getApplicationContext());
                 setResult(Constants.INTENT_SETTINGS_LOGOUT_RESULT);
                 finish();
                 break;

@@ -9,9 +9,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.Config;
  * <p/>
  * Created by Wladimir Schmidt on 28.06.2015.
  */
-public class InputValidation {
+public class ValidationUtils {
 
-    private InputValidation() {
+    private ValidationUtils() {
     }
 
     /**

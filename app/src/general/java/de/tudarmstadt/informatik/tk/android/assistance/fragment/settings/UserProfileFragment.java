@@ -23,8 +23,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEn
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UpdateProfileRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UserSocialService;
-import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
-import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -99,7 +99,7 @@ public class UserProfileFragment extends Fragment {
         View view = null;
 
         // request user profile from server
-        userToken = UserUtils.getUserToken(getActivity().getApplicationContext());
+        userToken = PreferencesUtils.getUserToken(getActivity().getApplicationContext());
 
         if (!userToken.isEmpty()) {
 
@@ -232,7 +232,7 @@ public class UserProfileFragment extends Fragment {
 
         if (!TextUtils.isEmpty(socialAccountGoogle)) {
 
-            if (!InputValidation.isValidEmail(socialAccountGoogle)) {
+            if (!ValidationUtils.isValidEmail(socialAccountGoogle)) {
                 socialAccountGoogleText.setError(getString(R.string.error_invalid_email));
                 socialAccountGoogleText.requestFocus();
                 return false;
@@ -243,7 +243,7 @@ public class UserProfileFragment extends Fragment {
 
         if (!TextUtils.isEmpty(socialAccountFacebook)) {
 
-            if (!InputValidation.isValidEmail(socialAccountFacebook)) {
+            if (!ValidationUtils.isValidEmail(socialAccountFacebook)) {
                 socialAccountFacebookText.setError(getString(R.string.error_invalid_email));
                 socialAccountFacebookText.requestFocus();
                 return false;
@@ -254,7 +254,7 @@ public class UserProfileFragment extends Fragment {
 
         if (!TextUtils.isEmpty(socialAccountLive)) {
 
-            if (!InputValidation.isValidEmail(socialAccountLive)) {
+            if (!ValidationUtils.isValidEmail(socialAccountLive)) {
                 socialAccountLiveText.setError(getString(R.string.error_invalid_email));
                 socialAccountLiveText.requestFocus();
                 return false;
@@ -265,7 +265,7 @@ public class UserProfileFragment extends Fragment {
 
         if (!TextUtils.isEmpty(socialAccountTwitter)) {
 
-            if (!InputValidation.isValidEmail(socialAccountTwitter)) {
+            if (!ValidationUtils.isValidEmail(socialAccountTwitter)) {
                 socialAccountTwitterText.setError(getString(R.string.error_invalid_email));
                 socialAccountTwitterText.requestFocus();
                 return false;
@@ -276,7 +276,7 @@ public class UserProfileFragment extends Fragment {
 
         if (!TextUtils.isEmpty(socialAccountGithub)) {
 
-            if (!InputValidation.isValidEmail(socialAccountGithub)) {
+            if (!ValidationUtils.isValidEmail(socialAccountGithub)) {
                 socialAccountGithubText.setError(getString(R.string.error_invalid_email));
                 socialAccountGithubText.requestFocus();
                 return false;
@@ -298,8 +298,8 @@ public class UserProfileFragment extends Fragment {
         request.setFirstname(firstname);
         request.setLastname(lastname);
 
-        UserUtils.saveUserFirstname(getActivity().getApplicationContext(), firstname);
-        UserUtils.saveUserLastname(getActivity().getApplicationContext(), lastname);
+        PreferencesUtils.setUserFirstname(getActivity().getApplicationContext(), firstname);
+        PreferencesUtils.setUserLastname(getActivity().getApplicationContext(), lastname);
 
         List<UserSocialService> socialServices = new ArrayList<>();
 

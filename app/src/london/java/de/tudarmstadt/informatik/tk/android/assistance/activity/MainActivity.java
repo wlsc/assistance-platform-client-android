@@ -15,7 +15,7 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
-import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         registerForPush();
 
-        long userId = UserUtils.getCurrentUserId(getApplicationContext());
+        long userId = PreferencesUtils.getCurrentUserId(getApplicationContext());
 
         Log.d(TAG, "UserId: " + userId);
 
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void registerForPush() {
 
-        boolean isTokenWasSent = UserUtils.isGcmTokenWasSent(getApplicationContext());
+        boolean isTokenWasSent = PreferencesUtils.isGcmTokenWasSent(getApplicationContext());
 
         if (isTokenWasSent) {
             return;
@@ -191,12 +191,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, GcmRegistrationIntentService.class);
             startService(intent);
 
-            UserUtils.saveGcmTokenWasSent(getApplicationContext(), true);
+            PreferencesUtils.setGcmTokenWasSent(getApplicationContext(), true);
 
         } else {
             Log.d(TAG, "Google Play Services NOT installed.");
 
-            UserUtils.saveGcmTokenWasSent(getApplicationContext(), false);
+            PreferencesUtils.setGcmTokenWasSent(getApplicationContext(), false);
         }
     }
 

@@ -12,8 +12,8 @@ import android.widget.Toast;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
-import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 
 /**
  * Created by Wladimir Schmidt on 29.06.2015.
@@ -99,7 +99,7 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
     private boolean processBuildButton() {
 
         // check that user already a developer
-        boolean isDeveloper = UserUtils.isUserDeveloper(getActivity().getApplicationContext());
+        boolean isDeveloper = PreferencesUtils.isUserDeveloper(getActivity().getApplicationContext());
 
         if (isDeveloper) {
             Toaster.showShort(getActivity().getApplicationContext(), R.string.settings_build_press_already_developer);
@@ -120,7 +120,7 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
             Log.d(TAG, "You are now a developer.");
 
             Toaster.showLong(getActivity(), R.string.settings_build_press_now_you_developer);
-            UserUtils.saveDeveloperStatus(getActivity().getApplicationContext(), true);
+            PreferencesUtils.setDeveloperStatus(getActivity().getApplicationContext(), true);
 
             return true;
         }

@@ -37,9 +37,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCa
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
-import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
@@ -138,12 +138,12 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void loadModules() {
 
-        String userEmail = UserUtils.getUserEmail(getApplicationContext());
+        String userEmail = PreferencesUtils.getUserEmail(getApplicationContext());
 
         DbUser user = daoProvider.getUserDao().getUserByEmail(userEmail);
 
         if (user == null) {
-            UserUtils.doLogout(getApplicationContext());
+            LoginUtils.doLogout(getApplicationContext());
             finish();
             return;
         }
@@ -163,7 +163,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void requestAvailableModules() {
 
-        final String userToken = UserUtils.getUserToken(getApplicationContext());
+        final String userToken = PreferencesUtils.getUserToken(getApplicationContext());
 
         // calling api service
         final ModuleEndpoint moduleEndpoint = EndpointGenerator
@@ -188,7 +188,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                             Log.d(TAG, availableModulesResponse.toString());
 
-                            boolean hasUserRequestedActiveModules = UserUtils.hasUserRequestedActiveModules(getApplicationContext());
+                            boolean hasUserRequestedActiveModules = PreferencesUtils.hasUserRequestedActiveModules(getApplicationContext());
 
                             if (hasUserRequestedActiveModules) {
                                 mSwipeRefreshLayout.setRefreshing(false);
@@ -204,7 +204,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                                                     Response response) {
 
                                     mSwipeRefreshLayout.setRefreshing(false);
-                                    UserUtils.saveUserRequestedActiveModules(getApplicationContext(), true);
+                                    PreferencesUtils.setUserRequestedActiveModules(getApplicationContext(), true);
 
                                     if (activeModules != null && !activeModules.isEmpty()) {
 
@@ -419,7 +419,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         Log.d(TAG, "Installation of a module " + modulePackageName + " has started...");
         Log.d(TAG, "Requesting service...");
 
-        String userToken = UserUtils.getUserToken(getApplicationContext());
+        String userToken = PreferencesUtils.getUserToken(getApplicationContext());
 
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
         toggleModuleRequest.setModuleId(modulePackageName);
@@ -470,13 +470,13 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void saveModuleInstallationInDb(final String modulePackageName) {
 
-        String userEmail = UserUtils.getUserEmail(getApplicationContext());
+        String userEmail = PreferencesUtils.getUserEmail(getApplicationContext());
 
         DbUser user = daoProvider.getUserDao().getUserByEmail(userEmail);
 
         if (user == null) {
             Log.d(TAG, "Installation cancelled: user is null");
-            UserUtils.doLogout(getApplicationContext());
+            LoginUtils.doLogout(getApplicationContext());
             finish();
             return;
         }
@@ -497,7 +497,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         if (installId == null) {
             Toaster.showLong(getApplicationContext(), R.string.module_installation_unsuccessful);
         } else {
-            UserUtils.saveUserHasModules(getApplicationContext(), true);
+            PreferencesUtils.setUserHasModules(getApplicationContext(), true);
             Toaster.showLong(getApplicationContext(), R.string.module_installation_successful);
         }
 

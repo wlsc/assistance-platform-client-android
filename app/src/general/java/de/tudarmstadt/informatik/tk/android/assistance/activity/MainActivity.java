@@ -20,6 +20,7 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.NewsAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
@@ -29,13 +30,13 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.Profile
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
-import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
+import de.tudarmstadt.informatik.tk.android.kraken.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.kraken.service.HarvesterService;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
@@ -74,6 +75,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        boolean accessibilityServiceActivated = PreferenceProvider
+                .getInstance(getApplicationContext())
+                .getActivated();
+
+        if (accessibilityServiceActivated) {
+            initView();
+        } else {
+
+            Log.d(TAG, "Accessibility Service is NOT active! Showing tutorial...");
+
+            Intent intent = new Intent(this, AccessibilityTutorialActivity.class);
+            startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
+        }
+    }
+
+    /**
+     * Initializes this activity
+     */
+    private void initView() {
+
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
@@ -87,35 +108,18 @@ public class MainActivity extends AppCompatActivity {
             daoProvider = DaoProvider.getInstance(getApplicationContext());
         }
 
-        long userId = UserUtils.getCurrentUserId(getApplicationContext());
+        if (BuildConfig.DEBUG) {
+            PreferencesUtils.setDeveloperStatus(getApplicationContext(), true);
+        }
+
+        long userId = PreferencesUtils.getCurrentUserId(getApplicationContext());
 
         assistanceNews = daoProvider.getNewsDao().getNews(userId);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new NewsAdapter(assistanceNews));
 
-
-//        boolean accessibilityServiceActivated = PreferenceProvider.getInstance(getApplicationContext()).getActivated();
-//
-//        if (accessibilityServiceActivated) {
-//            initView();
-//        } else {
-//
-//            Log.d(TAG, "Accessibility Service is NOT active! Showing tutorial...");
-//
-//            Intent intent = new Intent(this, AccessibilityTutorialActivity.class);
-//            startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
-//        }
-    }
-
-    /**
-     * Initializes this activity
-     */
-    private void initView() {
-
         registerForPush();
-
-        long userId = UserUtils.getCurrentUserId(getApplicationContext());
 
         if (modulesInstallation != null && !modulesInstallation.isEmpty()) {
 
@@ -163,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void registerForPush() {
 
-        boolean isTokenWasSent = UserUtils.isGcmTokenWasSent(getApplicationContext());
+        boolean isTokenWasSent = PreferencesUtils.isGcmTokenWasSent(getApplicationContext());
 
         if (isTokenWasSent) {
             return;
@@ -178,12 +182,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, GcmRegistrationIntentService.class);
             startService(intent);
 
-            UserUtils.saveGcmTokenWasSent(getApplicationContext(), true);
+            PreferencesUtils.setGcmTokenWasSent(getApplicationContext(), true);
 
         } else {
             Log.d(TAG, "Google Play Services NOT installed.");
 
-            UserUtils.saveGcmTokenWasSent(getApplicationContext(), false);
+            PreferencesUtils.setGcmTokenWasSent(getApplicationContext(), false);
 
             // TODO: tell user that it is impossible without play services
             // or just make here impl without play services.
@@ -209,12 +213,6 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-//        updateMenu();
-        return super.onPrepareOptionsMenu(menu);
     }
 
     /**
@@ -280,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void moduleUninstall() {
 
-        String userToken = UserUtils.getUserToken(getApplicationContext());
+        String userToken = PreferencesUtils.getUserToken(getApplicationContext());
 
         // TODO:
 //        DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
@@ -366,6 +364,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (resultCode) {
             case Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT:
+            case Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLED_RESULT:
                 initView();
                 break;
             case Constants.INTENT_SETTINGS_LOGOUT_RESULT:
@@ -383,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void requestUserProfile() {
 
-        String userToken = UserUtils.getUserToken(getApplicationContext());
+        String userToken = PreferencesUtils.getUserToken(getApplicationContext());
 
         UserEndpoint userservice = EndpointGenerator.getInstance(getApplicationContext()).create(UserEndpoint.class);
         userservice.getUserProfileShort(userToken, new Callback<ProfileResponse>() {
@@ -395,9 +394,9 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                UserUtils.saveUserFirstname(getApplicationContext(), profileResponse.getFirstname());
-                UserUtils.saveUserLastname(getApplicationContext(), profileResponse.getLastname());
-                UserUtils.saveUserEmail(getApplicationContext(), profileResponse.getPrimaryEmail());
+                PreferencesUtils.setUserFirstname(getApplicationContext(), profileResponse.getFirstname());
+                PreferencesUtils.setUserLastname(getApplicationContext(), profileResponse.getLastname());
+                PreferencesUtils.setUserEmail(getApplicationContext(), profileResponse.getPrimaryEmail());
 
                 persistLogin(profileResponse);
             }

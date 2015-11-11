@@ -35,10 +35,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.UserDevic
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.HardwareUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
+import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
-import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
@@ -210,14 +209,14 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void initLogin() {
 
-        String userToken = UserUtils.getUserToken(getApplicationContext());
+        String userToken = PreferencesUtils.getUserToken(getApplicationContext());
 
         if (userToken.isEmpty()) {
             Log.d(TAG, "User token NOT found");
             Log.d(TAG, "Searching for autologin...");
 
-            String savedEmail = UserUtils.getUserEmail(getApplicationContext());
-            String savedPassword = UserUtils.getUserPassword(getApplicationContext());
+            String savedEmail = PreferencesUtils.getUserEmail(getApplicationContext());
+            String savedPassword = PreferencesUtils.getUserPassword(getApplicationContext());
 
             if (!savedEmail.isEmpty() && !savedPassword.isEmpty()) {
                 Log.d(TAG, "Found email/password entries saved. Doing autologin...");
@@ -314,7 +313,7 @@ public class LoginActivity extends AppCompatActivity {
         View focusView = null;
 
         // check for password
-        if (!TextUtils.isEmpty(password) && !InputValidation.isPasswordLengthValid(password)) {
+        if (!TextUtils.isEmpty(password) && !ValidationUtils.isPasswordLengthValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             isAnyErrors = true;
@@ -326,7 +325,7 @@ public class LoginActivity extends AppCompatActivity {
             focusView = mEmailTextView;
             isAnyErrors = true;
         } else {
-            if (!InputValidation.isValidEmail(email)) {
+            if (!ValidationUtils.isValidEmail(email)) {
                 mEmailTextView.setError(getString(R.string.error_invalid_email));
                 focusView = mEmailTextView;
                 isAnyErrors = true;
@@ -362,10 +361,10 @@ public class LoginActivity extends AppCompatActivity {
 
         if (user != null) {
 
-            UserUtils.saveCurrentUserId(getApplicationContext(), user.getId());
-            UserUtils.saveUserEmail(getApplicationContext(), user.getPrimaryEmail());
-            UserUtils.saveUserFirstname(getApplicationContext(), user.getFirstname());
-            UserUtils.saveUserLastname(getApplicationContext(), user.getLastname());
+            PreferencesUtils.setCurrentUserId(getApplicationContext(), user.getId());
+            PreferencesUtils.setUserEmail(getApplicationContext(), user.getPrimaryEmail());
+            PreferencesUtils.setUserFirstname(getApplicationContext(), user.getFirstname());
+            PreferencesUtils.setUserLastname(getApplicationContext(), user.getLastname());
 
             String currentAndroidId = HardwareUtils.getAndroidId(this);
 
@@ -450,7 +449,7 @@ public class LoginActivity extends AppCompatActivity {
 
             long newUserId = daoProvider.getUserDao().insertUser(newUser);
 
-            UserUtils.saveCurrentUserId(getApplicationContext(), newUserId);
+            PreferencesUtils.setCurrentUserId(getApplicationContext(), newUserId);
 
             // saving device info into db
 
@@ -466,8 +465,8 @@ public class LoginActivity extends AppCompatActivity {
 
             long currentDeviceId = daoProvider.getDeviceDao().insertDevice(device);
 
-            UserUtils.saveCurrentDeviceId(getApplicationContext(), currentDeviceId);
-            UserUtils.saveServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
+            PreferencesUtils.setCurrentDeviceId(getApplicationContext(), currentDeviceId);
+            PreferencesUtils.setServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
 
         } else {
 
@@ -480,8 +479,8 @@ public class LoginActivity extends AppCompatActivity {
                 if (device.getDeviceIdentifier().equals(currentAndroidId)) {
                     isDeviceAlreadyCreated = true;
 
-                    UserUtils.saveCurrentDeviceId(getApplicationContext(), device.getId());
-                    UserUtils.saveServerDeviceId(getApplicationContext(), device.getServerDeviceId());
+                    PreferencesUtils.setCurrentDeviceId(getApplicationContext(), device.getId());
+                    PreferencesUtils.setServerDeviceId(getApplicationContext(), device.getServerDeviceId());
 
                     break;
                 }
@@ -502,11 +501,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 long currentDeviceId = daoProvider.getDeviceDao().insertDevice(device);
 
-                UserUtils.saveCurrentDeviceId(getApplicationContext(), currentDeviceId);
-                UserUtils.saveServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
+                PreferencesUtils.setCurrentDeviceId(getApplicationContext(), currentDeviceId);
+                PreferencesUtils.setServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
             }
 
-            UserUtils.saveCurrentUserId(getApplicationContext(), user.getId());
+            PreferencesUtils.setCurrentUserId(getApplicationContext(), user.getId());
         }
     }
 
@@ -519,14 +518,14 @@ public class LoginActivity extends AppCompatActivity {
 
         String token = loginApiResponse.getUserToken();
 
-        if (InputValidation.isUserTokenValid(token)) {
+        if (ValidationUtils.isUserTokenValid(token)) {
             Log.d(TAG, "Token is valid. Proceeding with login...");
 
             saveLoginIntoDb(loginApiResponse);
 
-            UserUtils.saveUserToken(getApplicationContext(), token);
-            UserUtils.saveUserEmail(getApplicationContext(), email);
-            UserUtils.saveUserPassword(getApplicationContext(), password);
+            PreferencesUtils.setUserToken(getApplicationContext(), token);
+            PreferencesUtils.setUserEmail(getApplicationContext(), email);
+            PreferencesUtils.setUserPassword(getApplicationContext(), password);
 
             loadMainActivity();
 

@@ -37,12 +37,6 @@ public class Constants {
     public static final String PREF_DEVELOPER_STATUS = "developer_status";
 
     /**
-     * Per the design guidelines, you should show the drawer on launch until the user manually
-     * expands it. This shared preference tracks this.
-     */
-    public static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
-
-    /**
      * INTENT CONSTANTS
      */
 

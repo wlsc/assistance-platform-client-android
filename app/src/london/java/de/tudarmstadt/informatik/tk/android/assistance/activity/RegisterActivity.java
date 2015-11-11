@@ -17,7 +17,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.registration.Re
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
-import de.tudarmstadt.informatik.tk.android.assistance.util.InputValidation;
+import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
@@ -103,7 +103,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // NOT VALID EMAIL
-        if (!InputValidation.isValidEmail(email)) {
+        if (!ValidationUtils.isValidEmail(email)) {
             mUserEmail.setError(getString(R.string.error_invalid_email));
             mUserEmail.requestFocus();
             return false;
@@ -117,7 +117,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // NOT VALID LENGTH
-        if (!InputValidation.isPasswordLengthValid(password1)) {
+        if (!ValidationUtils.isPasswordLengthValid(password1)) {
             mUserPassword1.setError(getString(R.string.error_invalid_password));
             mUserPassword2.setError(getString(R.string.error_invalid_password));
             mUserPassword1.requestFocus();

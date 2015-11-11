@@ -9,7 +9,7 @@ import android.util.Log;
 
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
-import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.device.DeviceUserDefinedNameRequest;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.DeviceEndpoint;
@@ -46,7 +46,7 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
         mParentToolbar.setTitle(R.string.settings_header_user_device_title);
 
-        long currentDeviceId = UserUtils.getCurrentDeviceId(getActivity().getApplicationContext());
+        long currentDeviceId = PreferencesUtils.getCurrentDeviceId(getActivity().getApplicationContext());
 
         DbDevice dbDevice = daoProvider.getDeviceDao().getDeviceById(currentDeviceId);
 
@@ -92,8 +92,8 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
         // update user defined device title
         if (key.equalsIgnoreCase("pref_device_set_title")) {
 
-            final String userToken = UserUtils.getUserToken(getActivity().getApplicationContext());
-            final long currentDeviceId = UserUtils.getCurrentDeviceId(getActivity().getApplicationContext());
+            final String userToken = PreferencesUtils.getUserToken(getActivity().getApplicationContext());
+            final long currentDeviceId = PreferencesUtils.getCurrentDeviceId(getActivity().getApplicationContext());
             final String deviceName = sharedPreferences.getString("pref_device_set_title", "");
 
             DeviceUserDefinedNameRequest deviceUserDefinedNameRequest = new DeviceUserDefinedNameRequest();

@@ -22,9 +22,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
+import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
-import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
@@ -120,7 +120,7 @@ public class SettingsActivity extends PreferenceActivity {
                 }
                 break;
             case R.id.logout_settings:
-                UserUtils.doLogout(getApplicationContext());
+                LoginUtils.doLogout(getApplicationContext());
                 setResult(Constants.INTENT_SETTINGS_LOGOUT_RESULT);
                 finish();
                 break;

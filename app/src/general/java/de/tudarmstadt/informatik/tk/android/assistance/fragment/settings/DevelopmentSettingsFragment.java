@@ -18,8 +18,8 @@ import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
-import de.tudarmstadt.informatik.tk.android.assistance.util.UserUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.StorageUtils;
@@ -48,7 +48,7 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
             mParentToolbar.setTitle(R.string.settings_header_development_title);
         }
 
-        boolean isUserDeveloper = UserUtils.isUserDeveloper(getActivity().getApplicationContext());
+        boolean isUserDeveloper = PreferencesUtils.isUserDeveloper(getActivity().getApplicationContext());
 
         SwitchPreference beDevPref = (SwitchPreference) findPreference("pref_be_developer");
         beDevPref.setChecked(isUserDeveloper);
@@ -61,7 +61,7 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
 
         if (key.equalsIgnoreCase("pref_be_developer")) {
 
-            boolean isDeveloper = UserUtils.isUserDeveloper(getActivity().getApplicationContext());
+            boolean isDeveloper = PreferencesUtils.isUserDeveloper(getActivity().getApplicationContext());
 
             if (isDeveloper) {
                 Log.d(TAG, "Developer mode is ENABLED.");
@@ -69,7 +69,7 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
                 Log.d(TAG, "Developer mode is DISABLED.");
             }
 
-            UserUtils.saveDeveloperStatus(getActivity().getApplicationContext(), isDeveloper);
+            PreferencesUtils.setDeveloperStatus(getActivity().getApplicationContext(), isDeveloper);
         }
     }
 
