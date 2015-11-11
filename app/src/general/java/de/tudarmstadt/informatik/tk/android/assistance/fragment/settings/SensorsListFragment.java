@@ -5,7 +5,6 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -30,7 +29,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
  */
 public class SensorsListFragment extends Fragment {
 
-    private static final String TAG = PreferenceFragment.class.getSimpleName();
+    private static final String TAG = SensorsListFragment.class.getSimpleName();
 
     private Toolbar mParentToolbar;
 
