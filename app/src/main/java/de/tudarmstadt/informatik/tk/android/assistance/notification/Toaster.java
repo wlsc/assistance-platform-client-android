@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.util;
+package de.tudarmstadt.informatik.tk.android.assistance.notification;
 
 import android.content.Context;
 import android.widget.Toast;

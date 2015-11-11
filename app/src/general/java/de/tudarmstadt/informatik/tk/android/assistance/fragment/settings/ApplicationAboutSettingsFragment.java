@@ -13,7 +13,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
+import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 
 /**
  * Created by Wladimir Schmidt on 29.06.2015.

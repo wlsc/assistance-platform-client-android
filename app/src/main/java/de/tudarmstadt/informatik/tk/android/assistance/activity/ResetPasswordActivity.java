@@ -17,7 +17,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.resetpassword.R
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
+import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import retrofit.Callback;
 import retrofit.RetrofitError;

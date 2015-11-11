@@ -29,7 +29,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleMo
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
+import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;

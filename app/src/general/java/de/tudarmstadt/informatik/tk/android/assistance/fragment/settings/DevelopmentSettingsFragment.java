@@ -19,7 +19,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
+import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.StorageUtils;
@@ -53,7 +53,9 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
         SwitchPreference beDevPref = (SwitchPreference) findPreference("pref_be_developer");
         beDevPref.setChecked(isUserDeveloper);
 
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
     }
 
     @Override
@@ -121,6 +123,7 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
             Log.d(TAG, "WRITE_EXTERNAL_STORAGE permission was granted.");
 
             exportDatabase();
+
         } else {
 
             Log.d(TAG, "WRITE_EXTERNAL_STORAGE permission NOT granted!");
@@ -150,7 +153,11 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
         try {
             StorageUtils.exportDatabase(
                     getActivity().getApplicationContext(),
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/" + Config.DATABASE_NAME);
+                    Environment
+                            .getExternalStoragePublicDirectory(
+                                    Environment.DIRECTORY_DOWNLOADS).getPath() +
+                            "/" +
+                            Config.DATABASE_NAME);
 
             Toaster.showLong(getActivity().getApplicationContext(), R.string.settings_export_database_successful);
 

@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 
 import com.squareup.picasso.Picasso;
@@ -84,7 +86,7 @@ public class CommonUtils {
      */
     public static void hideKeyboard(Context context, View currentFocus) {
 
-        if(context == null || currentFocus == null){
+        if (context == null || currentFocus == null) {
             return;
         }
 
@@ -103,7 +105,7 @@ public class CommonUtils {
      */
     public static void showKeyboard(Context context, View currentFocus) {
 
-        if(context == null || currentFocus == null){
+        if (context == null || currentFocus == null) {
             return;
         }
 
@@ -182,5 +184,42 @@ public class CommonUtils {
         Picasso.with(context)
                 .load(uri)
                 .into(target);
+    }
+
+    /**
+     * Hides system ui layout
+     *
+     * @param window
+     */
+    public static void hideSystemUI(Window window) {
+
+        // Set the IMMERSIVE flag.
+        // Set the content to appear under the system bars so that the content
+        // doesn't resize when the system bars hide and show.
+        int visibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                | View.SYSTEM_UI_FLAG_FULLSCREEN; // hide status bar
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            visibility |= View.SYSTEM_UI_FLAG_IMMERSIVE;
+        }
+
+        window.getDecorView().setSystemUiVisibility(visibility);
+    }
+
+    /**
+     * Shows system ui layout
+     *
+     * @param window
+     */
+    public static void showSystemUI(Window window) {
+
+        int visibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+
+        window.getDecorView().setSystemUiVisibility(visibility);
     }
 }

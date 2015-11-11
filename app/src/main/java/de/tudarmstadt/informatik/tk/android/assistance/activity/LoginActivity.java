@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,12 +31,12 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEn
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.UserDevice;
+import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.HardwareUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
+import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbDevice;
@@ -234,7 +233,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // first -> load splash screen
-        hideSystemUI();
+        CommonUtils.hideSystemUI(getWindow());
 
         // init splash screen view
         if (mSplashView == null) {
@@ -266,7 +265,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     public void showView() {
 
-        showSystemUI();
+        CommonUtils.showSystemUI(getWindow());
 
         setContentView(R.layout.activity_login);
         setTitle(R.string.login_activity_title);
@@ -279,6 +278,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
+
         if (intent != null) {
             Long userId = intent.getLongExtra("user_id", -1);
             if (userId != -1) {
@@ -623,30 +623,6 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private void hideSystemUI() {
-
-        // Set the IMMERSIVE flag.
-        // Set the content to appear under the system bars so that the content
-        // doesn't resize when the system bars hide and show.
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
-    }
-
-    // This snippet shows the system bars. It does this by removing all the flags
-    // except for the ones that make the content appear under the system bars.
-    private void showSystemUI() {
-
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-    }
-
     @Override
     public void onBackPressed() {
 
@@ -670,21 +646,14 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+
         ButterKnife.unbind(this);
         mSplashView = null;
         uiThreadHandler = null;
+
         Log.d(TAG, "onDestroy -> unbound resources");
+
         super.onDestroy();
-    }
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
     /**

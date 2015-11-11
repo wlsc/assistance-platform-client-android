@@ -24,10 +24,12 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.Develop
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorsListFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDeviceInfoSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
+import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
 
 /**
  * Core user settings activity
@@ -168,10 +170,23 @@ public class SettingsActivity extends PreferenceActivity {
 
         switch (requestCode) {
             case Config.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:
-                EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.WRITE_EXTERNAL_STORAGE));
+
+                Log.d(TAG, "Back from PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE request");
+
+                boolean result = PermissionUtils.getInstance(getApplicationContext())
+                        .handlePermissionResult(grantResults);
+
+                if (result) {
+                    EventBus.getDefault().post(new PermissionGrantedEvent(
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE));
+                } else {
+                    Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
+                    // TODO: show crucial permission view
+                }
+
                 break;
             default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                break;
         }
     }
 }

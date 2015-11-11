@@ -39,7 +39,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionList
 import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Toaster;
+import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
@@ -548,17 +548,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
             switch (httpCode) {
                 case 400:
-//                    ErrorResponse errorResponse = (ErrorResponse) retrofitError.getBodyAs(ErrorResponse.class);
-//                    errorResponse.setStatusCode(httpCode);
-//
-//                    Integer apiResponseCode = errorResponse.getCode();
-//                    String apiMessage = errorResponse.getMessage();
-//                    int httpResponseCode = errorResponse.getStatusCode();
-//
-//                    Log.d(TAG, "Response status: " + httpResponseCode);
-//                    Log.d(TAG, "Response code: " + apiResponseCode);
-//                    Log.d(TAG, "Response message: " + apiMessage);
-
                     break;
                 case 401:
                     Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);

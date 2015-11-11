@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.util;
+package de.tudarmstadt.informatik.tk.android.assistance.notification;
 
 import android.support.design.widget.Snackbar;
 import android.view.View;
