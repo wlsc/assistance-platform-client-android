@@ -18,8 +18,8 @@ import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.StorageUtils;
@@ -27,7 +27,9 @@ import de.tudarmstadt.informatik.tk.android.kraken.util.StorageUtils;
 /**
  * Created by Wladimir Schmidt on 29.06.2015.
  */
-public class DevelopmentSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class DevelopmentSettingsFragment extends
+        PreferenceFragment implements
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = DevelopmentSettingsFragment.class.getSimpleName();
 
@@ -182,7 +184,7 @@ public class DevelopmentSettingsFragment extends PreferenceFragment implements S
             return;
         }
 
-        if (permission.equals(Manifest.permission.READ_CONTACTS)) {
+        if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             exportDatabase();
         }
     }
