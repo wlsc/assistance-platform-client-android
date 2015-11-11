@@ -27,9 +27,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.Module
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
+import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
@@ -62,13 +62,12 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.toolbar)
     protected Toolbar mToolbar;
 
-    @Bind(R.id.assistanceRecyclerView)
+    @Bind(R.id.assistance_list)
     protected RecyclerView mRecyclerView;
 
     private Menu menu;
 
-    private List<DbModule> modulesInstallation;
-
+    private List<DbModule> installedModules;
     private List<DbNews> assistanceNews;
 
     @Override
@@ -119,9 +118,14 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new NewsAdapter(assistanceNews));
 
+        if (assistanceNews.isEmpty()) {
+            ButterKnife.findById(this, R.id.assistance_list).setVisibility(View.GONE);
+            ButterKnife.findById(this, R.id.assistance_no_news).setVisibility(View.VISIBLE);
+        }
+
         registerForPush();
 
-        if (modulesInstallation != null && !modulesInstallation.isEmpty()) {
+        if (installedModules != null && !installedModules.isEmpty()) {
 
             if (!DeviceUtils.isServiceRunning(
                     getApplicationContext(),
@@ -134,11 +138,11 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
 
-            modulesInstallation = daoProvider.getModuleDao()
+            installedModules = daoProvider.getModuleDao()
                     .getAllActiveModules(userId);
 
             // user got some active modules
-            if (modulesInstallation != null && !modulesInstallation.isEmpty()) {
+            if (installedModules != null && !installedModules.isEmpty()) {
 
                 if (!DeviceUtils.isServiceRunning(
                         getApplicationContext(),
@@ -225,11 +229,11 @@ public class MainActivity extends AppCompatActivity {
         if (menu != null) {
             // TODO:
 //            DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
-//            List<DbModuleInstallation> modulesInstallation = currentModule.getDbModuleInstallationList();
+//            List<DbModuleInstallation> installedModules = currentModule.getDbModuleInstallationList();
 //
 //            MenuItem toggleModuleStateItem = menu.findItem(R.id.menu_module_toggle_state);
 //
-//            for (DbModuleInstallation installedModule : modulesInstallation) {
+//            for (DbModuleInstallation installedModule : installedModules) {
 //
 //                if (installedModule.getModuleId().equals(currentModule.getId())) {
 //                    toggleModuleStateItem.setChecked(installedModule.getActive());
