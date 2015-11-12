@@ -203,8 +203,7 @@ public class DevelopmentSettingsFragment extends
                         .handlePermissionResult(grantResults);
 
                 if (result) {
-                    EventBus.getDefault().post(new PermissionGrantedEvent(
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE));
+                    exportDatabase();
                 } else {
                     Toaster.showLong(getActivity().getApplicationContext(),
                             R.string.permission_is_mandatory);
