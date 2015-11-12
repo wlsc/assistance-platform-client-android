@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.fragment.settings;
 
 import android.Manifest;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
@@ -141,9 +142,10 @@ public class DevelopmentSettingsFragment extends
                 Toaster.showLong(getActivity().getApplicationContext(), R.string.permission_is_mandatory);
             }
 
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    Config.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        Config.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+            }
         }
     }
 
@@ -186,6 +188,32 @@ public class DevelopmentSettingsFragment extends
 
         if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             exportDatabase();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        switch (requestCode) {
+            case Config.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:
+
+                Log.d(TAG, "Back from PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE request");
+
+                boolean result = PermissionUtils.getInstance(getActivity().getApplicationContext())
+                        .handlePermissionResult(grantResults);
+
+                if (result) {
+                    EventBus.getDefault().post(new PermissionGrantedEvent(
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE));
+                } else {
+                    Toaster.showLong(getActivity().getApplicationContext(),
+                            R.string.permission_is_mandatory);
+                    // TODO: show crucial permission view
+                }
+
+                break;
+            default:
+                break;
         }
     }
 }
