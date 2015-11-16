@@ -162,6 +162,18 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
     }
 
     /**
+     * Swaps out old data with new data in the adapter
+     *
+     * @param newModulesList
+     */
+    public void swapData(List<DbModule> newModulesList) {
+
+        modulesList.clear();
+        modulesList.addAll(newModulesList);
+        notifyDataSetChanged();
+    }
+
+    /**
      * An empty view holder if no items available
      */
     public class EmptyViewHolder extends AvailableModulesAdapter.ViewHolder {
