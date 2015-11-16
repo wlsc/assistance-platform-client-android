@@ -1,9 +1,7 @@
 package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,9 +21,7 @@ import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.NewsAdapter;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
@@ -275,83 +271,6 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
         return -1;
-    }
-
-    /**
-     * Uninstalls currently selected module
-     */
-    private void moduleUninstall() {
-
-        String userToken = PreferencesUtils.getUserToken(getApplicationContext());
-
-        // TODO:
-//        DbModule currentModule = getCurrentActiveModuleFromDrawer().getDbModule();
-//
-//        Log.d(TAG, "Uninstall module. ModuleId: " + currentModule.getId() + " package: " + currentModule.getPackageName());
-
-        ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
-//        toggleModuleRequest.setModuleId(currentModule.getPackageName());
-
-        ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(getApplicationContext()).create(ModuleEndpoint.class);
-        moduleEndpoint.deactivateModule(userToken, toggleModuleRequest, new Callback<Void>() {
-
-            @Override
-            public void success(Void aVoid, Response response) {
-
-                // deactivation successful
-                if (response.getStatus() == 200) {
-
-                    uninstallModuleFromDb();
-
-                    Snackbar
-                            .make(findViewById(android.R.id.content), R.string.main_activity_undo_uninstall, Snackbar.LENGTH_LONG)
-                            .setAction(R.string.main_activity_undo_uninstall_button_title, new View.OnClickListener() {
-
-                                @Override
-                                public void onClick(View v) {
-                                    Log.d(TAG, "User tapped UNDO uninstall of a module.");
-                                }
-                            })
-                            .setActionTextColor(Color.RED)
-                            .show();
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                showErrorMessages(TAG, error);
-
-                // no such installed module -> remove it immediately
-                if (error.getResponse() == null || error.getResponse().getStatus() == 400) {
-                    uninstallModuleFromDb();
-                }
-            }
-        });
-    }
-
-    /**
-     * Removes module installation for user and module ids
-     */
-    private void uninstallModuleFromDb() {
-
-        // TODO:
-//        DbModuleInstallation currentModule = getCurrentActiveModuleFromDrawer();
-//
-//        long currentUserId = currentModule.getUserId();
-//        long currentModuleId = currentModule.getModuleId();
-//
-//        Log.d(TAG, "Current user id: " + currentUserId);
-//        Log.d(TAG, "Current module id: " + currentModuleId);
-
-//        Log.d(TAG, "Removing module from db...");
-//
-//        List<DbModuleInstallation> installedModules = dbProvider.getModuleInstallationsByUserId(
-//                currentUserId,
-//                currentModuleId);
-//
-//        dbProvider.removeInstalledModules(installedModules);
-//
-//        Log.d(TAG, "Finished removing module from db!");
     }
 
     @Override
