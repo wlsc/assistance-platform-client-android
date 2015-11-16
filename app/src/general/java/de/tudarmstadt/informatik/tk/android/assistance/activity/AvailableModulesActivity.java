@@ -3,7 +3,9 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -24,8 +26,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -35,6 +39,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.adapter.PermissionAdapter
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleShowMoreInfoEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
@@ -46,6 +51,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
@@ -79,15 +85,13 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     private DaoProvider daoProvider;
 
-    private Map<String, AvailableModuleResponse> mAvailableModuleResponses;
-
     private List<String> mActiveModules;
 
-    private List<DbModule> mModules;
+    private Map<String, AvailableModuleResponse> availableModuleResponseMapping;
 
     private SwipeRefreshLayout.OnRefreshListener onRefreshHandler;
 
-    private String selectedModuleIdForInstall;
+    private String selectedModuleId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +144,28 @@ public class AvailableModulesActivity extends AppCompatActivity {
         loadModules();
     }
 
+    @Override
+    protected void onResume() {
+
+        // register this activity to events
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+
+        // register this activity to events
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+
+        super.onPause();
+    }
+
     /**
      * Loads module list from db or in case its empty
      * loads it from server
@@ -151,6 +177,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         DbUser user = daoProvider.getUserDao().getUserByEmail(userEmail);
 
         if (user == null) {
+
             LoginUtils.doLogout(getApplicationContext());
             finish();
             return;
@@ -163,6 +190,81 @@ public class AvailableModulesActivity extends AppCompatActivity {
             Log.d(TAG, "Module list not found in db. Requesting from server...");
 
             requestAvailableModules();
+
+        } else {
+
+            Log.d(TAG, "Installed modules found in the db. Showing them...");
+
+            availableModuleResponseMapping = new HashMap<>();
+
+            for (DbModule module : installedModules) {
+
+                availableModuleResponseMapping.put(
+                        module.getPackageName(),
+                        ConverterUtils.convertModule(module));
+            }
+
+            mAvailableModulesRecyclerView
+                    .setAdapter(new AvailableModulesAdapter(installedModules));
+
+            // launch harvester, but first check permissions
+            checkPermissionsGranted();
+        }
+    }
+
+    /**
+     * Check permissions is still granted to modules
+     */
+    private void checkPermissionsGranted() {
+
+        Map<String, String[]> mappings = PermissionUtils.getInstance(getApplicationContext())
+                .getDangerousPermissionsToDtoMapping();
+
+        Set<String> permissionsToAsk = new HashSet<>();
+
+        long userId = PreferencesUtils.getCurrentUserId(getApplicationContext());
+
+        List<DbModule> allActiveModules = daoProvider
+                .getModuleDao()
+                .getAllActiveModules(userId);
+
+        if (allActiveModules == null || allActiveModules.isEmpty()) {
+            return;
+        }
+
+        Log.d(TAG, "here1");
+
+        for (DbModule module : allActiveModules) {
+
+            List<DbModuleCapability> capabilities = module.getDbModuleCapabilityList();
+
+            for (DbModuleCapability cap : capabilities) {
+
+                Log.d(TAG, "caps");
+
+                final String[] perms = mappings.get(cap.getType());
+
+                if (perms == null) {
+                    continue;
+                }
+
+                for (String perm : perms) {
+                    if (PermissionUtils
+                            .getInstance(getApplicationContext())
+                            .isPermissionGranted(perm)) {
+
+                        permissionsToAsk.add(perm);
+                    }
+                }
+            }
+        }
+
+        // ask if there is something to ask
+        if (!permissionsToAsk.isEmpty()) {
+
+            ActivityCompat.requestPermissions(this,
+                    permissionsToAsk.toArray(new String[permissionsToAsk.size()]),
+                    Constants.PERM_MODULE_INSTALL);
         }
     }
 
@@ -184,55 +286,74 @@ public class AvailableModulesActivity extends AppCompatActivity {
                     /**
                      * Successful HTTP response.
                      *
-                     * @param availableModulesResponse
+                     * @param availableModulesList
                      * @param response
                      */
                     @Override
-                    public void success(final List<AvailableModuleResponse> availableModulesResponse,
+                    public void success(final List<AvailableModuleResponse> availableModulesList,
                                         Response response) {
 
-                        if (availableModulesResponse != null &&
-                                !availableModulesResponse.isEmpty()) {
+                        if (availableModulesList != null &&
+                                !availableModulesList.isEmpty()) {
 
-                            Log.d(TAG, availableModulesResponse.toString());
+                            Log.d(TAG, availableModulesList.toString());
 
-                            boolean hasUserRequestedActiveModules = PreferencesUtils.hasUserRequestedActiveModules(getApplicationContext());
+                            if (availableModuleResponseMapping == null) {
+                                availableModuleResponseMapping = new HashMap<>();
+                            } else {
+                                availableModuleResponseMapping.clear();
+                            }
+
+                            for (AvailableModuleResponse resp : availableModulesList) {
+                                availableModuleResponseMapping.put(resp.getModulePackage(), resp);
+                            }
+
+                            boolean hasUserRequestedActiveModules = PreferencesUtils
+                                    .hasUserRequestedActiveModules(getApplicationContext());
 
                             if (hasUserRequestedActiveModules) {
+
+                                mActiveModules = new ArrayList<>(0);
                                 mSwipeRefreshLayout.setRefreshing(false);
-                                processAvailableModules(availableModulesResponse);
+                                processAvailableModules(availableModulesList);
                                 return;
                             }
 
                             // get list of already activated modules
-                            moduleEndpoint.getActiveModules(userToken, new Callback<List<String>>() {
+                            moduleEndpoint.getActiveModules(userToken,
+                                    new Callback<List<String>>() {
 
-                                @Override
-                                public void success(List<String> activeModules,
-                                                    Response response) {
+                                        @Override
+                                        public void success(List<String> activeModules,
+                                                            Response response) {
 
-                                    mSwipeRefreshLayout.setRefreshing(false);
-                                    PreferencesUtils.setUserRequestedActiveModules(getApplicationContext(), true);
+                                            mSwipeRefreshLayout.setRefreshing(false);
 
-                                    if (activeModules != null && !activeModules.isEmpty()) {
+                                            PreferencesUtils.setUserRequestedActiveModules(getApplicationContext(), true);
 
-                                        Log.d(TAG, activeModules.toString());
+                                            if (activeModules != null && !activeModules.isEmpty()) {
 
-                                        mActiveModules = activeModules;
-                                    }
+                                                Log.d(TAG, activeModules.toString());
+                                                mActiveModules = activeModules;
 
-                                    processAvailableModules(availableModulesResponse);
-                                }
+                                            } else {
+                                                mActiveModules = new ArrayList<>(0);
+                                            }
 
-                                @Override
-                                public void failure(RetrofitError error) {
-                                    showErrorMessages(error);
-                                    mSwipeRefreshLayout.setRefreshing(false);
-                                    processAvailableModules(availableModulesResponse);
-                                }
-                            });
+                                            processAvailableModules(availableModulesList);
+                                        }
+
+                                        @Override
+                                        public void failure(RetrofitError error) {
+                                            showErrorMessages(error);
+                                            mActiveModules = new ArrayList<>(0);
+                                            mSwipeRefreshLayout.setRefreshing(false);
+                                            processAvailableModules(availableModulesList);
+                                        }
+                                    });
 
                         } else {
+                            mActiveModules = new ArrayList<>(0);
                             mAvailableModulesRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
@@ -260,31 +381,131 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void processAvailableModules(List<AvailableModuleResponse> availableModulesResponse) {
 
+        List<DbModule> convertedModules = new ArrayList<>();
+
+        for (AvailableModuleResponse response : availableModulesResponse) {
+
+            convertedModules.add(ConverterUtils.convertModule(response));
+        }
+
         // show list of modules to user
-        populateAvailableModuleList(availableModulesResponse);
+        populateAvailableModuleList(convertedModules);
+
+        // request permissions
+        if (!mActiveModules.isEmpty()) {
+
+            for (String packageName : mActiveModules) {
+
+
+            }
+        }
     }
 
     /**
      * Show available modules to user
      *
-     * @param availableModulesResponse
+     * @param modules
      */
-    private void populateAvailableModuleList(List<AvailableModuleResponse> availableModulesResponse) {
+    private void populateAvailableModuleList(List<DbModule> modules) {
 
-        mAvailableModuleResponses = new HashMap<>();
-        mModules = new ArrayList<>();
+        applyAlreadyActiveModulesFromRequest(modules);
+        applyAlreadyActiveModulesFromDb(modules);
 
-        for (AvailableModuleResponse module : availableModulesResponse) {
+        AvailableModulesAdapter adapter = (AvailableModulesAdapter) mAvailableModulesRecyclerView
+                .getAdapter();
 
-            Log.d(TAG, module.toString());
-
-            mModules.add(ConverterUtils.convertModule(module));
-
-            // for easy access later on
-            mAvailableModuleResponses.put(module.getModulePackage(), module);
+        // we have entries already -> just swap them with new ones
+        if (adapter != null && adapter.getItemCount() > 0) {
+            adapter.swapData(modules);
+        } else {
+            // create new recycler view adapter
+            mAvailableModulesRecyclerView.setAdapter(new AvailableModulesAdapter(modules));
         }
+    }
 
-        mAvailableModulesRecyclerView.setAdapter(new AvailableModulesAdapter(mModules));
+    /**
+     * check local db for active modules
+     *
+     * @param modules
+     */
+    private void applyAlreadyActiveModulesFromDb(List<DbModule> modules) {
+
+        long userId = PreferencesUtils.getCurrentUserId(getApplicationContext());
+
+        List<DbModule> activeModules = daoProvider
+                .getModuleDao()
+                .getAllActiveModules(userId);
+
+        if (activeModules != null && !activeModules.isEmpty()) {
+
+            List<String> allActiveModulePackageIds = new ArrayList<>();
+
+            for (DbModule activeModule : activeModules) {
+                allActiveModulePackageIds.add(activeModule.getPackageName());
+            }
+
+            for (DbModule dbModule : modules) {
+                if (allActiveModulePackageIds.contains(dbModule.getPackageName())) {
+                    dbModule.setActive(true);
+                }
+            }
+        }
+    }
+
+    /**
+     * Just sets activated state for new modules
+     *
+     * @param modules
+     */
+    private void applyAlreadyActiveModulesFromRequest(List<DbModule> modules) {
+
+        if (mActiveModules != null && !mActiveModules.isEmpty()) {
+
+            long userId = PreferencesUtils.getCurrentUserId(getApplicationContext());
+
+            for (DbModule module : modules) {
+
+                if (mActiveModules.contains(module.getPackageName())) {
+
+                    module.setActive(true);
+                    module.setUserId(userId);
+
+                    // insert active module into db
+                    long installId = daoProvider.getModuleDao().insertModule(module);
+
+                    AvailableModuleResponse moduleResponse = availableModuleResponseMapping
+                            .get(module.getPackageName());
+
+                    List<ModuleCapabilityResponse> requiredCaps = moduleResponse.getSensorsRequired();
+                    List<ModuleCapabilityResponse> optionalCaps = moduleResponse.getSensorsOptional();
+
+                    List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(requiredCaps.size());
+                    List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(optionalCaps.size());
+
+                    for (ModuleCapabilityResponse response : requiredCaps) {
+
+                        final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
+                        dbCap.setModuleId(installId);
+                        dbRequiredCaps.add(dbCap);
+                    }
+
+                    for (ModuleCapabilityResponse response : optionalCaps) {
+
+                        final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
+                        dbCap.setModuleId(installId);
+                        dbOptionalCaps.add(dbCap);
+                    }
+
+                    daoProvider
+                            .getModuleCapabilityDao()
+                            .insertModuleCapabilities(dbRequiredCaps);
+
+                    daoProvider
+                            .getModuleCapabilityDao()
+                            .insertModuleCapabilities(dbOptionalCaps);
+                }
+            }
+        }
     }
 
     /**
@@ -295,9 +516,22 @@ public class AvailableModulesActivity extends AppCompatActivity {
     public void onEvent(ModuleInstallEvent event) {
         Log.d(TAG, "Received installation event. Module id: " + event.getModuleId());
 
-        this.selectedModuleIdForInstall = event.getModuleId();
+        this.selectedModuleId = event.getModuleId();
 
         showPermissionDialog();
+    }
+
+    /**
+     * On module install event
+     *
+     * @param event
+     */
+    public void onEvent(ModuleUninstallEvent event) {
+        Log.d(TAG, "Received uninstall event. Module id: " + event.getModuleId());
+
+        this.selectedModuleId = event.getModuleId();
+
+        showUninstallDialog();
     }
 
     /**
@@ -308,7 +542,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
     public void onEvent(ModuleShowMoreInfoEvent event) {
         Log.d(TAG, "Received show more info event. Module id: " + event.getModuleId());
 
-        showMoreModuleInformationDialog(event.getModuleId());
+        this.selectedModuleId = event.getModuleId();
+
+        showMoreModuleInformationDialog();
     }
 
     /**
@@ -320,6 +556,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
         Log.d(TAG, "After module successful installation. Module id: " + event.getModuleId());
 
         changeModuleLayout(event.getModuleId());
+
+        startHarvester();
     }
 
     /**
@@ -349,15 +587,20 @@ public class AvailableModulesActivity extends AppCompatActivity {
      *
      * @param modulePackageName
      */
-    private void showMoreModuleInformationDialog(String modulePackageName) {
+    private void showMoreModuleInformationDialog() {
+
+        final AvailableModuleResponse selectedModule = availableModuleResponseMapping
+                .get(selectedModuleId);
+
+        if (selectedModule == null) {
+            return;
+        }
 
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_module_more_info, null);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setView(dialogView);
-
-        final AvailableModuleResponse selectedModule = mAvailableModuleResponses.get(modulePackageName);
 
         dialogBuilder.setPositiveButton(R.string.button_ok_text, new DialogInterface.OnClickListener() {
 
@@ -371,6 +614,45 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         TextView moreInfoFull = ButterKnife.findById(dialogView, R.id.module_more_info);
         moreInfoFull.setText(selectedModule.getDescriptionFull());
+
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+    }
+
+    /**
+     * Shows uninstallation dialog to user
+     */
+    private void showUninstallDialog() {
+
+        final AvailableModuleResponse selectedModule = availableModuleResponseMapping
+                .get(selectedModuleId);
+
+        if (selectedModule == null) {
+            return;
+        }
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+
+        dialogBuilder.setPositiveButton(R.string.button_ok_text, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d(TAG, "User tapped UNINSTALL " + selectedModule.getTitle() + " module");
+
+                moduleUninstall();
+            }
+        });
+
+        dialogBuilder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                selectedModuleId = "";
+            }
+        });
+
+        dialogBuilder.setTitle(getString(R.string.module_uninstall_title, selectedModule.getTitle()));
+        dialogBuilder.setMessage(R.string.module_uninstall_message);
 
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
@@ -394,13 +676,22 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "User accepted module permissions.");
+                Log.d(TAG, "User tapped accept button");
 
                 askUserEnablePermissions();
             }
         });
 
-        AvailableModuleResponse selectedModule = mAvailableModuleResponses.get(selectedModuleIdForInstall);
+        dialogBuilder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                selectedModuleId = "";
+            }
+        });
+
+        final AvailableModuleResponse selectedModule = availableModuleResponseMapping
+                .get(selectedModuleId);
 
         TextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
         title.setText(selectedModule.getTitle());
@@ -421,13 +712,17 @@ public class AvailableModulesActivity extends AppCompatActivity {
         if (requiredSensors != null) {
 
             for (ModuleCapabilityResponse capability : requiredSensors) {
-                requiredModuleSensors.add(new PermissionListItem(capability));
+                requiredModuleSensors.add(new PermissionListItem(
+                        ConverterUtils.convertModuleCapability(capability)));
             }
         }
 
         if (optionalSensors != null) {
+
             for (ModuleCapabilityResponse capability : optionalSensors) {
-                optionalModuleSensors.add(new PermissionListItem(capability));
+                optionalModuleSensors.add(new PermissionListItem(
+                        ConverterUtils.convertModuleCapability(capability)
+                ));
             }
         }
 
@@ -454,12 +749,23 @@ public class AvailableModulesActivity extends AppCompatActivity {
      *
      * @param moduleId
      */
+
     private void askUserEnablePermissions() {
+
+        if (availableModuleResponseMapping == null || availableModuleResponseMapping.isEmpty()) {
+
+            Log.d(TAG, "availableModulesResponse is NULL or EMPTY");
+            return;
+        }
 
         // accumulate all permissions
         List<String> permsRequiredAccumulator = new ArrayList<>();
 
-        AvailableModuleResponse module = mAvailableModuleResponses.get(selectedModuleIdForInstall);
+        AvailableModuleResponse module = availableModuleResponseMapping.get(selectedModuleId);
+
+        if (module == null) {
+            return;
+        }
 
         List<ModuleCapabilityResponse> requiredSensors = module.getSensorsRequired();
 
@@ -480,11 +786,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         // handle optional perms
         // get all checked optional sensors/events permissions
-        List<ModuleCapabilityResponse> optionalSensors = getAllEnabledOptionalPermissions();
+        List<DbModuleCapability> optionalSensors = getAllEnabledOptionalPermissions();
 
         if (optionalSensors != null) {
 
-            for (ModuleCapabilityResponse response : optionalSensors) {
+            for (DbModuleCapability response : optionalSensors) {
 
                 String apiType = response.getType();
                 String[] perms = PermissionUtils.getInstance(getApplicationContext())
@@ -505,9 +811,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
      *
      * @return
      */
-    private List<ModuleCapabilityResponse> getAllEnabledOptionalPermissions() {
+    private List<DbModuleCapability> getAllEnabledOptionalPermissions() {
 
-        List<ModuleCapabilityResponse> result = new ArrayList<>();
+        List<DbModuleCapability> result = new ArrayList<>();
 
         List<PermissionListItem> allAdapterPerms = ((PermissionAdapter) permissionOptionalRecyclerView
                 .getAdapter())
@@ -517,7 +823,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
             for (PermissionListItem permitem : allAdapterPerms) {
                 if (permitem.isChecked()) {
-                    ModuleCapabilityResponse cap = permitem.getCapability();
+                    DbModuleCapability cap = permitem.getCapability();
                     if (cap != null) {
                         result.add(cap);
                     }
@@ -533,15 +839,34 @@ public class AvailableModulesActivity extends AppCompatActivity {
      *
      * @param modulePackageName
      */
-    private void installModule() {
-
-        Log.d(TAG, "Installation of a module " + selectedModuleIdForInstall + " has started...");
-        Log.d(TAG, "Requesting service...");
+    private void installModule(final DbModule module) {
 
         String userToken = PreferencesUtils.getUserToken(getApplicationContext());
 
+        DbUser user = daoProvider
+                .getUserDao()
+                .getUserByToken(userToken);
+
+        if (user == null) {
+
+            LoginUtils.doLogout(getApplicationContext());
+            return;
+        }
+
+        DbModule existingModule = daoProvider
+                .getModuleDao()
+                .getModuleByPackageIdUserId(module.getPackageName(), user.getId());
+
+        // module already existing for that user, abort installation
+        if (existingModule != null) {
+            return;
+        }
+
+        Log.d(TAG, "Installation of a module " + module.getPackageName() + " has started...");
+        Log.d(TAG, "Requesting service...");
+
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
-        toggleModuleRequest.setModuleId(selectedModuleIdForInstall);
+        toggleModuleRequest.setModuleId(module.getPackageName());
 
         ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(
                 getApplicationContext())
@@ -557,22 +882,15 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                             Log.d(TAG, "Module is activated!");
 
-                            saveModuleInstallationInDb(selectedModuleIdForInstall);
+                            saveModuleInstallationInDb(module);
 
                             Log.d(TAG, "Installation has finished!");
 
-                            if (!DeviceUtils.isServiceRunning(
-                                    getApplicationContext(),
-                                    HarvesterService.class)) {
-
-                                HarvesterServiceProvider
-                                        .getInstance(getApplicationContext())
-                                        .startSensingService();
-                            }
+                            checkPermissionsGranted();
 
                             EventBus.getDefault()
                                     .post(new ModuleInstallationSuccessfulEvent(
-                                            selectedModuleIdForInstall));
+                                            module.getPackageName()));
 
                         } else {
                             Log.d(TAG, "FAIL: service responded with code: " + response.getStatus());
@@ -590,33 +908,27 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     /**
      * Saves module installations status on device
+     *
+     * @param dbModule
      */
-    private void saveModuleInstallationInDb(final String modulePackageName) {
+    private void saveModuleInstallationInDb(DbModule dbModule) {
 
         String userEmail = PreferencesUtils.getUserEmail(getApplicationContext());
 
         DbUser user = daoProvider.getUserDao().getUserByEmail(userEmail);
 
         if (user == null) {
+
             Log.d(TAG, "Installation cancelled: user is null");
             LoginUtils.doLogout(getApplicationContext());
             finish();
             return;
         }
 
-        DbModule module = daoProvider
-                .getModuleDao()
-                .getModuleByPackageIdUserId(modulePackageName, user.getId());
+        dbModule.setActive(true);
+        dbModule.setUserId(user.getId());
 
-        if (module == null) {
-
-            AvailableModuleResponse moduleInfo = mAvailableModuleResponses.get(modulePackageName);
-            module = ConverterUtils.convertModule(moduleInfo);
-        }
-
-        module.setActive(true);
-
-        Long installId = daoProvider.getModuleDao().insertModule(module);
+        Long installId = daoProvider.getModuleDao().insertModule(dbModule);
 
         if (installId == null) {
 
@@ -624,11 +936,187 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         } else {
 
+            // saving module capabilities
+            AvailableModuleResponse moduleResponse = availableModuleResponseMapping.get(dbModule.getPackageName());
+
+            List<ModuleCapabilityResponse> requiredCaps = moduleResponse.getSensorsRequired();
+            List<ModuleCapabilityResponse> optionalCaps = moduleResponse.getSensorsOptional();
+
+            List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(
+                    requiredCaps == null ? 0 : requiredCaps.size());
+            List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(
+                    optionalCaps == null ? 0 : optionalCaps.size());
+
+            for (ModuleCapabilityResponse response : requiredCaps) {
+
+                final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
+                dbCap.setModuleId(installId);
+                dbRequiredCaps.add(dbCap);
+            }
+
+            for (ModuleCapabilityResponse response : optionalCaps) {
+
+                final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
+                dbCap.setModuleId(installId);
+                dbOptionalCaps.add(dbCap);
+            }
+
+            daoProvider
+                    .getModuleCapabilityDao()
+                    .insertModuleCapabilities(dbRequiredCaps);
+
+            daoProvider
+                    .getModuleCapabilityDao()
+                    .insertModuleCapabilities(dbOptionalCaps);
+
             PreferencesUtils.setUserHasModules(getApplicationContext(), true);
             Toaster.showLong(getApplicationContext(), R.string.module_installation_successful);
         }
 
         Log.d(TAG, "Installation id: " + installId);
+    }
+
+    /**
+     * Uninstalls currently selected module
+     */
+    private void moduleUninstall() {
+
+        String userToken = PreferencesUtils.getUserToken(getApplicationContext());
+
+        if (userToken.isEmpty()) {
+
+            Log.d(TAG, "userToken is empty");
+            LoginUtils.doLogout(getApplicationContext());
+            return;
+        }
+
+        final DbUser user = daoProvider
+                .getUserDao()
+                .getUserByToken(userToken);
+
+        if (user == null) {
+
+            Log.d(TAG, "user is NULL");
+            LoginUtils.doLogout(getApplicationContext());
+            return;
+        }
+
+        final DbModule module = daoProvider
+                .getModuleDao()
+                .getModuleByPackageIdUserId(selectedModuleId, user.getId());
+
+        Log.d(TAG, "Uninstall module. ModuleId: " + module.getId() +
+                " package: " + module.getPackageName());
+
+        // forming request to server
+        ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
+        toggleModuleRequest.setModuleId(module.getPackageName());
+
+        ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(getApplicationContext()).create(ModuleEndpoint.class);
+        moduleEndpoint.deactivateModule(userToken, toggleModuleRequest,
+                new Callback<Void>() {
+
+                    @Override
+                    public void success(Void aVoid, Response response) {
+
+                        // deactivation successful
+                        if (response.getStatus() == 200 || response.getStatus() == 204) {
+
+                            uninstallModuleFromDb(module);
+
+                            int numberOfModules = daoProvider
+                                    .getModuleDao()
+                                    .getAllModules(user.getId())
+                                    .size();
+
+                            // we have no entries in db, stop the sensing
+                            if (numberOfModules == 0) {
+
+                                stopHarvester();
+                            }
+
+                            Snackbar
+                                    .make(findViewById(android.R.id.content),
+                                            R.string.main_activity_undo_uninstall,
+                                            Snackbar.LENGTH_LONG)
+                                    .setAction(R.string.main_activity_undo_uninstall_button_title,
+                                            new View.OnClickListener() {
+
+                                                @Override
+                                                public void onClick(View v) {
+                                                    Log.d(TAG, "User tapped UNDO uninstall of a module!");
+
+                                                    installModule(module);
+                                                }
+                                            })
+                                    .setActionTextColor(Color.RED)
+                                    .show();
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showErrorMessages(error);
+
+                        // no such installed module -> remove it immediately
+                        if (error.getResponse() == null || error.getResponse().getStatus() == 400) {
+                            uninstallModuleFromDb(module);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Starts harvester service
+     */
+    private void startHarvester() {
+
+        boolean isRunning = DeviceUtils.isServiceRunning(
+                getApplicationContext(),
+                HarvesterService.class);
+
+        if (!isRunning) {
+
+            HarvesterServiceProvider
+                    .getInstance(getApplicationContext())
+                    .startSensingService();
+        }
+    }
+
+    /**
+     * Stops harvester service
+     */
+    private void stopHarvester() {
+
+        boolean isRunning = DeviceUtils.isServiceRunning(
+                getApplicationContext(),
+                HarvesterService.class);
+
+        if (isRunning) {
+
+            HarvesterServiceProvider
+                    .getInstance(getApplicationContext())
+                    .stopSensingService();
+        }
+    }
+
+    /**
+     * Removes module from db
+     *
+     * @param module
+     */
+    private void uninstallModuleFromDb(DbModule module) {
+
+        Log.d(TAG, "Removing module from db...");
+
+        List<DbModule> modulesToDelete = new ArrayList<>(1);
+        modulesToDelete.add(module);
+
+        daoProvider
+                .getModuleDao()
+                .delete(modulesToDelete);
+
+        Log.d(TAG, "Finished removing module from db!");
     }
 
     @Override
@@ -684,7 +1172,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
                     showPermissionsAreCrucialDialog(declinedPermissions);
                 } else {
                     // if all permissions were granted, we can install that module
-                    installModule();
+                    installModule(ConverterUtils
+                            .convertModule(availableModuleResponseMapping
+                                    .get(selectedModuleId)));
                 }
 
                 break;

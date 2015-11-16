@@ -1,6 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.model.item;
 
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -8,7 +8,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCa
  */
 public class PermissionListItem {
 
-    private ModuleCapabilityResponse capability;
+    private DbModuleCapability capability;
 
     private boolean checked;
 
@@ -17,21 +17,21 @@ public class PermissionListItem {
         this.checked = true;
     }
 
-    public PermissionListItem(ModuleCapabilityResponse capability) {
+    public PermissionListItem(DbModuleCapability capability) {
         this.capability = capability;
         this.checked = true;
     }
 
-    public PermissionListItem(ModuleCapabilityResponse capability, boolean checked) {
+    public PermissionListItem(DbModuleCapability capability, boolean checked) {
         this.capability = capability;
         this.checked = checked;
     }
 
-    public ModuleCapabilityResponse getCapability() {
+    public DbModuleCapability getCapability() {
         return this.capability;
     }
 
-    public void setCapability(ModuleCapabilityResponse capability) {
+    public void setCapability(DbModuleCapability capability) {
         this.capability = capability;
     }
 

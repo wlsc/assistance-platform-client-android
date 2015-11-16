@@ -114,6 +114,12 @@
     <string name="module_installation_successful">Installation was successful!</string>
     <string name="module_installation_unsuccessful">Installation has failed :(</string>
 
+    <!-- MODULE UNINSTALL -->
+    <string name="module_uninstall_title">Uninstalling %1$s</string>
+    <string name="module_uninstall_message">Do you really want to uninstall this module?</string>
+    <string name="module_uninstall_successful">Uninstall was successful!</string>
+    <string name="module_uninstall_unsuccessful">Installation has failed :(</string>
+
     <!-- USER PROFILE SCREEN -->
     <string name="user_profile_firstname">Firstname</string>
     <string name="user_profile_lastname">Lastname</string>

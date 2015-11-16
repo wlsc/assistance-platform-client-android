@@ -13,8 +13,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
+import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -58,7 +58,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         PermissionListItem permItem = mData.get(position);
-        ModuleCapabilityResponse capability = permItem.getCapability();
+        DbModuleCapability capability = permItem.getCapability();
 
         String title;
 
