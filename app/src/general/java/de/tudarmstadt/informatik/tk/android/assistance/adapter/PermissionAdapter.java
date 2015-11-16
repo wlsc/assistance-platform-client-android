@@ -13,6 +13,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 
 /**
@@ -56,10 +57,19 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        PermissionListItem item = mData.get(position);
+        PermissionListItem permItem = mData.get(position);
+        ModuleCapabilityResponse capability = permItem.getCapability();
 
-        holder.mTitle.setText(item.getTitle());
-        holder.mEnablerSwitch.setChecked(item.isChecked());
+        String title;
+
+        if (capability != null) {
+            title = capability.getType();
+        } else {
+            title = "";
+        }
+
+        holder.mTitle.setText(title);
+        holder.mEnablerSwitch.setChecked(permItem.isChecked());
 
         if (requiredState == 1) {
             holder.mEnablerSwitch.setChecked(true);
@@ -75,6 +85,15 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
     @Override
     public int getItemCount() {
         return this.mData.size();
+    }
+
+    /**
+     * List of current objects in adapter
+     *
+     * @return
+     */
+    public List<PermissionListItem> getData() {
+        return mData;
     }
 
     /**

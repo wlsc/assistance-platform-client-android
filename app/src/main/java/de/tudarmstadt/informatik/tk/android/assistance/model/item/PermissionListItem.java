@@ -1,36 +1,38 @@
 package de.tudarmstadt.informatik.tk.android.assistance.model.item;
 
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
+
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 09.11.2015
  */
 public class PermissionListItem {
 
-    String title;
+    private ModuleCapabilityResponse capability;
 
-    boolean checked;
+    private boolean checked;
 
     public PermissionListItem() {
-        this.title = "";
+        this.capability = null;
         this.checked = true;
     }
 
-    public PermissionListItem(String title) {
-        this.title = title;
+    public PermissionListItem(ModuleCapabilityResponse capability) {
+        this.capability = capability;
         this.checked = true;
     }
 
-    public PermissionListItem(String title, boolean checked) {
-        this.title = title;
+    public PermissionListItem(ModuleCapabilityResponse capability, boolean checked) {
+        this.capability = capability;
         this.checked = checked;
     }
 
-    public String getTitle() {
-        return this.title;
+    public ModuleCapabilityResponse getCapability() {
+        return this.capability;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setCapability(ModuleCapabilityResponse capability) {
+        this.capability = capability;
     }
 
     public boolean isChecked() {

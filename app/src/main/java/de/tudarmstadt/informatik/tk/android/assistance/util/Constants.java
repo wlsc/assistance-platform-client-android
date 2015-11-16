@@ -48,4 +48,8 @@ public class Constants {
     public static final String INTENT_USER_ID = "user_id";
     public static final String INTENT_CURRENT_DEVICE_ID = "current_device_id";
 
+    /**
+     * REQUEST PERMISSIONS
+     */
+    public static final int PERM_MODULE_INSTALL = 250;
 }

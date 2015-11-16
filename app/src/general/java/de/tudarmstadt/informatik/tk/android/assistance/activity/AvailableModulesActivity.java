@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -36,10 +38,11 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.Availabl
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
+import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
+import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
@@ -47,6 +50,7 @@ import de.tudarmstadt.informatik.tk.android.kraken.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.kraken.service.HarvesterService;
 import de.tudarmstadt.informatik.tk.android.kraken.util.DeviceUtils;
+import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -353,7 +357,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 Log.d(TAG, "User accepted module permissions.");
 
-                installModule(moduleId);
+                askUserEnablePermissions(moduleId);
             }
         });
 
@@ -376,18 +380,15 @@ public class AvailableModulesActivity extends AppCompatActivity {
         List<PermissionListItem> optionalModuleSensors = new ArrayList<>();
 
         if (requiredSensors != null) {
-            for (ModuleCapabilityResponse capability : requiredSensors) {
 
-                PermissionListItem item = new PermissionListItem(capability.getType());
-                requiredModuleSensors.add(item);
+            for (ModuleCapabilityResponse capability : requiredSensors) {
+                requiredModuleSensors.add(new PermissionListItem(capability));
             }
         }
 
         if (optionalSensors != null) {
             for (ModuleCapabilityResponse capability : optionalSensors) {
-
-                PermissionListItem item = new PermissionListItem(capability.getType());
-                optionalModuleSensors.add(item);
+                optionalModuleSensors.add(new PermissionListItem(capability));
             }
         }
 
@@ -407,6 +408,85 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
+    }
+
+    /**
+     * Asking user for grant permissions
+     *
+     * @param moduleId
+     */
+    private void askUserEnablePermissions(String moduleId) {
+
+        // accumulate all permissions
+        List<String> permsRequiredAccumulator = new ArrayList<>();
+
+        AvailableModuleResponse module = mAvailableModuleResponses.get(moduleId);
+
+        List<ModuleCapabilityResponse> requiredSensors = module.getSensorsRequired();
+
+        // handle required perms
+        if (requiredSensors != null) {
+
+            // theese permissions are crucial for an operation of module
+            for (ModuleCapabilityResponse capResponse : requiredSensors) {
+
+                String apiType = capResponse.getType();
+                String[] perms = PermissionUtils.getInstance(getApplicationContext())
+                        .getDangerousPermissionsToDtoMapping()
+                        .get(apiType);
+
+                permsRequiredAccumulator.addAll(Arrays.asList(perms));
+            }
+        }
+
+        // handle optional perms
+        // get all checked optional sensors/events permissions
+        List<ModuleCapabilityResponse> optionalSensors = getAllEnabledOptionalPermissions();
+
+        if (optionalSensors != null) {
+
+            for (ModuleCapabilityResponse response : optionalSensors) {
+
+                String apiType = response.getType();
+                String[] perms = PermissionUtils.getInstance(getApplicationContext())
+                        .getDangerousPermissionsToDtoMapping()
+                        .get(apiType);
+
+                permsRequiredAccumulator.addAll(Arrays.asList(perms));
+            }
+        }
+
+        ActivityCompat.requestPermissions(this,
+                permsRequiredAccumulator.toArray(new String[permsRequiredAccumulator.size()]),
+                Constants.PERM_MODULE_INSTALL);
+    }
+
+    /**
+     * Returns list of permissions which were optional enabled by user
+     *
+     * @return
+     */
+    private List<ModuleCapabilityResponse> getAllEnabledOptionalPermissions() {
+
+        List<ModuleCapabilityResponse> result = new ArrayList<>();
+
+        List<PermissionListItem> allAdapterPerms = ((PermissionAdapter) permissionOptionalRecyclerView
+                .getAdapter())
+                .getData();
+
+        if (allAdapterPerms != null && !allAdapterPerms.isEmpty()) {
+
+            for (PermissionListItem permitem : allAdapterPerms) {
+                if (permitem.isChecked()) {
+                    ModuleCapabilityResponse cap = permitem.getCapability();
+                    if (cap != null) {
+                        result.add(cap);
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -531,6 +611,23 @@ public class AvailableModulesActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        switch (requestCode) {
+            case Constants.PERM_MODULE_INSTALL:
+
+                Log.d(TAG, "Back from module permissions request");
+
+//                installModule(moduleId);
+
+                break;
+            default:
+                break;
+        }
+
     }
 
     /**
