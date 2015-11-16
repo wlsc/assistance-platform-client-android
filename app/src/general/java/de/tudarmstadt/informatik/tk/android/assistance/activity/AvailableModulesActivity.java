@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,8 +32,9 @@ import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.AvailableModulesAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.PermissionAdapter;
-import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleInstallEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleShowMoreInfoEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationSuccessfulEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
@@ -84,6 +86,8 @@ public class AvailableModulesActivity extends AppCompatActivity {
     private List<DbModule> mModules;
 
     private SwipeRefreshLayout.OnRefreshListener onRefreshHandler;
+
+    private String selectedModuleIdForInstall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -291,7 +295,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
     public void onEvent(ModuleInstallEvent event) {
         Log.d(TAG, "Received installation event. Module id: " + event.getModuleId());
 
-        showPermissionDialog(event.getModuleId());
+        this.selectedModuleIdForInstall = event.getModuleId();
+
+        showPermissionDialog();
     }
 
     /**
@@ -303,6 +309,39 @@ public class AvailableModulesActivity extends AppCompatActivity {
         Log.d(TAG, "Received show more info event. Module id: " + event.getModuleId());
 
         showMoreModuleInformationDialog(event.getModuleId());
+    }
+
+    /**
+     * On module successful installation
+     *
+     * @param event
+     */
+    public void onEvent(ModuleInstallationSuccessfulEvent event) {
+        Log.d(TAG, "After module successful installation. Module id: " + event.getModuleId());
+
+        changeModuleLayout(event.getModuleId());
+    }
+
+    /**
+     * Changes layout of installed module to installed state
+     *
+     * @param moduleId
+     */
+    private void changeModuleLayout(String moduleId) {
+
+        Log.d(TAG, "Changing layout of a module to installed...");
+
+        final AvailableModulesAdapter adapter = (AvailableModulesAdapter) mAvailableModulesRecyclerView
+                .getAdapter();
+
+        DbModule module = adapter.getItem(moduleId);
+
+        // defensive programming
+        if (module != null) {
+
+            module.setActive(true);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -343,7 +382,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
      *
      * @param moduleId
      */
-    private void showPermissionDialog(final String moduleId) {
+    private void showPermissionDialog() {
 
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_permissions, null);
@@ -357,11 +396,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 Log.d(TAG, "User accepted module permissions.");
 
-                askUserEnablePermissions(moduleId);
+                askUserEnablePermissions();
             }
         });
 
-        AvailableModuleResponse selectedModule = mAvailableModuleResponses.get(moduleId);
+        AvailableModuleResponse selectedModule = mAvailableModuleResponses.get(selectedModuleIdForInstall);
 
         TextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
         title.setText(selectedModule.getTitle());
@@ -415,12 +454,12 @@ public class AvailableModulesActivity extends AppCompatActivity {
      *
      * @param moduleId
      */
-    private void askUserEnablePermissions(String moduleId) {
+    private void askUserEnablePermissions() {
 
         // accumulate all permissions
         List<String> permsRequiredAccumulator = new ArrayList<>();
 
-        AvailableModuleResponse module = mAvailableModuleResponses.get(moduleId);
+        AvailableModuleResponse module = mAvailableModuleResponses.get(selectedModuleIdForInstall);
 
         List<ModuleCapabilityResponse> requiredSensors = module.getSensorsRequired();
 
@@ -494,15 +533,15 @@ public class AvailableModulesActivity extends AppCompatActivity {
      *
      * @param modulePackageName
      */
-    private void installModule(final String modulePackageName) {
+    private void installModule() {
 
-        Log.d(TAG, "Installation of a module " + modulePackageName + " has started...");
+        Log.d(TAG, "Installation of a module " + selectedModuleIdForInstall + " has started...");
         Log.d(TAG, "Requesting service...");
 
         String userToken = PreferencesUtils.getUserToken(getApplicationContext());
 
         ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
-        toggleModuleRequest.setModuleId(modulePackageName);
+        toggleModuleRequest.setModuleId(selectedModuleIdForInstall);
 
         ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(
                 getApplicationContext())
@@ -518,7 +557,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                             Log.d(TAG, "Module is activated!");
 
-                            saveModuleInstallationInDb(modulePackageName);
+                            saveModuleInstallationInDb(selectedModuleIdForInstall);
 
                             Log.d(TAG, "Installation has finished!");
 
@@ -530,6 +569,10 @@ public class AvailableModulesActivity extends AppCompatActivity {
                                         .getInstance(getApplicationContext())
                                         .startSensingService();
                             }
+
+                            EventBus.getDefault()
+                                    .post(new ModuleInstallationSuccessfulEvent(
+                                            selectedModuleIdForInstall));
 
                         } else {
                             Log.d(TAG, "FAIL: service responded with code: " + response.getStatus());
@@ -566,6 +609,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 .getModuleByPackageIdUserId(modulePackageName, user.getId());
 
         if (module == null) {
+
             AvailableModuleResponse moduleInfo = mAvailableModuleResponses.get(modulePackageName);
             module = ConverterUtils.convertModule(moduleInfo);
         }
@@ -575,8 +619,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
         Long installId = daoProvider.getModuleDao().insertModule(module);
 
         if (installId == null) {
+
             Toaster.showLong(getApplicationContext(), R.string.module_installation_unsuccessful);
+
         } else {
+
             PreferencesUtils.setUserHasModules(getApplicationContext(), true);
             Toaster.showLong(getApplicationContext(), R.string.module_installation_successful);
         }
@@ -621,12 +668,39 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                 Log.d(TAG, "Back from module permissions request");
 
-//                installModule(moduleId);
+                List<String> declinedPermissions = new ArrayList<>();
+
+                for (int i = 0, grantResultsLength = grantResults.length; i < grantResultsLength; i++) {
+
+                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                        // permission denied, it should be reasked again
+
+                        declinedPermissions.add(permissions[i]);
+                    }
+                }
+
+                // ask user about permissions again
+                if (declinedPermissions.size() > 0) {
+                    showPermissionsAreCrucialDialog(declinedPermissions);
+                } else {
+                    // if all permissions were granted, we can install that module
+                    installModule();
+                }
 
                 break;
             default:
                 break;
         }
+
+    }
+
+    /**
+     * Shows some dialog, because that permissions are crucial for that module
+     *
+     * @param permissions
+     */
+    private void showPermissionsAreCrucialDialog(List<String> declinedPermissions) {
+
 
     }
 

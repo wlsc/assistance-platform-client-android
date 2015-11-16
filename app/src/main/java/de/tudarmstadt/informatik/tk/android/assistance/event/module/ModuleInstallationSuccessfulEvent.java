@@ -1,14 +1,14 @@
-package de.tudarmstadt.informatik.tk.android.assistance.event;
+package de.tudarmstadt.informatik.tk.android.assistance.event.module;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
- * @date 19.07.2015
+ * @date 16.11.2015
  */
-public class ModuleShowMoreInfoEvent {
+public class ModuleInstallationSuccessfulEvent {
 
     private String moduleId;
 
-    public ModuleShowMoreInfoEvent(String moduleId) {
+    public ModuleInstallationSuccessfulEvent(String moduleId) {
         this.moduleId = moduleId;
     }
 

@@ -12,8 +12,9 @@ import java.util.List;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleInstallEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.event.ModuleShowMoreInfoEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleShowMoreInfoEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallEvent;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 
 /**
@@ -56,6 +57,7 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        // only for non empty list
         if (holder instanceof ViewHolder) {
 
             final DbModule module = getItem(position);
@@ -65,13 +67,32 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
             viewHolder.mMainTitle.setText(module.getTitle());
             viewHolder.mMainSecondaryTitle.setText(module.getDescriptionShort());
 
-            viewHolder.mInstallModule.setOnClickListener(new View.OnClickListener() {
+            if (module.getActive()) {
 
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(new ModuleInstallEvent(module.getPackageName()));
-                }
-            });
+                viewHolder.mUninstallModule.setVisibility(View.VISIBLE);
+                viewHolder.mInstallModule.setVisibility(View.GONE);
+
+                viewHolder.mUninstallModule.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        EventBus.getDefault().post(new ModuleUninstallEvent(module.getPackageName()));
+                    }
+                });
+
+            } else {
+
+                viewHolder.mUninstallModule.setVisibility(View.GONE);
+                viewHolder.mInstallModule.setVisibility(View.VISIBLE);
+
+                viewHolder.mInstallModule.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        EventBus.getDefault().post(new ModuleInstallEvent(module.getPackageName()));
+                    }
+                });
+            }
 
             viewHolder.mMoreInfoModule.setOnClickListener(new View.OnClickListener() {
 
@@ -85,11 +106,49 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
 
     @Override
     public int getItemCount() {
+
+        if (modulesList == null) {
+            return 0;
+        }
+
         return modulesList.size();
     }
 
+    /**
+     * Returns item on given position
+     *
+     * @param position
+     * @return
+     */
     public DbModule getItem(int position) {
+
+        if (position < 0 || position >= modulesList.size()) {
+            return null;
+        }
+
         return modulesList.get(position);
+    }
+
+    /**
+     * Returns item by pacakge id
+     *
+     * @param modulePackageId
+     * @return
+     */
+    public DbModule getItem(String modulePackageId) {
+
+        if (getItemCount() == 0 || modulePackageId == null) {
+            return null;
+        }
+
+        for (DbModule module : modulesList) {
+
+            if (modulePackageId.equals(module.getPackageName())) {
+                return module;
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -120,6 +179,7 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
         protected final TextView mMainSecondaryTitle;
         protected final Button mMoreInfoModule;
         protected final Button mInstallModule;
+        protected final Button mUninstallModule;
 
         public ViewHolder(View view) {
             super(view);
@@ -127,6 +187,7 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
             mMainSecondaryTitle = ButterKnife.findById(view, R.id.main_secondary_title);
             mMoreInfoModule = ButterKnife.findById(view, R.id.more_info_module);
             mInstallModule = ButterKnife.findById(view, R.id.install_module);
+            mUninstallModule = ButterKnife.findById(view, R.id.uninstall_module);
         }
     }
 }
