@@ -35,7 +35,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.HardwareUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
@@ -208,14 +208,14 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void initLogin() {
 
-        String userToken = PreferencesUtils.getUserToken(getApplicationContext());
+        String userToken = PreferenceUtils.getUserToken(getApplicationContext());
 
         if (userToken.isEmpty()) {
             Log.d(TAG, "User token NOT found");
             Log.d(TAG, "Searching for autologin...");
 
-            String savedEmail = PreferencesUtils.getUserEmail(getApplicationContext());
-            String savedPassword = PreferencesUtils.getUserPassword(getApplicationContext());
+            String savedEmail = PreferenceUtils.getUserEmail(getApplicationContext());
+            String savedPassword = PreferenceUtils.getUserPassword(getApplicationContext());
 
             if (!savedEmail.isEmpty() && !savedPassword.isEmpty()) {
                 Log.d(TAG, "Found email/password entries saved. Doing autologin...");
@@ -361,10 +361,10 @@ public class LoginActivity extends AppCompatActivity {
 
         if (user != null) {
 
-            PreferencesUtils.setCurrentUserId(getApplicationContext(), user.getId());
-            PreferencesUtils.setUserEmail(getApplicationContext(), user.getPrimaryEmail());
-            PreferencesUtils.setUserFirstname(getApplicationContext(), user.getFirstname());
-            PreferencesUtils.setUserLastname(getApplicationContext(), user.getLastname());
+            PreferenceUtils.setCurrentUserId(getApplicationContext(), user.getId());
+            PreferenceUtils.setUserEmail(getApplicationContext(), user.getPrimaryEmail());
+            PreferenceUtils.setUserFirstname(getApplicationContext(), user.getFirstname());
+            PreferenceUtils.setUserLastname(getApplicationContext(), user.getLastname());
 
             String currentAndroidId = HardwareUtils.getAndroidId(this);
 
@@ -449,7 +449,7 @@ public class LoginActivity extends AppCompatActivity {
 
             long newUserId = daoProvider.getUserDao().insertUser(newUser);
 
-            PreferencesUtils.setCurrentUserId(getApplicationContext(), newUserId);
+            PreferenceUtils.setCurrentUserId(getApplicationContext(), newUserId);
 
             // saving device info into db
 
@@ -465,8 +465,8 @@ public class LoginActivity extends AppCompatActivity {
 
             long currentDeviceId = daoProvider.getDeviceDao().insertDevice(device);
 
-            PreferencesUtils.setCurrentDeviceId(getApplicationContext(), currentDeviceId);
-            PreferencesUtils.setServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
+            PreferenceUtils.setCurrentDeviceId(getApplicationContext(), currentDeviceId);
+            PreferenceUtils.setServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
 
         } else {
 
@@ -479,8 +479,8 @@ public class LoginActivity extends AppCompatActivity {
                 if (device.getDeviceIdentifier().equals(currentAndroidId)) {
                     isDeviceAlreadyCreated = true;
 
-                    PreferencesUtils.setCurrentDeviceId(getApplicationContext(), device.getId());
-                    PreferencesUtils.setServerDeviceId(getApplicationContext(), device.getServerDeviceId());
+                    PreferenceUtils.setCurrentDeviceId(getApplicationContext(), device.getId());
+                    PreferenceUtils.setServerDeviceId(getApplicationContext(), device.getServerDeviceId());
 
                     break;
                 }
@@ -501,11 +501,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 long currentDeviceId = daoProvider.getDeviceDao().insertDevice(device);
 
-                PreferencesUtils.setCurrentDeviceId(getApplicationContext(), currentDeviceId);
-                PreferencesUtils.setServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
+                PreferenceUtils.setCurrentDeviceId(getApplicationContext(), currentDeviceId);
+                PreferenceUtils.setServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
             }
 
-            PreferencesUtils.setCurrentUserId(getApplicationContext(), user.getId());
+            PreferenceUtils.setCurrentUserId(getApplicationContext(), user.getId());
         }
     }
 
@@ -523,9 +523,9 @@ public class LoginActivity extends AppCompatActivity {
 
             saveLoginIntoDb(loginApiResponse);
 
-            PreferencesUtils.setUserToken(getApplicationContext(), token);
-            PreferencesUtils.setUserEmail(getApplicationContext(), email);
-            PreferencesUtils.setUserPassword(getApplicationContext(), password);
+            PreferenceUtils.setUserToken(getApplicationContext(), token);
+            PreferenceUtils.setUserEmail(getApplicationContext(), email);
+            PreferenceUtils.setUserPassword(getApplicationContext(), password);
 
             loadMainActivity();
 
@@ -681,7 +681,7 @@ public class LoginActivity extends AppCompatActivity {
                     break;
                 case 401:
                     Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
-                    PreferencesUtils.clearUserCredentials(getApplicationContext());
+                    PreferenceUtils.clearUserCredentials(getApplicationContext());
                     Intent intent = new Intent(this, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);

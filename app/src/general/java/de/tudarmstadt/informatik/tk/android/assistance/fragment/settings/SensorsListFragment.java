@@ -21,7 +21,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.SensorsListAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.SensorsListItem;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -76,7 +76,7 @@ public class SensorsListFragment extends Fragment {
      */
     private List<SensorsListItem> getSensorsList() {
 
-        boolean isDeveloperEnabled = PreferencesUtils.getPreference(getActivity().getApplicationContext(), "pref_be_developer", false);
+        boolean isDeveloperEnabled = PreferenceUtils.getPreference(getActivity().getApplicationContext(), "pref_be_developer", false);
 
         List<SensorsListItem> sensorsListItems = new ArrayList<>();
         SensorManager manager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);

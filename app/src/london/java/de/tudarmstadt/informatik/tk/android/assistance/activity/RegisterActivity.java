@@ -18,7 +18,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEn
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import retrofit.Callback;
@@ -201,7 +201,7 @@ public class RegisterActivity extends AppCompatActivity {
                     break;
                 case 401:
                     Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
-                    PreferencesUtils.clearUserCredentials(getApplicationContext());
+                    PreferenceUtils.clearUserCredentials(getApplicationContext());
                     Intent intent = new Intent(this, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);

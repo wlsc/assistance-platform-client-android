@@ -7,9 +7,9 @@ import android.preference.PreferenceManager;
 /**
  * Created by Wladimir Schmidt on 12.07.2015.
  */
-public class PreferencesUtils {
+public class PreferenceUtils {
 
-    private PreferencesUtils() {
+    private PreferenceUtils() {
     }
 
     /**

@@ -23,7 +23,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
@@ -141,7 +141,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         Log.d(TAG, "Doing logout...");
 
-        PreferencesUtils.clearUserCredentials(getApplicationContext());
+        PreferenceUtils.clearUserCredentials(getApplicationContext());
 
         setResult(R.id.logout_settings);
 

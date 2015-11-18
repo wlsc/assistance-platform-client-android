@@ -20,7 +20,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.Config;
 import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.util.StorageUtils;
@@ -51,7 +51,7 @@ public class DevelopmentSettingsFragment extends
             mParentToolbar.setTitle(R.string.settings_header_development_title);
         }
 
-        boolean isUserDeveloper = PreferencesUtils.isUserDeveloper(getActivity().getApplicationContext());
+        boolean isUserDeveloper = PreferenceUtils.isUserDeveloper(getActivity().getApplicationContext());
 
         SwitchPreference beDevPref = (SwitchPreference) findPreference("pref_be_developer");
         beDevPref.setChecked(isUserDeveloper);
@@ -66,7 +66,7 @@ public class DevelopmentSettingsFragment extends
 
         if (key.equalsIgnoreCase("pref_be_developer")) {
 
-            boolean isDeveloper = PreferencesUtils.isUserDeveloper(getActivity().getApplicationContext());
+            boolean isDeveloper = PreferenceUtils.isUserDeveloper(getActivity().getApplicationContext());
 
             if (isDeveloper) {
                 Log.d(TAG, "Developer mode is ENABLED.");
@@ -74,7 +74,7 @@ public class DevelopmentSettingsFragment extends
                 Log.d(TAG, "Developer mode is DISABLED.");
             }
 
-            PreferencesUtils.setDeveloperStatus(getActivity().getApplicationContext(), isDeveloper);
+            PreferenceUtils.setDeveloperStatus(getActivity().getApplicationContext(), isDeveloper);
         }
     }
 

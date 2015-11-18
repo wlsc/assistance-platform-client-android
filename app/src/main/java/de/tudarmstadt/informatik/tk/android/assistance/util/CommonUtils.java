@@ -143,7 +143,7 @@ public class CommonUtils {
                             Log.d(TAG, "new user pic filename: " + filename);
                         }
 
-                        PreferencesUtils.setUserPicFilename(context, filename);
+                        PreferenceUtils.setUserPicFilename(context, filename);
 
                         Log.e(TAG, Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + filename + ".jpg");
 

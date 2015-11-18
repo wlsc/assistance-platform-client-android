@@ -20,7 +20,7 @@ public class LoginUtils {
      */
     public static void doLogout(Context context) {
 
-        PreferencesUtils.clearUserCredentials(context);
+        PreferenceUtils.clearUserCredentials(context);
 
         // stop the kraken
         if (DeviceUtils.isServiceRunning(

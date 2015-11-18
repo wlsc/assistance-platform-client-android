@@ -25,7 +25,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEn
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
@@ -104,10 +104,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (BuildConfig.DEBUG) {
-            PreferencesUtils.setDeveloperStatus(getApplicationContext(), true);
+            PreferenceUtils.setDeveloperStatus(getApplicationContext(), true);
         }
 
-        long userId = PreferencesUtils.getCurrentUserId(getApplicationContext());
+        long userId = PreferenceUtils.getCurrentUserId(getApplicationContext());
 
         assistanceNews = daoProvider.getNewsDao().getNews(userId);
 
@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void registerForPush() {
 
-        boolean isTokenWasSent = PreferencesUtils.isGcmTokenWasSent(getApplicationContext());
+        boolean isTokenWasSent = PreferenceUtils.isGcmTokenWasSent(getApplicationContext());
 
         if (isTokenWasSent) {
             return;
@@ -183,12 +183,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, GcmRegistrationIntentService.class);
             startService(intent);
 
-            PreferencesUtils.setGcmTokenWasSent(getApplicationContext(), true);
+            PreferenceUtils.setGcmTokenWasSent(getApplicationContext(), true);
 
         } else {
             Log.d(TAG, "Google Play Services NOT installed.");
 
-            PreferencesUtils.setGcmTokenWasSent(getApplicationContext(), false);
+            PreferenceUtils.setGcmTokenWasSent(getApplicationContext(), false);
 
             // TODO: tell user that it is impossible without play services
             // or just make here impl without play services.
@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
                 initView();
                 break;
             case Constants.INTENT_SETTINGS_LOGOUT_RESULT:
-                PreferencesUtils.clearUserCredentials(getApplicationContext());
+                PreferenceUtils.clearUserCredentials(getApplicationContext());
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 break;
@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void requestUserProfile() {
 
-        String userToken = PreferencesUtils.getUserToken(getApplicationContext());
+        String userToken = PreferenceUtils.getUserToken(getApplicationContext());
 
         UserEndpoint userservice = EndpointGenerator.getInstance(getApplicationContext()).create(UserEndpoint.class);
         userservice.getUserProfileShort(userToken, new Callback<ProfileResponse>() {
@@ -318,9 +318,9 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                PreferencesUtils.setUserFirstname(getApplicationContext(), profileResponse.getFirstname());
-                PreferencesUtils.setUserLastname(getApplicationContext(), profileResponse.getLastname());
-                PreferencesUtils.setUserEmail(getApplicationContext(), profileResponse.getPrimaryEmail());
+                PreferenceUtils.setUserFirstname(getApplicationContext(), profileResponse.getFirstname());
+                PreferenceUtils.setUserLastname(getApplicationContext(), profileResponse.getLastname());
+                PreferenceUtils.setUserEmail(getApplicationContext(), profileResponse.getPrimaryEmail());
 
                 persistLogin(profileResponse);
             }
@@ -410,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 401:
                     Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
-                    PreferencesUtils.clearUserCredentials(getApplicationContext());
+                    PreferenceUtils.clearUserCredentials(getApplicationContext());
                     Intent intent = new Intent(this, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);

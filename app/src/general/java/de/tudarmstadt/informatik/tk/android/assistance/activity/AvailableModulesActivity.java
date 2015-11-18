@@ -49,7 +49,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.kraken.db.DbUser;
@@ -172,7 +172,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void loadModules() {
 
-        String userEmail = PreferencesUtils.getUserEmail(getApplicationContext());
+        String userEmail = PreferenceUtils.getUserEmail(getApplicationContext());
 
         DbUser user = daoProvider.getUserDao().getUserByEmail(userEmail);
 
@@ -222,7 +222,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         Set<String> permissionsToAsk = new HashSet<>();
 
-        long userId = PreferencesUtils.getCurrentUserId(getApplicationContext());
+        long userId = PreferenceUtils.getCurrentUserId(getApplicationContext());
 
         List<DbModule> allActiveModules = daoProvider
                 .getModuleDao()
@@ -273,7 +273,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void requestAvailableModules() {
 
-        final String userToken = PreferencesUtils.getUserToken(getApplicationContext());
+        final String userToken = PreferenceUtils.getUserToken(getApplicationContext());
 
         // calling api service
         final ModuleEndpoint moduleEndpoint = EndpointGenerator
@@ -308,7 +308,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                                 availableModuleResponseMapping.put(resp.getModulePackage(), resp);
                             }
 
-                            boolean hasUserRequestedActiveModules = PreferencesUtils
+                            boolean hasUserRequestedActiveModules = PreferenceUtils
                                     .hasUserRequestedActiveModules(getApplicationContext());
 
                             if (hasUserRequestedActiveModules) {
@@ -329,7 +329,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                                             mSwipeRefreshLayout.setRefreshing(false);
 
-                                            PreferencesUtils.setUserRequestedActiveModules(getApplicationContext(), true);
+                                            PreferenceUtils.setUserRequestedActiveModules(getApplicationContext(), true);
 
                                             if (activeModules != null && !activeModules.isEmpty()) {
 
@@ -430,7 +430,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void applyAlreadyActiveModulesFromDb(List<DbModule> modules) {
 
-        long userId = PreferencesUtils.getCurrentUserId(getApplicationContext());
+        long userId = PreferenceUtils.getCurrentUserId(getApplicationContext());
 
         List<DbModule> activeModules = daoProvider
                 .getModuleDao()
@@ -461,7 +461,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         if (mActiveModules != null && !mActiveModules.isEmpty()) {
 
-            long userId = PreferencesUtils.getCurrentUserId(getApplicationContext());
+            long userId = PreferenceUtils.getCurrentUserId(getApplicationContext());
 
             for (DbModule module : modules) {
 
@@ -841,7 +841,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void installModule(final DbModule module) {
 
-        String userToken = PreferencesUtils.getUserToken(getApplicationContext());
+        String userToken = PreferenceUtils.getUserToken(getApplicationContext());
 
         DbUser user = daoProvider
                 .getUserDao()
@@ -913,7 +913,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void saveModuleInstallationInDb(DbModule dbModule) {
 
-        String userEmail = PreferencesUtils.getUserEmail(getApplicationContext());
+        String userEmail = PreferenceUtils.getUserEmail(getApplicationContext());
 
         DbUser user = daoProvider.getUserDao().getUserByEmail(userEmail);
 
@@ -969,7 +969,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                     .getModuleCapabilityDao()
                     .insertModuleCapabilities(dbOptionalCaps);
 
-            PreferencesUtils.setUserHasModules(getApplicationContext(), true);
+            PreferenceUtils.setUserHasModules(getApplicationContext(), true);
             Toaster.showLong(getApplicationContext(), R.string.module_installation_successful);
         }
 
@@ -981,7 +981,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void moduleUninstall() {
 
-        String userToken = PreferencesUtils.getUserToken(getApplicationContext());
+        String userToken = PreferenceUtils.getUserToken(getApplicationContext());
 
         if (userToken.isEmpty()) {
 
@@ -1212,7 +1212,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                     break;
                 case 401:
                     Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
-                    PreferencesUtils.clearUserCredentials(getApplicationContext());
+                    PreferenceUtils.clearUserCredentials(getApplicationContext());
                     Intent intent = new Intent(this, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);

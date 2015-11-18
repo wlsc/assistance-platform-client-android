@@ -23,7 +23,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDev
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 
 /**
  * Core user settings activity
@@ -99,7 +99,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         loadHeadersFromResource(R.xml.preference_headers, headers);
 
-        boolean isUserDeveloper = PreferencesUtils.isUserDeveloper(getApplicationContext());
+        boolean isUserDeveloper = PreferenceUtils.isUserDeveloper(getApplicationContext());
 
         for (Header header : headers) {
             if (header.id == R.id.development_settings) {

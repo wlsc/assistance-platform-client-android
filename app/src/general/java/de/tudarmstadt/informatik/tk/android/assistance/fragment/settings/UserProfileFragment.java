@@ -23,7 +23,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEn
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UpdateProfileRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UserSocialService;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferencesUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
 import retrofit.Callback;
@@ -99,7 +99,7 @@ public class UserProfileFragment extends Fragment {
         View view = null;
 
         // request user profile from server
-        userToken = PreferencesUtils.getUserToken(getActivity().getApplicationContext());
+        userToken = PreferenceUtils.getUserToken(getActivity().getApplicationContext());
 
         if (!userToken.isEmpty()) {
 
@@ -298,8 +298,8 @@ public class UserProfileFragment extends Fragment {
         request.setFirstname(firstname);
         request.setLastname(lastname);
 
-        PreferencesUtils.setUserFirstname(getActivity().getApplicationContext(), firstname);
-        PreferencesUtils.setUserLastname(getActivity().getApplicationContext(), lastname);
+        PreferenceUtils.setUserFirstname(getActivity().getApplicationContext(), firstname);
+        PreferenceUtils.setUserLastname(getActivity().getApplicationContext(), lastname);
 
         List<UserSocialService> socialServices = new ArrayList<>();
 
