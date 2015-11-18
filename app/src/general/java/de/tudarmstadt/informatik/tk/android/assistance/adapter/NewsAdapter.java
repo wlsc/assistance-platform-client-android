@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.adapter;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,10 +63,21 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
+
+        if (news == null) {
+            return 0;
+        }
+
         return news.size();
     }
 
+    @Nullable
     public DbNews getItem(int position) {
+
+        if (position < 0 || position >= news.size()) {
+            return null;
+        }
+
         return news.get(position);
     }
 
@@ -77,6 +89,18 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         return super.getItemViewType(position);
+    }
+
+    /**
+     * Swaps out old data with new data in the adapter
+     *
+     * @param newList
+     */
+    public void swapData(List<DbNews> newList) {
+
+        news.clear();
+        news.addAll(newList);
+        notifyDataSetChanged();
     }
 
     /**

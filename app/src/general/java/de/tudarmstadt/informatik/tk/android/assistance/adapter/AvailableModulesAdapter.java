@@ -27,10 +27,10 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
 
     private static final int EMPTY_VIEW_TYPE = 10;
 
-    private List<DbModule> modulesList;
+    private List<DbModule> modules;
 
-    public AvailableModulesAdapter(List<DbModule> modulesList) {
-        this.modulesList = modulesList;
+    public AvailableModulesAdapter(List<DbModule> modules) {
+        this.modules = modules;
     }
 
     @Override
@@ -107,11 +107,11 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
     @Override
     public int getItemCount() {
 
-        if (modulesList == null) {
+        if (modules == null) {
             return 0;
         }
 
-        return modulesList.size();
+        return modules.size();
     }
 
     /**
@@ -122,11 +122,11 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
      */
     public DbModule getItem(int position) {
 
-        if (position < 0 || position >= modulesList.size()) {
+        if (position < 0 || position >= modules.size()) {
             return null;
         }
 
-        return modulesList.get(position);
+        return modules.get(position);
     }
 
     /**
@@ -141,7 +141,7 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
             return null;
         }
 
-        for (DbModule module : modulesList) {
+        for (DbModule module : modules) {
 
             if (modulePackageId.equals(module.getPackageName())) {
                 return module;
@@ -164,12 +164,12 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
     /**
      * Swaps out old data with new data in the adapter
      *
-     * @param newModulesList
+     * @param newList
      */
-    public void swapData(List<DbModule> newModulesList) {
+    public void swapData(List<DbModule> newList) {
 
-        modulesList.clear();
-        modulesList.addAll(newModulesList);
+        modules.clear();
+        modules.addAll(newList);
         notifyDataSetChanged();
     }
 
