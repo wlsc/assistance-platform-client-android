@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(new NewsAdapter(assistanceNews));
 
         if (assistanceNews.isEmpty()) {
+
             ButterKnife.findById(this, R.id.assistance_list).setVisibility(View.GONE);
             ButterKnife.findById(this, R.id.assistance_no_news).setVisibility(View.VISIBLE);
         }
@@ -122,43 +123,43 @@ public class MainActivity extends AppCompatActivity {
         registerForPush();
 
         if (installedModules != null && !installedModules.isEmpty()) {
-
-            if (!DeviceUtils.isServiceRunning(
-                    getApplicationContext(),
-                    HarvesterService.class)) {
-
-                HarvesterServiceProvider.getInstance(
-                        getApplicationContext())
-                        .startSensingService();
-            }
-
+            startHarvester();
         } else {
 
-            installedModules = daoProvider.getModuleDao()
-                    .getAllActiveModules(userId);
+            installedModules = daoProvider.getModuleDao().getAllActiveModules(userId);
 
             // user got some active modules
             if (installedModules != null && !installedModules.isEmpty()) {
-
-                if (!DeviceUtils.isServiceRunning(
-                        getApplicationContext(),
-                        HarvesterService.class)) {
-
-                    HarvesterServiceProvider.getInstance(
-                            getApplicationContext())
-                            .startSensingService();
-                }
+                startHarvester();
             } else {
-
-                if (DeviceUtils.isServiceRunning(
-                        getApplicationContext(),
-                        HarvesterService.class)) {
-
-                    HarvesterServiceProvider.getInstance(
-                            getApplicationContext())
-                            .stopSensingService();
-                }
+                stopHarvester();
             }
+        }
+    }
+
+    /**
+     * Starting harveting service if not running
+     */
+    private void startHarvester() {
+
+        if (!DeviceUtils.isServiceRunning(getApplicationContext(), HarvesterService.class)) {
+
+            HarvesterServiceProvider.getInstance(
+                    getApplicationContext())
+                    .startSensingService();
+        }
+    }
+
+    /**
+     * Stopping harveting service if not running
+     */
+    private void stopHarvester() {
+
+        if (DeviceUtils.isServiceRunning(getApplicationContext(), HarvesterService.class)) {
+
+            HarvesterServiceProvider.getInstance(
+                    getApplicationContext())
+                    .stopSensingService();
         }
     }
 

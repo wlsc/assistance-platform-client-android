@@ -71,7 +71,7 @@
     <string name="main_activity_module_menu_uninstall">Uninstall module</string>
     <string name="main_activity_undo_uninstall">Cancel uninstall?</string>
     <string name="main_activity_undo_uninstall_button_title">UNDO</string>
-    <string name="main_activity_no_module_data_available">No modules installed</string>
+    <string name="main_activity_no_module_data_available">No news</string>
 
     <!-- LOGIN SCREEN -->
     <string name="login_header">Welcome!</string>
