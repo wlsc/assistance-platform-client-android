@@ -8,30 +8,16 @@ android {
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
-    }
-    productFlavors {
-        london {
-            applicationId 'de.tudarmstadt.informatik.tk.android.assistance.london'
-            versionName '1.0 beta London Edititon'
-        }
-        general {
-            applicationId 'de.tudarmstadt.informatik.tk.android.assistance.general'
-            versionName '1.0 beta'
-        }
+        versionName "1.0 alpha"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            productFlavors.london.buildConfigField "String", "ASSISTANCE_ENDPOINT", "\"https://130.83.163.146\""
-//            productFlavors.general.buildConfigField "String", "ASSISTANCE_ENDPOINT", "\"https://130.83.163.115\""
         }
         debug {
             debuggable true
             minifyEnabled false
-//            productFlavors.london.buildConfigField "String", "ASSISTANCE_ENDPOINT", "\"https://130.83.163.146\""
-//            productFlavors.general.buildConfigField "String", "ASSISTANCE_ENDPOINT", "\"https://130.83.163.115\""
         }
     }
     dexOptions {
