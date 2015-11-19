@@ -22,7 +22,6 @@ android {
     }
     buildTypes {
         release {
-            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            productFlavors.london.buildConfigField "String", "ASSISTANCE_ENDPOINT", "\"https://130.83.163.146\""
