@@ -25,7 +25,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UpdateP
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UserSocialService;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

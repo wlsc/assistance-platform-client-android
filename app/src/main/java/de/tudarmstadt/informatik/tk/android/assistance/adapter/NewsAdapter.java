@@ -11,7 +11,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbNews;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)

@@ -5,9 +5,9 @@ import java.util.Locale;
 
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModule;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
-import de.tudarmstadt.informatik.tk.android.kraken.util.DateUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 
 /**
  * Converter between various models

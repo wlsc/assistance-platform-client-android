@@ -2,9 +2,9 @@ package de.tudarmstadt.informatik.tk.android.assistance.util;
 
 import android.content.Context;
 
-import de.tudarmstadt.informatik.tk.android.kraken.provider.HarvesterServiceProvider;
-import de.tudarmstadt.informatik.tk.android.kraken.service.HarvesterService;
-import de.tudarmstadt.informatik.tk.android.kraken.util.DeviceUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.service.HarvesterService;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DeviceUtils;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)

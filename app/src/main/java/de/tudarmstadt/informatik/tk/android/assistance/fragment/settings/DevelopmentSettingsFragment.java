@@ -21,9 +21,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.Config;
-import de.tudarmstadt.informatik.tk.android.kraken.util.PermissionUtils;
-import de.tudarmstadt.informatik.tk.android.kraken.util.StorageUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.Config;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.StorageUtils;
 
 /**
  * Created by Wladimir Schmidt on 29.06.2015.

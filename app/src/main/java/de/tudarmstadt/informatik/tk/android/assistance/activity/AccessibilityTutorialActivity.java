@@ -11,7 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
-import de.tudarmstadt.informatik.tk.android.kraken.provider.PreferenceProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
 
 /**
  * A tutorial for accessibility service to enable

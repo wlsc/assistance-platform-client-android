@@ -14,7 +14,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)

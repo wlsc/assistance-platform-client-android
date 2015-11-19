@@ -1,6 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.model.item;
 
-import de.tudarmstadt.informatik.tk.android.kraken.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
