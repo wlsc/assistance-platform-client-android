@@ -47,6 +47,7 @@ dependencies {
     compile 'com.android.support:cardview-v7:23.1.1'
     compile 'com.android.support:gridlayout-v7:23.1.1'  // StaggeredGridLayoutManager
     compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:preference-v7:23.1.1'
     compile 'com.android.support:support-v13:23.1.1'
     compile 'com.android.support:support-annotations:23.1.1'
 //    compile 'com.android.support:percent:23.1.0'
