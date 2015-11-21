@@ -13,4 +13,9 @@
         android:summary="@string/settings_export_database_summary"
         android:title="@string/settings_export_database" />
 
+    <EditTextPreference
+        android:key="pref_edit_endpoint_url"
+        android:summary="@string/settings_edit_endpoint_url_summary"
+        android:title="@string/settings_edit_endpoint_url" />
+
 </PreferenceScreen>

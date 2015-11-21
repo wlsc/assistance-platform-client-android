@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
@@ -20,10 +21,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.StorageUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 
 /**
  * Created by Wladimir Schmidt on 29.06.2015.
@@ -34,8 +35,6 @@ public class DevelopmentSettingsFragment extends
 
     private static final String TAG = DevelopmentSettingsFragment.class.getSimpleName();
 
-    private Toolbar mParentToolbar;
-
     public DevelopmentSettingsFragment() {
     }
 
@@ -45,7 +44,7 @@ public class DevelopmentSettingsFragment extends
 
         addPreferencesFromResource(R.xml.preference_development);
 
-        mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
+        Toolbar mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
 
         if (mParentToolbar != null) {
             mParentToolbar.setTitle(R.string.settings_header_development_title);
@@ -56,6 +55,21 @@ public class DevelopmentSettingsFragment extends
         SwitchPreference beDevPref = (SwitchPreference) findPreference("pref_be_developer");
         beDevPref.setChecked(isUserDeveloper);
 
+        String customEndpoint = PreferenceUtils.getCustomEndpoint(getActivity().getApplicationContext());
+
+        EditTextPreference editEndpointUrlPref = (EditTextPreference) findPreference("pref_edit_endpoint_url");
+
+        if (customEndpoint.isEmpty()) {
+
+            editEndpointUrlPref.setTitle(editEndpointUrlPref.getTitle() + " " + Config.ASSISTANCE_ENDPOINT);
+            editEndpointUrlPref.setText(Config.ASSISTANCE_ENDPOINT);
+
+        } else {
+
+            editEndpointUrlPref.setTitle(editEndpointUrlPref.getTitle() + " " + customEndpoint);
+            editEndpointUrlPref.setText(customEndpoint);
+        }
+
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -64,7 +78,7 @@ public class DevelopmentSettingsFragment extends
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-        if (key.equalsIgnoreCase("pref_be_developer")) {
+        if (key.equals("pref_be_developer")) {
 
             boolean isDeveloper = PreferenceUtils.isUserDeveloper(getActivity().getApplicationContext());
 
@@ -75,6 +89,27 @@ public class DevelopmentSettingsFragment extends
             }
 
             PreferenceUtils.setDeveloperStatus(getActivity().getApplicationContext(), isDeveloper);
+        }
+
+        if (key.equals("pref_edit_endpoint_url")) {
+
+            Log.d(TAG, "User clicked custom endpoint url");
+
+            String customEndpoint = sharedPreferences.getString("pref_edit_endpoint_url", "");
+            EditTextPreference editEndpointUrlPref = (EditTextPreference) findPreference("pref_edit_endpoint_url");
+
+            if (customEndpoint.isEmpty()) {
+
+                editEndpointUrlPref.setTitle(getString(R.string.settings_edit_endpoint_url) + " " + Config.ASSISTANCE_ENDPOINT);
+                editEndpointUrlPref.setText(Config.ASSISTANCE_ENDPOINT);
+
+            } else {
+
+                editEndpointUrlPref.setTitle(getString(R.string.settings_edit_endpoint_url) + " " + customEndpoint);
+                editEndpointUrlPref.setText(customEndpoint);
+            }
+
+            PreferenceUtils.setCustomEndpoint(getActivity().getApplicationContext(), customEndpoint);
         }
     }
 

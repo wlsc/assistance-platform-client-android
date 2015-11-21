@@ -44,6 +44,8 @@
     <string name="settings_export_database_summary">Export application sqlite database to downloads directory</string>
     <string name="settings_export_database_successful">Export was successful!</string>
     <string name="settings_export_database_failed">Export has failed!</string>
+    <string name="settings_edit_endpoint_url">Current endpoint:</string>
+    <string name="settings_edit_endpoint_url_summary">All requests of an App will be transmitted to this address</string>
 
     <!-- SETTINGS: HELP / ABOUT -->
     <string name="settings_about_title">About</string>

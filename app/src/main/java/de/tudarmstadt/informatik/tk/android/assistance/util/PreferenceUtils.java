@@ -374,4 +374,24 @@ public class PreferenceUtils {
     public static void setUserPicFilename(Context context, String value) {
         setPreference(context, Constants.PREF_USER_PIC, value);
     }
+
+    /**
+     * Returns custom assistance endpoint
+     *
+     * @param context
+     * @return
+     */
+    public static String getCustomEndpoint(Context context) {
+        return getPreference(context, Constants.PREF_CUSTOM_ENDPOINT, "");
+    }
+
+    /**
+     * Saves custom assistance endpoint
+     *
+     * @param context
+     * @param value
+     */
+    public static void setCustomEndpoint(Context context, String value) {
+        setPreference(context, Constants.PREF_CUSTOM_ENDPOINT, value);
+    }
 }

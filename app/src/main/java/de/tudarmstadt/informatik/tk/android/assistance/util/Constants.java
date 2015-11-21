@@ -35,6 +35,7 @@ public class Constants {
     public static final String PREF_SERVER_DEVICE_ID = "server_device_id";
     public static final String PREF_GCM_TOKEN_SENT = "gcm_token_sent";
     public static final String PREF_DEVELOPER_STATUS = "developer_status";
+    public static final String PREF_CUSTOM_ENDPOINT = "custom_endpoint";
 
     /**
      * INTENT CONSTANTS
