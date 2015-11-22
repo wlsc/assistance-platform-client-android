@@ -26,7 +26,11 @@ public class ConverterUtils {
      * @param dbModule
      * @return
      */
-    public static final AvailableModuleResponse convertModule(DbModule dbModule) {
+    public static AvailableModuleResponse convertModule(DbModule dbModule) {
+
+        if (dbModule == null) {
+            return null;
+        }
 
         AvailableModuleResponse availableModuleResponse = new AvailableModuleResponse();
 
@@ -47,7 +51,11 @@ public class ConverterUtils {
      * @param availableModuleResponse
      * @return
      */
-    public static final DbModule convertModule(AvailableModuleResponse availableModuleResponse) {
+    public static DbModule convertModule(AvailableModuleResponse availableModuleResponse) {
+
+        if (availableModuleResponse == null) {
+            return null;
+        }
 
         DbModule dbModule = new DbModule();
 
@@ -69,7 +77,11 @@ public class ConverterUtils {
      * @param moduleCapability
      * @return
      */
-    public static final ModuleCapabilityResponse convertModuleCapability(DbModuleCapability moduleCapability) {
+    public static ModuleCapabilityResponse convertModuleCapability(DbModuleCapability moduleCapability) {
+
+        if (moduleCapability == null) {
+            return null;
+        }
 
         ModuleCapabilityResponse moduleCapabilityResponse = new ModuleCapabilityResponse();
 
@@ -87,7 +99,11 @@ public class ConverterUtils {
      * @param moduleCapabilityResponse
      * @return
      */
-    public static final DbModuleCapability convertModuleCapability(ModuleCapabilityResponse moduleCapabilityResponse) {
+    public static DbModuleCapability convertModuleCapability(ModuleCapabilityResponse moduleCapabilityResponse) {
+
+        if (moduleCapabilityResponse == null) {
+            return null;
+        }
 
         DbModuleCapability moduleCapability = new DbModuleCapability();
 
