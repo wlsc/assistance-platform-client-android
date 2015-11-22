@@ -232,8 +232,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
             return;
         }
 
-        Log.d(TAG, "here1");
-
         for (DbModule module : allActiveModules) {
 
             if (module == null) {
@@ -397,13 +395,96 @@ public class AvailableModulesActivity extends AppCompatActivity {
         // show list of modules to user
         populateAvailableModuleList(convertedModules);
 
-        // request permissions
-        if (!mActiveModules.isEmpty()) {
+        // insert only active modules into db
+        insertActiveModulesIntoDb(convertedModules);
 
-            for (String packageName : mActiveModules) {
+        // request permissions to inserted modules
+        requestActiveModulesPermissions();
+    }
 
+    /**
+     * Insert already activated modules earlier
+     *
+     * @param convertedModules
+     */
+    private void insertActiveModulesIntoDb(List<DbModule> convertedModules) {
 
+        for (DbModule module : convertedModules) {
+
+            if (module.getActive()) {
+
+                // insert active module into db
+                long installId = daoProvider.getModuleDao().insert(module);
+
+                // inserting module capabilities
+                AvailableModuleResponse moduleResponse = availableModuleResponseMapping
+                        .get(module.getPackageName());
+
+                List<ModuleCapabilityResponse> requiredCaps = moduleResponse.getSensorsRequired();
+                List<ModuleCapabilityResponse> optionalCaps = moduleResponse.getSensorsOptional();
+
+                List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(requiredCaps.size());
+                List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(optionalCaps.size());
+
+                for (ModuleCapabilityResponse response : requiredCaps) {
+
+                    final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
+                    dbCap.setModuleId(installId);
+                    dbRequiredCaps.add(dbCap);
+                }
+
+                for (ModuleCapabilityResponse response : optionalCaps) {
+
+                    final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
+                    dbCap.setModuleId(installId);
+                    dbOptionalCaps.add(dbCap);
+                }
+
+                daoProvider
+                        .getModuleCapabilityDao()
+                        .insert(dbRequiredCaps);
+
+                daoProvider
+                        .getModuleCapabilityDao()
+                        .insert(dbOptionalCaps);
             }
+        }
+    }
+
+    /**
+     * Request permissions for installed active modules
+     */
+    private void requestActiveModulesPermissions() {
+
+        long userId = PreferenceUtils.getCurrentUserId(getApplicationContext());
+
+        List<DbModule> activeModulesList = daoProvider
+                .getModuleDao()
+                .getAllActive(userId);
+
+        // there are active modules
+        if (!activeModulesList.isEmpty()) {
+
+            Set<String> permsToAsk = new HashSet<>();
+
+            for (DbModule module : activeModulesList) {
+
+                List<DbModuleCapability> capabilities = daoProvider
+                        .getModuleCapabilityDao()
+                        .getAllActive(module.getId());
+
+                for (DbModuleCapability cap : capabilities) {
+
+                    String[] perms = PermissionUtils
+                            .getInstance(getApplicationContext())
+                            .getDangerousPermissionsToDtoMapping()
+                            .get(cap.getType());
+
+                    permsToAsk.addAll(Arrays.asList(perms));
+                }
+            }
+
+
         }
     }
 
@@ -480,40 +561,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                 module.setActive(true);
                 module.setUserId(userId);
-
-                // insert active module into db
-                long installId = daoProvider.getModuleDao().insert(module);
-
-                AvailableModuleResponse moduleResponse = availableModuleResponseMapping
-                        .get(module.getPackageName());
-
-                List<ModuleCapabilityResponse> requiredCaps = moduleResponse.getSensorsRequired();
-                List<ModuleCapabilityResponse> optionalCaps = moduleResponse.getSensorsOptional();
-
-                List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(requiredCaps.size());
-                List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(optionalCaps.size());
-
-                for (ModuleCapabilityResponse response : requiredCaps) {
-
-                    final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
-                    dbCap.setModuleId(installId);
-                    dbRequiredCaps.add(dbCap);
-                }
-
-                for (ModuleCapabilityResponse response : optionalCaps) {
-
-                    final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
-                    dbCap.setModuleId(installId);
-                    dbOptionalCaps.add(dbCap);
-                }
-
-                daoProvider
-                        .getModuleCapabilityDao()
-                        .insert(dbRequiredCaps);
-
-                daoProvider
-                        .getModuleCapabilityDao()
-                        .insert(dbOptionalCaps);
             }
         }
     }
@@ -1147,12 +1194,21 @@ public class AvailableModulesActivity extends AppCompatActivity {
             case android.R.id.home:
 
                 onBackPressed();
-                finish();
 
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Log.d(TAG, "Back pressed");
+
+        setResult(Constants.INTENT_AVAILABLE_MODULES_RESULT);
+        finish();
     }
 
     @Override
