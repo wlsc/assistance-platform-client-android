@@ -46,10 +46,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCa
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
-import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
@@ -59,6 +55,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterSer
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.service.HarvesterService;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DeviceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
+import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -174,7 +174,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         String userEmail = PreferenceUtils.getUserEmail(getApplicationContext());
 
-        DbUser user = daoProvider.getUserDao().getUserByEmail(userEmail);
+        DbUser user = daoProvider.getUserDao().getByEmail(userEmail);
 
         if (user == null) {
 
@@ -226,7 +226,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         List<DbModule> allActiveModules = daoProvider
                 .getModuleDao()
-                .getAllActiveModules(userId);
+                .getAllActive(userId);
 
         if (allActiveModules == null || allActiveModules.isEmpty()) {
             return;
@@ -236,13 +236,19 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         for (DbModule module : allActiveModules) {
 
+            if (module == null) {
+                continue;
+            }
+
             List<DbModuleCapability> capabilities = module.getDbModuleCapabilityList();
 
             for (DbModuleCapability cap : capabilities) {
 
-                Log.d(TAG, "caps");
+                if (cap == null) {
+                    continue;
+                }
 
-                final String[] perms = mappings.get(cap.getType());
+                final String[] perms = mappings == null ? null : mappings.get(cap.getType());
 
                 if (perms == null) {
                     continue;
@@ -416,8 +422,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         // we have entries already -> just swap them with new ones
         if (adapter != null && adapter.getItemCount() > 0) {
+
             adapter.swapData(modules);
+
         } else {
+
             // create new recycler view adapter
             mAvailableModulesRecyclerView.setAdapter(new AvailableModulesAdapter(modules));
         }
@@ -434,7 +443,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         List<DbModule> activeModules = daoProvider
                 .getModuleDao()
-                .getAllActiveModules(userId);
+                .getAllActive(userId);
 
         if (activeModules != null && !activeModules.isEmpty()) {
 
@@ -459,51 +468,52 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void applyAlreadyActiveModulesFromRequest(List<DbModule> modules) {
 
-        if (mActiveModules != null && !mActiveModules.isEmpty()) {
+        if (mActiveModules == null || mActiveModules.isEmpty()) {
+            return;
+        }
 
-            long userId = PreferenceUtils.getCurrentUserId(getApplicationContext());
+        long userId = PreferenceUtils.getCurrentUserId(getApplicationContext());
 
-            for (DbModule module : modules) {
+        for (DbModule module : modules) {
 
-                if (mActiveModules.contains(module.getPackageName())) {
+            if (mActiveModules.contains(module.getPackageName())) {
 
-                    module.setActive(true);
-                    module.setUserId(userId);
+                module.setActive(true);
+                module.setUserId(userId);
 
-                    // insert active module into db
-                    long installId = daoProvider.getModuleDao().insertModule(module);
+                // insert active module into db
+                long installId = daoProvider.getModuleDao().insert(module);
 
-                    AvailableModuleResponse moduleResponse = availableModuleResponseMapping
-                            .get(module.getPackageName());
+                AvailableModuleResponse moduleResponse = availableModuleResponseMapping
+                        .get(module.getPackageName());
 
-                    List<ModuleCapabilityResponse> requiredCaps = moduleResponse.getSensorsRequired();
-                    List<ModuleCapabilityResponse> optionalCaps = moduleResponse.getSensorsOptional();
+                List<ModuleCapabilityResponse> requiredCaps = moduleResponse.getSensorsRequired();
+                List<ModuleCapabilityResponse> optionalCaps = moduleResponse.getSensorsOptional();
 
-                    List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(requiredCaps.size());
-                    List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(optionalCaps.size());
+                List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(requiredCaps.size());
+                List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(optionalCaps.size());
 
-                    for (ModuleCapabilityResponse response : requiredCaps) {
+                for (ModuleCapabilityResponse response : requiredCaps) {
 
-                        final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
-                        dbCap.setModuleId(installId);
-                        dbRequiredCaps.add(dbCap);
-                    }
-
-                    for (ModuleCapabilityResponse response : optionalCaps) {
-
-                        final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
-                        dbCap.setModuleId(installId);
-                        dbOptionalCaps.add(dbCap);
-                    }
-
-                    daoProvider
-                            .getModuleCapabilityDao()
-                            .insertModuleCapabilities(dbRequiredCaps);
-
-                    daoProvider
-                            .getModuleCapabilityDao()
-                            .insertModuleCapabilities(dbOptionalCaps);
+                    final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
+                    dbCap.setModuleId(installId);
+                    dbRequiredCaps.add(dbCap);
                 }
+
+                for (ModuleCapabilityResponse response : optionalCaps) {
+
+                    final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
+                    dbCap.setModuleId(installId);
+                    dbOptionalCaps.add(dbCap);
+                }
+
+                daoProvider
+                        .getModuleCapabilityDao()
+                        .insert(dbRequiredCaps);
+
+                daoProvider
+                        .getModuleCapabilityDao()
+                        .insert(dbOptionalCaps);
             }
         }
     }
@@ -584,8 +594,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     /**
      * Shows more information about an assistance module
-     *
-     * @param modulePackageName
      */
     private void showMoreModuleInformationDialog() {
 
@@ -620,7 +628,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
     }
 
     /**
-     * Shows uninstallation dialog to user
+     * Shows uninstall dialog to user
      */
     private void showUninstallDialog() {
 
@@ -661,8 +669,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
     /**
      * Shows a permission dialog to user
      * Each permission is used actually by a module
-     *
-     * @param moduleId
      */
     private void showPermissionDialog() {
 
@@ -746,8 +752,6 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     /**
      * Asking user for grant permissions
-     *
-     * @param moduleId
      */
 
     private void askUserEnablePermissions() {
@@ -772,7 +776,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         // handle required perms
         if (requiredSensors != null) {
 
-            // theese permissions are crucial for an operation of module
+            // these permissions are crucial for an operation of module
             for (ModuleCapabilityResponse capResponse : requiredSensors) {
 
                 String apiType = capResponse.getType();
@@ -821,9 +825,9 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         if (allAdapterPerms != null && !allAdapterPerms.isEmpty()) {
 
-            for (PermissionListItem permitem : allAdapterPerms) {
-                if (permitem.isChecked()) {
-                    DbModuleCapability cap = permitem.getCapability();
+            for (PermissionListItem permItem : allAdapterPerms) {
+                if (permItem.isChecked()) {
+                    DbModuleCapability cap = permItem.getCapability();
                     if (cap != null) {
                         result.add(cap);
                     }
@@ -836,16 +840,19 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     /**
      * Saves information into db / install a module for user
-     *
-     * @param modulePackageName
      */
     private void installModule(final DbModule module) {
+
+        if (module == null) {
+            Log.d(TAG, "installModule: Module is NULL");
+            return;
+        }
 
         String userToken = PreferenceUtils.getUserToken(getApplicationContext());
 
         DbUser user = daoProvider
                 .getUserDao()
-                .getUserByToken(userToken);
+                .getByToken(userToken);
 
         if (user == null) {
 
@@ -855,7 +862,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         DbModule existingModule = daoProvider
                 .getModuleDao()
-                .getModuleByPackageIdUserId(module.getPackageName(), user.getId());
+                .getByPackageIdUserId(module.getPackageName(), user.getId());
 
         // module already existing for that user, abort installation
         if (existingModule != null) {
@@ -915,7 +922,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         String userEmail = PreferenceUtils.getUserEmail(getApplicationContext());
 
-        DbUser user = daoProvider.getUserDao().getUserByEmail(userEmail);
+        DbUser user = daoProvider.getUserDao().getByEmail(userEmail);
 
         if (user == null) {
 
@@ -928,7 +935,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         dbModule.setActive(true);
         dbModule.setUserId(user.getId());
 
-        Long installId = daoProvider.getModuleDao().insertModule(dbModule);
+        Long installId = daoProvider.getModuleDao().insert(dbModule);
 
         if (installId == null) {
 
@@ -963,11 +970,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
             daoProvider
                     .getModuleCapabilityDao()
-                    .insertModuleCapabilities(dbRequiredCaps);
+                    .insert(dbRequiredCaps);
 
             daoProvider
                     .getModuleCapabilityDao()
-                    .insertModuleCapabilities(dbOptionalCaps);
+                    .insert(dbOptionalCaps);
 
             PreferenceUtils.setUserHasModules(getApplicationContext(), true);
             Toaster.showLong(getApplicationContext(), R.string.module_installation_successful);
@@ -992,7 +999,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         final DbUser user = daoProvider
                 .getUserDao()
-                .getUserByToken(userToken);
+                .getByToken(userToken);
 
         if (user == null) {
 
@@ -1003,7 +1010,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         final DbModule module = daoProvider
                 .getModuleDao()
-                .getModuleByPackageIdUserId(selectedModuleId, user.getId());
+                .getByPackageIdUserId(selectedModuleId, user.getId());
 
         Log.d(TAG, "Uninstall module. ModuleId: " + module.getId() +
                 " package: " + module.getPackageName());
@@ -1026,7 +1033,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                             int numberOfModules = daoProvider
                                     .getModuleDao()
-                                    .getAllModules(user.getId())
+                                    .getAll(user.getId())
                                     .size();
 
                             // we have no entries in db, stop the sensing
@@ -1161,7 +1168,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 for (int i = 0, grantResultsLength = grantResults.length; i < grantResultsLength; i++) {
 
                     if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                        // permission denied, it should be reasked again
+                        // permission denied, it should be asked again
 
                         declinedPermissions.add(permissions[i]);
                     }
@@ -1187,7 +1194,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
     /**
      * Shows some dialog, because that permissions are crucial for that module
      *
-     * @param permissions
+     * @param declinedPermissions
      */
     private void showPermissionsAreCrucialDialog(List<String> declinedPermissions) {
 

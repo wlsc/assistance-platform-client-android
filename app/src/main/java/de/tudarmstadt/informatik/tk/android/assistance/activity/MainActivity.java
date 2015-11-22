@@ -21,11 +21,10 @@ import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.NewsAdapter;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
@@ -38,6 +37,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.service.HarvesterServ
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DeviceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.GcmUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         long userId = PreferenceUtils.getCurrentUserId(getApplicationContext());
 
-        assistanceNews = daoProvider.getNewsDao().getNews(userId);
+        assistanceNews = daoProvider.getNewsDao().get(userId);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new NewsAdapter(assistanceNews));
@@ -122,23 +123,87 @@ public class MainActivity extends AppCompatActivity {
 
         registerForPush();
 
-        if (installedModules != null && !installedModules.isEmpty()) {
-            startHarvester();
+        installedModules = daoProvider.getModuleDao().getAllActive(userId);
+
+        if (installedModules == null || installedModules.isEmpty()) {
+
+            stopHarvester();
+
+            getActivatedModulesAndSave();
+
         } else {
 
-            installedModules = daoProvider.getModuleDao().getAllActiveModules(userId);
-
             // user got some active modules
-            if (installedModules != null && !installedModules.isEmpty()) {
-                startHarvester();
-            } else {
-                stopHarvester();
-            }
+            startHarvester();
         }
     }
 
     /**
-     * Starting harveting service if not running
+     * Asks backend for activated modules
+     */
+    private void getActivatedModulesAndSave() {
+
+        final String userToken = PreferenceUtils.getUserToken(getApplicationContext());
+
+        final ModuleEndpoint moduleEndpoint = EndpointGenerator
+                .getInstance(getApplicationContext())
+                .create(ModuleEndpoint.class);
+
+        moduleEndpoint.getActiveModules(userToken,
+                new Callback<List<String>>() {
+
+                    @Override
+                    public void success(List<String> activeModules,
+                                        Response response) {
+
+                        if (activeModules != null && !activeModules.isEmpty()) {
+
+                            Log.d(TAG, "Modules activated:");
+                            Log.d(TAG, activeModules.toString());
+
+                            DbUser user = daoProvider
+                                    .getUserDao()
+                                    .getByToken(userToken);
+
+                            if (user == null) {
+                                return;
+                            }
+
+                            List<DbModule> modules = user.getDbModuleList();
+
+                            if (modules.isEmpty()) {
+
+                                for (String modulePackageName : activeModules) {
+
+
+                                }
+
+                            } else {
+
+                                for (DbModule module : modules) {
+
+                                    if (activeModules.contains(module.getPackageName())) {
+
+                                        module.setActive(true);
+                                    }
+                                }
+
+//                                daoProvider
+//                                        .getModuleDao()
+//                                        .u
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showErrorMessages(error);
+                    }
+                });
+    }
+
+    /**
+     * Starting harvesting service if not running
      */
     private void startHarvester() {
 
@@ -151,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Stopping harveting service if not running
+     * Stopping harvesting service if not running
      */
     private void stopHarvester() {
 
@@ -327,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                showErrorMessages(TAG, error);
+                showErrorMessages(error);
             }
         });
     }
@@ -340,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
     private void persistLogin(ProfileResponse profileResponse) {
 
         // check already available user in db
-        DbUser user = daoProvider.getUserDao().getUserByEmail(profileResponse.getPrimaryEmail());
+        DbUser user = daoProvider.getUserDao().getByEmail(profileResponse.getPrimaryEmail());
 
         // check for user existence in the db
         if (user == null) {
@@ -362,7 +427,7 @@ public class MainActivity extends AppCompatActivity {
 
             user.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
-            daoProvider.getUserDao().insertUser(user);
+            daoProvider.getUserDao().insert(user);
 
         } else {
             // found a user -> update for device and user information
@@ -379,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
                 user.setLastLogin(DateUtils.dateToISO8601String(new Date(profileResponse.getLastLogin()), Locale.getDefault()));
             }
 
-            daoProvider.getUserDao().updateUser(user);
+            daoProvider.getUserDao().update(user);
         }
     }
 
@@ -393,10 +458,9 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Processes error response from server
      *
-     * @param TAG
      * @param retrofitError
      */
-    protected void showErrorMessages(String TAG, RetrofitError retrofitError) {
+    protected void showErrorMessages(RetrofitError retrofitError) {
 
         Response response = retrofitError.getResponse();
 

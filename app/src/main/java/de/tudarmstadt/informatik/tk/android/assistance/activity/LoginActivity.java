@@ -355,7 +355,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void doLogin() {
 
-        DbUser user = daoProvider.getUserDao().getUserByEmail(email);
+        DbUser user = daoProvider.getUserDao().getByEmail(email);
 
         Long serverDeviceId = null;
 
@@ -435,7 +435,7 @@ public class LoginActivity extends AppCompatActivity {
 
         String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
 
-        DbUser user = daoProvider.getUserDao().getUserByToken(loginResponse.getUserToken());
+        DbUser user = daoProvider.getUserDao().getByToken(loginResponse.getUserToken());
 
         // check if that user was already saved in the system
         if (user == null) {
@@ -447,7 +447,7 @@ public class LoginActivity extends AppCompatActivity {
             newUser.setPrimaryEmail(email);
             newUser.setCreated(createdDate);
 
-            long newUserId = daoProvider.getUserDao().insertUser(newUser);
+            long newUserId = daoProvider.getUserDao().insert(newUser);
 
             PreferenceUtils.setCurrentUserId(getApplicationContext(), newUserId);
 
@@ -463,7 +463,7 @@ public class LoginActivity extends AppCompatActivity {
             device.setCreated(createdDate);
             device.setUserId(newUserId);
 
-            long currentDeviceId = daoProvider.getDeviceDao().insertDevice(device);
+            long currentDeviceId = daoProvider.getDeviceDao().insert(device);
 
             PreferenceUtils.setCurrentDeviceId(getApplicationContext(), currentDeviceId);
             PreferenceUtils.setServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
@@ -499,7 +499,7 @@ public class LoginActivity extends AppCompatActivity {
                 device.setCreated(createdDate);
                 device.setUserId(user.getId());
 
-                long currentDeviceId = daoProvider.getDeviceDao().insertDevice(device);
+                long currentDeviceId = daoProvider.getDeviceDao().insert(device);
 
                 PreferenceUtils.setCurrentDeviceId(getApplicationContext(), currentDeviceId);
                 PreferenceUtils.setServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
