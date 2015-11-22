@@ -9,6 +9,8 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0 alpha"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -58,11 +60,12 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     // effective picture loader
     compile 'com.squareup.picasso:picasso:2.5.2'
-    // user interface builder
-    compile 'org.metawidget:metawidget-parent:4.1'
     // memory leaks finder
     //debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     //releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
     // better unit testing for ui
-    testCompile 'org.robolectric:robolectric:3.0'
+    androidTestCompile 'com.android.support:support-annotations:23.1.1'
+    androidTestCompile 'com.android.support.test:runner:0.4.1'
+    androidTestCompile 'com.android.support.test:rules:0.4.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
 }
