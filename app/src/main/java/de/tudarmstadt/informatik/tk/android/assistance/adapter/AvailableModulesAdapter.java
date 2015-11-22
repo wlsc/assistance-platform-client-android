@@ -42,9 +42,8 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
             // list is empty
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_list_empty_view, parent, false);
-            EmptyViewHolder emptyView = new EmptyViewHolder(view);
 
-            return emptyView;
+            return new EmptyViewHolder(view);
         } else {
             // list has items
             view = LayoutInflater.from(parent.getContext())
