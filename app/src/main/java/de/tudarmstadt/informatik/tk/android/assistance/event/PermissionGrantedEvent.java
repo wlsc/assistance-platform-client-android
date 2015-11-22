@@ -6,17 +6,17 @@ package de.tudarmstadt.informatik.tk.android.assistance.event;
  */
 public class PermissionGrantedEvent {
 
-    private String permission;
+    private String[] permissions;
 
-    public PermissionGrantedEvent(String permission) {
-        this.permission = permission;
+    public PermissionGrantedEvent(String[] permissions) {
+        this.permissions = permissions;
     }
 
-    public String getPermission() {
-        return this.permission;
+    public String[] getPermissions() {
+        return this.permissions;
     }
 
-    public void setPermission(String permission) {
-        this.permission = permission;
+    public void setPermissions(String[] permissions) {
+        this.permissions = permissions;
     }
 }

@@ -782,7 +782,7 @@ public class LoginActivity extends AppCompatActivity {
      */
 //    public void onEvent(PermissionGrantedEvent event) {
 //
-//        String permission = event.getPermission();
+//        String permission = event.getPermissions();
 //
 //        Log.d(TAG, "Permission granted: " + permission);
 //

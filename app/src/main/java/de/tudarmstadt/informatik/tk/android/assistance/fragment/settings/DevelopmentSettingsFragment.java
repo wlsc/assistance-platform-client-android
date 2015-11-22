@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
@@ -213,15 +214,15 @@ public class DevelopmentSettingsFragment extends
      */
     public void onEvent(PermissionGrantedEvent event) {
 
-        String permission = event.getPermission();
+        String[] permission = event.getPermissions();
 
-        Log.d(TAG, "Permission granted: " + permission);
+        Log.d(TAG, "Permission granted: " + Arrays.toString(permission));
 
-        if (permission == null) {
+        if (permission == null || permission.length > 1) {
             return;
         }
 
-        if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (permission[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             exportDatabase();
         }
     }
