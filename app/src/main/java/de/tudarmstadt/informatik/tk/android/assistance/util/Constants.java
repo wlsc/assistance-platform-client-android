@@ -42,6 +42,7 @@ public class Constants {
      */
 
     public static final int INTENT_CURRENT_DEVICE_ID_RESULT = 723;
+    public static final int INTENT_AVAILABLE_MODULES_RESULT = 444;
     public static final int INTENT_ACCESSIBILITY_SERVICE_ENABLED_RESULT = 888;
     public static final int INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT = 889;
     public static final int INTENT_SETTINGS_LOGOUT_RESULT = 333;

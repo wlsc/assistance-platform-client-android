@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private Menu menu;
 
     private List<DbModule> installedModules;
+
     private List<DbNews> assistanceNews;
 
     @Override
@@ -124,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
         registerForPush();
 
         installedModules = daoProvider.getModuleDao().getAllActive(userId);
+
+        Log.d(TAG, "Active modules: " + installedModules.size());
 
         if (installedModules == null || installedModules.isEmpty()) {
 
@@ -349,20 +352,49 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Log.d(TAG, "onActivityResult");
+        Log.d(TAG, "onActivityResult. RequestCode: " + requestCode + " resultCode: " + resultCode);
 
         switch (resultCode) {
+
             case Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT:
             case Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLED_RESULT:
+
+                Log.d(TAG, "Back from accessibility service tutorial");
+
                 initView();
                 break;
+
             case Constants.INTENT_SETTINGS_LOGOUT_RESULT:
+
+                Log.d(TAG, "Back from settings logout action");
+
                 PreferenceUtils.clearUserCredentials(getApplicationContext());
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 break;
+
             default:
-                super.onActivityResult(requestCode, resultCode, data);
+                Log.d(TAG, "Back from UNKNOWN result: " + resultCode);
+        }
+
+        switch (requestCode) {
+
+            case Constants.INTENT_AVAILABLE_MODULES_RESULT:
+
+                Log.d(TAG, "Back from available modules activity");
+
+                if (PreferenceUtils.hasUserModules(getApplicationContext())) {
+
+                    Log.d(TAG, "User have modules installed");
+
+                    startHarvester();
+                } else {
+                    Log.d(TAG, "User have NO modules installed");
+                }
+                break;
+
+            default:
+                Log.d(TAG, "Back from UNKNOWN request: " + requestCode);
         }
     }
 
@@ -452,7 +484,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onShowAvailableModules() {
 
         Intent intent = new Intent(this, AvailableModulesActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, Constants.INTENT_AVAILABLE_MODULES_RESULT);
     }
 
     /**
