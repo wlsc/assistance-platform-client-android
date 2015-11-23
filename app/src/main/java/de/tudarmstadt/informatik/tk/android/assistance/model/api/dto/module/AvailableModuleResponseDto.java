@@ -22,11 +22,11 @@ public class AvailableModuleResponseDto {
     @Expose
     private String logo;
 
-    @SerializedName("description_short")
+    @SerializedName("descriptionShort")
     @Expose
     private String descriptionShort;
 
-    @SerializedName("description_long")
+    @SerializedName("descriptionLong")
     @Expose
     private String descriptionFull;
 
