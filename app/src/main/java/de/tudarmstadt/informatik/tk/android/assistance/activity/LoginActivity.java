@@ -27,10 +27,10 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login.LoginRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login.UserDeviceDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginRequest;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.LoginResponse;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.login.UserDevice;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login.LoginResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
@@ -381,12 +381,12 @@ public class LoginActivity extends AppCompatActivity {
         /**
          * Forming a login request
          */
-        LoginRequest loginRequest = new LoginRequest();
+        LoginRequestDto loginRequest = new LoginRequestDto();
 
         loginRequest.setUserEmail(email);
         loginRequest.setPassword(password);
 
-        UserDevice userDevice = new UserDevice();
+        UserDeviceDto userDevice = new UserDeviceDto();
 
         if (serverDeviceId != null) {
             userDevice.setServerId(serverDeviceId);
@@ -404,10 +404,10 @@ public class LoginActivity extends AppCompatActivity {
          * Logging in the user
          */
         UserEndpoint userEndpoint = EndpointGenerator.getInstance(getApplicationContext()).create(UserEndpoint.class);
-        userEndpoint.loginUser(loginRequest, new Callback<LoginResponse>() {
+        userEndpoint.loginUser(loginRequest, new Callback<LoginResponseDto>() {
 
             @Override
-            public void success(LoginResponse apiResponse, Response response) {
+            public void success(LoginResponseDto apiResponse, Response response) {
                 saveLoginGoNext(apiResponse);
                 Log.d(TAG, "User token received: " + apiResponse.getUserToken());
             }
@@ -431,7 +431,7 @@ public class LoginActivity extends AppCompatActivity {
      *
      * @param loginResponse
      */
-    private void saveLoginIntoDb(LoginResponse loginResponse) {
+    private void saveLoginIntoDb(LoginResponseDto loginResponse) {
 
         String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
 
@@ -514,7 +514,7 @@ public class LoginActivity extends AppCompatActivity {
      *
      * @param loginApiResponse
      */
-    private void saveLoginGoNext(LoginResponse loginApiResponse) {
+    private void saveLoginGoNext(LoginResponseDto loginApiResponse) {
 
         String token = loginApiResponse.getUserToken();
 

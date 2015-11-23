@@ -12,9 +12,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.error.ErrorResponse;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.registration.RegistrationRequest;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.registration.RegistrationResponse;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
@@ -136,16 +136,16 @@ public class RegisterActivity extends AppCompatActivity {
         String passwordHashed = password;
 
         // forming a login request
-        RegistrationRequest request = new RegistrationRequest();
+        RegistrationRequestDto request = new RegistrationRequestDto();
         request.setUserEmail(email);
         request.setPassword(passwordHashed);
 
         // calling api service
         UserEndpoint service = EndpointGenerator.getInstance(getApplicationContext()).create(UserEndpoint.class);
-        service.registerUser(request, new Callback<RegistrationResponse>() {
+        service.registerUser(request, new Callback<RegistrationResponseDto>() {
 
             @Override
-            public void success(RegistrationResponse apiResponse, Response response) {
+            public void success(RegistrationResponseDto apiResponse, Response response) {
                 showLoginScreen(apiResponse);
                 Log.d(TAG, "success! userId: " + apiResponse.getUserId());
             }
@@ -162,7 +162,7 @@ public class RegisterActivity extends AppCompatActivity {
      *
      * @param registrationResponse
      */
-    private void showLoginScreen(RegistrationResponse registrationResponse) {
+    private void showLoginScreen(RegistrationResponseDto registrationResponse) {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.putExtra(Constants.INTENT_USER_ID, registrationResponse.getUserId());
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

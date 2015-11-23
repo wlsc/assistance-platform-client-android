@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.profile;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Wladimir Schmidt on 02.07.2015.
  */
-public class ProfileResponse {
+public class ProfileResponseDto {
 
     @SerializedName("firstName")
     @Expose
@@ -32,12 +32,12 @@ public class ProfileResponse {
 
     @SerializedName("services")
     @Expose
-    private List<UserSocialService> socialServices;
+    private List<UserSocialServiceDto> socialServices;
 
-    public ProfileResponse() {
+    public ProfileResponseDto() {
     }
 
-    public ProfileResponse(String firstname, String lastname, String primaryEmail, Long lastLogin, Long joinedSince, List<UserSocialService> socialServices) {
+    public ProfileResponseDto(String firstname, String lastname, String primaryEmail, Long lastLogin, Long joinedSince, List<UserSocialServiceDto> socialServices) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.primaryEmail = primaryEmail;
@@ -86,17 +86,17 @@ public class ProfileResponse {
         this.joinedSince = joinedSince;
     }
 
-    public List<UserSocialService> getSocialServices() {
+    public List<UserSocialServiceDto> getSocialServices() {
         return socialServices;
     }
 
-    public void setSocialServices(List<UserSocialService> socialServices) {
+    public void setSocialServices(List<UserSocialServiceDto> socialServices) {
         this.socialServices = socialServices;
     }
 
     @Override
     public String toString() {
-        return "ProfileResponse{" +
+        return "ProfileResponseDto{" +
                 "firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", primaryEmail='" + primaryEmail + '\'' +

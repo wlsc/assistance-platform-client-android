@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.login;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 22.08.2015
  */
-public class UserDevice {
+public class UserDeviceDto {
 
     @SerializedName("id")
     @Expose
@@ -35,10 +35,10 @@ public class UserDevice {
     @Expose
     private String model;
 
-    public UserDevice() {
+    public UserDeviceDto() {
     }
 
-    public UserDevice(Long serverId, String deviceId, String os, String osVersion, String brand, String model) {
+    public UserDeviceDto(Long serverId, String deviceId, String os, String osVersion, String brand, String model) {
         this.serverId = serverId;
         this.deviceId = deviceId;
         this.os = os;
@@ -97,7 +97,7 @@ public class UserDevice {
 
     @Override
     public String toString() {
-        return "UserDevice{" +
+        return "UserDeviceDto{" +
                 "id=" + serverId +
                 ", deviceId='" + deviceId + '\'' +
                 ", os='" + os + '\'' +

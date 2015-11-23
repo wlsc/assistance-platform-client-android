@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.login;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Wladimir Schmidt on 28.06.2015.
  */
-public class LoginResponse {
+public class LoginResponseDto {
 
     @SerializedName("token")
     @Expose
@@ -16,10 +16,10 @@ public class LoginResponse {
     @Expose
     private Long deviceId;
 
-    public LoginResponse() {
+    public LoginResponseDto() {
     }
 
-    public LoginResponse(String userToken, Long deviceId) {
+    public LoginResponseDto(String userToken, Long deviceId) {
         this.userToken = userToken;
         this.deviceId = deviceId;
     }
@@ -34,7 +34,7 @@ public class LoginResponse {
 
     @Override
     public String toString() {
-        return "LoginResponse{" +
+        return "LoginResponseDto{" +
                 "userToken='" + userToken + '\'' +
                 ", deviceId=" + deviceId +
                 '}';

@@ -21,9 +21,9 @@ import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.NewsAdapter;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
@@ -406,10 +406,10 @@ public class MainActivity extends AppCompatActivity {
         String userToken = PreferenceUtils.getUserToken(getApplicationContext());
 
         UserEndpoint userservice = EndpointGenerator.getInstance(getApplicationContext()).create(UserEndpoint.class);
-        userservice.getUserProfileShort(userToken, new Callback<ProfileResponse>() {
+        userservice.getUserProfileShort(userToken, new Callback<ProfileResponseDto>() {
 
             @Override
-            public void success(ProfileResponse profileResponse, Response response) {
+            public void success(ProfileResponseDto profileResponse, Response response) {
 
                 if (profileResponse == null) {
                     return;
@@ -434,7 +434,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param profileResponse
      */
-    private void persistLogin(ProfileResponse profileResponse) {
+    private void persistLogin(ProfileResponseDto profileResponse) {
 
         // check already available user in db
         DbUser user = daoProvider.getUserDao().getByEmail(profileResponse.getPrimaryEmail());

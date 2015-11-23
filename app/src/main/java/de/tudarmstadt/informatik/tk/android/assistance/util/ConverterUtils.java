@@ -3,8 +3,8 @@ package de.tudarmstadt.informatik.tk.android.assistance.util;
 import java.util.Date;
 import java.util.Locale;
 
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.AvailableModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
@@ -26,13 +26,13 @@ public class ConverterUtils {
      * @param dbModule
      * @return
      */
-    public static AvailableModuleResponse convertModule(DbModule dbModule) {
+    public static AvailableModuleResponseDto convertModule(DbModule dbModule) {
 
         if (dbModule == null) {
             return null;
         }
 
-        AvailableModuleResponse availableModuleResponse = new AvailableModuleResponse();
+        AvailableModuleResponseDto availableModuleResponse = new AvailableModuleResponseDto();
 
         availableModuleResponse.setTitle(dbModule.getTitle());
         availableModuleResponse.setLogo(dbModule.getLogoUrl());
@@ -51,7 +51,7 @@ public class ConverterUtils {
      * @param availableModuleResponse
      * @return
      */
-    public static DbModule convertModule(AvailableModuleResponse availableModuleResponse) {
+    public static DbModule convertModule(AvailableModuleResponseDto availableModuleResponse) {
 
         if (availableModuleResponse == null) {
             return null;
@@ -77,13 +77,13 @@ public class ConverterUtils {
      * @param moduleCapability
      * @return
      */
-    public static ModuleCapabilityResponse convertModuleCapability(DbModuleCapability moduleCapability) {
+    public static ModuleCapabilityResponseDto convertModuleCapability(DbModuleCapability moduleCapability) {
 
         if (moduleCapability == null) {
             return null;
         }
 
-        ModuleCapabilityResponse moduleCapabilityResponse = new ModuleCapabilityResponse();
+        ModuleCapabilityResponseDto moduleCapabilityResponse = new ModuleCapabilityResponseDto();
 
         moduleCapabilityResponse.setType(moduleCapability.getType());
         moduleCapabilityResponse.setCollectionFrequency(moduleCapability.getCollectionFrequency());
@@ -99,7 +99,7 @@ public class ConverterUtils {
      * @param moduleCapabilityResponse
      * @return
      */
-    public static DbModuleCapability convertModuleCapability(ModuleCapabilityResponse moduleCapabilityResponse) {
+    public static DbModuleCapability convertModuleCapability(ModuleCapabilityResponseDto moduleCapabilityResponse) {
 
         if (moduleCapabilityResponse == null) {
             return null;

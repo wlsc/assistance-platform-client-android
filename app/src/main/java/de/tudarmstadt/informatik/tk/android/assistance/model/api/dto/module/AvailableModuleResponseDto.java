@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.module;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Wladimir Schmidt on 30.06.2015.
  */
-public class AvailableModuleResponse {
+public class AvailableModuleResponseDto {
 
     @SerializedName("id")
     @Expose
@@ -36,20 +36,20 @@ public class AvailableModuleResponse {
 
     @SerializedName("requiredCapabilities")
     @Expose
-    private List<ModuleCapabilityResponse> sensorsRequired;
+    private List<ModuleCapabilityResponseDto> sensorsRequired;
 
     @SerializedName("optionalCapabilites")
     @Expose
-    private List<ModuleCapabilityResponse> sensorsOptional;
+    private List<ModuleCapabilityResponseDto> sensorsOptional;
 
     @SerializedName("supportEmail")
     @Expose
     private String supportEmail;
 
-    public AvailableModuleResponse() {
+    public AvailableModuleResponseDto() {
     }
 
-    public AvailableModuleResponse(String modulePackage, String title, String logo, String descriptionShort, String descriptionFull, String copyright, List<ModuleCapabilityResponse> sensorsRequired, List<ModuleCapabilityResponse> sensorsOptional, String supportEmail) {
+    public AvailableModuleResponseDto(String modulePackage, String title, String logo, String descriptionShort, String descriptionFull, String copyright, List<ModuleCapabilityResponseDto> sensorsRequired, List<ModuleCapabilityResponseDto> sensorsOptional, String supportEmail) {
         this.modulePackage = modulePackage;
         this.title = title;
         this.logo = logo;
@@ -109,19 +109,19 @@ public class AvailableModuleResponse {
         this.copyright = copyright;
     }
 
-    public List<ModuleCapabilityResponse> getSensorsRequired() {
+    public List<ModuleCapabilityResponseDto> getSensorsRequired() {
         return sensorsRequired;
     }
 
-    public void setSensorsRequired(List<ModuleCapabilityResponse> sensorsRequired) {
+    public void setSensorsRequired(List<ModuleCapabilityResponseDto> sensorsRequired) {
         this.sensorsRequired = sensorsRequired;
     }
 
-    public List<ModuleCapabilityResponse> getSensorsOptional() {
+    public List<ModuleCapabilityResponseDto> getSensorsOptional() {
         return sensorsOptional;
     }
 
-    public void setSensorsOptional(List<ModuleCapabilityResponse> sensorsOptional) {
+    public void setSensorsOptional(List<ModuleCapabilityResponseDto> sensorsOptional) {
         this.sensorsOptional = sensorsOptional;
     }
 
@@ -135,7 +135,7 @@ public class AvailableModuleResponse {
 
     @Override
     public String toString() {
-        return "AvailableModuleResponse{" +
+        return "AvailableModuleResponseDto{" +
                 "modulePackage='" + modulePackage + '\'' +
                 ", title='" + title + '\'' +
                 ", logo='" + logo + '\'' +

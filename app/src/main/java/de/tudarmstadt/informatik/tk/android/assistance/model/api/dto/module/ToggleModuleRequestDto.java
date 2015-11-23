@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.module;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -9,16 +9,16 @@ import com.google.gson.annotations.SerializedName;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 14.07.2015
  */
-public class ToggleModuleRequest {
+public class ToggleModuleRequestDto {
 
     @SerializedName("module_id")
     @Expose
     private String moduleId;
 
-    public ToggleModuleRequest() {
+    public ToggleModuleRequestDto() {
     }
 
-    public ToggleModuleRequest(String moduleId) {
+    public ToggleModuleRequestDto(String moduleId) {
         this.moduleId = moduleId;
     }
 
@@ -32,7 +32,7 @@ public class ToggleModuleRequest {
 
     @Override
     public String toString() {
-        return "ToggleModuleRequest{" +
+        return "ToggleModuleRequestDto{" +
                 "moduleId='" + moduleId + '\'' +
                 '}';
     }

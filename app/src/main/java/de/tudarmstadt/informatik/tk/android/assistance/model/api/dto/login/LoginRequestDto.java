@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.login;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  * <p/>
  * Created by Wladimir Schmidt on 28.06.2015.
  */
-public class LoginRequest {
+public class LoginRequestDto {
 
     @SerializedName("email")
     @Expose
@@ -20,12 +20,12 @@ public class LoginRequest {
 
     @SerializedName("device")
     @Expose
-    private UserDevice device;
+    private UserDeviceDto device;
 
-    public LoginRequest() {
+    public LoginRequestDto() {
     }
 
-    public LoginRequest(String userEmail, String password, UserDevice device) {
+    public LoginRequestDto(String userEmail, String password, UserDeviceDto device) {
         this.userEmail = userEmail;
         this.password = password;
         this.device = device;
@@ -47,17 +47,17 @@ public class LoginRequest {
         this.userEmail = userEmail;
     }
 
-    public UserDevice getDevice() {
+    public UserDeviceDto getDevice() {
         return this.device;
     }
 
-    public void setDevice(UserDevice device) {
+    public void setDevice(UserDeviceDto device) {
         this.device = device;
     }
 
     @Override
     public String toString() {
-        return "LoginRequest{" +
+        return "LoginRequestDto{" +
                 "userEmail='" + userEmail + '\'' +
                 ", password='" + password + '\'' +
                 ", device=" + device +

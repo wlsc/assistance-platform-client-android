@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.registration;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Wladimir Schmidt on 28.06.2015.
  */
-public class RegistrationRequest {
+public class RegistrationRequestDto {
 
     @SerializedName("email")
     @Expose
@@ -16,10 +16,10 @@ public class RegistrationRequest {
     @Expose
     private String password;
 
-    public RegistrationRequest() {
+    public RegistrationRequestDto() {
     }
 
-    public RegistrationRequest(String userEmail, String password) {
+    public RegistrationRequestDto(String userEmail, String password) {
         this.userEmail = userEmail;
         this.password = password;
     }
@@ -42,7 +42,7 @@ public class RegistrationRequest {
 
     @Override
     public String toString() {
-        return "RegistrationRequest{" +
+        return "RegistrationRequestDto{" +
                 "userEmail='" + userEmail + '\'' +
                 ", password='" + password + '\'' +
                 '}';

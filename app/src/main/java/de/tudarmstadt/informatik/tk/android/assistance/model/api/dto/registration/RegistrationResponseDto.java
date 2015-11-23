@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.registration;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,16 +6,16 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Wladimir Schmidt on 28.06.2015.
  */
-public class RegistrationResponse {
+public class RegistrationResponseDto {
 
     @SerializedName("user_id")
     @Expose
     private Long userId;
 
-    public RegistrationResponse() {
+    public RegistrationResponseDto() {
     }
 
-    public RegistrationResponse(Long userId) {
+    public RegistrationResponseDto(Long userId) {
         this.userId = userId;
     }
 
@@ -29,7 +29,7 @@ public class RegistrationResponse {
 
     @Override
     public String toString() {
-        return "RegistrationResponse{" +
+        return "RegistrationResponseDto{" +
                 "userId=" + userId +
                 '}';
     }

@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.profile;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Wladimir Schmidt on 02.07.2015.
  */
-public class UserSocialService {
+public class UserSocialServiceDto {
 
     public static final String TYPE_GOOGLE = "Google";
     public static final String TYPE_FACEBOOK = "Facebook";
@@ -38,10 +38,10 @@ public class UserSocialService {
     @Expose
     private Long created;
 
-    public UserSocialService() {
+    public UserSocialServiceDto() {
     }
 
-    public UserSocialService(String name, String firstname, String lastname, String email, Long updated, Long created) {
+    public UserSocialServiceDto(String name, String firstname, String lastname, String email, Long updated, Long created) {
         this.name = name;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -100,7 +100,7 @@ public class UserSocialService {
 
     @Override
     public String toString() {
-        return "UserSocialService{" +
+        return "UserSocialServiceDto{" +
                 "name='" + name + '\'' +
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +

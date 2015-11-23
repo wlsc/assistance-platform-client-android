@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.resetpassword;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.resetpassword;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,16 +6,16 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Wladimir Schmidt on 01.07.2015.
  */
-public class ResetPasswordRequest {
+public class ResetPasswordRequestDto {
 
     @SerializedName("email")
     @Expose
     private String email;
 
-    public ResetPasswordRequest() {
+    public ResetPasswordRequestDto() {
     }
 
-    public ResetPasswordRequest(String email) {
+    public ResetPasswordRequestDto(String email) {
         this.email = email;
     }
 
@@ -29,7 +29,7 @@ public class ResetPasswordRequest {
 
     @Override
     public String toString() {
-        return "ResetPasswordRequest{" +
+        return "ResetPasswordRequestDto{" +
                 "email='" + email + '\'' +
                 '}';
     }

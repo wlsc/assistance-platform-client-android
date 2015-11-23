@@ -19,10 +19,10 @@ import butterknife.ButterKnife;
 import butterknife.OnTextChanged;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.ProfileResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.UserSocialServiceDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.ProfileResponse;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UpdateProfileRequest;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.profile.UserSocialService;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.UpdateProfileRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
@@ -128,10 +128,10 @@ public class UserProfileFragment extends Fragment {
 //            }
 
             UserEndpoint userEndpoint = EndpointGenerator.getInstance(getActivity().getApplicationContext()).create(UserEndpoint.class);
-            userEndpoint.getUserProfileFull(userToken, new Callback<ProfileResponse>() {
+            userEndpoint.getUserProfileFull(userToken, new Callback<ProfileResponseDto>() {
 
                 @Override
-                public void success(ProfileResponse profileResponse, Response response) {
+                public void success(ProfileResponseDto profileResponse, Response response) {
                     Log.d(TAG, "Successfully received the user profile!");
 
                     fillupFullUserProfile(profileResponse);
@@ -152,40 +152,40 @@ public class UserProfileFragment extends Fragment {
      *
      * @param profileResponse
      */
-    private void fillupFullUserProfile(ProfileResponse profileResponse) {
+    private void fillupFullUserProfile(ProfileResponseDto profileResponse) {
 
         firstnameText.setText(profileResponse.getFirstname());
         lastnameText.setText(profileResponse.getLastname());
 
-        List<UserSocialService> socialServices = profileResponse.getSocialServices();
+        List<UserSocialServiceDto> socialServices = profileResponse.getSocialServices();
 
         if (!socialServices.isEmpty()) {
             String serviceName = "";
 
-            for (UserSocialService service : socialServices) {
+            for (UserSocialServiceDto service : socialServices) {
                 if (service == null) {
                     continue;
                 }
 
                 serviceName = service.getName();
 
-                if (serviceName.equals(UserSocialService.TYPE_GOOGLE)) {
+                if (serviceName.equals(UserSocialServiceDto.TYPE_GOOGLE)) {
                     socialAccountGoogleText.setText(serviceName);
                 }
 
-                if (serviceName.equals(UserSocialService.TYPE_FACEBOOK)) {
+                if (serviceName.equals(UserSocialServiceDto.TYPE_FACEBOOK)) {
                     socialAccountFacebookText.setText(serviceName);
                 }
 
-                if (serviceName.equals(UserSocialService.TYPE_LIVE)) {
+                if (serviceName.equals(UserSocialServiceDto.TYPE_LIVE)) {
                     socialAccountLiveText.setText(serviceName);
                 }
 
-                if (serviceName.equals(UserSocialService.TYPE_TWITTER)) {
+                if (serviceName.equals(UserSocialServiceDto.TYPE_TWITTER)) {
                     socialAccountTwitterText.setText(serviceName);
                 }
 
-                if (serviceName.equals(UserSocialService.TYPE_GITHUB)) {
+                if (serviceName.equals(UserSocialServiceDto.TYPE_GITHUB)) {
                     socialAccountGithubText.setText(serviceName);
                 }
             }
@@ -293,7 +293,7 @@ public class UserProfileFragment extends Fragment {
 
         Log.d(TAG, "updateUserProfile() invoked");
 
-        UpdateProfileRequest request = new UpdateProfileRequest();
+        UpdateProfileRequestDto request = new UpdateProfileRequestDto();
 
         request.setFirstname(firstname);
         request.setLastname(lastname);
@@ -301,39 +301,39 @@ public class UserProfileFragment extends Fragment {
         PreferenceUtils.setUserFirstname(getActivity().getApplicationContext(), firstname);
         PreferenceUtils.setUserLastname(getActivity().getApplicationContext(), lastname);
 
-        List<UserSocialService> socialServices = new ArrayList<>();
+        List<UserSocialServiceDto> socialServices = new ArrayList<>();
 
         // GOOGLE
-        UserSocialService googleService = new UserSocialService();
-        googleService.setName(UserSocialService.TYPE_GOOGLE);
+        UserSocialServiceDto googleService = new UserSocialServiceDto();
+        googleService.setName(UserSocialServiceDto.TYPE_GOOGLE);
         googleService.setEmail(socialAccountGoogle);
 
         socialServices.add(googleService);
 
         // FACEBOOK
-        UserSocialService facebookService = new UserSocialService();
-        facebookService.setName(UserSocialService.TYPE_FACEBOOK);
+        UserSocialServiceDto facebookService = new UserSocialServiceDto();
+        facebookService.setName(UserSocialServiceDto.TYPE_FACEBOOK);
         facebookService.setEmail(socialAccountFacebook);
 
         socialServices.add(facebookService);
 
         // LIVE
-        UserSocialService liveService = new UserSocialService();
-        liveService.setName(UserSocialService.TYPE_LIVE);
+        UserSocialServiceDto liveService = new UserSocialServiceDto();
+        liveService.setName(UserSocialServiceDto.TYPE_LIVE);
         liveService.setEmail(socialAccountLive);
 
         socialServices.add(liveService);
 
         // TWITTER
-        UserSocialService twitterService = new UserSocialService();
-        twitterService.setName(UserSocialService.TYPE_TWITTER);
+        UserSocialServiceDto twitterService = new UserSocialServiceDto();
+        twitterService.setName(UserSocialServiceDto.TYPE_TWITTER);
         twitterService.setEmail(socialAccountTwitter);
 
         socialServices.add(twitterService);
 
         // GITHUB
-        UserSocialService githubService = new UserSocialService();
-        githubService.setName(UserSocialService.TYPE_GITHUB);
+        UserSocialServiceDto githubService = new UserSocialServiceDto();
+        githubService.setName(UserSocialServiceDto.TYPE_GITHUB);
         githubService.setEmail(socialAccountGithub);
 
         socialServices.add(githubService);

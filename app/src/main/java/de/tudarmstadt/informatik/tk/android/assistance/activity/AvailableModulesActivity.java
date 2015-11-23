@@ -40,10 +40,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstal
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.AvailableModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleCapabilityResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.AvailableModuleResponse;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ModuleCapabilityResponse;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.module.ToggleModuleRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
@@ -87,7 +87,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
     private List<String> mActiveModules;
 
-    private Map<String, AvailableModuleResponse> availableModuleResponseMapping;
+    private Map<String, AvailableModuleResponseDto> availableModuleResponseMapping;
 
     private SwipeRefreshLayout.OnRefreshListener onRefreshHandler;
 
@@ -287,7 +287,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 .create(ModuleEndpoint.class);
 
         moduleEndpoint.getAvailableModules(userToken,
-                new Callback<List<AvailableModuleResponse>>() {
+                new Callback<List<AvailableModuleResponseDto>>() {
 
                     /**
                      * Successful HTTP response.
@@ -296,7 +296,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                      * @param response
                      */
                     @Override
-                    public void success(final List<AvailableModuleResponse> availableModulesList,
+                    public void success(final List<AvailableModuleResponseDto> availableModulesList,
                                         Response response) {
 
                         if (availableModulesList != null &&
@@ -310,7 +310,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                                 availableModuleResponseMapping.clear();
                             }
 
-                            for (AvailableModuleResponse resp : availableModulesList) {
+                            for (AvailableModuleResponseDto resp : availableModulesList) {
                                 availableModuleResponseMapping.put(resp.getModulePackage(), resp);
                             }
 
@@ -385,11 +385,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
      *
      * @param availableModulesResponse
      */
-    private void processAvailableModules(List<AvailableModuleResponse> availableModulesResponse) {
+    private void processAvailableModules(List<AvailableModuleResponseDto> availableModulesResponse) {
 
         List<DbModule> convertedModules = new ArrayList<>();
 
-        for (AvailableModuleResponse response : availableModulesResponse) {
+        for (AvailableModuleResponseDto response : availableModulesResponse) {
 
             convertedModules.add(ConverterUtils.convertModule(response));
         }
@@ -419,23 +419,23 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 long installId = daoProvider.getModuleDao().insert(module);
 
                 // inserting module capabilities
-                AvailableModuleResponse moduleResponse = availableModuleResponseMapping
+                AvailableModuleResponseDto moduleResponse = availableModuleResponseMapping
                         .get(module.getPackageName());
 
-                List<ModuleCapabilityResponse> requiredCaps = moduleResponse.getSensorsRequired();
-                List<ModuleCapabilityResponse> optionalCaps = moduleResponse.getSensorsOptional();
+                List<ModuleCapabilityResponseDto> requiredCaps = moduleResponse.getSensorsRequired();
+                List<ModuleCapabilityResponseDto> optionalCaps = moduleResponse.getSensorsOptional();
 
                 List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(requiredCaps.size());
                 List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(optionalCaps.size());
 
-                for (ModuleCapabilityResponse response : requiredCaps) {
+                for (ModuleCapabilityResponseDto response : requiredCaps) {
 
                     final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
                     dbCap.setModuleId(installId);
                     dbRequiredCaps.add(dbCap);
                 }
 
-                for (ModuleCapabilityResponse response : optionalCaps) {
+                for (ModuleCapabilityResponseDto response : optionalCaps) {
 
                     final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
                     dbCap.setModuleId(installId);
@@ -646,7 +646,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void showMoreModuleInformationDialog() {
 
-        final AvailableModuleResponse selectedModule = availableModuleResponseMapping
+        final AvailableModuleResponseDto selectedModule = availableModuleResponseMapping
                 .get(selectedModuleId);
 
         if (selectedModule == null) {
@@ -681,7 +681,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
      */
     private void showUninstallDialog() {
 
-        final AvailableModuleResponse selectedModule = availableModuleResponseMapping
+        final AvailableModuleResponseDto selectedModule = availableModuleResponseMapping
                 .get(selectedModuleId);
 
         if (selectedModule == null) {
@@ -745,7 +745,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
             }
         });
 
-        final AvailableModuleResponse selectedModule = availableModuleResponseMapping
+        final AvailableModuleResponseDto selectedModule = availableModuleResponseMapping
                 .get(selectedModuleId);
 
         TextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
@@ -758,15 +758,15 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 .placeholder(R.drawable.no_image)
                 .into(imageView);
 
-        List<ModuleCapabilityResponse> requiredSensors = selectedModule.getSensorsRequired();
-        List<ModuleCapabilityResponse> optionalSensors = selectedModule.getSensorsOptional();
+        List<ModuleCapabilityResponseDto> requiredSensors = selectedModule.getSensorsRequired();
+        List<ModuleCapabilityResponseDto> optionalSensors = selectedModule.getSensorsOptional();
 
         List<PermissionListItem> requiredModuleSensors = new ArrayList<>();
         List<PermissionListItem> optionalModuleSensors = new ArrayList<>();
 
         if (requiredSensors != null) {
 
-            for (ModuleCapabilityResponse capability : requiredSensors) {
+            for (ModuleCapabilityResponseDto capability : requiredSensors) {
                 requiredModuleSensors.add(new PermissionListItem(
                         ConverterUtils.convertModuleCapability(capability)));
             }
@@ -774,7 +774,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
         if (optionalSensors != null) {
 
-            for (ModuleCapabilityResponse capability : optionalSensors) {
+            for (ModuleCapabilityResponseDto capability : optionalSensors) {
                 optionalModuleSensors.add(new PermissionListItem(
                         ConverterUtils.convertModuleCapability(capability)
                 ));
@@ -814,19 +814,19 @@ public class AvailableModulesActivity extends AppCompatActivity {
         // accumulate all permissions
         List<String> permsRequiredAccumulator = new ArrayList<>();
 
-        AvailableModuleResponse module = availableModuleResponseMapping.get(selectedModuleId);
+        AvailableModuleResponseDto module = availableModuleResponseMapping.get(selectedModuleId);
 
         if (module == null) {
             return;
         }
 
-        List<ModuleCapabilityResponse> requiredSensors = module.getSensorsRequired();
+        List<ModuleCapabilityResponseDto> requiredSensors = module.getSensorsRequired();
 
         // handle required perms
         if (requiredSensors != null) {
 
             // these permissions are crucial for an operation of module
-            for (ModuleCapabilityResponse capResponse : requiredSensors) {
+            for (ModuleCapabilityResponseDto capResponse : requiredSensors) {
 
                 String apiType = capResponse.getType();
                 String[] perms = PermissionUtils.getInstance(getApplicationContext())
@@ -921,7 +921,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
         Log.d(TAG, "Installation of a module " + module.getPackageName() + " has started...");
         Log.d(TAG, "Requesting service...");
 
-        ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
+        ToggleModuleRequestDto toggleModuleRequest = new ToggleModuleRequestDto();
         toggleModuleRequest.setModuleId(module.getPackageName());
 
         ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(
@@ -1000,24 +1000,24 @@ public class AvailableModulesActivity extends AppCompatActivity {
         } else {
 
             // saving module capabilities
-            AvailableModuleResponse moduleResponse = availableModuleResponseMapping.get(dbModule.getPackageName());
+            AvailableModuleResponseDto moduleResponse = availableModuleResponseMapping.get(dbModule.getPackageName());
 
-            List<ModuleCapabilityResponse> requiredCaps = moduleResponse.getSensorsRequired();
-            List<ModuleCapabilityResponse> optionalCaps = moduleResponse.getSensorsOptional();
+            List<ModuleCapabilityResponseDto> requiredCaps = moduleResponse.getSensorsRequired();
+            List<ModuleCapabilityResponseDto> optionalCaps = moduleResponse.getSensorsOptional();
 
             List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(
                     requiredCaps == null ? 0 : requiredCaps.size());
             List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(
                     optionalCaps == null ? 0 : optionalCaps.size());
 
-            for (ModuleCapabilityResponse response : requiredCaps) {
+            for (ModuleCapabilityResponseDto response : requiredCaps) {
 
                 final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
                 dbCap.setModuleId(installId);
                 dbRequiredCaps.add(dbCap);
             }
 
-            for (ModuleCapabilityResponse response : optionalCaps) {
+            for (ModuleCapabilityResponseDto response : optionalCaps) {
 
                 final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
                 dbCap.setModuleId(installId);
@@ -1072,7 +1072,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 " package: " + module.getPackageName());
 
         // forming request to server
-        ToggleModuleRequest toggleModuleRequest = new ToggleModuleRequest();
+        ToggleModuleRequestDto toggleModuleRequest = new ToggleModuleRequestDto();
         toggleModuleRequest.setModuleId(module.getPackageName());
 
         ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(getApplicationContext()).create(ModuleEndpoint.class);

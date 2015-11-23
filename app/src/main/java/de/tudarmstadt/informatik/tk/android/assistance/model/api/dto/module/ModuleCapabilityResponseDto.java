@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.module;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 25.08.2015
  */
-public class ModuleCapabilityResponse {
+public class ModuleCapabilityResponseDto {
 
     @SerializedName("type")
     @Expose
@@ -35,10 +35,10 @@ public class ModuleCapabilityResponse {
     @Expose
     private Integer minRequiredReadingsOnUpdate;
 
-    public ModuleCapabilityResponse() {
+    public ModuleCapabilityResponseDto() {
     }
 
-    public ModuleCapabilityResponse(String type, Double collectionFrequency, Double requiredUpdateFrequency, Integer minRequiredReadingsOnUpdate) {
+    public ModuleCapabilityResponseDto(String type, Double collectionFrequency, Double requiredUpdateFrequency, Integer minRequiredReadingsOnUpdate) {
         this.type = type;
         this.collectionFrequency = collectionFrequency;
         this.requiredUpdateFrequency = requiredUpdateFrequency;
@@ -79,7 +79,7 @@ public class ModuleCapabilityResponse {
 
     @Override
     public String toString() {
-        return "ModuleCapabilityResponse{" +
+        return "ModuleCapabilityResponseDto{" +
                 "type='" + type + '\'' +
                 ", collectionFrequency=" + collectionFrequency +
                 ", requiredUpdateFrequency=" + requiredUpdateFrequency +

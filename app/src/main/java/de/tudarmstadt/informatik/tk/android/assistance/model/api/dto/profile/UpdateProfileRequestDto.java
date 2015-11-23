@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.profile;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Wladimir Schmidt on 04.07.2015.
  */
-public class UpdateProfileRequest {
+public class UpdateProfileRequestDto {
 
     @SerializedName("firstname")
     @Expose
@@ -20,12 +20,12 @@ public class UpdateProfileRequest {
 
     @SerializedName("services")
     @Expose
-    private List<UserSocialService> services;
+    private List<UserSocialServiceDto> services;
 
-    public UpdateProfileRequest() {
+    public UpdateProfileRequestDto() {
     }
 
-    public UpdateProfileRequest(String firstname, String lastname, List<UserSocialService> services) {
+    public UpdateProfileRequestDto(String firstname, String lastname, List<UserSocialServiceDto> services) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.services = services;
@@ -47,17 +47,17 @@ public class UpdateProfileRequest {
         this.lastname = lastname;
     }
 
-    public List<UserSocialService> getServices() {
+    public List<UserSocialServiceDto> getServices() {
         return services;
     }
 
-    public void setServices(List<UserSocialService> services) {
+    public void setServices(List<UserSocialServiceDto> services) {
         this.services = services;
     }
 
     @Override
     public String toString() {
-        return "UpdateProfileRequest{" +
+        return "UpdateProfileRequestDto{" +
                 "firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", services=" + services +
