@@ -207,17 +207,25 @@ public class AvailableModulesActivity extends AppCompatActivity {
             mAvailableModulesRecyclerView
                     .setAdapter(new AvailableModulesAdapter(installedModules));
 
-            // launch harvester, but first check permissions
-            checkPermissionsGranted();
+            Set<String> permsToAsk = checkPermissionsGranted();
+
+            // ask if there is something to ask
+            if (!permsToAsk.isEmpty()) {
+
+                ActivityCompat.requestPermissions(this,
+                        permsToAsk.toArray(new String[permsToAsk.size()]),
+                        Constants.PERM_MODULE_INSTALL);
+            }
         }
     }
 
     /**
      * Check permissions is still granted to modules
      */
-    private void checkPermissionsGranted() {
+    private Set<String> checkPermissionsGranted() {
 
-        Map<String, String[]> mappings = PermissionUtils.getInstance(getApplicationContext())
+        Map<String, String[]> mappings = PermissionUtils
+                .getInstance(getApplicationContext())
                 .getDangerousPermissionsToDtoMapping();
 
         Set<String> permissionsToAsk = new HashSet<>();
@@ -229,7 +237,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
                 .getAllActive(userId);
 
         if (allActiveModules == null || allActiveModules.isEmpty()) {
-            return;
+            return Collections.emptySet();
         }
 
         for (DbModule module : allActiveModules) {
@@ -263,13 +271,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
             }
         }
 
-        // ask if there is something to ask
-        if (!permissionsToAsk.isEmpty()) {
-
-            ActivityCompat.requestPermissions(this,
-                    permissionsToAsk.toArray(new String[permissionsToAsk.size()]),
-                    Constants.PERM_MODULE_INSTALL);
-        }
+        return permissionsToAsk;
     }
 
     /**
@@ -940,7 +942,14 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                             Log.d(TAG, "Installation has finished!");
 
-                            checkPermissionsGranted();
+                            Set<String> permsToAsk = checkPermissionsGranted();
+
+                            if (!permsToAsk.isEmpty()) {
+
+                                ActivityCompat.requestPermissions(AvailableModulesActivity.this,
+                                        permsToAsk.toArray(new String[permsToAsk.size()]),
+                                        Constants.PERM_MODULE_INSTALL);
+                            }
 
                             EventBus.getDefault()
                                     .post(new ModuleInstallationSuccessfulEvent(
