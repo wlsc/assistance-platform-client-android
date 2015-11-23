@@ -9,9 +9,9 @@ import android.util.Log;
 
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.device.DeviceUserDefinedNameRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbDevice;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.device.DeviceUserDefinedNameRequest;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.DeviceEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.DaoProvider;
@@ -96,7 +96,7 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
             final long currentDeviceId = PreferenceUtils.getCurrentDeviceId(getActivity().getApplicationContext());
             final String deviceName = sharedPreferences.getString("pref_device_set_title", "");
 
-            DeviceUserDefinedNameRequest deviceUserDefinedNameRequest = new DeviceUserDefinedNameRequest();
+            DeviceUserDefinedNameRequestDto deviceUserDefinedNameRequest = new DeviceUserDefinedNameRequestDto();
 
             deviceUserDefinedNameRequest.setDeviceId(currentDeviceId);
             deviceUserDefinedNameRequest.setUserDefinedName(deviceName);
