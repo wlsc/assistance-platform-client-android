@@ -10,8 +10,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AccessibilityUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 
 /**
  * A tutorial for accessibility service to enable
@@ -36,6 +37,11 @@ public class AccessibilityTutorialActivity extends AppCompatActivity {
         setContentView(R.layout.activity_accessibility_tutorial);
 
         ButterKnife.bind(this);
+
+        if (AccessibilityUtils.isAccessibilityEnabled(getApplicationContext())) {
+            setResult(Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLED_RESULT);
+            finish();
+        }
     }
 
     @Override

@@ -126,8 +126,6 @@ public class MainActivity extends AppCompatActivity {
 
         installedModules = daoProvider.getModuleDao().getAllActive(userId);
 
-        Log.d(TAG, "Active modules: " + installedModules.size());
-
         if (installedModules == null || installedModules.isEmpty()) {
 
             stopHarvester();
@@ -135,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
             getActivatedModulesAndSave();
 
         } else {
+
+            Log.d(TAG, "Active modules: " + installedModules.size());
 
             // user got some active modules
             startHarvester();
