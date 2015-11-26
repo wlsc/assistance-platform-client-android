@@ -13,15 +13,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.error.ErrorResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
-import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.error.ErrorResponse;
+import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -130,7 +129,7 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    private void doRegisterUser(String email, String password) {
+    private void doRegisterUser(final String email, final String password) {
 
 //        String passwordHashed = CommonUtils.generateSHA256(password);
         String passwordHashed = password;
@@ -146,7 +145,12 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void success(RegistrationResponseDto apiResponse, Response response) {
-                showLoginScreen(apiResponse);
+
+                // for autologin feature
+                PreferenceUtils.setUserEmail(getApplicationContext(), email);
+                PreferenceUtils.setUserPassword(getApplicationContext(), password);
+
+                showLoginScreen();
                 Log.d(TAG, "success! userId: " + apiResponse.getUserId());
             }
 
@@ -159,14 +163,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     /**
      * Shows login screen if registration was successful
-     *
-     * @param registrationResponse
      */
-    private void showLoginScreen(RegistrationResponseDto registrationResponse) {
+    private void showLoginScreen() {
+
         Intent intent = new Intent(this, LoginActivity.class);
-        intent.putExtra(Constants.INTENT_USER_ID, registrationResponse.getUserId());
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        finish();
     }
 
     @Override

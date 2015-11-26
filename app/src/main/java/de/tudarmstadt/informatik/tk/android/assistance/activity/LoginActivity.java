@@ -211,6 +211,7 @@ public class LoginActivity extends AppCompatActivity {
         String userToken = PreferenceUtils.getUserToken(getApplicationContext());
 
         if (userToken.isEmpty()) {
+
             Log.d(TAG, "User token NOT found");
             Log.d(TAG, "Searching for autologin...");
 
