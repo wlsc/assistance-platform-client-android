@@ -2,7 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

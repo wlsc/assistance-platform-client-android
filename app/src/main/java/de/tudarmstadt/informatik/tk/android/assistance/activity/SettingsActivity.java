@@ -3,7 +3,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
