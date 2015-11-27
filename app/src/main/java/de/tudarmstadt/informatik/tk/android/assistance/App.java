@@ -5,6 +5,10 @@ import android.app.Application;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.LogWrapper;
+
 /**
  * Main application
  *
@@ -12,6 +16,8 @@ import com.google.android.gms.analytics.Tracker;
  * @date 24.08.2015
  */
 public class App extends Application {
+
+    private static final String TAG = App.class.getSimpleName();
 
     /**
      * The Analytics singleton. The field is set in onCreate method override when the application
@@ -43,11 +49,24 @@ public class App extends Application {
         return tracker;
     }
 
+    /**
+     * Initializes logging
+     */
+    public void initLogging() {
+
+        LogWrapper logWrapper = new LogWrapper();
+        Log.setDebug(AppUtils.isDebug(getApplicationContext()));
+        Log.setLogNode(logWrapper);
+
+        Log.i(TAG, "Ready");
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
 
         initGoogleAnalytics();
+        initLogging();
 
         // init of a memory leak finder library
 //        LeakCanary.install(this);
