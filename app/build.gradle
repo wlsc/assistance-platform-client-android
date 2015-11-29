@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 ext {
+    appName = 'assistance-tud-edition'
     supportLibVersion = '23.1.1'
 }
 
@@ -11,8 +12,8 @@ android {
         applicationId "de.tudarmstadt.informatik.tk.android.assistance"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0 alpha"
+        versionCode 16
+        versionName "1.0.6"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -20,6 +21,14 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def newName = output.outputFile.name
+                    newName = newName.replace("app-", appName + "-")
+                    output.outputFile = new File(output.outputFile.parent, newName)
+                }
+            }
         }
         debug {
             debuggable true
@@ -28,7 +37,6 @@ android {
     }
     dexOptions {
         incremental false
-
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
