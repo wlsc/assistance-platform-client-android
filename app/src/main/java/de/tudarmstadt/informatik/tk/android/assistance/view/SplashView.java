@@ -9,7 +9,8 @@ import android.widget.LinearLayout;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 
 /**
- * Created by Wladimir Schmidt (wlsc.dev@gmail.com) on 06.06.2015.
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 06.06.2015
  */
 public class SplashView extends LinearLayout {
 
