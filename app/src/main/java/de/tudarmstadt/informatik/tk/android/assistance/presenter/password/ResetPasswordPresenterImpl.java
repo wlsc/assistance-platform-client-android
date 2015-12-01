@@ -1,14 +1,13 @@
-package de.tudarmstadt.informatik.tk.android.assistance.presenter;
+package de.tudarmstadt.informatik.tk.android.assistance.presenter.password;
 
 import android.content.Context;
 import android.text.TextUtils;
 
-import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.controller.ResetPasswordController;
-import de.tudarmstadt.informatik.tk.android.assistance.controller.ResetPasswordControllerImpl;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnRequestFinishedHandler;
+import de.tudarmstadt.informatik.tk.android.assistance.controller.password.ResetPasswordController;
+import de.tudarmstadt.informatik.tk.android.assistance.controller.password.ResetPasswordControllerImpl;
+import de.tudarmstadt.informatik.tk.android.assistance.handler.OnEmptyResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.resetpassword.ResetPasswordRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
+import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ResetPasswordView;
@@ -19,18 +18,15 @@ import retrofit.client.Response;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 30.11.2015
  */
-public class ResetPasswordPresenterImpl implements
-        ResetPasswordPresenter, OnRequestFinishedHandler {
-
-    private String TAG;
-
-    private Context context;
+public class ResetPasswordPresenterImpl extends
+        CommonPresenterImpl implements
+        ResetPasswordPresenter, OnEmptyResponseHandler {
 
     private ResetPasswordView view;
     private ResetPasswordController controller;
 
     public ResetPasswordPresenterImpl(Context context) {
-        this.context = context;
+        super(context);
         setController(new ResetPasswordControllerImpl(this));
     }
 
@@ -68,16 +64,6 @@ public class ResetPasswordPresenterImpl implements
     }
 
     @Override
-    public void setLogTag(String tag) {
-        this.TAG = tag;
-    }
-
-    @Override
-    public Context getContext() {
-        return this.context;
-    }
-
-    @Override
     public void onSuccess(Response response) {
 
         if (response.getStatus() == 200 || response.getStatus() == 204) {
@@ -92,9 +78,7 @@ public class ResetPasswordPresenterImpl implements
 
         if (response != null) {
 
-            int httpCode = response.getStatus();
-
-            switch (httpCode) {
+            switch (response.getStatus()) {
                 case 400:
                     break;
                 case 401:
@@ -107,7 +91,7 @@ public class ResetPasswordPresenterImpl implements
                     view.showServiceTemporaryUnavailable();
                     break;
                 default:
-                    view.showUnknownError();
+                    view.showUnknownErrorOccurred();
                     break;
             }
         } else {

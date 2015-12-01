@@ -10,8 +10,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
-import de.tudarmstadt.informatik.tk.android.assistance.presenter.ResetPasswordPresenter;
-import de.tudarmstadt.informatik.tk.android.assistance.presenter.ResetPasswordPresenterImpl;
+import de.tudarmstadt.informatik.tk.android.assistance.presenter.password.ResetPasswordPresenter;
+import de.tudarmstadt.informatik.tk.android.assistance.presenter.password.ResetPasswordPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ResetPasswordView;
@@ -108,7 +108,7 @@ public class ResetPasswordActivity extends
     }
 
     @Override
-    public void showUnknownError() {
+    public void showUnknownErrorOccurred() {
         Toaster.showLong(getApplicationContext(), R.string.error_unknown);
     }
 }

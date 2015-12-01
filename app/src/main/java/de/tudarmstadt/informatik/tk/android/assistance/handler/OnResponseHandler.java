@@ -5,11 +5,11 @@ import retrofit.client.Response;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
- * @date 30.11.2015
+ * @date 01.12.2015
  */
-public interface OnRequestFinishedHandler {
+public interface OnResponseHandler<T> {
 
-    void onSuccess(Response response);
+    void onSuccess(T apiResponse, Response response);
 
     void onError(RetrofitError error);
 }
