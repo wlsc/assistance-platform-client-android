@@ -7,4 +7,8 @@ package de.tudarmstadt.informatik.tk.android.assistance.handler;
 public interface OnUserValidHandler {
 
     void onSaveUserCredentialsToPreference(String token);
+
+    void onUserTokenInvalid();
+
+    void showMainActivity();
 }

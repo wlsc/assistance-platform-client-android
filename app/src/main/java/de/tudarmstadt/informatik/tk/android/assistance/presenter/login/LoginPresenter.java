@@ -21,7 +21,9 @@ public interface LoginPresenter extends CommonPresenter {
      */
     void attemptLogin(String email, String password);
 
-    boolean validateCredentials(String email, String password);
-
     void checkAutologin(String userToken);
+
+    void getSplashView();
+
+    void initView();
 }

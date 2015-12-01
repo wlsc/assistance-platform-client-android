@@ -1,5 +1,7 @@
 package de.tudarmstadt.informatik.tk.android.assistance.view;
 
+import android.view.View;
+
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPresenter;
 
 /**
@@ -9,8 +11,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPres
 public interface LoginView extends CommonView {
 
     void setPresenter(LoginPresenter presenter);
-
-    void showView();
 
     void initLogin();
 
@@ -32,4 +32,20 @@ public interface LoginView extends CommonView {
     void loadSplashView();
 
     void saveUserCredentialsToPreference(String token);
+
+    void showUserTokenInvalid();
+
+    void showSystemUI();
+
+    void setContent();
+
+    void setDebugInformation();
+
+    void requestFocus(View view);
+
+    void showErrorPasswordInvalid();
+
+    void showErrorEmailRequired();
+
+    void showErrorEmailInvalid();
 }

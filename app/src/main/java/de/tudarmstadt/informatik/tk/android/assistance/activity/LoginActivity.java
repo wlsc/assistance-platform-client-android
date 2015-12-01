@@ -14,29 +14,18 @@ import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
-import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login.LoginResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPresenterImpl;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.Config;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbDevice;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
-import de.tudarmstadt.informatik.tk.android.assistance.util.HardwareUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.LoginView;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
@@ -95,7 +84,9 @@ public class LoginActivity extends
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        presenter = new LoginPresenterImpl(this);
+        setPresenter(new LoginPresenterImpl(this));
+
+        presenter.initView();
     }
 
     /**
@@ -107,9 +98,7 @@ public class LoginActivity extends
         // just init EventBus there
         HarvesterServiceProvider.getInstance(getApplicationContext());
 
-        String userToken = PreferenceUtils.getUserToken(getApplicationContext());
-
-        presenter.checkAutologin(userToken);
+        presenter.checkAutologin(PreferenceUtils.getUserToken(getApplicationContext()));
     }
 
     @Override
@@ -125,119 +114,6 @@ public class LoginActivity extends
     public void setPresenter(LoginPresenter presenter) {
         this.presenter = presenter;
         this.presenter.setView(this);
-    }
-
-    /**
-     * Setup view
-     */
-    @Override
-    public void showView() {
-
-        CommonUtils.showSystemUI(getWindow());
-
-        setContentView(R.layout.activity_login);
-        setTitle(R.string.login_activity_title);
-
-        ButterKnife.bind(this);
-
-        if (BuildConfig.DEBUG) {
-            mEmailTextView.setText("test123@test.de");
-            mPasswordView.setText("test123");
-        }
-
-        Intent intent = getIntent();
-
-        if (intent != null) {
-            Long userId = intent.getLongExtra("user_id", -1);
-            if (userId != -1) {
-                Toaster.showLong(this, R.string.register_successful);
-            }
-        }
-    }
-
-    /**
-     * Saves user device into database
-     *
-     * @param loginResponse
-     */
-    private void saveLoginIntoDb(LoginResponseDto loginResponse) {
-
-        String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
-
-        DbUser user = daoProvider.getUserDao().getByToken(loginResponse.getUserToken());
-
-        // check if that user was already saved in the system
-        if (user == null) {
-            // no such user found -> insert new user into db
-
-            DbUser newUser = new DbUser();
-
-            newUser.setToken(loginResponse.getUserToken());
-            newUser.setPrimaryEmail(email);
-            newUser.setCreated(createdDate);
-
-            long newUserId = daoProvider.getUserDao().insert(newUser);
-
-            PreferenceUtils.setCurrentUserId(getApplicationContext(), newUserId);
-
-            // saving device info into db
-
-            DbDevice device = new DbDevice();
-
-            device.setServerDeviceId(loginResponse.getDeviceId());
-            device.setOs(Config.PLATFORM_NAME);
-            device.setOsVersion(HardwareUtils.getAndroidVersion());
-            device.setBrand(HardwareUtils.getDeviceBrandName());
-            device.setModel(HardwareUtils.getDeviceModelName());
-            device.setDeviceIdentifier(HardwareUtils.getAndroidId(this));
-            device.setCreated(createdDate);
-            device.setUserId(newUserId);
-
-            long currentDeviceId = daoProvider.getDeviceDao().insert(device);
-
-            PreferenceUtils.setCurrentDeviceId(getApplicationContext(), currentDeviceId);
-            PreferenceUtils.setServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
-
-        } else {
-
-            List<DbDevice> userDevices = user.getDbDeviceList();
-
-            String currentAndroidId = HardwareUtils.getAndroidId(this);
-            boolean isDeviceAlreadyCreated = false;
-
-            for (DbDevice device : userDevices) {
-                if (device.getDeviceIdentifier().equals(currentAndroidId)) {
-                    isDeviceAlreadyCreated = true;
-
-                    PreferenceUtils.setCurrentDeviceId(getApplicationContext(), device.getId());
-                    PreferenceUtils.setServerDeviceId(getApplicationContext(), device.getServerDeviceId());
-
-                    break;
-                }
-            }
-
-            if (!isDeviceAlreadyCreated) {
-                // no such device found in db -> insert new
-
-                DbDevice device = new DbDevice();
-
-                device.setServerDeviceId(loginResponse.getDeviceId());
-                device.setOs(Config.PLATFORM_NAME);
-                device.setOsVersion(HardwareUtils.getAndroidVersion());
-                device.setBrand(HardwareUtils.getDeviceBrandName());
-                device.setModel(HardwareUtils.getDeviceModelName());
-                device.setDeviceIdentifier(HardwareUtils.getAndroidId(this));
-                device.setCreated(createdDate);
-                device.setUserId(user.getId());
-
-                long currentDeviceId = daoProvider.getDeviceDao().insert(device);
-
-                PreferenceUtils.setCurrentDeviceId(getApplicationContext(), currentDeviceId);
-                PreferenceUtils.setServerDeviceId(getApplicationContext(), loginResponse.getDeviceId());
-            }
-
-            PreferenceUtils.setCurrentUserId(getApplicationContext(), user.getId());
-        }
     }
 
     @Override
@@ -299,7 +175,7 @@ public class LoginActivity extends
                 uiThreadHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        showView();
+                        presenter.getSplashView();
                     }
                 });
             }
@@ -315,6 +191,55 @@ public class LoginActivity extends
         PreferenceUtils.setUserToken(getApplicationContext(), token);
         PreferenceUtils.setUserEmail(getApplicationContext(), mEmailTextView.getText().toString().trim());
         PreferenceUtils.setUserPassword(getApplicationContext(), mPasswordView.getText().toString().trim());
+    }
+
+    @Override
+    public void showUserTokenInvalid() {
+        Toaster.showLong(this, R.string.error_user_token_not_valid);
+        Log.d(TAG, "User token is INVALID!");
+    }
+
+    @Override
+    public void showSystemUI() {
+        CommonUtils.showSystemUI(getWindow());
+    }
+
+    @Override
+    public void setContent() {
+
+        setContentView(R.layout.activity_login);
+        setTitle(R.string.login_activity_title);
+
+        ButterKnife.bind(this);
+    }
+
+    @Override
+    public void setDebugInformation() {
+        mEmailTextView.setText("test123@test.de");
+        mPasswordView.setText("test123");
+    }
+
+    @Override
+    public void requestFocus(View view) {
+        view.requestFocus();
+    }
+
+    @Override
+    public void showErrorPasswordInvalid() {
+        mPasswordView.setError(getString(R.string.error_invalid_password));
+        mPasswordView.requestFocus();
+    }
+
+    @Override
+    public void showErrorEmailRequired() {
+        mEmailTextView.setError(getString(R.string.error_field_required));
+        mEmailTextView.requestFocus();
+    }
+
+    @Override
+    public void showErrorEmailInvalid() {
+        mEmailTextView.setError(getString(R.string.error_invalid_email));
+        mEmailTextView.requestFocus();
     }
 
     @OnClick(R.id.sign_in_button)

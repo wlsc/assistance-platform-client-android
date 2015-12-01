@@ -2,9 +2,8 @@ package de.tudarmstadt.informatik.tk.android.assistance.presenter.login;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.view.View;
 
-import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.login.LoginController;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.login.LoginControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
@@ -34,8 +33,6 @@ public class LoginPresenterImpl extends
     public LoginPresenterImpl(Context context) {
         super(context);
         setController(new LoginControllerImpl(this));
-
-        view.initLogin();
     }
 
     @Override
@@ -59,43 +56,25 @@ public class LoginPresenterImpl extends
         // Reset errors.
         view.clearErrors();
 
-        boolean isAnyErrors = false;
-        View focusView = null;
-
         // check for password
         if (!TextUtils.isEmpty(password) && !ValidationUtils.isPasswordLengthValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            isAnyErrors = true;
+            view.showErrorPasswordInvalid();
+            return;
         }
 
         // check for email address
         if (TextUtils.isEmpty(email)) {
-            mEmailTextView.setError(getString(R.string.error_field_required));
-            focusView = mEmailTextView;
-            isAnyErrors = true;
+            view.showErrorEmailRequired();
+            return;
         } else {
             if (!ValidationUtils.isValidEmail(email)) {
-                mEmailTextView.setError(getString(R.string.error_invalid_email));
-                focusView = mEmailTextView;
-                isAnyErrors = true;
+                view.showErrorEmailInvalid();
+                return;
             }
         }
 
-        if (isAnyErrors) {
-
-            view.setLoginButtonEnabled(true);
-            focusView.requestFocus();
-
-        } else {
-            view.showProgress(true);
-            controller.doLogin(email, password, this);
-        }
-    }
-
-    @Override
-    public boolean validateCredentials(String email, String password) {
-        return false;
+        view.showProgress(true);
+        controller.doLogin(email, password, this);
     }
 
     @Override
@@ -124,6 +103,22 @@ public class LoginPresenterImpl extends
         }
 
         view.loadSplashView();
+    }
+
+    @Override
+    public void getSplashView() {
+
+        view.showSystemUI();
+        view.setContent();
+
+        if (BuildConfig.DEBUG) {
+            view.setDebugInformation();
+        }
+    }
+
+    @Override
+    public void initView() {
+        view.initLogin();
     }
 
     @Override
@@ -173,6 +168,15 @@ public class LoginPresenterImpl extends
     @Override
     public void onSaveUserCredentialsToPreference(String token) {
         view.saveUserCredentialsToPreference(token);
+    }
+
+    @Override
+    public void onUserTokenInvalid() {
+        view.showUserTokenInvalid();
+    }
+
+    @Override
+    public void showMainActivity() {
         view.loadMainActivity();
     }
 }
