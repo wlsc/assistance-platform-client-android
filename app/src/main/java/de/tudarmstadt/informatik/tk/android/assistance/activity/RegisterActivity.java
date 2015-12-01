@@ -3,7 +3,6 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
 import android.widget.EditText;
 
 import butterknife.Bind;
@@ -38,9 +37,6 @@ public class RegisterActivity extends
 
     @Bind(R.id.register_password2)
     protected EditText mUserPassword2;
-
-    @Bind(R.id.sign_up_button)
-    protected Button mSignUp;
 
     private RegisterPresenter presenter;
 
@@ -86,7 +82,6 @@ public class RegisterActivity extends
     @Override
     public void setPresenter(RegisterPresenter presenter) {
         this.presenter = presenter;
-        this.presenter.setLogTag(TAG);
         this.presenter.setView(this);
     }
 

@@ -3,15 +3,13 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
-import android.widget.Button;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AccessibilityUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 
 /**
@@ -24,12 +22,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 public class AccessibilityTutorialActivity extends AppCompatActivity {
 
     private static final String TAG = AccessibilityTutorialActivity.class.getSimpleName();
-
-    @Bind(R.id.ignore_button)
-    protected Button ignoreButton;
-
-    @Bind(R.id.activate_now_button)
-    protected Button activateNowButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +53,6 @@ public class AccessibilityTutorialActivity extends AppCompatActivity {
     @OnClick(R.id.activate_now_button)
     protected void onActivateNowButton() {
         Log.d(TAG, "User has chosen to activate accessibility service!");
-        requestAccessibilityPermission();
-    }
-
-    /**
-     * Shows accessibility settings to user
-     */
-    private void requestAccessibilityPermission() {
 
         // request user to switch permission for the service
         Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);

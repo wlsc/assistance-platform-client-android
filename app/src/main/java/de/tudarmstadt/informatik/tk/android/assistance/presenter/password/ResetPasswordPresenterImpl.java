@@ -22,6 +22,8 @@ public class ResetPasswordPresenterImpl extends
         CommonPresenterImpl implements
         ResetPasswordPresenter, OnEmptyResponseHandler {
 
+    private static final String TAG = ResetPasswordPresenterImpl.class.getSimpleName();
+
     private ResetPasswordView view;
     private ResetPasswordController controller;
 
@@ -73,6 +75,11 @@ public class ResetPasswordPresenterImpl extends
 
     @Override
     public void onError(RetrofitError error) {
+
+        if (error.getKind() == RetrofitError.Kind.NETWORK) {
+            view.showServiceUnavailable();
+            return;
+        }
 
         Response response = error.getResponse();
 

@@ -6,14 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Date;
@@ -26,16 +24,13 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login.LoginRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login.LoginResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login.UserDeviceDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
+import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPresenter;
+import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
@@ -43,11 +38,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.HardwareUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.view.LoginView;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * A login screen that offers login via email/password
@@ -55,9 +47,11 @@ import retrofit.client.Response;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends
+        AppCompatActivity implements
+        LoginView {
 
-    private final String TAG = LoginActivity.class.getSimpleName();
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
     @Bind(R.id.email)
     protected EditText mEmailTextView;
@@ -70,12 +64,6 @@ public class LoginActivity extends AppCompatActivity {
 
     @Bind(R.id.login_form)
     protected ScrollView mLoginFormView;
-
-    @Bind(R.id.tvRegister)
-    protected TextView mRegisterLink;
-
-    @Bind(R.id.tvPasswordReset)
-    protected TextView mResetPassLink;
 
     @Bind(R.id.sign_in_button)
     protected Button mLoginButton;
@@ -101,169 +89,48 @@ public class LoginActivity extends AppCompatActivity {
     private Handler uiThreadHandler = new Handler();
     private SplashView mSplashView;
 
-    private String email;
-    private String password;
-
-    private DaoProvider daoProvider;
+    private LoginPresenter presenter;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (daoProvider == null) {
-            daoProvider = DaoProvider.getInstance(getApplicationContext());
-        }
-
-        // just init EventBus there
-        HarvesterServiceProvider.getInstance(getApplicationContext());
-
-//        if (!EventBus.getDefault().isRegistered(this)) {
-//            EventBus.getDefault().register(this);
-//        }
-
-//        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
-//            checkLocationPermissionGranted();
-//        } else {
-        // proceed with login screen
-        initLogin();
-//        }
+        presenter = new LoginPresenterImpl(this);
     }
-
-    /**
-     * Checks read contacts permission
-     */
-//    private void checkReadContactsPermissionGranted() {
-//
-//        boolean isReadContactsGranted = PermissionUtils
-//                .getInstance(getApplicationContext())
-//                .isPermissionGranted(Manifest.permission.READ_CONTACTS);
-//
-//        if (isReadContactsGranted) {
-//
-//            Log.d(TAG, "READ_CONTACTS permission was granted.");
-//
-//            EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.READ_CONTACTS));
-//
-//        } else {
-//
-//            Log.d(TAG, "READ_CONTACTS permission NOT granted!");
-//
-//            // check if explanation is needed for this permission
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-//                    Manifest.permission.READ_CONTACTS)) {
-//
-//                // Show an explanation to the user *asynchronously* -- don't block
-//                // this thread waiting for the user's response! After the user
-//                // sees the explanation, try again to request the permission.
-//
-//                Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
-//            }
-//
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.READ_CONTACTS},
-//                    Config.PERMISSIONS_REQUEST_READ_CONTACTS);
-//
-//        }
-//    }
-
-    /**
-     * Checks location permission
-     */
-//    private void checkLocationPermissionGranted() {
-//
-//        boolean isLocationGranted = PermissionUtils
-//                .getInstance(getApplicationContext())
-//                .isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
-//
-//        if (isLocationGranted) {
-//
-//            Log.d(TAG, "COARSE_LOCATION permission was granted.");
-//
-//            EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.ACCESS_COARSE_LOCATION));
-//
-//        } else {
-//
-//            Log.d(TAG, "COARSE_LOCATION permission NOT granted!");
-//
-//            // check if explanation is needed for this permission
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-//                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
-//
-//                // Show an explanation to the user *asynchronously* -- don't block
-//                // this thread waiting for the user's response! After the user
-//                // sees the explanation, try again to request the permission.
-//
-//                Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
-//            }
-//
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-//                    Config.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
-//
-//        }
-//    }
 
     /**
      * Inits login view
      */
-    private void initLogin() {
+    @Override
+    public void initLogin() {
+
+        // just init EventBus there
+        HarvesterServiceProvider.getInstance(getApplicationContext());
 
         String userToken = PreferenceUtils.getUserToken(getApplicationContext());
 
-        if (userToken.isEmpty()) {
+        presenter.checkAutologin(userToken);
+    }
 
-            Log.d(TAG, "User token NOT found");
-            Log.d(TAG, "Searching for autologin...");
+    @Override
+    public void loadMainActivity() {
 
-            String savedEmail = PreferenceUtils.getUserEmail(getApplicationContext());
-            String savedPassword = PreferenceUtils.getUserPassword(getApplicationContext());
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
 
-            if (!savedEmail.isEmpty() && !savedPassword.isEmpty()) {
-                Log.d(TAG, "Found email/password entries saved. Doing autologin...");
-
-                email = savedEmail;
-                password = savedPassword;
-
-                doLogin();
-                return;
-            }
-        } else {
-            Log.d(TAG, "User token found. Launching main activity!");
-            loadMainActivity();
-            return;
-        }
-
-        // first -> load splash screen
-        CommonUtils.hideSystemUI(getWindow());
-
-        // init splash screen view
-        if (mSplashView == null) {
-            mSplashView = new SplashView(this);
-        }
-
-        // Set an event handler on the SplashView object, so that as soon
-        // as it completes drawing we are
-        // informed.  In response to that cue, we will *then* put up the main view,
-        // replacing the content view of the main activity with that main view.
-        mSplashView.setSplashScreenEvent(new SplashView.SplashScreenEvent() {
-            @Override
-            public void onSplashDrawComplete() {
-                uiThreadHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        showView();
-                    }
-                });
-            }
-        });
-
-        // show splash screen
-        setContentView(mSplashView);
+    @Override
+    public void setPresenter(LoginPresenter presenter) {
+        this.presenter = presenter;
+        this.presenter.setView(this);
     }
 
     /**
      * Setup view
      */
+    @Override
     public void showView() {
 
         CommonUtils.showSystemUI(getWindow());
@@ -286,145 +153,6 @@ public class LoginActivity extends AppCompatActivity {
                 Toaster.showLong(this, R.string.register_successful);
             }
         }
-    }
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private void attemptLogin() {
-
-        CommonUtils.hideKeyboard(this, getCurrentFocus());
-
-        // disable button to reduce flood of requests
-        if (mLoginButton != null) {
-            mLoginButton.setEnabled(false);
-        }
-
-        // Reset errors.
-        mEmailTextView.setError(null);
-        mPasswordView.setError(null);
-
-        // Store values at the time of the login attempt.
-        email = mEmailTextView.getText().toString();
-        password = mPasswordView.getText().toString();
-
-        boolean isAnyErrors = false;
-        View focusView = null;
-
-        // check for password
-        if (!TextUtils.isEmpty(password) && !ValidationUtils.isPasswordLengthValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            isAnyErrors = true;
-        }
-
-        // check for email address
-        if (TextUtils.isEmpty(email)) {
-            mEmailTextView.setError(getString(R.string.error_field_required));
-            focusView = mEmailTextView;
-            isAnyErrors = true;
-        } else {
-            if (!ValidationUtils.isValidEmail(email)) {
-                mEmailTextView.setError(getString(R.string.error_invalid_email));
-                focusView = mEmailTextView;
-                isAnyErrors = true;
-            }
-        }
-
-        if (isAnyErrors) {
-
-            // enables login button
-            if (mLoginButton != null) {
-                mLoginButton.setEnabled(true);
-            }
-
-            focusView.requestFocus();
-
-            // show again the keyboard
-//            CommonUtils.showKeyboard(this, focusView);
-
-        } else {
-            showProgress(true);
-            doLogin();
-        }
-    }
-
-    /**
-     * Login procedure
-     */
-    private void doLogin() {
-
-        DbUser user = daoProvider.getUserDao().getByEmail(email);
-
-        Long serverDeviceId = null;
-
-        if (user != null) {
-
-            PreferenceUtils.setCurrentUserId(getApplicationContext(), user.getId());
-            PreferenceUtils.setUserEmail(getApplicationContext(), user.getPrimaryEmail());
-            PreferenceUtils.setUserFirstname(getApplicationContext(), user.getFirstname());
-            PreferenceUtils.setUserLastname(getApplicationContext(), user.getLastname());
-
-            String currentAndroidId = HardwareUtils.getAndroidId(this);
-
-            List<DbDevice> userDevices = user.getDbDeviceList();
-
-            for (DbDevice device : userDevices) {
-                if (device.getDeviceIdentifier().equals(currentAndroidId)) {
-                    serverDeviceId = device.getServerDeviceId();
-                    break;
-                }
-            }
-        }
-
-        /**
-         * Forming a login request
-         */
-        LoginRequestDto loginRequest = new LoginRequestDto();
-
-        loginRequest.setUserEmail(email);
-        loginRequest.setPassword(password);
-
-        UserDeviceDto userDevice = new UserDeviceDto();
-
-        if (serverDeviceId != null) {
-            userDevice.setServerId(serverDeviceId);
-        }
-
-        userDevice.setOs(Config.PLATFORM_NAME);
-        userDevice.setOsVersion(HardwareUtils.getAndroidVersion());
-        userDevice.setBrand(HardwareUtils.getDeviceBrandName());
-        userDevice.setModel(HardwareUtils.getDeviceModelName());
-        userDevice.setDeviceId(HardwareUtils.getAndroidId(this));
-
-        loginRequest.setDevice(userDevice);
-
-        /**
-         * Logging in the user
-         */
-        UserEndpoint userEndpoint = EndpointGenerator.getInstance(getApplicationContext()).create(UserEndpoint.class);
-        userEndpoint.loginUser(loginRequest, new Callback<LoginResponseDto>() {
-
-            @Override
-            public void success(LoginResponseDto apiResponse, Response response) {
-                saveLoginGoNext(apiResponse);
-                Log.d(TAG, "User token received: " + apiResponse.getUserToken());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-                // enables login button
-                if (mLoginButton != null) {
-                    mLoginButton.setEnabled(true);
-                }
-
-                showErrorMessages(TAG, error);
-                showProgress(false);
-            }
-        });
     }
 
     /**
@@ -455,6 +183,7 @@ public class LoginActivity extends AppCompatActivity {
             // saving device info into db
 
             DbDevice device = new DbDevice();
+
             device.setServerDeviceId(loginResponse.getDeviceId());
             device.setOs(Config.PLATFORM_NAME);
             device.setOsVersion(HardwareUtils.getAndroidVersion());
@@ -491,6 +220,7 @@ public class LoginActivity extends AppCompatActivity {
                 // no such device found in db -> insert new
 
                 DbDevice device = new DbDevice();
+
                 device.setServerDeviceId(loginResponse.getDeviceId());
                 device.setOs(Config.PLATFORM_NAME);
                 device.setOsVersion(HardwareUtils.getAndroidVersion());
@@ -510,63 +240,89 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Loads next user screen
-     *
-     * @param loginApiResponse
-     */
-    private void saveLoginGoNext(LoginResponseDto loginApiResponse) {
-
-        String token = loginApiResponse.getUserToken();
-
-        if (ValidationUtils.isUserTokenValid(token)) {
-            Log.d(TAG, "Token is valid. Proceeding with login...");
-
-            saveLoginIntoDb(loginApiResponse);
-
-            PreferenceUtils.setUserToken(getApplicationContext(), token);
-            PreferenceUtils.setUserEmail(getApplicationContext(), email);
-            PreferenceUtils.setUserPassword(getApplicationContext(), password);
-
-            loadMainActivity();
-
-        } else {
-            Toaster.showLong(this, R.string.error_user_token_not_valid);
-            Log.d(TAG, "User token is INVALID!");
-        }
-    }
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    private void showProgress(final boolean show) {
+    @Override
+    public void showProgress(final boolean isShowing) {
 
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        mLoginFormView.setVisibility(isShowing ? View.GONE : View.VISIBLE);
 
         mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                isShowing ? 0 : 1).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                mLoginFormView.setVisibility(isShowing ? View.GONE : View.VISIBLE);
             }
         });
 
-        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.setVisibility(isShowing ? View.VISIBLE : View.GONE);
         mProgressView.animate().setDuration(shortAnimTime).alpha(
-                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                isShowing ? 1 : 0).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                mProgressView.setVisibility(isShowing ? View.VISIBLE : View.GONE);
+            }
+        });
+    }
+
+    @Override
+    public void setLoginButtonEnabled(boolean isEnabled) {
+
+        if (mLoginButton != null) {
+            mLoginButton.setEnabled(isEnabled);
+        }
+    }
+
+    @Override
+    public void hideKeyboard() {
+        CommonUtils.hideKeyboard(this, getCurrentFocus());
+    }
+
+    @Override
+    public void loadSplashView() {
+
+        // first -> load splash screen
+        CommonUtils.hideSystemUI(getWindow());
+
+        // init splash screen view
+        if (mSplashView == null) {
+            mSplashView = new SplashView(this);
+        }
+
+        // Set an event handler on the SplashView object, so that as soon
+        // as it completes drawing we are
+        // informed.  In response to that cue, we will *then* put up the main view,
+        // replacing the content view of the main activity with that main view.
+        mSplashView.setSplashScreenEvent(new SplashView.SplashScreenEvent() {
+            @Override
+            public void onSplashDrawComplete() {
+                uiThreadHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        showView();
+                    }
+                });
             }
         });
 
+        // show splash screen
+        setContentView(mSplashView);
+    }
+
+    @Override
+    public void saveUserCredentialsToPreference(String token) {
+
+        PreferenceUtils.setUserToken(getApplicationContext(), token);
+        PreferenceUtils.setUserEmail(getApplicationContext(), mEmailTextView.getText().toString().trim());
+        PreferenceUtils.setUserPassword(getApplicationContext(), mPasswordView.getText().toString().trim());
     }
 
     @OnClick(R.id.sign_in_button)
     protected void onUserLogin() {
-        attemptLogin();
+
+        presenter.attemptLogin(
+                mEmailTextView.getText().toString().trim(),
+                mPasswordView.getText().toString().trim());
     }
 
     @OnClick(R.id.tvRegister)
@@ -608,20 +364,12 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnEditorAction(R.id.email)
     protected boolean onEditorAction(KeyEvent key) {
-        attemptLogin();
+
+        presenter.attemptLogin(
+                mEmailTextView.getText().toString().trim(),
+                mPasswordView.getText().toString().trim());
+
         return true;
-    }
-
-    /**
-     * Disables back button for user
-     * and starts main activity
-     */
-    private void loadMainActivity() {
-
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
     }
 
     @Override
@@ -647,159 +395,36 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-
         ButterKnife.unbind(this);
         mSplashView = null;
         uiThreadHandler = null;
-
         Log.d(TAG, "onDestroy -> unbound resources");
-
         super.onDestroy();
     }
 
-    /**
-     * Processes error response from server
-     *
-     * @param TAG
-     * @param retrofitError
-     */
-    protected void showErrorMessages(String TAG, RetrofitError retrofitError) {
-
-        if (retrofitError.getKind() == RetrofitError.Kind.NETWORK) {
-            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
-            return;
-        }
-
-        Response response = retrofitError.getResponse();
-
-        if (response != null) {
-
-            int httpCode = response.getStatus();
-
-            switch (httpCode) {
-                case 400:
-                    Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
-                    break;
-                case 401:
-                    Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
-                    PreferenceUtils.clearUserCredentials(getApplicationContext());
-                    Intent intent = new Intent(this, LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-                    break;
-                case 404:
-                    Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
-                    break;
-                case 503:
-                    Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
-                    break;
-                default:
-                    Toaster.showLong(getApplicationContext(), R.string.error_unknown);
-                    break;
-            }
-        } else {
-            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
-        }
+    @Override
+    public void startLoginActivity() {
+        // we are already here
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//
-//        if (!EventBus.getDefault().isRegistered(this)) {
-//            EventBus.getDefault().register(this);
-//        }
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//
-//        if (EventBus.getDefault().isRegistered(this)) {
-//            EventBus.getDefault().unregister(this);
-//        }
-//    }
+    @Override
+    public void clearErrors() {
+        mEmailTextView.setError(null);
+        mPasswordView.setError(null);
+    }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//
-//        switch (requestCode) {
-//
-//            case Config.PERMISSIONS_REQUEST_READ_CONTACTS:
-//
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//                    Log.d(TAG, "User granted permission");
-//
-//                    EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.READ_CONTACTS));
-//
-//                } else {
-//                    // permission denied, boo! Disable the
-//                    // functionality that depends on this permission.
-//
-//                    Log.d(TAG, "User DENIED permission!");
-//
-//                    Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
-//
-//                    // TODO: show crucial permission view
-//                    finish();   // for now
-//                }
-//
-//                break;
-//            case Config.PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION:
-//
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//                    Log.d(TAG, "User granted permission");
-//
-//                    EventBus.getDefault().post(new PermissionGrantedEvent(Manifest.permission.ACCESS_COARSE_LOCATION));
-//
-//                } else {
-//                    // permission denied, boo! Disable the
-//                    // functionality that depends on this permission.
-//
-//                    Log.d(TAG, "User DENIED permission!");
-//
-//                    Toaster.showLong(getApplicationContext(), R.string.permission_is_mandatory);
-//
-//                    // TODO: show crucial permission view
-//                    finish();   // for now
-//                }
-//
-//                break;
-//
-//            default:
-//                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        }
-//    }
+    @Override
+    public void showServiceUnavailable() {
+        Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+    }
 
-    /**
-     * On permission granted event
-     *
-     * @param event
-     */
-//    public void onEvent(PermissionGrantedEvent event) {
-//
-//        String permission = event.getPermissions();
-//
-//        Log.d(TAG, "Permission granted: " + permission);
-//
-//        if (permission == null) {
-//            return;
-//        }
-//
-//        if (permission.equals(Manifest.permission.READ_CONTACTS)) {
-//            checkLocationPermissionGranted();
-//        }
-//
-//        if (permission.equals(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-//
-//            // proceed with login screen
-//            initLogin();
-//        }
-//    }
+    @Override
+    public void showServiceTemporaryUnavailable() {
+        Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
+    }
+
+    @Override
+    public void showUnknownErrorOccurred() {
+        Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+    }
 }
-

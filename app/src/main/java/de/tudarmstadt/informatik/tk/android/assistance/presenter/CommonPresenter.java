@@ -8,7 +8,5 @@ import android.content.Context;
  */
 public interface CommonPresenter {
 
-    void setLogTag(String tag);
-
     Context getContext();
 }

@@ -23,6 +23,8 @@ public class RegisterPresenterImpl extends
         CommonPresenterImpl implements
         RegisterPresenter, OnResponseHandler<RegistrationResponseDto> {
 
+    private static final String TAG = RegisterPresenterImpl.class.getSimpleName();
+
     private RegisterView view;
     private RegisterController controller;
 
@@ -121,6 +123,11 @@ public class RegisterPresenterImpl extends
 
     @Override
     public void onError(RetrofitError error) {
+
+        if (error.getKind() == RetrofitError.Kind.NETWORK) {
+            view.showServiceUnavailable();
+            return;
+        }
 
         Response response = error.getResponse();
 

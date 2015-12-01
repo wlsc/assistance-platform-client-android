@@ -8,17 +8,10 @@ import android.content.Context;
  */
 public class CommonPresenterImpl implements CommonPresenter {
 
-    protected String TAG;
-
     private final Context context;
 
     public CommonPresenterImpl(Context context) {
         this.context = context;
-    }
-
-    @Override
-    public void setLogTag(String tag) {
-        this.TAG = tag;
     }
 
     @Override

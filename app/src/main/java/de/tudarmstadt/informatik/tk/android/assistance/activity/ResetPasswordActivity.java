@@ -60,7 +60,6 @@ public class ResetPasswordActivity extends
     @Override
     public void setPresenter(ResetPasswordPresenter presenter) {
         this.presenter = presenter;
-        this.presenter.setLogTag(TAG);
         this.presenter.setView(this);
     }
 
