@@ -112,7 +112,7 @@ public class LoginPresenterImpl extends
         view.setContent();
 
         if (BuildConfig.DEBUG) {
-            view.setDebugInformation();
+            view.setDebugViewInformation();
         }
     }
 

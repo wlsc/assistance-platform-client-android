@@ -214,7 +214,7 @@ public class LoginActivity extends
     }
 
     @Override
-    public void setDebugInformation() {
+    public void setDebugViewInformation() {
         mEmailTextView.setText("test123@test.de");
         mPasswordView.setText("test123");
     }
@@ -351,5 +351,10 @@ public class LoginActivity extends
     @Override
     public void showUnknownErrorOccurred() {
         Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+    }
+
+    @Override
+    public void showUserActionForbidden() {
+        Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
     }
 }

@@ -15,4 +15,6 @@ public interface CommonView {
     void showServiceTemporaryUnavailable();
 
     void showUnknownErrorOccurred();
+
+    void showUserActionForbidden();
 }

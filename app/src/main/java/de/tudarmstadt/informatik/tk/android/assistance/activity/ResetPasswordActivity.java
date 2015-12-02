@@ -110,4 +110,9 @@ public class ResetPasswordActivity extends
     public void showUnknownErrorOccurred() {
         Toaster.showLong(getApplicationContext(), R.string.error_unknown);
     }
+
+    @Override
+    public void showUserActionForbidden() {
+        Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+    }
 }

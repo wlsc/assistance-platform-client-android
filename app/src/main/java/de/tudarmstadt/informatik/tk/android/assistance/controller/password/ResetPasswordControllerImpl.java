@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.controller.password;
 
+import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnEmptyResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.resetpassword.ResetPasswordRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
@@ -13,11 +14,14 @@ import retrofit.client.Response;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 30.11.2015
  */
-public class ResetPasswordControllerImpl implements ResetPasswordController {
+public class ResetPasswordControllerImpl extends
+        CommonControllerImpl implements
+        ResetPasswordController {
 
     private final ResetPasswordPresenter presenter;
 
     public ResetPasswordControllerImpl(ResetPasswordPresenter presenter) {
+        super(presenter.getContext());
         this.presenter = presenter;
     }
 

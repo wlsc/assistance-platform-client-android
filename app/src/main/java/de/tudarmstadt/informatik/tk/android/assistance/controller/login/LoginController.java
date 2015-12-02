@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.controller.login;
 
+import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnUserValidHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login.LoginResponseDto;
@@ -8,7 +9,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login.Login
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 30.11.2015
  */
-public interface LoginController {
+public interface LoginController extends CommonController {
 
     /**
      * Login procedure

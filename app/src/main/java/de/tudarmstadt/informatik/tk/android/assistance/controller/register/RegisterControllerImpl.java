@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.controller.register;
 
+import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationResponseDto;
@@ -14,11 +15,14 @@ import retrofit.client.Response;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 01.12.2015
  */
-public class RegisterControllerImpl implements RegisterController {
+public class RegisterControllerImpl extends
+        CommonControllerImpl implements
+        RegisterController {
 
     private final RegisterPresenter presenter;
 
     public RegisterControllerImpl(RegisterPresenter presenter) {
+        super(presenter.getContext());
         this.presenter = presenter;
     }
 

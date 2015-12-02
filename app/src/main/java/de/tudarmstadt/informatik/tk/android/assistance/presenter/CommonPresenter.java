@@ -9,4 +9,14 @@ import android.content.Context;
 public interface CommonPresenter {
 
     Context getContext();
+
+    /**
+     * Starting harvesting service if not running
+     */
+    void startHarvester();
+
+    /**
+     * Stopping harvesting service if not running
+     */
+    void stopHarvester();
 }

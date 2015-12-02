@@ -39,7 +39,7 @@ public interface LoginView extends CommonView {
 
     void setContent();
 
-    void setDebugInformation();
+    void setDebugViewInformation();
 
     void requestFocus(View view);
 

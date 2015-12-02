@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnUserValidHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login.LoginRequestDto;
@@ -15,7 +16,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.HardwareUtils;
@@ -29,17 +29,17 @@ import retrofit.client.Response;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 30.11.2015
  */
-public class LoginControllerImpl implements LoginController {
+public class LoginControllerImpl extends
+        CommonControllerImpl implements
+        LoginController {
 
     private static final String TAG = LoginControllerImpl.class.getSimpleName();
 
     private final LoginPresenter presenter;
 
-    private final DaoProvider daoProvider;
-
     public LoginControllerImpl(LoginPresenter presenter) {
+        super(presenter.getContext());
         this.presenter = presenter;
-        this.daoProvider = DaoProvider.getInstance(presenter.getContext());
     }
 
     @Override
