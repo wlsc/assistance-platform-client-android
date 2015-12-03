@@ -31,4 +31,11 @@ public class CommonControllerImpl implements CommonController {
                 .getUserDao()
                 .getByToken(userToken);
     }
+
+    @Override
+    public DbUser getUserByEmail(String userEmail) {
+        return daoProvider
+                .getUserDao()
+                .getByEmail(userEmail);
+    }
 }

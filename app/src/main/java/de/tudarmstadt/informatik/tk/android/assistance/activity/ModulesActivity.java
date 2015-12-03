@@ -24,7 +24,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +50,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.service.HarvesterService;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DeviceUtils;
@@ -90,12 +88,6 @@ public class ModulesActivity extends
 
     private RecyclerView permissionOptionalRecyclerView;
 
-    private DaoProvider daoProvider;
-
-    private List<String> mActiveModules;
-
-    private Map<String, AvailableModuleResponseDto> availableModuleResponseMapping;
-
     private SwipeRefreshLayout.OnRefreshListener onRefreshHandler;
 
     private String selectedModuleId;
@@ -106,49 +98,6 @@ public class ModulesActivity extends
 
         setPresenter(new ModulesPresenterImpl(this));
         presenter.doInitView();
-
-        setContentView(R.layout.activity_available_modules);
-
-        mToolbar = ButterKnife.findById(this, R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        setTitle(R.string.module_list_activity_title);
-
-        mAvailableModulesRecyclerView = ButterKnife.findById(this, R.id.moduleListRecyclerView);
-        mAvailableModulesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeResources(
-                android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
-        if (onRefreshHandler == null) {
-            onRefreshHandler = new SwipeRefreshLayout.OnRefreshListener() {
-
-                @Override
-                public void onRefresh() {
-
-                    mSwipeRefreshLayout.setRefreshing(true);
-
-                    // request new modules infomation
-                    requestAvailableModules();
-                }
-            };
-        }
-
-        mSwipeRefreshLayout.setOnRefreshListener(onRefreshHandler);
-        mSwipeRefreshLayout.setNestedScrollingEnabled(true);
-
-        // register this activity to events
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-
-        loadModules();
     }
 
     @Override
@@ -171,220 +120,6 @@ public class ModulesActivity extends
         }
 
         super.onPause();
-    }
-
-    /**
-     * Loads module list from db or in case its empty
-     * loads it from server
-     */
-    private void loadModules() {
-
-        String userEmail = PreferenceUtils.getUserEmail(getApplicationContext());
-
-        DbUser user = daoProvider.getUserDao().getByEmail(userEmail);
-
-        if (user == null) {
-
-            LoginUtils.doLogout(getApplicationContext());
-            finish();
-            return;
-        }
-
-        List<DbModule> installedModules = user.getDbModuleList();
-
-        // no modules was found -> request from server
-        if (installedModules.isEmpty()) {
-            Log.d(TAG, "Module list not found in db. Requesting from server...");
-
-            requestAvailableModules();
-
-        } else {
-
-            Log.d(TAG, "Installed modules found in the db. Showing them...");
-
-            availableModuleResponseMapping = new HashMap<>();
-
-            for (DbModule module : installedModules) {
-
-                availableModuleResponseMapping.put(
-                        module.getPackageName(),
-                        ConverterUtils.convertModule(module));
-            }
-
-            mAvailableModulesRecyclerView
-                    .setAdapter(new AvailableModulesAdapter(installedModules));
-
-            Set<String> permsToAsk = checkPermissionsGranted();
-
-            // ask if there is something to ask
-            if (!permsToAsk.isEmpty()) {
-
-                ActivityCompat.requestPermissions(this,
-                        permsToAsk.toArray(new String[permsToAsk.size()]),
-                        Constants.PERM_MODULE_INSTALL);
-            }
-        }
-    }
-
-    /**
-     * Check permissions is still granted to modules
-     */
-    private Set<String> checkPermissionsGranted() {
-
-        Map<String, String[]> mappings = PermissionUtils
-                .getInstance(getApplicationContext())
-                .getDangerousPermissionsToDtoMapping();
-
-        Set<String> permissionsToAsk = new HashSet<>();
-
-        long userId = PreferenceUtils.getCurrentUserId(getApplicationContext());
-
-        List<DbModule> allActiveModules = daoProvider
-                .getModuleDao()
-                .getAllActive(userId);
-
-        if (allActiveModules == null || allActiveModules.isEmpty()) {
-            return Collections.emptySet();
-        }
-
-        for (DbModule module : allActiveModules) {
-
-            if (module == null) {
-                continue;
-            }
-
-            List<DbModuleCapability> capabilities = module.getDbModuleCapabilityList();
-
-            for (DbModuleCapability cap : capabilities) {
-
-                if (cap == null) {
-                    continue;
-                }
-
-                final String[] perms = mappings == null ? null : mappings.get(cap.getType());
-
-                if (perms == null) {
-                    continue;
-                }
-
-                for (String perm : perms) {
-                    if (PermissionUtils
-                            .getInstance(getApplicationContext())
-                            .isPermissionGranted(perm)) {
-
-                        permissionsToAsk.add(perm);
-                    }
-                }
-            }
-        }
-
-        return permissionsToAsk;
-    }
-
-    /**
-     * Request available modules from service
-     */
-    private void requestAvailableModules() {
-
-        final String userToken = PreferenceUtils.getUserToken(getApplicationContext());
-
-        // calling api service
-        final ModuleEndpoint moduleEndpoint = EndpointGenerator
-                .getInstance(getApplicationContext())
-                .create(ModuleEndpoint.class);
-
-        moduleEndpoint.getAvailableModules(userToken,
-                new Callback<List<AvailableModuleResponseDto>>() {
-
-                    /**
-                     * Successful HTTP response.
-                     *
-                     * @param availableModulesList
-                     * @param response
-                     */
-                    @Override
-                    public void success(final List<AvailableModuleResponseDto> availableModulesList,
-                                        Response response) {
-
-                        if (availableModulesList != null &&
-                                !availableModulesList.isEmpty()) {
-
-                            Log.d(TAG, availableModulesList.toString());
-
-                            if (availableModuleResponseMapping == null) {
-                                availableModuleResponseMapping = new HashMap<>();
-                            } else {
-                                availableModuleResponseMapping.clear();
-                            }
-
-                            for (AvailableModuleResponseDto resp : availableModulesList) {
-                                availableModuleResponseMapping.put(resp.getModulePackage(), resp);
-                            }
-
-                            boolean hasUserRequestedActiveModules = PreferenceUtils
-                                    .hasUserRequestedActiveModules(getApplicationContext());
-
-                            if (hasUserRequestedActiveModules) {
-
-                                mActiveModules = new ArrayList<>(0);
-                                mSwipeRefreshLayout.setRefreshing(false);
-                                processAvailableModules(availableModulesList);
-                                return;
-                            }
-
-                            // get list of already activated modules
-                            moduleEndpoint.getActiveModules(userToken,
-                                    new Callback<List<String>>() {
-
-                                        @Override
-                                        public void success(List<String> activeModules,
-                                                            Response response) {
-
-                                            mSwipeRefreshLayout.setRefreshing(false);
-
-                                            PreferenceUtils.setUserRequestedActiveModules(getApplicationContext(), true);
-
-                                            if (activeModules != null && !activeModules.isEmpty()) {
-
-                                                Log.d(TAG, activeModules.toString());
-                                                mActiveModules = activeModules;
-
-                                            } else {
-                                                mActiveModules = new ArrayList<>(0);
-                                            }
-
-                                            processAvailableModules(availableModulesList);
-                                        }
-
-                                        @Override
-                                        public void failure(RetrofitError error) {
-                                            showErrorMessages(error);
-                                            mActiveModules = new ArrayList<>(0);
-                                            mSwipeRefreshLayout.setRefreshing(false);
-                                            processAvailableModules(availableModulesList);
-                                        }
-                                    });
-
-                        } else {
-                            mActiveModules = new ArrayList<>(0);
-                            mAvailableModulesRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }
-
-                    /**
-                     * Unsuccessful HTTP response due to network failure, non-2XX status code, or unexpected
-                     * exception.
-                     *
-                     * @param error
-                     */
-                    @Override
-                    public void failure(RetrofitError error) {
-                        showErrorMessages(error);
-                        mAvailableModulesRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                });
     }
 
     /**
@@ -949,7 +684,7 @@ public class ModulesActivity extends
 
                             Log.d(TAG, "Installation has finished!");
 
-                            Set<String> permsToAsk = checkPermissionsGranted();
+                            Set<String> permsToAsk = getGrantedPermissions();
 
                             if (!permsToAsk.isEmpty()) {
 
@@ -1315,6 +1050,46 @@ public class ModulesActivity extends
     @Override
     public void initView() {
 
+        setContentView(R.layout.activity_available_modules);
+
+        mToolbar = ButterKnife.findById(this, R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        setTitle(R.string.module_list_activity_title);
+
+        mAvailableModulesRecyclerView = ButterKnife.findById(this, R.id.moduleListRecyclerView);
+        mAvailableModulesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(
+                android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        if (onRefreshHandler == null) {
+            onRefreshHandler = new SwipeRefreshLayout.OnRefreshListener() {
+
+                @Override
+                public void onRefresh() {
+
+                    mSwipeRefreshLayout.setRefreshing(true);
+
+                    // request new modules infomation
+                    presenter.requestAvailableModules();
+                }
+            };
+        }
+
+        mSwipeRefreshLayout.setOnRefreshListener(onRefreshHandler);
+        mSwipeRefreshLayout.setNestedScrollingEnabled(true);
+
+        // register this activity to events
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
     }
 
     @Override
@@ -1329,26 +1104,56 @@ public class ModulesActivity extends
 
     @Override
     public void showServiceUnavailable() {
-
+        Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
     }
 
     @Override
     public void showServiceTemporaryUnavailable() {
-
+        Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
     }
 
     @Override
     public void showUnknownErrorOccurred() {
-
+        Toaster.showLong(getApplicationContext(), R.string.error_unknown);
     }
 
     @Override
     public void showUserActionForbidden() {
-
+        Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
     }
 
     @Override
     public void setPresenter(ModulesPresenter presenter) {
         this.presenter = presenter;
+        this.presenter.setView(this);
+    }
+
+    @Override
+    public void setErrorView() {
+        mAvailableModulesRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void setNoModulesView() {
+        mAvailableModulesRecyclerView.setAdapter(new AvailableModulesAdapter(Collections.EMPTY_LIST));
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void stopSwipeRefresh() {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void finishActivity() {
+        finish();
+    }
+
+    @Override
+    public void setModuleList(List<DbModule> installedModules) {
+
+        mAvailableModulesRecyclerView
+                .setAdapter(new AvailableModulesAdapter(installedModules));
     }
 }

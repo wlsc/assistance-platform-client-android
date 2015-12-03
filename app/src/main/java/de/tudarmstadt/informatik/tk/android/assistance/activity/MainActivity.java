@@ -72,7 +72,7 @@ public class MainActivity extends
     }
 
     @Override
-    public void setNoNewsItems() {
+    public void setNoNewsView() {
 
         ButterKnife.findById(this, R.id.assistance_list).setVisibility(View.GONE);
         ButterKnife.findById(this, R.id.assistance_no_news).setVisibility(View.VISIBLE);

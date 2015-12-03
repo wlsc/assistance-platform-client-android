@@ -14,4 +14,6 @@ public interface CommonController {
     List<DbModule> getAllActiveModules(Long userId);
 
     DbUser getUserByToken(String userToken);
+
+    DbUser getUserByEmail(String userEmail);
 }

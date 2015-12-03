@@ -76,7 +76,7 @@ public class MainPresenterImpl extends
             List<DbNews> assistanceNews = controller.getCachedNews(userId);
 
             if (assistanceNews.isEmpty()) {
-                view.setNoNewsItems();
+                view.setNoNewsView();
             } else {
                 view.setNewsItems(assistanceNews);
             }
@@ -91,7 +91,7 @@ public class MainPresenterImpl extends
 
                 final String userToken = PreferenceUtils.getUserToken(getContext());
 
-                controller.requestActivatedModules(userToken, this);
+                controller.requestActiveModules(userToken, this);
 
             } else {
 

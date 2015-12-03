@@ -24,7 +24,7 @@ public interface MainController extends CommonController {
     /**
      * Asks backend for activated modules
      */
-    void requestActivatedModules(String userToken, OnActiveModulesResponseHandler handler);
+    void requestActiveModules(String userToken, OnActiveModulesResponseHandler handler);
 
     /**
      * Requests user profile information

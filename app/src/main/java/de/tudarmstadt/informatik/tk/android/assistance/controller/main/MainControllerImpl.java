@@ -72,8 +72,8 @@ public class MainControllerImpl extends
     }
 
     @Override
-    public void requestActivatedModules(final String userToken,
-                                        final OnActiveModulesResponseHandler handler) {
+    public void requestActiveModules(final String userToken,
+                                     final OnActiveModulesResponseHandler handler) {
 
         final ModuleEndpoint moduleEndpoint = EndpointGenerator
                 .getInstance(presenter.getContext())
