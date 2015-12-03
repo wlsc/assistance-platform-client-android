@@ -15,11 +15,6 @@ public interface MainView extends CommonView {
 
     void showAccessibilityServiceTutorial();
 
-    /**
-     * Initializes this activity
-     */
-    void initView();
-
     void setNoNewsItems();
 
     void setNewsItems(List<DbNews> assistanceNews);

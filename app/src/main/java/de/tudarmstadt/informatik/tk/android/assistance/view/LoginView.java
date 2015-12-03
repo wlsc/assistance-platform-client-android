@@ -12,8 +12,6 @@ public interface LoginView extends CommonView {
 
     void setPresenter(LoginPresenter presenter);
 
-    void initLogin();
-
     /**
      * Disables back button for user
      * and starts main activity

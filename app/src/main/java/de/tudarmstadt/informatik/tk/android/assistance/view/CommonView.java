@@ -6,6 +6,8 @@ package de.tudarmstadt.informatik.tk.android.assistance.view;
  */
 public interface CommonView {
 
+    void initView();
+
     void startLoginActivity();
 
     void clearErrors();
