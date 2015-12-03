@@ -55,7 +55,7 @@ public class MainActivity extends
         super.onCreate(savedInstanceState);
 
         setPresenter(new MainPresenterImpl(this));
-        presenter.checkPreconditions();
+        presenter.doInitView();
     }
 
     @Override

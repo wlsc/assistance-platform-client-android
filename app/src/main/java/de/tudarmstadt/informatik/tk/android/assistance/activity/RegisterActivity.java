@@ -43,12 +43,9 @@ public class RegisterActivity extends
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
-        setTitle(R.string.register_activity_title);
-
-        ButterKnife.bind(this);
 
         setPresenter(new RegisterPresenterImpl(getApplicationContext()));
+        presenter.doInitView();
     }
 
     /**
@@ -125,6 +122,14 @@ public class RegisterActivity extends
     @Override
     public void hideKeyboard() {
         CommonUtils.hideKeyboard(getApplicationContext(), getCurrentFocus());
+    }
+
+    @Override
+    public void initView() {
+        setContentView(R.layout.activity_register);
+        setTitle(R.string.register_activity_title);
+
+        ButterKnife.bind(this);
     }
 
     @Override

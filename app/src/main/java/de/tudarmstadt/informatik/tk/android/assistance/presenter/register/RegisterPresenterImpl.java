@@ -105,6 +105,7 @@ public class RegisterPresenterImpl extends
 
     @Override
     public void setView(RegisterView view) {
+        super.setView(view);
         this.view = view;
     }
 
@@ -123,34 +124,11 @@ public class RegisterPresenterImpl extends
 
     @Override
     public void onError(RetrofitError error) {
+        doDefaultErrorProcessing(error);
+    }
 
-        if (error.getKind() == RetrofitError.Kind.NETWORK) {
-            view.showServiceUnavailable();
-            return;
-        }
-
-        Response response = error.getResponse();
-
-        if (response != null) {
-
-            switch (response.getStatus()) {
-                case 400:
-                    break;
-                case 401:
-                    view.startLoginActivity();
-                    break;
-                case 404:
-                    view.showServiceUnavailable();
-                    break;
-                case 503:
-                    view.showServiceTemporaryUnavailable();
-                    break;
-                default:
-                    view.showUnknownErrorOccurred();
-                    break;
-            }
-        } else {
-            view.showServiceUnavailable();
-        }
+    @Override
+    public void doInitView() {
+        view.initView();
     }
 }

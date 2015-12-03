@@ -37,12 +37,8 @@ public class ResetPasswordActivity extends
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_reset_password);
-        setTitle(R.string.reset_password_activity_title);
-
-        ButterKnife.bind(this);
-
         setPresenter(new ResetPasswordPresenterImpl(getApplicationContext()));
+        presenter.doInitView();
     }
 
     @Override
@@ -83,6 +79,14 @@ public class ResetPasswordActivity extends
     @Override
     public void showRequestSuccessful() {
         Toaster.showLong(getApplicationContext(), R.string.reset_successful_reset);
+    }
+
+    @Override
+    public void initView() {
+        setContentView(R.layout.activity_reset_password);
+        setTitle(R.string.reset_password_activity_title);
+
+        ButterKnife.bind(this);
     }
 
     @Override

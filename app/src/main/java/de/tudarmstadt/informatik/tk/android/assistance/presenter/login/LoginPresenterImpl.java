@@ -37,6 +37,7 @@ public class LoginPresenterImpl extends
 
     @Override
     public void setView(LoginView view) {
+        super.setView(view);
         this.view = view;
     }
 
@@ -117,11 +118,6 @@ public class LoginPresenterImpl extends
     }
 
     @Override
-    public void initView() {
-        view.initLogin();
-    }
-
-    @Override
     public void onSuccess(LoginResponseDto apiResponse, Response response) {
 
         controller.saveLoginGoNext(apiResponse, this);
@@ -135,34 +131,7 @@ public class LoginPresenterImpl extends
         view.setLoginButtonEnabled(true);
         view.showProgress(false);
 
-        if (error.getKind() == RetrofitError.Kind.NETWORK) {
-            view.showServiceUnavailable();
-            return;
-        }
-
-        Response response = error.getResponse();
-
-        if (response != null) {
-
-            switch (response.getStatus()) {
-                case 400:
-                    break;
-                case 401:
-                    view.startLoginActivity();
-                    break;
-                case 404:
-                    view.showServiceUnavailable();
-                    break;
-                case 503:
-                    view.showServiceTemporaryUnavailable();
-                    break;
-                default:
-                    view.showUnknownErrorOccurred();
-                    break;
-            }
-        } else {
-            view.showServiceUnavailable();
-        }
+        doDefaultErrorProcessing(error);
     }
 
     @Override
@@ -178,5 +147,10 @@ public class LoginPresenterImpl extends
     @Override
     public void showMainActivity() {
         view.loadMainActivity();
+    }
+
+    @Override
+    public void doInitView() {
+        view.initView();
     }
 }

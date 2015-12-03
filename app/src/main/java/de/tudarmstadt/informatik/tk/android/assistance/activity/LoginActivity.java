@@ -85,20 +85,7 @@ public class LoginActivity extends
         super.onCreate(savedInstanceState);
 
         setPresenter(new LoginPresenterImpl(this));
-
-        presenter.initView();
-    }
-
-    /**
-     * Inits login view
-     */
-    @Override
-    public void initLogin() {
-
-        // just init EventBus there
-        HarvesterServiceProvider.getInstance(getApplicationContext());
-
-        presenter.checkAutologin(PreferenceUtils.getUserToken(getApplicationContext()));
+        presenter.doInitView();
     }
 
     @Override
@@ -325,6 +312,14 @@ public class LoginActivity extends
         uiThreadHandler = null;
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
+    }
+
+    @Override
+    public void initView() {
+        // just init EventBus there
+        HarvesterServiceProvider.getInstance(getApplicationContext());
+
+        presenter.checkAutologin(PreferenceUtils.getUserToken(getApplicationContext()));
     }
 
     @Override

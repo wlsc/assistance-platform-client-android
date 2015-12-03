@@ -47,6 +47,7 @@ public class MainPresenterImpl extends
 
     @Override
     public void setView(MainView view) {
+        super.setView(view);
         this.view = view;
     }
 
@@ -56,7 +57,7 @@ public class MainPresenterImpl extends
     }
 
     @Override
-    public void checkPreconditions() {
+    public void doInitView() {
 
         boolean accessibilityServiceActivated = PreferenceProvider
                 .getInstance(getContext())
@@ -225,36 +226,7 @@ public class MainPresenterImpl extends
 
     @Override
     public void onActiveModulesFailed(RetrofitError error) {
-
-        if (error.getKind() == RetrofitError.Kind.NETWORK) {
-            view.showServiceUnavailable();
-            return;
-        }
-
-        Response response = error.getResponse();
-
-        if (response != null) {
-
-            switch (response.getStatus()) {
-                case 400:
-                    break;
-                case 401:
-                    view.showUserActionForbidden();
-                    view.startLoginActivity();
-                    break;
-                case 404:
-                    view.showServiceUnavailable();
-                    break;
-                case 503:
-                    view.showServiceTemporaryUnavailable();
-                    break;
-                default:
-                    view.showUnknownErrorOccurred();
-                    break;
-            }
-        } else {
-            view.showServiceUnavailable();
-        }
+        doDefaultErrorProcessing(error);
     }
 
     @Override
@@ -273,34 +245,6 @@ public class MainPresenterImpl extends
 
     @Override
     public void onError(RetrofitError error) {
-
-        if (error.getKind() == RetrofitError.Kind.NETWORK) {
-            view.showServiceUnavailable();
-            return;
-        }
-
-        Response response = error.getResponse();
-
-        if (response != null) {
-
-            switch (response.getStatus()) {
-                case 400:
-                    break;
-                case 401:
-                    view.startLoginActivity();
-                    break;
-                case 404:
-                    view.showServiceUnavailable();
-                    break;
-                case 503:
-                    view.showServiceTemporaryUnavailable();
-                    break;
-                default:
-                    view.showUnknownErrorOccurred();
-                    break;
-            }
-        } else {
-            view.showServiceUnavailable();
-        }
+        doDefaultErrorProcessing(error);
     }
 }

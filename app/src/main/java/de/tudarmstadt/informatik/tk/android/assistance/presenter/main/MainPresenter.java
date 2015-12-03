@@ -16,8 +16,6 @@ public interface MainPresenter extends CommonPresenter {
 
     void setController(MainController controller);
 
-    void checkPreconditions();
-
     void registerGCMPush(Activity activity);
 
     void handleResultCode(int requestCode);

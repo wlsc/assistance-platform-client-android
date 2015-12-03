@@ -24,6 +24,4 @@ public interface LoginPresenter extends CommonPresenter {
     void checkAutologin(String userToken);
 
     void getSplashView();
-
-    void initView();
 }
