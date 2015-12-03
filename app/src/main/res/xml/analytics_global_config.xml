@@ -29,56 +29,56 @@
 
     <!-- ACTIVITIES -->
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.activity.AccessibilityTutorialActivity">
-        Assistance Accessibility Tutorial View
+        Accessibility Tutorial View
     </screenName>
 
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.activity.LoginActivity">
-        Assistance Login View
+        Login View
     </screenName>
 
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.activity.MainActivity">
-        Assistance Main Module View
+        Main Module View
     </screenName>
 
-    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.activity.AvailableModulesActivity">
-        Assistance Available Modules View
+    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.activity.ModulesActivity">
+        Available Modules View
     </screenName>
 
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.activity.RegisterActivity">
-        Assistance Registration View
+        Registration View
     </screenName>
 
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.activity.ResetPasswordActivity">
-        Assistance Reset Password View
+        Reset Password View
     </screenName>
 
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity">
-        Assistance Settings View
+        Settings View
     </screenName>
 
     <!-- FRAGMENTS -->
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.ApplicationAboutSettingsFragment">
-        Assistance Application About Fragment View
+        Application About Fragment View
     </screenName>
 
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.ApplicationSettingsFragment">
-        Assistance Application About Fragment View
+        Application About Fragment View
     </screenName>
 
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DevelopmentSettingsFragment">
-        Assistance Application Development Fragment View
+        Application Development Fragment View
     </screenName>
 
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorsListFragment">
-        Assistance Application Sensors List Fragment View
+        Application Sensors List Fragment View
     </screenName>
 
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDeviceInfoSettingsFragment">
-        Assistance Application User Device Information Fragment View
+        Application User Device Information Fragment View
     </screenName>
 
     <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment">
-        Assistance Application User Profile Fragment View
+        Application User Profile Fragment View
     </screenName>
 
 </resources>

@@ -44,7 +44,7 @@
         </activity>
 
         <activity
-            android:name=".activity.AvailableModulesActivity"
+            android:name=".activity.ModulesActivity"
             android:configChanges="orientation|screenSize"/>
 
         <activity

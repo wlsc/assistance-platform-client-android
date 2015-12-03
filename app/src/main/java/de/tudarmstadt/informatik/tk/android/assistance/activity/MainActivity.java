@@ -137,7 +137,7 @@ public class MainActivity extends
     @OnClick(R.id.show_available_modules)
     protected void onShowAvailableModules() {
 
-        Intent intent = new Intent(this, AvailableModulesActivity.class);
+        Intent intent = new Intent(this, ModulesActivity.class);
         startActivityForResult(intent, Constants.INTENT_AVAILABLE_MODULES_RESULT);
     }
 

@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +45,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.Togg
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
+import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenter;
+import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
@@ -55,10 +56,12 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterSer
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.service.HarvesterService;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DeviceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -69,9 +72,13 @@ import retrofit.client.Response;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class AvailableModulesActivity extends AppCompatActivity {
+public class ModulesActivity extends
+        AppCompatActivity implements
+        ModulesView {
 
-    private static final String TAG = AvailableModulesActivity.class.getSimpleName();
+    private static final String TAG = ModulesActivity.class.getSimpleName();
+
+    private ModulesPresenter presenter;
 
     private Toolbar mToolbar;
 
@@ -96,11 +103,11 @@ public class AvailableModulesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_available_modules);
 
-        if (daoProvider == null) {
-            daoProvider = DaoProvider.getInstance(getApplicationContext());
-        }
+        setPresenter(new ModulesPresenterImpl(this));
+        presenter.doInitView();
+
+        setContentView(R.layout.activity_available_modules);
 
         mToolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -946,7 +953,7 @@ public class AvailableModulesActivity extends AppCompatActivity {
 
                             if (!permsToAsk.isEmpty()) {
 
-                                ActivityCompat.requestPermissions(AvailableModulesActivity.this,
+                                ActivityCompat.requestPermissions(ModulesActivity.this,
                                         permsToAsk.toArray(new String[permsToAsk.size()]),
                                         Constants.PERM_MODULE_INSTALL);
                             }
@@ -1303,5 +1310,45 @@ public class AvailableModulesActivity extends AppCompatActivity {
         } else {
 //            Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
         }
+    }
+
+    @Override
+    public void initView() {
+
+    }
+
+    @Override
+    public void startLoginActivity() {
+
+    }
+
+    @Override
+    public void clearErrors() {
+
+    }
+
+    @Override
+    public void showServiceUnavailable() {
+
+    }
+
+    @Override
+    public void showServiceTemporaryUnavailable() {
+
+    }
+
+    @Override
+    public void showUnknownErrorOccurred() {
+
+    }
+
+    @Override
+    public void showUserActionForbidden() {
+
+    }
+
+    @Override
+    public void setPresenter(ModulesPresenter presenter) {
+        this.presenter = presenter;
     }
 }
