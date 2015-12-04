@@ -258,6 +258,8 @@ public class ModulesActivity extends
     @Override
     public void initView() {
 
+        Log.d(TAG, "Init view...");
+
         setContentView(R.layout.activity_available_modules);
 
         mToolbar = ButterKnife.findById(this, R.id.toolbar);

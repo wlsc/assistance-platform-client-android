@@ -31,7 +31,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
 import retrofit.RetrofitError;
@@ -84,12 +83,10 @@ public class ModulesPresenterImpl extends
 
         String userEmail = PreferenceUtils.getUserEmail(getContext());
 
-        DbUser user = controller.getUserByToken(userEmail);
+        DbUser user = controller.getUserByEmail(userEmail);
 
         if (user == null) {
-
-            LoginUtils.doLogout(getContext());
-            view.finishActivity();
+            view.startLoginActivity();
             return;
         }
 
