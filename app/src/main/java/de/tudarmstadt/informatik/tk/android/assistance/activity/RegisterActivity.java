@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 
+import java.util.Set;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -167,6 +169,11 @@ public class RegisterActivity extends
     @Override
     public void showUserActionForbidden() {
         Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+    }
+
+    @Override
+    public void askPermissions(Set<String> permsToAsk) {
+        // empty
     }
 
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.List;
 
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.DaoProvider;
 
@@ -26,6 +27,11 @@ public class CommonControllerImpl implements CommonController {
     }
 
     @Override
+    public List<DbModuleCapability> getAllActiveModuleCapabilities(Long moduleId) {
+        return daoProvider.getModuleCapabilityDao().getAllActive(moduleId);
+    }
+
+    @Override
     public DbUser getUserByToken(String userToken) {
         return daoProvider
                 .getUserDao()
@@ -37,5 +43,10 @@ public class CommonControllerImpl implements CommonController {
         return daoProvider
                 .getUserDao()
                 .getByEmail(userEmail);
+    }
+
+    @Override
+    public List<DbModule> getAllModules(Long userId) {
+        return daoProvider.getModuleDao().getAll(userId);
     }
 }

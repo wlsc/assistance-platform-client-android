@@ -14,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import java.util.Set;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -351,5 +353,10 @@ public class LoginActivity extends
     @Override
     public void showUserActionForbidden() {
         Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+    }
+
+    @Override
+    public void askPermissions(Set<String> permsToAsk) {
+        // empty
     }
 }

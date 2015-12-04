@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller;
 import java.util.List;
 
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 
 /**
@@ -13,7 +14,11 @@ public interface CommonController {
 
     List<DbModule> getAllActiveModules(Long userId);
 
+    List<DbModuleCapability> getAllActiveModuleCapabilities(Long moduleId);
+
     DbUser getUserByToken(String userToken);
 
     DbUser getUserByEmail(String userEmail);
+
+    List<DbModule> getAllModules(Long userId);
 }

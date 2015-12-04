@@ -14,7 +14,7 @@ public class LoginUtils {
 
     private LoginUtils() {
     }
-    
+
     /**
      * Reset user token/email and log him out
      */
@@ -22,10 +22,8 @@ public class LoginUtils {
 
         PreferenceUtils.clearUserCredentials(context);
 
-        // stop the kraken
-        if (DeviceUtils.isServiceRunning(
-                context,
-                HarvesterService.class)) {
+        // stop the sensing service
+        if (DeviceUtils.isServiceRunning(context, HarvesterService.class)) {
 
             HarvesterServiceProvider.getInstance(context).stopSensingService();
         }

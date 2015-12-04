@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.util.List;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -174,6 +175,11 @@ public class MainActivity extends
     @Override
     public void showUserActionForbidden() {
         Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+    }
+
+    @Override
+    public void askPermissions(Set<String> permsToAsk) {
+        // empty
     }
 
     @Override

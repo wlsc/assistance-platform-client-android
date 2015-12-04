@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.controller.modules;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -9,13 +10,17 @@ import java.util.Set;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
+import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
+import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.AvailableModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -150,5 +155,88 @@ public class ModulesControllerImpl extends
         }
 
         return permissionsToAsk;
+    }
+
+    @Override
+    public long insertModuleToDb(DbModule module) {
+        return daoProvider.getModuleDao().insert(module);
+    }
+
+    @Override
+    public void insertModuleCapabilitiesToDb(List<DbModuleCapability> dbRequiredCaps) {
+        daoProvider.getModuleCapabilityDao().insert(dbRequiredCaps);
+    }
+
+    @Override
+    public DbModule getModuleByPackageIdUserId(String packageName, Long userId) {
+        return daoProvider.getModuleDao().getByPackageIdUserId(packageName, userId);
+    }
+
+    @Override
+    public void uninstallModuleFromDb(DbModule module) {
+
+        Log.d(TAG, "Removing module from db...");
+
+        List<DbModule> modulesToDelete = new ArrayList<>(1);
+        modulesToDelete.add(module);
+
+        daoProvider.getModuleDao().delete(modulesToDelete);
+
+        Log.d(TAG, "Finished removing module from db!");
+    }
+
+    @Override
+    public void requestModuleActivation(ToggleModuleRequestDto toggleModuleRequest,
+                                        String userToken,
+                                        final DbModule module,
+                                        final OnModuleActivatedResponseHandler handler) {
+
+        ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(
+                presenter.getContext())
+                .create(ModuleEndpoint.class);
+
+        moduleEndpoint.activateModule(userToken, toggleModuleRequest,
+                new Callback<Void>() {
+
+                    @Override
+                    public void success(Void aVoid, Response response) {
+                        handler.onModuleActivateSuccess(module, response);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        handler.onModuleActivateFailed(error);
+                    }
+                });
+    }
+
+    @Override
+    public void requestModuleDeactivation(ToggleModuleRequestDto toggleModuleRequest,
+                                          String userToken,
+                                          final DbModule module,
+                                          final OnModuleDeactivatedResponseHandler handler) {
+
+        ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(
+                presenter.getContext())
+                .create(ModuleEndpoint.class);
+
+        moduleEndpoint.deactivateModule(userToken, toggleModuleRequest,
+                new Callback<Void>() {
+
+                    @Override
+                    public void success(Void aVoid, Response response) {
+                        handler.onModuleDeactivateSuccess(module, response);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        handler.onModuleDeactivateFailed(module, error);
+                    }
+                });
+    }
+
+    @Override
+    public List<DbModuleCapability> getAllActiveModuleCapabilities(Long moduleId) {
+        return daoProvider.getModuleCapabilityDao().getAllActive(moduleId);
     }
 }

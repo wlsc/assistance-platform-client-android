@@ -21,15 +21,15 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 18.10.2015
  */
-public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModulesAdapter.ViewHolder> {
+public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHolder> {
 
-    private static final String TAG = AvailableModulesAdapter.class.getSimpleName();
+    private static final String TAG = ModulesAdapter.class.getSimpleName();
 
     private static final int EMPTY_VIEW_TYPE = 10;
 
     private List<DbModule> modules;
 
-    public AvailableModulesAdapter(List<DbModule> modules) {
+    public ModulesAdapter(List<DbModule> modules) {
         this.modules = modules;
     }
 
@@ -175,7 +175,7 @@ public class AvailableModulesAdapter extends RecyclerView.Adapter<AvailableModul
     /**
      * An empty view holder if no items available
      */
-    public class EmptyViewHolder extends AvailableModulesAdapter.ViewHolder {
+    public class EmptyViewHolder extends ModulesAdapter.ViewHolder {
         public EmptyViewHolder(View view) {
             super(view);
         }
