@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.presenter.modules;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -502,6 +503,7 @@ public class ModulesPresenterImpl extends
 
         view.changeModuleLayout(selectedModuleId);
         startHarvester();
+        view.showModuleInstallationSuccessful();
     }
 
     @Override
@@ -535,7 +537,19 @@ public class ModulesPresenterImpl extends
                         .getDangerousPermissionsToDtoMapping()
                         .get(apiType);
 
-                permsRequiredAccumulator.addAll(Arrays.asList(perms));
+                if (perms == null) {
+                    continue;
+                }
+
+                for (String perm : perms) {
+
+                    // check permission was already granted
+                    if (ContextCompat.checkSelfPermission(getContext(), perm) !=
+                            PackageManager.PERMISSION_GRANTED) {
+
+                        permsRequiredAccumulator.add(perm);
+                    }
+                }
             }
         }
 
@@ -547,16 +561,42 @@ public class ModulesPresenterImpl extends
 
             for (DbModuleCapability response : optionalSensors) {
 
+                if (response == null) {
+                    continue;
+                }
+
                 String apiType = response.getType();
                 String[] perms = PermissionUtils.getInstance(getContext())
                         .getDangerousPermissionsToDtoMapping()
                         .get(apiType);
 
-                permsRequiredAccumulator.addAll(Arrays.asList(perms));
+                if (perms == null) {
+                    continue;
+                }
+
+                for (String perm : perms) {
+
+                    // check permission was already granted
+                    if (ContextCompat.checkSelfPermission(getContext(), perm) !=
+                            PackageManager.PERMISSION_GRANTED) {
+
+                        permsRequiredAccumulator.add(perm);
+                    }
+                }
             }
         }
 
-        view.askPermissions(permsRequiredAccumulator);
+        if (permsRequiredAccumulator.isEmpty()) {
+
+            // all permissions were granted
+            controller.insertModuleToDb(ConverterUtils
+                    .convertModule(availableModuleResponseMapping.get(selectedModuleId)));
+
+            EventBus.getDefault().post(new ModuleInstallationSuccessfulEvent(selectedModuleId));
+
+        } else {
+            view.askPermissions(permsRequiredAccumulator);
+        }
     }
 
     @Override
