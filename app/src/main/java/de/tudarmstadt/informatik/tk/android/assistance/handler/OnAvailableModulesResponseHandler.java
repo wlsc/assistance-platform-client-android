@@ -2,7 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.handler;
 
 import java.util.List;
 
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.AvailableModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleResponseDto;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -12,7 +12,7 @@ import retrofit.client.Response;
  */
 public interface OnAvailableModulesResponseHandler {
 
-    void onAvailableModulesSuccess(List<AvailableModuleResponseDto> apiResponse, Response response);
+    void onAvailableModulesSuccess(List<ModuleResponseDto> apiResponse, Response response);
 
     void onAvailableModulesError(RetrofitError error);
 

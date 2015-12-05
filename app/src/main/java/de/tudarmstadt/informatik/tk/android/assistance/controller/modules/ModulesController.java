@@ -8,6 +8,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesRe
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
@@ -40,6 +41,8 @@ public interface ModulesController extends CommonController {
     long insertModuleToDb(DbModule module);
 
     void insertModuleCapabilitiesToDb(List<DbModuleCapability> dbRequiredCaps);
+
+    void insertModuleWithCapabilities(ModuleResponseDto moduleResponseDto);
 
     DbModule getModuleByPackageIdUserId(String packageName, Long userId);
 

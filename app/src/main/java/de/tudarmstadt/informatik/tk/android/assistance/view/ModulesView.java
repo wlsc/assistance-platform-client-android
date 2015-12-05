@@ -2,7 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.view;
 
 import java.util.List;
 
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.AvailableModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
@@ -33,14 +33,14 @@ public interface ModulesView extends CommonView {
      *
      * @param selectedModule
      */
-    void showPermissionDialog(AvailableModuleResponseDto selectedModule);
+    void showPermissionDialog(ModuleResponseDto selectedModule);
 
     /**
      * Shows uninstall dialog to user
      *
      * @param selectedModule
      */
-    void showUninstallDialog(AvailableModuleResponseDto selectedModule);
+    void showUninstallDialog(ModuleResponseDto selectedModule);
 
     /**
      * Shows some dialog, because that permissions are crucial for that module
@@ -52,7 +52,7 @@ public interface ModulesView extends CommonView {
     /**
      * Shows more information about an assistance module
      */
-    void showMoreModuleInformationDialog(AvailableModuleResponseDto selectedModule);
+    void showMoreModuleInformationDialog(ModuleResponseDto selectedModule);
 
     /**
      * Changes layout of installed module to installed state

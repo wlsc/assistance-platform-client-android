@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Wladimir Schmidt on 30.06.2015.
  */
-public class AvailableModuleResponseDto {
+public class ModuleResponseDto {
 
     @SerializedName("id")
     @Expose
@@ -46,10 +46,10 @@ public class AvailableModuleResponseDto {
     @Expose
     private String supportEmail;
 
-    public AvailableModuleResponseDto() {
+    public ModuleResponseDto() {
     }
 
-    public AvailableModuleResponseDto(String modulePackage, String title, String logo, String descriptionShort, String descriptionFull, String copyright, List<ModuleCapabilityResponseDto> sensorsRequired, List<ModuleCapabilityResponseDto> sensorsOptional, String supportEmail) {
+    public ModuleResponseDto(String modulePackage, String title, String logo, String descriptionShort, String descriptionFull, String copyright, List<ModuleCapabilityResponseDto> sensorsRequired, List<ModuleCapabilityResponseDto> sensorsOptional, String supportEmail) {
         this.modulePackage = modulePackage;
         this.title = title;
         this.logo = logo;
@@ -135,7 +135,7 @@ public class AvailableModuleResponseDto {
 
     @Override
     public String toString() {
-        return "AvailableModuleResponseDto{" +
+        return "ModuleResponseDto{" +
                 "modulePackage='" + modulePackage + '\'' +
                 ", title='" + title + '\'' +
                 ", logo='" + logo + '\'' +

@@ -3,7 +3,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint;
 import java.util.List;
 
 import de.tudarmstadt.informatik.tk.android.assistance.Config;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.AvailableModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ToggleModuleRequestDto;
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -21,7 +21,7 @@ public interface ModuleEndpoint {
 
     @GET(Config.ASSISTANCE_MODULE_LIST_ENDPOINT)
     void getAvailableModules(@Header("X-AUTH-TOKEN") String userToken,
-                             Callback<List<AvailableModuleResponseDto>> callback);
+                             Callback<List<ModuleResponseDto>> callback);
 
     @GET(Config.ASSISTANCE_MODULE_ACTIVE_ENDPOINT)
     void getActiveModules(@Header("X-AUTH-TOKEN") String userToken,

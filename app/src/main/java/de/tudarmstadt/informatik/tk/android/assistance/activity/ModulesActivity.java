@@ -34,8 +34,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstal
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.AvailableModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleCapabilityResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenter;
@@ -252,6 +252,11 @@ public class ModulesActivity extends
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+
         presenter.presentRequestPermissionResult(requestCode, permissions, grantResults);
     }
 
@@ -340,9 +345,12 @@ public class ModulesActivity extends
     @Override
     public void askPermissions(Set<String> permsToAsk) {
 
-        ActivityCompat.requestPermissions(this,
-                permsToAsk.toArray(new String[permsToAsk.size()]),
-                Constants.PERM_MODULE_INSTALL);
+        if (permsToAsk != null && !permsToAsk.isEmpty()) {
+
+            ActivityCompat.requestPermissions(this,
+                    permsToAsk.toArray(new String[permsToAsk.size()]),
+                    Constants.PERM_MODULE_INSTALL);
+        }
     }
 
     @Override
@@ -400,7 +408,7 @@ public class ModulesActivity extends
     }
 
     @Override
-    public void showPermissionDialog(AvailableModuleResponseDto selectedModule) {
+    public void showPermissionDialog(ModuleResponseDto selectedModule) {
 
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_permissions, null);
@@ -478,7 +486,7 @@ public class ModulesActivity extends
     }
 
     @Override
-    public void showUninstallDialog(final AvailableModuleResponseDto selectedModule) {
+    public void showUninstallDialog(final ModuleResponseDto selectedModule) {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 
@@ -513,7 +521,7 @@ public class ModulesActivity extends
     }
 
     @Override
-    public void showMoreModuleInformationDialog(final AvailableModuleResponseDto selectedModule) {
+    public void showMoreModuleInformationDialog(final ModuleResponseDto selectedModule) {
 
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_module_more_info, null);
@@ -543,8 +551,7 @@ public class ModulesActivity extends
 
         Log.d(TAG, "Changing layout of a module to installed...");
 
-        final ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView
-                .getAdapter();
+        final ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView.getAdapter();
 
         DbModule module = adapter.getItem(moduleId);
 

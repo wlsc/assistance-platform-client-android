@@ -3,7 +3,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.util;
 import java.util.Date;
 import java.util.Locale;
 
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.AvailableModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
@@ -26,13 +26,13 @@ public class ConverterUtils {
      * @param dbModule
      * @return
      */
-    public static AvailableModuleResponseDto convertModule(DbModule dbModule) {
+    public static ModuleResponseDto convertModule(DbModule dbModule) {
 
         if (dbModule == null) {
             return null;
         }
 
-        AvailableModuleResponseDto availableModuleResponse = new AvailableModuleResponseDto();
+        ModuleResponseDto availableModuleResponse = new ModuleResponseDto();
 
         availableModuleResponse.setTitle(dbModule.getTitle());
         availableModuleResponse.setLogo(dbModule.getLogoUrl());
@@ -51,7 +51,7 @@ public class ConverterUtils {
      * @param availableModuleResponse
      * @return
      */
-    public static DbModule convertModule(AvailableModuleResponseDto availableModuleResponse) {
+    public static DbModule convertModule(ModuleResponseDto availableModuleResponse) {
 
         if (availableModuleResponse == null) {
             return null;

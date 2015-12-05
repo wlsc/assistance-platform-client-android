@@ -12,15 +12,18 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesRe
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.AvailableModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleCapabilityResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
+import de.tudarmstadt.informatik.tk.android.assistance.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -51,7 +54,7 @@ public class ModulesControllerImpl extends
                 .create(ModuleEndpoint.class);
 
         moduleEndpoint.getAvailableModules(userToken,
-                new Callback<List<AvailableModuleResponseDto>>() {
+                new Callback<List<ModuleResponseDto>>() {
 
                     /**
                      * Successful HTTP response.
@@ -60,7 +63,7 @@ public class ModulesControllerImpl extends
                      * @param response
                      */
                     @Override
-                    public void success(final List<AvailableModuleResponseDto> availableModulesList,
+                    public void success(final List<ModuleResponseDto> availableModulesList,
                                         Response response) {
                         availableModulesHandler.onAvailableModulesSuccess(availableModulesList,
                                 response);
@@ -233,6 +236,50 @@ public class ModulesControllerImpl extends
                         handler.onModuleDeactivateFailed(module, error);
                     }
                 });
+    }
+
+    @Override
+    public void insertModuleWithCapabilities(ModuleResponseDto moduleResponse) {
+
+        DbUser user = getUserByEmail(PreferenceUtils.getUserEmail(presenter.getContext()));
+
+        if (user == null) {
+            return;
+        }
+
+        DbModule module = ConverterUtils.convertModule(moduleResponse);
+
+        module.setActive(true);
+        module.setUserId(user.getId());
+
+        long installId = insertModuleToDb(module);
+
+        if (installId == -1) {
+            return;
+        }
+
+        List<ModuleCapabilityResponseDto> requiredCaps = moduleResponse.getSensorsRequired();
+        List<ModuleCapabilityResponseDto> optionalCaps = moduleResponse.getSensorsOptional();
+
+        List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(requiredCaps.size());
+        List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(optionalCaps.size());
+
+        for (ModuleCapabilityResponseDto response : requiredCaps) {
+
+            final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
+            dbCap.setModuleId(installId);
+            dbRequiredCaps.add(dbCap);
+        }
+
+        for (ModuleCapabilityResponseDto response : optionalCaps) {
+
+            final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
+            dbCap.setModuleId(installId);
+            dbOptionalCaps.add(dbCap);
+        }
+
+        insertModuleCapabilitiesToDb(dbRequiredCaps);
+        insertModuleCapabilitiesToDb(dbOptionalCaps);
     }
 
     @Override

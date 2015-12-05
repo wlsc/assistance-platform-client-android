@@ -21,8 +21,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModule
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnUserNotFoundInDbHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.AvailableModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleCapabilityResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
@@ -55,10 +55,10 @@ public class ModulesPresenterImpl extends
     private ModulesView view;
     private ModulesController controller;
 
-    private List<AvailableModuleResponseDto> availableModules;
+    private List<ModuleResponseDto> availableModules;
     private List<String> mActiveModules;
 
-    private Map<String, AvailableModuleResponseDto> availableModuleResponseMapping;
+    private Map<String, ModuleResponseDto> availableModuleResponseMapping;
 
     private String selectedModuleId;
 
@@ -133,7 +133,7 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onAvailableModulesSuccess(final List<AvailableModuleResponseDto> apiResponse, Response response) {
+    public void onAvailableModulesSuccess(final List<ModuleResponseDto> apiResponse, Response response) {
 
         if (apiResponse != null && !apiResponse.isEmpty()) {
 
@@ -148,7 +148,7 @@ public class ModulesPresenterImpl extends
                 availableModuleResponseMapping.clear();
             }
 
-            for (AvailableModuleResponseDto resp : apiResponse) {
+            for (ModuleResponseDto resp : apiResponse) {
                 availableModuleResponseMapping.put(resp.getModulePackage(), resp);
             }
 
@@ -214,11 +214,11 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void processAvailableModules(List<AvailableModuleResponseDto> availableModulesResponse) {
+    public void processAvailableModules(List<ModuleResponseDto> availableModulesResponse) {
 
         List<DbModule> convertedModules = new ArrayList<>();
 
-        for (AvailableModuleResponseDto response : availableModulesResponse) {
+        for (ModuleResponseDto response : availableModulesResponse) {
             convertedModules.add(ConverterUtils.convertModule(response));
         }
 
@@ -249,34 +249,11 @@ public class ModulesPresenterImpl extends
             if (module.getActive()) {
 
                 // insert active module into db
-                long installId = controller.insertModuleToDb(module);
+                controller.insertModuleWithCapabilities(availableModuleResponseMapping
+                        .get(module.getPackageName()));
 
-                // inserting module capabilities
-                AvailableModuleResponseDto moduleResponse = availableModuleResponseMapping
-                        .get(module.getPackageName());
-
-                List<ModuleCapabilityResponseDto> requiredCaps = moduleResponse.getSensorsRequired();
-                List<ModuleCapabilityResponseDto> optionalCaps = moduleResponse.getSensorsOptional();
-
-                List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(requiredCaps.size());
-                List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(optionalCaps.size());
-
-                for (ModuleCapabilityResponseDto response : requiredCaps) {
-
-                    final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
-                    dbCap.setModuleId(installId);
-                    dbRequiredCaps.add(dbCap);
-                }
-
-                for (ModuleCapabilityResponseDto response : optionalCaps) {
-
-                    final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
-                    dbCap.setModuleId(installId);
-                    dbOptionalCaps.add(dbCap);
-                }
-
-                controller.insertModuleCapabilitiesToDb(dbRequiredCaps);
-                controller.insertModuleCapabilitiesToDb(dbOptionalCaps);
+                // change layout after module insertion
+                view.changeModuleLayout(module.getPackageName());
             }
         }
     }
@@ -421,7 +398,7 @@ public class ModulesPresenterImpl extends
     @Override
     public void presentPermissionDialog() {
 
-        final AvailableModuleResponseDto selectedModule = availableModuleResponseMapping
+        final ModuleResponseDto selectedModule = availableModuleResponseMapping
                 .get(selectedModuleId);
 
         if (selectedModule == null) {
@@ -435,7 +412,7 @@ public class ModulesPresenterImpl extends
     @Override
     public void presentUninstallDialog() {
 
-        final AvailableModuleResponseDto selectedModule = availableModuleResponseMapping
+        final ModuleResponseDto selectedModule = availableModuleResponseMapping
                 .get(selectedModuleId);
 
         if (selectedModule == null) {
@@ -474,9 +451,10 @@ public class ModulesPresenterImpl extends
                     view.showPermissionsAreCrucialDialog(declinedPermissions);
                 } else {
                     // if all permissions were granted, we can install that module
-                    controller.insertModuleToDb(ConverterUtils
-                            .convertModule(availableModuleResponseMapping
-                                    .get(selectedModuleId)));
+                    controller.insertModuleWithCapabilities(availableModuleResponseMapping
+                            .get(selectedModuleId));
+
+                    EventBus.getDefault().post(new ModuleInstallationSuccessfulEvent(selectedModuleId));
                 }
 
                 break;
@@ -488,7 +466,7 @@ public class ModulesPresenterImpl extends
     @Override
     public void presentMoreModuleInformationDialog() {
 
-        final AvailableModuleResponseDto selectedModule = availableModuleResponseMapping
+        final ModuleResponseDto selectedModule = availableModuleResponseMapping
                 .get(selectedModuleId);
 
         if (selectedModule == null) {
@@ -518,7 +496,7 @@ public class ModulesPresenterImpl extends
         // accumulate all permissions
         Set<String> permsRequiredAccumulator = new HashSet<>();
 
-        AvailableModuleResponseDto module = availableModuleResponseMapping.get(selectedModuleId);
+        ModuleResponseDto module = availableModuleResponseMapping.get(selectedModuleId);
 
         if (module == null) {
             return;
@@ -588,9 +566,9 @@ public class ModulesPresenterImpl extends
 
         if (permsRequiredAccumulator.isEmpty()) {
 
-            // all permissions were granted
-            controller.insertModuleToDb(ConverterUtils
-                    .convertModule(availableModuleResponseMapping.get(selectedModuleId)));
+            // all permissions were granted, insert module
+            controller.insertModuleWithCapabilities(
+                    availableModuleResponseMapping.get(selectedModuleId));
 
             EventBus.getDefault().post(new ModuleInstallationSuccessfulEvent(selectedModuleId));
 
@@ -625,7 +603,7 @@ public class ModulesPresenterImpl extends
             } else {
 
                 // saving module capabilities
-                AvailableModuleResponseDto moduleResponse = availableModuleResponseMapping
+                ModuleResponseDto moduleResponse = availableModuleResponseMapping
                         .get(module.getPackageName());
 
                 List<ModuleCapabilityResponseDto> requiredCaps = moduleResponse.getSensorsRequired();
