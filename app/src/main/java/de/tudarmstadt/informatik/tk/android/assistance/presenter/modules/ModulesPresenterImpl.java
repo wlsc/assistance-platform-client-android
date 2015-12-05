@@ -424,6 +424,7 @@ public class ModulesPresenterImpl extends
                 .get(selectedModuleId);
 
         if (selectedModule == null) {
+            Log.d(TAG, "Module is not in mapping!");
             return;
         }
 
@@ -444,8 +445,8 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void setSelectedModuleId(String string) {
-        this.selectedModuleId = "";
+    public void setSelectedModuleId(String modulePackageName) {
+        selectedModuleId = modulePackageName;
     }
 
     @Override

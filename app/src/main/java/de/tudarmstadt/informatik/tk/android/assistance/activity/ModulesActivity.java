@@ -369,11 +369,6 @@ public class ModulesActivity extends
     }
 
     @Override
-    public void finishActivity() {
-        finish();
-    }
-
-    @Override
     public void setModuleList(List<DbModule> installedModules) {
 
         mAvailableModulesRecyclerView

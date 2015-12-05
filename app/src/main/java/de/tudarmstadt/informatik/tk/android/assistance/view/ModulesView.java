@@ -21,8 +21,6 @@ public interface ModulesView extends CommonView {
 
     void setSwipeRefreshing(boolean isEnabled);
 
-    void finishActivity();
-
     void setModuleList(List<DbModule> installedModules);
 
     int getModulesAmount();
