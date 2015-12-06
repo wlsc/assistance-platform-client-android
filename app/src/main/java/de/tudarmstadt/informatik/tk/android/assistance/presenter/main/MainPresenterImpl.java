@@ -5,7 +5,6 @@ import android.content.Context;
 
 import java.util.List;
 
-import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainController;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
@@ -16,7 +15,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenter
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
@@ -59,54 +58,54 @@ public class MainPresenterImpl extends
     @Override
     public void doInitView() {
 
-        boolean accessibilityServiceActivated = PreferenceProvider
-                .getInstance(getContext())
-                .getActivated();
+//        boolean accessibilityServiceActivated = PreferenceProvider
+//                .getInstance(getContext())
+//                .getActivated();
 
-        if (accessibilityServiceActivated) {
+//        if (accessibilityServiceActivated) {
 
-            view.initView();
+        view.initView();
 
-            if (BuildConfig.DEBUG) {
-                PreferenceUtils.setDeveloperStatus(getContext(), true);
-            }
+        if (AppUtils.isDebug(getContext())) {
+            PreferenceUtils.setDeveloperStatus(getContext(), true);
+        }
 
-            long userId = PreferenceUtils.getCurrentUserId(getContext());
+        long userId = PreferenceUtils.getCurrentUserId(getContext());
 
-            List<DbNews> assistanceNews = controller.getCachedNews(userId);
+        List<DbNews> assistanceNews = controller.getCachedNews(userId);
 
-            if (assistanceNews.isEmpty()) {
-                view.setNoNewsView();
-            } else {
-                view.setNewsItems(assistanceNews);
-            }
+        if (assistanceNews.isEmpty()) {
+            view.setNoNewsView();
+        } else {
+            view.setNewsItems(assistanceNews);
+        }
 
-            view.prepareGCMRegistration();
+        view.prepareGCMRegistration();
 
-            List<DbModule> installedModules = controller.getAllActiveModules(userId);
+        List<DbModule> installedModules = controller.getAllActiveModules(userId);
 
-            if (installedModules == null || installedModules.isEmpty()) {
+        if (installedModules == null || installedModules.isEmpty()) {
 
-                stopHarvester();
+            stopHarvester();
 
-                final String userToken = PreferenceUtils.getUserToken(getContext());
+            final String userToken = PreferenceUtils.getUserToken(getContext());
 
-                controller.requestActiveModules(userToken, this);
-
-            } else {
-
-                Log.d(TAG, "Active modules: " + installedModules.size());
-
-                // user got some active modules
-                startHarvester();
-            }
+            controller.requestActiveModules(userToken, this);
 
         } else {
 
-            Log.d(TAG, "Accessibility Service is NOT active! Showing tutorial...");
+            Log.d(TAG, "Active modules: " + installedModules.size());
 
-            view.showAccessibilityServiceTutorial();
+            // user got some active modules
+            startHarvester();
         }
+
+//        } else {
+//
+//            Log.d(TAG, "Accessibility Service is NOT active! Showing tutorial...");
+//
+//            view.showAccessibilityServiceTutorial();
+//        }
     }
 
     @Override
