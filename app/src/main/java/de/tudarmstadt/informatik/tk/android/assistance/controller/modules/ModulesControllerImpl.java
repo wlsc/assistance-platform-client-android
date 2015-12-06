@@ -147,8 +147,7 @@ public class ModulesControllerImpl extends
                 }
 
                 for (String perm : perms) {
-                    if (PermissionUtils
-                            .getInstance(presenter.getContext())
+                    if (!PermissionUtils.getInstance(presenter.getContext())
                             .isPermissionGranted(perm)) {
 
                         permissionsToAsk.add(perm);
@@ -248,6 +247,10 @@ public class ModulesControllerImpl extends
         }
 
         DbModule module = ConverterUtils.convertModule(moduleResponse);
+
+        if (module == null) {
+            return;
+        }
 
         module.setActive(true);
         module.setUserId(user.getId());

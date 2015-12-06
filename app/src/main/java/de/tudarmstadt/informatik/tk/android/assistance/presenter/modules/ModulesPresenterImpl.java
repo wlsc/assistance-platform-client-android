@@ -600,6 +600,7 @@ public class ModulesPresenterImpl extends
 
             if (installId == null) {
                 view.showModuleInstallationFailed();
+                return;
             } else {
 
                 // saving module capabilities
