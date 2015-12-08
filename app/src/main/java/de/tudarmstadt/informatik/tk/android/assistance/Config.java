@@ -25,8 +25,6 @@ public class Config {
 
     public static final String ASSISTANCE_USER_REGISTER_ENDPOINT = "/users/register";
 
-    public static final String ASSISTANCE_USER_LOGIN_ENDPOINT = "/users/login";
-
     public static final String ASSISTANCE_USER_PASSWORD_ENDPOINT = "/users/password";
 
     public static final String ASSISTANCE_USER_PROFILE_SHORT_ENDPOINT = "/users/profile/short";

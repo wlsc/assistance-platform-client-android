@@ -1,8 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint;
 
 import de.tudarmstadt.informatik.tk.android.assistance.Config;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login.LoginRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.login.LoginResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.UpdateProfileRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationRequestDto;
@@ -27,10 +25,6 @@ public interface UserEndpoint {
     @POST(Config.ASSISTANCE_USER_REGISTER_ENDPOINT)
     void registerUser(@Body RegistrationRequestDto body,
                       Callback<RegistrationResponseDto> callback);
-
-    @POST(Config.ASSISTANCE_USER_LOGIN_ENDPOINT)
-    void loginUser(@Body LoginRequestDto body,
-                   Callback<LoginResponseDto> callback);
 
     @POST(Config.ASSISTANCE_USER_PASSWORD_ENDPOINT)
     void resetUserPassword(@Body ResetPasswordRequestDto body,
