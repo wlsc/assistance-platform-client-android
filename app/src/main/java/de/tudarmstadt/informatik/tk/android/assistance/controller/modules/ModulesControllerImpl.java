@@ -269,16 +269,22 @@ public class ModulesControllerImpl extends
 
         for (ModuleCapabilityResponseDto response : requiredCaps) {
 
-            final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
-            dbCap.setModuleId(installId);
-            dbRequiredCaps.add(dbCap);
+            final DbModuleCapability cap = ConverterUtils.convertModuleCapability(response);
+
+            cap.setModuleId(installId);
+            cap.setActive(true);
+
+            dbRequiredCaps.add(cap);
         }
 
         for (ModuleCapabilityResponseDto response : optionalCaps) {
 
-            final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(response);
-            dbCap.setModuleId(installId);
-            dbOptionalCaps.add(dbCap);
+            final DbModuleCapability cap = ConverterUtils.convertModuleCapability(response);
+
+            cap.setModuleId(installId);
+            cap.setActive(true);
+
+            dbOptionalCaps.add(cap);
         }
 
         insertModuleCapabilitiesToDb(dbRequiredCaps);
