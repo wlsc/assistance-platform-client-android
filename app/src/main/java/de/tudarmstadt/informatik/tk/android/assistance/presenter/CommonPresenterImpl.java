@@ -3,8 +3,6 @@ package de.tudarmstadt.informatik.tk.android.assistance.presenter;
 import android.content.Context;
 
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.service.HarvesterService;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DeviceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CommonView;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -38,9 +36,9 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
 
 //        if (!DeviceUtils.isServiceRunning(getContext(), HarvesterService.class)) {
 
-            HarvesterServiceProvider.getInstance(
-                    getContext())
-                    .startSensingService();
+        HarvesterServiceProvider.getInstance(
+                getContext())
+                .startSensingService();
 //        }
     }
 
@@ -49,9 +47,9 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
 
 //        if (DeviceUtils.isServiceRunning(getContext(), HarvesterService.class)) {
 
-            HarvesterServiceProvider.getInstance(
-                    getContext())
-                    .stopSensingService();
+        HarvesterServiceProvider.getInstance(
+                getContext())
+                .stopSensingService();
 //        }
     }
 
@@ -74,6 +72,7 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
 
             switch (response.getStatus()) {
                 case 400:
+                    view.showRetryLaterNotification();
                     break;
                 case 401:
                     view.showUserActionForbidden();

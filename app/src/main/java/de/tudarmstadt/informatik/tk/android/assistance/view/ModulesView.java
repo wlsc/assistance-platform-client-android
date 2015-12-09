@@ -61,7 +61,7 @@ public interface ModulesView extends CommonView {
      *
      * @param moduleId
      */
-    void changeModuleLayout(String moduleId);
+    void changeModuleLayout(String moduleId, boolean isModuleInstalled);
 
     List<DbModuleCapability> getAllEnabledOptionalPermissions();
 

@@ -172,6 +172,11 @@ public class RegisterActivity extends
     }
 
     @Override
+    public void showRetryLaterNotification() {
+        Toaster.showLong(getApplicationContext(), R.string.error_service_retry_later);
+    }
+
+    @Override
     public void askPermissions(Set<String> permsToAsk) {
         // empty
     }

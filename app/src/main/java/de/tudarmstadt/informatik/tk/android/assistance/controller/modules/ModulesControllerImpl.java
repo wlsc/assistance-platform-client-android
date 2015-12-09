@@ -175,16 +175,26 @@ public class ModulesControllerImpl extends
     }
 
     @Override
-    public void uninstallModuleFromDb(DbModule module) {
+    public boolean uninstallModuleFromDb(DbModule module) {
 
-        Log.d(TAG, "Removing module from db...");
+        Log.d(TAG, "Removing module " + module.getTitle() + " from db...");
 
-        List<DbModule> modulesToDelete = new ArrayList<>(1);
-        modulesToDelete.add(module);
+        DbModule actualDbModule = daoProvider.getModuleDao().getByPackageIdUserId(
+                module.getPackageName(),
+                module.getUserId());
 
-        daoProvider.getModuleDao().delete(modulesToDelete);
+        if (actualDbModule == null) {
+            Log.d(TAG, "actualDbModule was NULL");
+            return false;
+        }
+
+        // remove module capabilities and module itself
+        daoProvider.getModuleCapabilityDao().delete(actualDbModule.getDbModuleCapabilityList());
+        daoProvider.getModuleDao().delete(actualDbModule);
 
         Log.d(TAG, "Finished removing module from db!");
+
+        return true;
     }
 
     @Override
@@ -217,6 +227,14 @@ public class ModulesControllerImpl extends
                                           String userToken,
                                           final DbModule module,
                                           final OnModuleDeactivatedResponseHandler handler) {
+
+        DbUser user = daoProvider.getUserDao().getByToken(userToken);
+
+        if (user == null) {
+            return;
+        }
+
+        module.setUserId(user.getId());
 
         ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(
                 presenter.getContext())

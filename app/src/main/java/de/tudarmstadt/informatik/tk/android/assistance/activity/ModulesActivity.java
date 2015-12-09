@@ -149,9 +149,9 @@ public class ModulesActivity extends
      * @param event
      */
     public void onEvent(ModuleInstallationSuccessfulEvent event) {
-        Log.d(TAG, "After module successful installation. Module id: " + event.getModuleId());
+        Log.d(TAG, "After module successful installation. Module id: " + event.getModulePackageName());
 
-        presenter.setSelectedModuleId(event.getModuleId());
+        presenter.setSelectedModuleId(event.getModulePackageName());
         presenter.presentSuccessfulInstallation();
     }
 
@@ -346,6 +346,11 @@ public class ModulesActivity extends
     @Override
     public void showUserActionForbidden() {
         Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+    }
+
+    @Override
+    public void showRetryLaterNotification() {
+        Toaster.showLong(getApplicationContext(), R.string.error_service_retry_later);
     }
 
     @Override
@@ -561,7 +566,7 @@ public class ModulesActivity extends
     }
 
     @Override
-    public void changeModuleLayout(String moduleId) {
+    public void changeModuleLayout(String moduleId, boolean isModuleInstalled) {
 
         Log.d(TAG, "Changing layout of a module to installed...");
 
@@ -572,7 +577,7 @@ public class ModulesActivity extends
         // defensive programming
         if (module != null) {
 
-            module.setActive(true);
+            module.setActive(isModuleInstalled);
             adapter.notifyDataSetChanged();
         }
     }

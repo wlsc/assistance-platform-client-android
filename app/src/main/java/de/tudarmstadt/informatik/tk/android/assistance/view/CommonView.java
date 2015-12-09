@@ -22,5 +22,7 @@ public interface CommonView {
 
     void showUserActionForbidden();
 
+    void showRetryLaterNotification();
+
     void askPermissions(Set<String> permsToAsk);
 }

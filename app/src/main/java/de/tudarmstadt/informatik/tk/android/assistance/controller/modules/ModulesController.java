@@ -51,7 +51,7 @@ public interface ModulesController extends CommonController {
      *
      * @param module
      */
-    void uninstallModuleFromDb(DbModule module);
+    boolean uninstallModuleFromDb(DbModule module);
 
     void requestModuleActivation(ToggleModuleRequestDto toggleModuleRequest,
                                  String userToken,

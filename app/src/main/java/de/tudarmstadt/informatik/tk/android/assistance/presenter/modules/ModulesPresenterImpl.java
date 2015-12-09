@@ -253,7 +253,7 @@ public class ModulesPresenterImpl extends
                         .get(module.getPackageName()));
 
                 // change layout after module insertion
-                view.changeModuleLayout(module.getPackageName());
+                view.changeModuleLayout(module.getPackageName(), true);
             }
         }
     }
@@ -349,11 +349,13 @@ public class ModulesPresenterImpl extends
             return;
         }
 
-        DbModule existingModule = controller
-                .getModuleByPackageIdUserId(module.getPackageName(), user.getId());
+        DbModule existingModule = controller.getModuleByPackageIdUserId(
+                module.getPackageName(),
+                user.getId());
 
         // module already existing for that user, abort installation
         if (existingModule != null) {
+            Log.d(TAG, "existingModule is NULL");
             return;
         }
 
@@ -450,11 +452,8 @@ public class ModulesPresenterImpl extends
                 if (declinedPermissions.size() > 0) {
                     view.showPermissionsAreCrucialDialog(declinedPermissions);
                 } else {
-                    // if all permissions were granted, we can install that module
-                    controller.insertModuleWithCapabilities(availableModuleResponseMapping
-                            .get(selectedModuleId));
-
-                    EventBus.getDefault().post(new ModuleInstallationSuccessfulEvent(selectedModuleId));
+                    presentModuleInstallation(ConverterUtils.convertModule(
+                            availableModuleResponseMapping.get(selectedModuleId)));
                 }
 
                 break;
@@ -479,7 +478,7 @@ public class ModulesPresenterImpl extends
     @Override
     public void presentSuccessfulInstallation() {
 
-        view.changeModuleLayout(selectedModuleId);
+        view.changeModuleLayout(selectedModuleId, true);
         startHarvester();
         view.showModuleInstallationSuccessful();
     }
@@ -566,13 +565,15 @@ public class ModulesPresenterImpl extends
 
         if (permsRequiredAccumulator.isEmpty()) {
 
-            // all permissions were granted, insert module
-            controller.insertModuleWithCapabilities(
-                    availableModuleResponseMapping.get(selectedModuleId));
+            Log.d(TAG, "permsRequiredAccumulator is empty. its ok. all perms granted");
 
-            EventBus.getDefault().post(new ModuleInstallationSuccessfulEvent(selectedModuleId));
+            presentModuleInstallation(ConverterUtils.convertModule(availableModuleResponseMapping
+                    .get(selectedModuleId)));
 
         } else {
+
+            Log.d(TAG, "Asking permissions...");
+
             view.askPermissions(permsRequiredAccumulator);
         }
     }
@@ -617,22 +618,29 @@ public class ModulesPresenterImpl extends
 
                 for (ModuleCapabilityResponseDto capResponse : requiredCaps) {
 
-                    final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(capResponse);
-                    dbCap.setModuleId(installId);
-                    dbRequiredCaps.add(dbCap);
+                    final DbModuleCapability cap = ConverterUtils.convertModuleCapability(capResponse);
+
+                    cap.setModuleId(installId);
+                    cap.setActive(true);
+
+                    dbRequiredCaps.add(cap);
                 }
 
                 for (ModuleCapabilityResponseDto capResponse : optionalCaps) {
 
-                    final DbModuleCapability dbCap = ConverterUtils.convertModuleCapability(capResponse);
-                    dbCap.setModuleId(installId);
-                    dbOptionalCaps.add(dbCap);
+                    final DbModuleCapability cap = ConverterUtils.convertModuleCapability(capResponse);
+
+                    cap.setModuleId(installId);
+                    cap.setActive(true);
+
+                    dbOptionalCaps.add(cap);
                 }
 
                 controller.insertModuleCapabilitiesToDb(dbRequiredCaps);
                 controller.insertModuleCapabilitiesToDb(dbOptionalCaps);
 
                 PreferenceUtils.setUserHasModules(getContext(), true);
+
                 view.showModuleInstallationSuccessful();
             }
 
@@ -643,10 +651,10 @@ public class ModulesPresenterImpl extends
 
             if (!permsToAsk.isEmpty()) {
                 view.askPermissions(permsToAsk);
+            } else {
+                EventBus.getDefault().post(new ModuleInstallationSuccessfulEvent(
+                        module.getPackageName()));
             }
-
-            EventBus.getDefault().post(new ModuleInstallationSuccessfulEvent(
-                    module.getPackageName()));
 
         } else {
             Log.d(TAG, "FAIL: service responded with code: " + response.getStatus());
@@ -666,16 +674,19 @@ public class ModulesPresenterImpl extends
         // deactivation successful
         if (response.getStatus() == 200 || response.getStatus() == 204) {
 
-            controller.uninstallModuleFromDb(module);
+            if (controller.uninstallModuleFromDb(module)) {
 
-            int numberOfModules = controller.getAllModules(module.getUserId()).size();
+                int numberOfModules = controller.getAllModules(module.getUserId()).size();
 
-            // we have no entries in db, stop the sensing
-            if (numberOfModules == 0) {
-                stopHarvester();
+                // we have no entries in db, stop the sensing
+                if (numberOfModules == 0) {
+                    stopHarvester();
+                }
+
+                view.changeModuleLayout(module.getPackageName(), false);
+
+//            view.showUndoAction(module);
             }
-
-            view.showUndoAction(module);
         }
     }
 
@@ -686,7 +697,20 @@ public class ModulesPresenterImpl extends
 
         // no such installed module -> remove it immediately
         if (error.getResponse() == null || error.getResponse().getStatus() == 400) {
-            controller.uninstallModuleFromDb(module);
+
+            if (controller.uninstallModuleFromDb(module)) {
+
+                int numberOfModules = controller.getAllModules(module.getUserId()).size();
+
+                // we have no entries in db, stop the sensing
+                if (numberOfModules == 0) {
+                    stopHarvester();
+                }
+
+                view.changeModuleLayout(module.getPackageName(), false);
+
+//                view.showUndoAction(module);
+            }
         }
     }
 
