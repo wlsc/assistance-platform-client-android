@@ -35,6 +35,8 @@ public interface ModulesView extends CommonView {
      */
     void showPermissionDialog(ModuleResponseDto selectedModule);
 
+    void toggleShowOptionalPermissions(boolean isVisible);
+
     /**
      * Shows uninstall dialog to user
      *

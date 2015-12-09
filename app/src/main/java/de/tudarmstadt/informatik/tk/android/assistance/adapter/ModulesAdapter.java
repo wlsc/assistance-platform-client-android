@@ -23,7 +23,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
  */
 public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHolder> {
 
-    private static final String TAG = ModulesAdapter.class.getSimpleName();
+//    private static final String TAG = ModulesAdapter.class.getSimpleName();
 
     private static final int EMPTY_VIEW_TYPE = 10;
 

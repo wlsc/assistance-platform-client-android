@@ -13,6 +13,8 @@
     <string name="button_ignore_text">ignore</string>
     <string name="button_next_text">next</string>
     <string name="background">Background</string>
+    <string name="none">none</string>
+    <string name="no_data">no data</string>
 
     <!-- ACCESSIBILITY SERVICE TUTORIAL -->
     <string name="title_activity_accessibility_tutorial">Extended Accessibility Service Tutorial</string>

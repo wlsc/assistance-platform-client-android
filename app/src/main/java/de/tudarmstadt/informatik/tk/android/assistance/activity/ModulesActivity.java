@@ -75,6 +75,8 @@ public class ModulesActivity extends
 
     private RecyclerView permissionOptionalRecyclerView;
 
+    private TextView permissionsEmptyOptions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -408,6 +410,16 @@ public class ModulesActivity extends
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_permissions, null);
 
+        permissionRequiredRecyclerView = ButterKnife.findById(dialogView,
+                R.id.module_permission_required_list);
+        permissionRequiredRecyclerView.setLayoutManager(
+                new org.solovyev.android.views.llm.LinearLayoutManager(this));
+
+        permissionOptionalRecyclerView = ButterKnife.findById(dialogView,
+                R.id.module_permission_optional_list);
+        permissionOptionalRecyclerView.setLayoutManager(
+                new org.solovyev.android.views.llm.LinearLayoutManager(this));
+
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setView(dialogView);
 
@@ -439,6 +451,10 @@ public class ModulesActivity extends
                 .placeholder(R.drawable.no_image)
                 .into(imageView);
 
+        permissionsEmptyOptions = ButterKnife.findById(
+                dialogView,
+                R.id.module_permissions_optional_list_empty);
+
         List<ModuleCapabilityResponseDto> requiredSensors = selectedModule.getSensorsRequired();
         List<ModuleCapabilityResponseDto> optionalSensors = selectedModule.getSensorsOptional();
 
@@ -453,31 +469,34 @@ public class ModulesActivity extends
             }
         }
 
-        if (optionalSensors != null) {
+        if (optionalSensors != null && !optionalSensors.isEmpty()) {
 
             for (ModuleCapabilityResponseDto capability : optionalSensors) {
                 optionalModuleSensors.add(new PermissionListItem(
                         ConverterUtils.convertModuleCapability(capability)
                 ));
             }
+        } else {
+            toggleShowOptionalPermissions(true);
         }
 
-        permissionRequiredRecyclerView = ButterKnife.findById(dialogView,
-                R.id.module_permission_required_list);
-        permissionRequiredRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         permissionRequiredRecyclerView.setAdapter(new PermissionAdapter(
                 requiredModuleSensors,
                 PermissionAdapter.REQUIRED));
 
-        permissionOptionalRecyclerView = ButterKnife.findById(dialogView,
-                R.id.module_permission_optional_list);
-        permissionOptionalRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(
                 optionalModuleSensors,
                 PermissionAdapter.OPTIONAL));
 
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
+    }
+
+    @Override
+    public void toggleShowOptionalPermissions(boolean isVisible) {
+        permissionOptionalRecyclerView.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+        permissionsEmptyOptions.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override

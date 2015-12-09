@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.DtoType;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -22,7 +23,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability
  */
 public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.ViewHolder> {
 
-    private static final String TAG = PermissionAdapter.class.getSimpleName();
+//    private static final String TAG = PermissionAdapter.class.getSimpleName();
 
     private final List<PermissionListItem> mData;
 
@@ -60,18 +61,16 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
         PermissionListItem permItem = mData.get(position);
         DbModuleCapability capability = permItem.getCapability();
 
-        String title;
+        String title = "";
 
         if (capability != null) {
-            title = capability.getType();
-        } else {
-            title = "";
+            title = DtoType.getName(DtoType.getDtoType(capability.getType()), holder.mTitle.getResources());
         }
 
         holder.mTitle.setText(title);
         holder.mEnablerSwitch.setChecked(permItem.isChecked());
 
-        if (requiredState == 1) {
+        if (requiredState == REQUIRED) {
             holder.mEnablerSwitch.setChecked(true);
             holder.mEnablerSwitch.setEnabled(false);
         }
