@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -66,13 +67,13 @@ public class ModulesActivity extends
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    private OnRefreshListener onRefreshHandler;
+
     private RecyclerView mAvailableModulesRecyclerView;
 
     private RecyclerView permissionRequiredRecyclerView;
 
     private RecyclerView permissionOptionalRecyclerView;
-
-    private SwipeRefreshLayout.OnRefreshListener onRefreshHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -290,7 +291,7 @@ public class ModulesActivity extends
                 @Override
                 public void onRefresh() {
 
-                    mSwipeRefreshLayout.setRefreshing(true);
+                    setSwipeRefreshing(true);
 
                     // request new modules information
                     presenter.requestAvailableModules();
@@ -305,6 +306,9 @@ public class ModulesActivity extends
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+
+        // set updating spinner to list
+        setSwipeRefreshing(true);
     }
 
     @Override
@@ -361,8 +365,7 @@ public class ModulesActivity extends
 
     @Override
     public void setErrorView() {
-        mAvailableModulesRecyclerView.setAdapter(new ModulesAdapter(Collections.EMPTY_LIST));
-        setSwipeRefreshing(false);
+        setNoModulesView();
     }
 
     @Override
@@ -378,29 +381,21 @@ public class ModulesActivity extends
 
     @Override
     public void setModuleList(List<DbModule> installedModules) {
-
-        mAvailableModulesRecyclerView
-                .setAdapter(new ModulesAdapter(installedModules));
+        mAvailableModulesRecyclerView.setAdapter(new ModulesAdapter(installedModules));
     }
 
     @Override
     public int getModulesAmount() {
 
-        ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView
-                .getAdapter();
+        ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView.getAdapter();
 
-        if (adapter != null) {
-            return adapter.getItemCount();
-        } else {
-            return 0;
-        }
+        return adapter == null ? 0 : adapter.getItemCount();
     }
 
     @Override
     public void swapModuleData(List<DbModule> newModules) {
 
-        ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView
-                .getAdapter();
+        ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView.getAdapter();
 
         if (adapter != null) {
             adapter.swapData(newModules);
@@ -551,7 +546,7 @@ public class ModulesActivity extends
 
         Log.d(TAG, "Changing layout of a module to installed...");
 
-        final ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView.getAdapter();
+        ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView.getAdapter();
 
         DbModule module = adapter.getItem(moduleId);
 

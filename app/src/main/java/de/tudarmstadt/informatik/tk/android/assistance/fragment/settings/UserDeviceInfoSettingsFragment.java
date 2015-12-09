@@ -5,22 +5,23 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v7.widget.Toolbar;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.device.DeviceUserDefinedNameRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbDevice;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.device.DeviceUserDefinedNameRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.DeviceEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.DaoProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
+import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * Created by Wladimir Schmidt on 29.06.2015.
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 29.06.2015
  */
 public class UserDeviceInfoSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 

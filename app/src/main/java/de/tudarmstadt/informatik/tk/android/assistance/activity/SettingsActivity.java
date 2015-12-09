@@ -3,7 +3,6 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v7.widget.Toolbar;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -21,12 +20,16 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.Develop
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorsListFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDeviceInfoSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 
 /**
  * Core user settings activity
+ *
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 28.06.2015
  */
 public class SettingsActivity extends PreferenceActivity {
 

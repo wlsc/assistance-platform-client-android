@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,18 +19,20 @@ import butterknife.OnTextChanged;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.ProfileResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.UpdateProfileRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.UserSocialServiceDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.UpdateProfileRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * Created by Wladimir Schmidt on 29.06.2015.
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 29.06.2015
  */
 public class UserProfileFragment extends Fragment {
 

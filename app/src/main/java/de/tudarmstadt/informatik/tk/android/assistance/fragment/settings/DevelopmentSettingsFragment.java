@@ -28,7 +28,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.StorageUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 
 /**
- * Created by Wladimir Schmidt on 29.06.2015.
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 29.06.2015
  */
 public class DevelopmentSettingsFragment extends
         PreferenceFragment implements

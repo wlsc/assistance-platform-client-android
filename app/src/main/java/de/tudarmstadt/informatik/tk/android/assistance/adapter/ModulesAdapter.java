@@ -64,7 +64,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
             final ViewHolder viewHolder = (ViewHolder) holder;
 
             viewHolder.mMainTitle.setText(module.getTitle());
-            viewHolder.mMainSecondaryTitle.setText(module.getDescriptionShort());
+            viewHolder.mShortDescription.setText(module.getDescriptionShort());
 
             if (module.getActive()) {
 
@@ -187,7 +187,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
         protected final TextView mMainTitle;
-        protected final TextView mMainSecondaryTitle;
+        protected final TextView mShortDescription;
         protected final Button mMoreInfoModule;
         protected final Button mInstallModule;
         protected final Button mUninstallModule;
@@ -195,7 +195,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
         public ViewHolder(View view) {
             super(view);
             mMainTitle = ButterKnife.findById(view, R.id.main_title);
-            mMainSecondaryTitle = ButterKnife.findById(view, R.id.main_secondary_title);
+            mShortDescription = ButterKnife.findById(view, R.id.main_short_description);
             mMoreInfoModule = ButterKnife.findById(view, R.id.more_info_module);
             mInstallModule = ButterKnife.findById(view, R.id.install_module);
             mUninstallModule = ButterKnife.findById(view, R.id.uninstall_module);

@@ -8,7 +8,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 
 /**
- * Created by Wladimir Schmidt on 29.06.2015.
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 29.06.2015
  */
 public class ApplicationSettingsFragment extends PreferenceFragment {
 
