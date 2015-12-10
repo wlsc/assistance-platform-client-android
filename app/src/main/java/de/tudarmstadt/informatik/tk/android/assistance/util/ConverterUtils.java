@@ -1,10 +1,12 @@
 package de.tudarmstadt.informatik.tk.android.assistance.util;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleCapabilityResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
@@ -41,6 +43,33 @@ public class ConverterUtils {
         availableModuleResponse.setDescriptionFull(dbModule.getDescriptionFull());
         availableModuleResponse.setModulePackage(dbModule.getPackageName());
         availableModuleResponse.setSupportEmail(dbModule.getSupportEmail());
+
+        List<DbModuleCapability> dbModuleCaps = dbModule.getDbModuleCapabilityList();
+
+        if (dbModuleCaps != null) {
+
+            List<ModuleCapabilityResponseDto> reqCapsDto = new ArrayList<>();
+            List<ModuleCapabilityResponseDto> optCapsDto = new ArrayList<>();
+
+            for (DbModuleCapability dbCap : dbModuleCaps) {
+
+                ModuleCapabilityResponseDto capabilityResponseDto = new ModuleCapabilityResponseDto();
+
+                capabilityResponseDto.setCollectionFrequency(dbCap.getCollectionFrequency());
+                capabilityResponseDto.setRequiredUpdateFrequency(dbCap.getRequiredUpdateFrequency());
+                capabilityResponseDto.setMinRequiredReadingsOnUpdate(dbCap.getMinRequiredReadingsOnUpdate());
+                capabilityResponseDto.setType(dbCap.getType());
+
+                if (dbCap.getRequired()) {
+                    reqCapsDto.add(capabilityResponseDto);
+                } else {
+                    optCapsDto.add(capabilityResponseDto);
+                }
+            }
+
+            availableModuleResponse.setSensorsRequired(reqCapsDto);
+            availableModuleResponse.setSensorsOptional(optCapsDto);
+        }
 
         return availableModuleResponse;
     }
