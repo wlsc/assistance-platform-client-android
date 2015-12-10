@@ -271,9 +271,14 @@ public class ModulesActivity extends
         setContentView(R.layout.activity_available_modules);
 
         mToolbar = ButterKnife.findById(this, R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        try {
+            setSupportActionBar(mToolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        } catch (Exception e) {
+            // fix for Samsung Android 4.2.2 AppCompat ClassNotFoundException
+        }
 
         setTitle(R.string.module_list_activity_title);
 

@@ -66,8 +66,12 @@ public class MainActivity extends
 
         ButterKnife.bind(this);
 
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        try {
+            setSupportActionBar(mToolbar);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        } catch (Exception e) {
+            // fix for Samsung Android 4.2.2 AppCompat ClassNotFoundException
+        }
 
         setTitle(R.string.main_activity_title);
     }
