@@ -611,6 +611,11 @@ public class ModulesPresenterImpl extends
                 List<ModuleCapabilityResponseDto> requiredCaps = moduleResponse.getSensorsRequired();
                 List<ModuleCapabilityResponseDto> optionalCaps = moduleResponse.getSensorsOptional();
 
+                if (requiredCaps == null) {
+                    Log.d(TAG, "requiredCaps is NULL! Cannot continue.");
+                    return;
+                }
+
                 List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(
                         requiredCaps == null ? 0 : requiredCaps.size());
                 List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(
