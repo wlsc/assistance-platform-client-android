@@ -78,6 +78,15 @@
                 android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
                 android:paddingTop="@dimen/dialog_list_padding_vertical_material" />
 
+            <TextView
+                android:id="@+id/module_permissions_required_list_empty"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="start"
+                android:gravity="start"
+                android:text="@string/none"
+                android:visibility="gone" />
+
         </LinearLayout>
 
         <LinearLayout

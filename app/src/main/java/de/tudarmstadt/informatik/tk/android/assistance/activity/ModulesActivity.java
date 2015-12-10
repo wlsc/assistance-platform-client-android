@@ -75,7 +75,8 @@ public class ModulesActivity extends
 
     private RecyclerView permissionOptionalRecyclerView;
 
-    private TextView permissionsEmptyOptions;
+    private TextView permissionsEmptyRequired;
+    private TextView permissionsEmptyOptional;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -461,7 +462,11 @@ public class ModulesActivity extends
                 .placeholder(R.drawable.no_image)
                 .into(imageView);
 
-        permissionsEmptyOptions = ButterKnife.findById(
+        permissionsEmptyRequired = ButterKnife.findById(
+                dialogView,
+                R.id.module_permissions_required_list_empty);
+
+        permissionsEmptyOptional = ButterKnife.findById(
                 dialogView,
                 R.id.module_permissions_optional_list_empty);
 
@@ -471,12 +476,14 @@ public class ModulesActivity extends
         List<PermissionListItem> requiredModuleSensors = new ArrayList<>();
         List<PermissionListItem> optionalModuleSensors = new ArrayList<>();
 
-        if (requiredSensors != null) {
+        if (requiredSensors != null && !requiredSensors.isEmpty()) {
 
             for (ModuleCapabilityResponseDto capability : requiredSensors) {
                 requiredModuleSensors.add(new PermissionListItem(
                         ConverterUtils.convertModuleCapability(capability)));
             }
+        } else {
+            toggleShowRequiredPermissions(true);
         }
 
         if (optionalSensors != null && !optionalSensors.isEmpty()) {
@@ -504,9 +511,15 @@ public class ModulesActivity extends
     }
 
     @Override
+    public void toggleShowRequiredPermissions(boolean isVisible) {
+        permissionRequiredRecyclerView.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+        permissionsEmptyRequired.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
     public void toggleShowOptionalPermissions(boolean isVisible) {
         permissionOptionalRecyclerView.setVisibility(isVisible ? View.GONE : View.VISIBLE);
-        permissionsEmptyOptions.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        permissionsEmptyOptional.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override

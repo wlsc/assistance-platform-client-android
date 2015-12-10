@@ -35,6 +35,8 @@ public interface ModulesView extends CommonView {
      */
     void showPermissionDialog(ModuleResponseDto selectedModule);
 
+    void toggleShowRequiredPermissions(boolean isVisible);
+
     void toggleShowOptionalPermissions(boolean isVisible);
 
     /**
