@@ -3,8 +3,8 @@ package de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint;
 import java.util.List;
 
 import de.tudarmstadt.informatik.tk.android.assistance.Config;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ToggleModuleRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;

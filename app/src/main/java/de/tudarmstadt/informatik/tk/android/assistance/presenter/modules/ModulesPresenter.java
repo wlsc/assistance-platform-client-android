@@ -3,7 +3,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.presenter.modules;
 import java.util.List;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.modules.ModulesController;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
