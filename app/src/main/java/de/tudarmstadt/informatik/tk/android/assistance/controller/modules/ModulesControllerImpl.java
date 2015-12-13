@@ -12,18 +12,18 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesRe
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleCapabilityResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleCapabilityResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -91,10 +91,10 @@ public class ModulesControllerImpl extends
                 .create(ModuleEndpoint.class);
 
         moduleEndpoint.getActiveModules(userToken,
-                new Callback<List<String>>() {
+                new Callback<Set<String>>() {
 
                     @Override
-                    public void success(List<String> activeModules,
+                    public void success(Set<String> activeModules,
                                         Response response) {
 
                         handler.onActiveModulesReceived(activeModules, response);

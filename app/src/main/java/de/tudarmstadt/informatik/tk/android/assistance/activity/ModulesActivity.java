@@ -35,17 +35,18 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstal
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleCapabilityResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleCapabilityResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
 
@@ -367,6 +368,8 @@ public class ModulesActivity extends
             ActivityCompat.requestPermissions(this,
                     permsToAsk.toArray(new String[permsToAsk.size()]),
                     Constants.PERM_MODULE_INSTALL);
+        } else {
+            HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
         }
     }
 

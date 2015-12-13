@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import java.util.List;
+import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainController;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainControllerImpl;
@@ -14,7 +15,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.Pro
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
@@ -182,44 +182,15 @@ public class MainPresenterImpl extends
     }
 
     @Override
-    public void onActiveModulesReceived(List<String> activeModules, Response response) {
+    public void onActiveModulesReceived(Set<String> activeModules, Response response) {
 
         if (activeModules != null && !activeModules.isEmpty()) {
 
-            Log.d(TAG, "Modules activated:");
-            Log.d(TAG, activeModules.toString());
+            Log.d(TAG, "Modules activated: " + activeModules.toString());
 
-            final String userToken = PreferenceUtils.getUserToken(getContext());
-
-            DbUser user = controller.getUserByToken(userToken);
-
-            if (user == null) {
-                return;
-            }
-
-            List<DbModule> modules = user.getDbModuleList();
-
-            if (modules.isEmpty()) {
-
-                for (String modulePackageName : activeModules) {
-
-
-                }
-
-            } else {
-
-                for (DbModule module : modules) {
-
-                    if (activeModules.contains(module.getPackageName())) {
-
-                        module.setActive(true);
-                    }
-                }
-
-//                                daoProvider
-//                                        .getModuleDao()
-//                                        .u
-            }
+            PreferenceUtils.setPreference(getContext(),
+                    Constants.PREF_USER_ACTIVE_MODULES,
+                    activeModules);
         }
     }
 

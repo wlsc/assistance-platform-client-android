@@ -1,6 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.handler;
 
-import java.util.List;
+import java.util.Set;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -11,7 +11,7 @@ import retrofit.client.Response;
  */
 public interface OnActiveModulesResponseHandler {
 
-    void onActiveModulesReceived(List<String> activeModules, Response response);
+    void onActiveModulesReceived(Set<String> activeModules, Response response);
 
     void onActiveModulesFailed(RetrofitError error);
 }

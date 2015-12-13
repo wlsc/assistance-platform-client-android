@@ -21,17 +21,18 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModule
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnUserNotFoundInDbHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleCapabilityResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleCapabilityResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
 import retrofit.RetrofitError;
@@ -56,7 +57,7 @@ public class ModulesPresenterImpl extends
     private ModulesController controller;
 
     private List<ModuleResponseDto> availableModules;
-    private List<String> mActiveModules;
+    private Set<String> mActiveModules;
 
     private Map<String, ModuleResponseDto> availableModuleResponseMapping;
 
@@ -133,7 +134,7 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onAvailableModulesSuccess(final List<ModuleResponseDto> apiResponse, Response response) {
+    public void onAvailableModulesSuccess(final List<ModuleResponseDto> apiResponse, final Response response) {
 
         if (apiResponse != null && !apiResponse.isEmpty()) {
 
@@ -157,7 +158,7 @@ public class ModulesPresenterImpl extends
 
             if (hasUserRequestedActiveModules) {
 
-                mActiveModules = new ArrayList<>(0);
+                mActiveModules = new HashSet<>(0);
                 view.setSwipeRefreshing(false);
 
                 processAvailableModules(apiResponse);
@@ -172,7 +173,7 @@ public class ModulesPresenterImpl extends
 
         } else {
             availableModules = new ArrayList<>(0);
-            mActiveModules = new ArrayList<>(0);
+            mActiveModules = new HashSet<>(0);
 
             view.setNoModulesView();
         }
@@ -186,7 +187,7 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onActiveModulesReceived(List<String> activeModules, Response response) {
+    public void onActiveModulesReceived(Set<String> activeModules, Response response) {
 
         view.setSwipeRefreshing(false);
 
@@ -198,7 +199,7 @@ public class ModulesPresenterImpl extends
             mActiveModules = activeModules;
 
         } else {
-            mActiveModules = new ArrayList<>(0);
+            mActiveModules = new HashSet<>(0);
         }
 
         processAvailableModules(availableModules);
@@ -208,7 +209,7 @@ public class ModulesPresenterImpl extends
     public void onActiveModulesFailed(RetrofitError error) {
 
         doDefaultErrorProcessing(error);
-        mActiveModules = new ArrayList<>(0);
+        mActiveModules = new HashSet<>(0);
         view.setSwipeRefreshing(false);
         processAvailableModules(availableModules);
     }
@@ -265,29 +266,40 @@ public class ModulesPresenterImpl extends
 
         List<DbModule> activeModulesList = controller.getAllActiveModules(userId);
 
-        // there are active modules
-        if (!activeModulesList.isEmpty()) {
+        // there are NO active modules
+        if (activeModulesList.isEmpty()) {
+            return;
+        }
 
-            Set<String> permsToAsk = new HashSet<>();
+        Set<String> permsToAsk = new HashSet<>();
 
-            for (DbModule module : activeModulesList) {
+        for (DbModule module : activeModulesList) {
 
-                List<DbModuleCapability> capabilities = controller
-                        .getAllActiveModuleCapabilities(module.getId());
+            List<DbModuleCapability> capabilities = controller
+                    .getAllActiveModuleCapabilities(module.getId());
 
-                for (DbModuleCapability cap : capabilities) {
+            for (DbModuleCapability cap : capabilities) {
 
-                    String[] perms = PermissionUtils
-                            .getInstance(getContext())
-                            .getDangerousPermissionsToDtoMapping()
-                            .get(cap.getType());
+                String[] perms = PermissionUtils
+                        .getInstance(getContext())
+                        .getDangerousPermissionsToDtoMapping()
+                        .get(cap.getType());
 
-                    permsToAsk.addAll(Arrays.asList(perms));
+                if (perms != null) {
+
+                    for (String perm : perms) {
+
+                        if (ContextCompat.checkSelfPermission(
+                                getContext(), perm) != PackageManager.PERMISSION_GRANTED) {
+
+                            permsToAsk.addAll(Arrays.asList(perms));
+                        }
+                    }
                 }
             }
-
-            view.askPermissions(permsToAsk);
         }
+
+        view.askPermissions(permsToAsk);
     }
 
     @Override
@@ -369,9 +381,9 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void presentModuleUninstall(DbModule module) {
+    public void presentModuleUninstall(final DbModule module) {
 
-        String userToken = PreferenceUtils.getUserToken(getContext());
+        final String userToken = PreferenceUtils.getUserToken(getContext());
 
         if (userToken.isEmpty()) {
             Log.d(TAG, "userToken is empty");
@@ -391,7 +403,7 @@ public class ModulesPresenterImpl extends
                 " package: " + module.getPackageName());
 
         // forming request to server
-        ToggleModuleRequestDto toggleModuleRequest = new ToggleModuleRequestDto();
+        final ToggleModuleRequestDto toggleModuleRequest = new ToggleModuleRequestDto();
         toggleModuleRequest.setModuleId(module.getPackageName());
 
         controller.requestModuleDeactivation(toggleModuleRequest, userToken, module, this);
@@ -645,6 +657,8 @@ public class ModulesPresenterImpl extends
                 controller.insertModuleCapabilitiesToDb(dbOptionalCaps);
 
                 PreferenceUtils.setUserHasModules(getContext(), true);
+
+                HarvesterServiceProvider.getInstance(getContext()).startSensingService();
 
                 view.showModuleInstallationSuccessful();
             }

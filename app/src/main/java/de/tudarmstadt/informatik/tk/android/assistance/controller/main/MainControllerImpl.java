@@ -5,6 +5,7 @@ import android.app.Activity;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
@@ -80,10 +81,10 @@ public class MainControllerImpl extends
                 .create(ModuleEndpoint.class);
 
         moduleEndpoint.getActiveModules(userToken,
-                new Callback<List<String>>() {
+                new Callback<Set<String>>() {
 
                     @Override
-                    public void success(List<String> activeModules,
+                    public void success(Set<String> activeModules,
                                         Response response) {
 
                         handler.onActiveModulesReceived(activeModules, response);

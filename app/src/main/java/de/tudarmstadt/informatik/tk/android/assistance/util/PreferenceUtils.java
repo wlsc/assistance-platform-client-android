@@ -4,12 +4,30 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.Set;
+
 /**
  * Created by Wladimir Schmidt on 12.07.2015.
  */
 public class PreferenceUtils {
 
     private PreferenceUtils() {
+    }
+
+    /**
+     * Puts set of strings to shared preferences
+     *
+     * @param context
+     * @param preferenceName
+     * @param preferenceValue
+     */
+    public static void setPreference(Context context, String preferenceName, Set<String> preferenceValue) {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences
+                .edit()
+                .putStringSet(preferenceName, preferenceValue)
+                .apply();
     }
 
     /**
@@ -58,6 +76,20 @@ public class PreferenceUtils {
                 .edit()
                 .putLong(preferenceName, preferenceValue)
                 .apply();
+    }
+
+    /**
+     * Gets set of strings from shared preferences
+     *
+     * @param context
+     * @param preferenceName
+     * @param defaultValue
+     * @return
+     */
+    public static Set<String> getPreference(Context context, String preferenceName, Set<String> defaultValue) {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getStringSet(preferenceName, defaultValue);
     }
 
     /**

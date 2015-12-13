@@ -1,6 +1,7 @@
 package de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint;
 
 import java.util.List;
+import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
@@ -25,7 +26,7 @@ public interface ModuleEndpoint {
 
     @GET(Config.ASSISTANCE_MODULE_ACTIVE_ENDPOINT)
     void getActiveModules(@Header("X-AUTH-TOKEN") String userToken,
-                          Callback<List<String>> callback);
+                          Callback<Set<String>> callback);
 
     @POST(Config.ASSISTANCE_MODULE_ACTIVATE_ENDPOINT)
     void activateModule(@Header("X-AUTH-TOKEN") String userToken,
