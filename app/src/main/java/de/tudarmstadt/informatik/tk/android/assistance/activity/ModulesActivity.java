@@ -293,6 +293,8 @@ public class ModulesActivity extends
                 android.R.color.holo_red_light);
 
         if (onRefreshHandler == null) {
+            Log.d(TAG, "Setting swipe handler...");
+
             onRefreshHandler = new SwipeRefreshLayout.OnRefreshListener() {
 
                 @Override
@@ -315,7 +317,7 @@ public class ModulesActivity extends
         }
 
         // set updating spinner to list
-        setSwipeRefreshing(true);
+        setSwipeRefreshing(false);
     }
 
     @Override
