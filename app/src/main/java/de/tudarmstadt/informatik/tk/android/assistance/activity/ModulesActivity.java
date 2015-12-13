@@ -538,6 +538,15 @@ public class ModulesActivity extends
             }
         });
 
+        dialogBuilder.setNegativeButton(R.string.button_cancel_text, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d(TAG, "User tapped cancel uninstallation");
+                presenter.setSelectedModuleId("");
+            }
+        });
+
         dialogBuilder.setOnCancelListener(new DialogInterface.OnCancelListener() {
 
             @Override
