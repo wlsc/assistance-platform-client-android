@@ -81,18 +81,19 @@ public class ModulesPresenterImpl extends
 
     @Override
     public void doInitView() {
+
         view.initView();
 
-        String userEmail = PreferenceUtils.getUserEmail(getContext());
+        final String userEmail = PreferenceUtils.getUserEmail(getContext());
 
-        DbUser user = controller.getUserByEmail(userEmail);
+        final DbUser user = controller.getUserByEmail(userEmail);
 
         if (user == null) {
             view.startLoginActivity();
             return;
         }
 
-        List<DbModule> installedModules = user.getDbModuleList();
+        final List<DbModule> installedModules = user.getDbModuleList();
 
         // no modules was found -> request from server
         if (installedModules.isEmpty()) {
@@ -466,6 +467,8 @@ public class ModulesPresenterImpl extends
                 } else {
                     presentModuleInstallation(ConverterUtils.convertModule(
                             availableModuleResponseMapping.get(selectedModuleId)));
+
+                    HarvesterServiceProvider.getInstance(getContext()).startSensingService();
                 }
 
                 break;

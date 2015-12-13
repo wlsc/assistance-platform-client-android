@@ -71,9 +71,7 @@ public class ModulesActivity extends
     private OnRefreshListener onRefreshHandler;
 
     private RecyclerView mAvailableModulesRecyclerView;
-
     private RecyclerView permissionRequiredRecyclerView;
-
     private RecyclerView permissionOptionalRecyclerView;
 
     private TextView permissionsEmptyRequired;
