@@ -127,6 +127,7 @@
     <string name="module_uninstall_unsuccessful">Installation has failed :(</string>
 
     <!-- USER PROFILE SCREEN -->
+    <string name="user_profile_title">Profile</string>
     <string name="user_profile_firstname">Firstname</string>
     <string name="user_profile_lastname">Lastname</string>
     <string name="user_profile_account_google">Google account</string>
