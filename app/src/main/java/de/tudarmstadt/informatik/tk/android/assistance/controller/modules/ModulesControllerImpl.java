@@ -2,11 +2,13 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.modules;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
@@ -17,6 +19,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.Modules
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.event.UpdateSensorIntervalEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.DtoType;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
@@ -253,6 +257,50 @@ public class ModulesControllerImpl extends
                         handler.onModuleDeactivateFailed(module, error);
                     }
                 });
+    }
+
+    @Override
+    public void updateSensorTimingsFromDb(String userToken) {
+
+        DbUser user = daoProvider.getUserDao().getByToken(userToken);
+
+        if (user == null) {
+            Log.d(TAG, "updateSensorTimingsFromDb: User is NULL");
+            return;
+        }
+
+        List<DbModule> activeModules = daoProvider.getModuleDao().getAllActive(user.getId());
+
+        if (activeModules == null || activeModules.isEmpty()) {
+            Log.d(TAG, "updateSensorTimingsFromDb: active modules is NULL or EMPTY");
+            return;
+        }
+
+        Map<String, DbModuleCapability> activeCapabilities = new HashMap<>();
+
+        for (DbModule module : activeModules) {
+
+            List<DbModuleCapability> moduleActiveCaps = daoProvider
+                    .getModuleCapabilityDao()
+                    .getAllActive(module.getId());
+
+            if (moduleActiveCaps == null) {
+                continue;
+            }
+
+            for (DbModuleCapability cap : moduleActiveCaps) {
+
+                // insert when only new capability type is present
+                if (activeCapabilities.get(cap.getType()) == null) {
+
+                    // firing up an event to change sensors collection frequencies
+                    EventBus.getDefault().post(
+                            new UpdateSensorIntervalEvent(
+                                    DtoType.getDtoType(cap.getType()),
+                                    cap.getCollectionFrequency()));
+                }
+            }
+        }
     }
 
     @Override

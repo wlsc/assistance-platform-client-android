@@ -544,7 +544,7 @@ public class ModulesActivity extends
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "User tapped cancel uninstallation");
+                Log.d(TAG, "User tapped cancel uninstall procedure");
                 presenter.setSelectedModuleId("");
             }
         });

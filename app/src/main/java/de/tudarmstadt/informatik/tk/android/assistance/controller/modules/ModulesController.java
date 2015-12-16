@@ -8,10 +8,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesRe
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -62,4 +62,6 @@ public interface ModulesController extends CommonController {
                                    String userToken,
                                    DbModule module,
                                    OnModuleDeactivatedResponseHandler handler);
+
+    void updateSensorTimingsFromDb(String userToken);
 }

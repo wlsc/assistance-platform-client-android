@@ -29,6 +29,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
@@ -493,6 +494,10 @@ public class ModulesPresenterImpl extends
     @Override
     public void presentSuccessfulInstallation() {
 
+        String userToken = PreferenceProvider.getInstance(getContext()).getUserToken();
+
+        controller.updateSensorTimingsFromDb(userToken);
+
         view.changeModuleLayout(selectedModuleId, true);
         startHarvester();
         view.showModuleInstallationSuccessful();
@@ -728,6 +733,10 @@ public class ModulesPresenterImpl extends
                 if (numberOfModules == 0) {
                     stopHarvester();
                 }
+
+                String userToken = PreferenceProvider.getInstance(getContext()).getUserToken();
+
+                controller.updateSensorTimingsFromDb(userToken);
 
                 view.changeModuleLayout(module.getPackageName(), false);
 
