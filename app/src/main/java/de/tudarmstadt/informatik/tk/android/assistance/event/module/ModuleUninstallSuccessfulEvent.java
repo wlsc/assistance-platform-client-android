@@ -2,17 +2,18 @@ package de.tudarmstadt.informatik.tk.android.assistance.event.module;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
- * @date 16.11.2015
+ * @date 16.12.2015
  */
-public class ModuleInstallationSuccessfulEvent {
+public class ModuleUninstallSuccessfulEvent {
 
     private String modulePackageName;
 
-    public ModuleInstallationSuccessfulEvent(String modulePackageName) {
+    public ModuleUninstallSuccessfulEvent(String modulePackageName) {
         this.modulePackageName = modulePackageName;
     }
 
     public String getModulePackageName() {
         return modulePackageName;
     }
+
 }

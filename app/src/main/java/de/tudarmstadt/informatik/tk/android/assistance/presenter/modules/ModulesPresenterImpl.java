@@ -15,12 +15,11 @@ import java.util.Set;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.modules.ModulesController;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.modules.ModulesControllerImpl;
-import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationSuccessfulEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnUserNotFoundInDbHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
@@ -46,7 +45,6 @@ import retrofit.client.Response;
 public class ModulesPresenterImpl extends
         CommonPresenterImpl implements
         ModulesPresenter,
-        OnUserNotFoundInDbHandler,
         OnAvailableModulesResponseHandler,
         OnActiveModulesResponseHandler,
         OnModuleActivatedResponseHandler,
@@ -668,6 +666,9 @@ public class ModulesPresenterImpl extends
 
                 HarvesterServiceProvider.getInstance(getContext()).startSensingService();
 
+                // update timing for sensors/events
+                controller.updateSensorTimingsFromDb(user.getToken());
+
                 view.showModuleInstallationSuccessful();
             }
 
@@ -679,7 +680,7 @@ public class ModulesPresenterImpl extends
             if (!permsToAsk.isEmpty()) {
                 view.askPermissions(permsToAsk);
             } else {
-                EventBus.getDefault().post(new ModuleInstallationSuccessfulEvent(
+                EventBus.getDefault().post(new ModuleInstallSuccessfulEvent(
                         module.getPackageName()));
             }
 
@@ -702,6 +703,10 @@ public class ModulesPresenterImpl extends
         if (response.getStatus() == 200 || response.getStatus() == 204) {
 
             if (controller.uninstallModuleFromDb(module)) {
+
+                String userToken = PreferenceProvider.getInstance(getContext()).getUserToken();
+
+                controller.updateSensorTimingsFromDb(userToken);
 
                 int numberOfModules = controller.getAllModules(module.getUserId()).size();
 
@@ -743,17 +748,5 @@ public class ModulesPresenterImpl extends
 //                view.showUndoAction(module);
             }
         }
-    }
-
-    @Override
-    public void onUserFound(DbUser user) {
-        // empty
-    }
-
-    @Override
-    public void onUserNotFound() {
-
-        Log.d(TAG, "Installation cancelled: user is null");
-        view.startLoginActivity();
     }
 }

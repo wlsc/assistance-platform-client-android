@@ -32,7 +32,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.ModulesAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.PermissionAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationSuccessfulEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
@@ -148,7 +148,7 @@ public class ModulesActivity extends
      *
      * @param event
      */
-    public void onEvent(ModuleInstallationSuccessfulEvent event) {
+    public void onEvent(ModuleInstallSuccessfulEvent event) {
         Log.d(TAG, "After module successful installation. Module id: " + event.getModulePackageName());
 
         presenter.setSelectedModuleId(event.getModulePackageName());
