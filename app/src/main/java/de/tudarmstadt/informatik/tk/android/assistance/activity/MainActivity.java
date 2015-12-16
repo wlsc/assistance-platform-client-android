@@ -28,7 +28,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.MainView;
 
-
 /**
  * Module information dashboard
  *
@@ -77,7 +76,7 @@ public class MainActivity extends
     }
 
     @Override
-    public void setNoNewsView() {
+    public void showNoNews() {
 
         ButterKnife.findById(this, R.id.assistance_list).setVisibility(View.GONE);
         ButterKnife.findById(this, R.id.assistance_no_news).setVisibility(View.VISIBLE);

@@ -12,8 +12,8 @@ android {
         applicationId "de.tudarmstadt.informatik.tk.android.assistance"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 16
-        versionName "1.0.6"
+        versionCode 20
+        versionName "1.1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -57,6 +57,8 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     // sensor information gathering
     compile project(':AssistanceSDK')
+    // ui from json format
+    compile project(':json2view')
     // support libraries
     compile 'com.android.support:support-v4:' + supportLibVersion
     compile 'com.android.support:cardview-v7:' + supportLibVersion

@@ -23,6 +23,8 @@ public class Config {
 
     public static final String ASSISTANCE_MODULE_DEACTIVATE_ENDPOINT = "/assistance/deactivate";
 
+    public static final String ASSISTANCE_MODULE_FEEDBACK_ENDPOINT = "/assistance/feedback";
+
     public static final String ASSISTANCE_USER_REGISTER_ENDPOINT = "/users/register";
 
     public static final String ASSISTANCE_USER_PASSWORD_ENDPOINT = "/users/password";

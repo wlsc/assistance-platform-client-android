@@ -10,6 +10,7 @@ import java.util.Set;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
+import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleFeedbackResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
@@ -22,6 +23,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.GcmUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.ClientFeedbackDto;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -114,6 +116,28 @@ public class MainControllerImpl extends
             @Override
             public void failure(RetrofitError error) {
                 handler.onError(error);
+            }
+        });
+    }
+
+    @Override
+    public void requestModuleFeedback(String userToken,
+                                      final OnModuleFeedbackResponseHandler handler) {
+
+        final ModuleEndpoint moduleEndpoint = EndpointGenerator
+                .getInstance(presenter.getContext())
+                .create(ModuleEndpoint.class);
+
+        moduleEndpoint.getModuleFeedback(userToken, new Callback<List<ClientFeedbackDto>>() {
+
+            @Override
+            public void success(List<ClientFeedbackDto> clientFeedbackDto, Response response) {
+                handler.onModuleFeedbackSuccess(clientFeedbackDto, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                handler.onModuleFeedbackFailed(error);
             }
         });
     }

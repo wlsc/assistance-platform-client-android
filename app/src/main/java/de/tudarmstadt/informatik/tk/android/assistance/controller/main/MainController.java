@@ -7,6 +7,7 @@ import java.util.List;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
+import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleFeedbackResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
@@ -30,6 +31,8 @@ public interface MainController extends CommonController {
      * Requests user profile information
      */
     void requestUserProfile(String userToken, OnResponseHandler<ProfileResponseDto> handler);
+
+    void requestModuleFeedback(String userToken, OnModuleFeedbackResponseHandler handler);
 
     /**
      * Updates existent user login or creates one in db

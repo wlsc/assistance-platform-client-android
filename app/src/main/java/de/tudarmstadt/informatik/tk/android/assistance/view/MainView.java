@@ -15,7 +15,7 @@ public interface MainView extends CommonView {
 
     void showAccessibilityServiceTutorial();
 
-    void setNoNewsView();
+    void showNoNews();
 
     void setNewsItems(List<DbNews> assistanceNews);
 

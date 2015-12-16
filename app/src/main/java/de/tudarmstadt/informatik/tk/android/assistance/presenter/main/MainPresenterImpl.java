@@ -10,6 +10,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainContr
 import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
+import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleFeedbackResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
@@ -20,6 +21,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.MainView;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.ClientFeedbackDto;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -32,7 +34,8 @@ public class MainPresenterImpl extends
         MainPresenter,
         OnGooglePlayServicesAvailable,
         OnActiveModulesResponseHandler,
-        OnResponseHandler<ProfileResponseDto> {
+        OnResponseHandler<ProfileResponseDto>,
+        OnModuleFeedbackResponseHandler {
 
     private static final String TAG = MainPresenterImpl.class.getSimpleName();
 
@@ -75,7 +78,7 @@ public class MainPresenterImpl extends
         List<DbNews> assistanceNews = controller.getCachedNews(userId);
 
         if (assistanceNews.isEmpty()) {
-            view.setNoNewsView();
+            view.showNoNews();
         } else {
             view.setNewsItems(assistanceNews);
         }
@@ -166,6 +169,17 @@ public class MainPresenterImpl extends
     }
 
     @Override
+    public void presentModuleCardNews(List<ClientFeedbackDto> clientFeedbackDto) {
+
+        if (clientFeedbackDto.isEmpty()) {
+            view.showNoNews();
+        } else {
+//            view.
+
+        }
+    }
+
+    @Override
     public void onPlayServicesAvailable() {
 
         view.startGcmRegistrationService();
@@ -215,6 +229,22 @@ public class MainPresenterImpl extends
 
     @Override
     public void onError(RetrofitError error) {
+        doDefaultErrorProcessing(error);
+    }
+
+    @Override
+    public void onModuleFeedbackSuccess(List<ClientFeedbackDto> clientFeedbackDto, Response response) {
+
+        if (clientFeedbackDto == null) {
+            view.showUnknownErrorOccurred();
+            return;
+        }
+
+        presentModuleCardNews(clientFeedbackDto);
+    }
+
+    @Override
+    public void onModuleFeedbackFailed(RetrofitError error) {
         doDefaultErrorProcessing(error);
     }
 }
