@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
@@ -34,6 +35,10 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
 
     private Toast toast;
 
+    private Preference aboutPref;
+    private Preference appVersionPref;
+    private Preference buildNumberPref;
+
     public ApplicationAboutSettingsFragment() {
         beDeveloperCounter = 0;
     }
@@ -47,7 +52,15 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
         mParentToolbar.setTitle(R.string.settings_about_title);
 
+        aboutPref = findPreference("pref_about_app");
+        appVersionPref = findPreference("pref_app_version");
+        buildNumberPref = findPreference("pref_build_number");
+
         addSettingsActions();
+
+        // set app build number and version
+        appVersionPref.setSummary(BuildConfig.VERSION_NAME);
+        buildNumberPref.setSummary("" + BuildConfig.VERSION_CODE);
     }
 
     @Override
@@ -61,9 +74,6 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
      * Adds handlers to various settings headers
      */
     private void addSettingsActions() {
-
-        Preference aboutPref = findPreference("pref_about_app");
-        Preference buildNumberPref = findPreference("pref_build_number");
 
         if (aboutClickHandler == null) {
 

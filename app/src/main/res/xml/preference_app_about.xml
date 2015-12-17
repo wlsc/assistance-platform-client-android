@@ -39,6 +39,11 @@
     </Preference>
 
     <Preference
+        android:key="pref_app_version"
+        android:summary="@string/settings_app_version_summary"
+        android:title="@string/settings_app_version" />
+
+    <Preference
         android:key="pref_build_number"
         android:summary="@string/settings_build_version_summary"
         android:title="@string/settings_build_version" />
