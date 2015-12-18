@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 ext {
     appName = 'assistance-tud-edition'
-    supportLibVersion = '23.1.1'
 }
 
 android {
@@ -61,15 +60,15 @@ dependencies {
     // ui from json format
     compile project(':json2view')
     // support libraries
-    compile 'com.android.support:support-v4:' + supportLibVersion
-    compile 'com.android.support:cardview-v7:' + supportLibVersion
-    compile 'com.android.support:gridlayout-v7:' + supportLibVersion  // StaggeredGridLayoutManager
-    compile 'com.android.support:recyclerview-v7:' + supportLibVersion
-    compile 'com.android.support:preference-v7:' + supportLibVersion
-    compile 'com.android.support:support-v13:' + supportLibVersion
-    compile 'com.android.support:support-annotations:' + supportLibVersion
-//    compile 'com.android.support:percent:'+supportLibVersion
-    compile 'com.android.support:design:' + supportLibVersion
+    compile 'com.android.support:support-v4:23.1.1'
+    compile 'com.android.support:cardview-v7:23.1.1'
+    compile 'com.android.support:gridlayout-v7:23.1.1'  // StaggeredGridLayoutManager
+    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:preference-v7:23.1.1'
+    compile 'com.android.support:support-v13:23.1.1'
+    compile 'com.android.support:support-annotations:23.1.1'
+//    compile 'com.android.support:percent:23.1.1'
+    compile 'com.android.support:design:23.1.1'
     // rounded images
     compile 'com.pkmmte.view:circularimageview:1.1'
     // dependency injection on compile
@@ -82,7 +81,7 @@ dependencies {
     //debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     //releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
     // better unit testing for ui
-    androidTestCompile 'com.android.support:support-annotations:' + supportLibVersion
+    androidTestCompile 'com.android.support:support-annotations:23.1.1'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
