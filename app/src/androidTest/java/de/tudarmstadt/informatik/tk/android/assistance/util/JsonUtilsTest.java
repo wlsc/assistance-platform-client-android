@@ -56,7 +56,7 @@ public class JsonUtilsTest {
         resource.setCaption("test");
         resource.setStyle(new String[]{});
         resource.setHighlighted(Boolean.FALSE);
-        resource.setTextAlignment(TextAlignment.LEFT.getValue());
+        resource.setAlignment(TextAlignment.LEFT.getValue());
 
         JsonParser gsonParser = new JsonParser();
         JsonObject gsonJsonObject = gsonParser.parse(gson.toJson(resource)).getAsJsonObject();
