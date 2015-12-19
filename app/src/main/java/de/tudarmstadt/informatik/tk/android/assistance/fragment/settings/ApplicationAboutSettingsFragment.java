@@ -60,7 +60,22 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
 
         // set app build number and version
         appVersionPref.setSummary(BuildConfig.VERSION_NAME);
-        buildNumberPref.setSummary("" + BuildConfig.VERSION_CODE);
+
+        String buildCodeStr = String.valueOf(BuildConfig.VERSION_CODE);
+
+        if (buildCodeStr.length() == 1) {
+            buildCodeStr = "000" + buildCodeStr;
+        }
+
+        if (buildCodeStr.length() == 2) {
+            buildCodeStr = "00" + buildCodeStr;
+        }
+
+        if (buildCodeStr.length() == 3) {
+            buildCodeStr = "0" + buildCodeStr;
+        }
+
+        buildNumberPref.setSummary(buildCodeStr);
     }
 
     @Override
