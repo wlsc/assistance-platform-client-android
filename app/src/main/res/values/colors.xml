@@ -17,7 +17,7 @@
     <color name="divider">#B6B6B6</color>-->
 
     <!-- Base material design color style -->
-    <color name="myPrimaryColor">#03a9f4</color>
+    <color name="myPrimaryColor">#1091d3</color>
     <color name="myPrimaryColor50">#e1f5fe</color>
     <color name="myPrimaryColor100">#b3e5fc</color>
     <color name="myPrimaryColor200">#81d4fa</color>
@@ -29,7 +29,7 @@
     <color name="myPrimaryColor800">#0277bd</color>
     <color name="myPrimaryColor900">#01579b</color>
     <color name="myAccentColor100">#80d8ff</color>
-    <color name="myAccentColor">#40c4ff</color>
+    <color name="myAccentColor">#1091d3</color>
     <color name="myAccentColor400">#00b0ff</color>
     <color name="myAccentColor700">#0091ea</color>
 

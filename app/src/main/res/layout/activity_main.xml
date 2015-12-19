@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"
-        android:src="@drawable/ic_list_black_48dp"
+        android:src="@drawable/ic_list_white_48dp"
         app:backgroundTint="@color/myAccentColor"
         app:layout_anchor="@id/appbar"
         app:layout_anchorGravity="bottom|right|end" />
