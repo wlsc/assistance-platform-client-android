@@ -351,8 +351,13 @@ public class LoginActivity extends
     }
 
     @Override
-    public void showUserActionForbidden() {
+    public void showUserForbidden() {
         Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+    }
+
+    @Override
+    public void showActionProhibited() {
+        // empty
     }
 
     @Override

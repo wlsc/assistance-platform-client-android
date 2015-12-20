@@ -2,10 +2,9 @@ package de.tudarmstadt.informatik.tk.android.assistance.presenter.modules;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.v4.content.ContextCompat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +15,7 @@ import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.modules.ModulesController;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.modules.ModulesControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationErrorEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
@@ -31,6 +31,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterSer
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
@@ -55,6 +56,8 @@ public class ModulesPresenterImpl extends
     private ModulesView view;
     private ModulesController controller;
 
+    private final PermissionUtils permissionUtils;
+
     private List<ModuleResponseDto> availableModules;
     private Set<String> mActiveModules;
 
@@ -65,6 +68,7 @@ public class ModulesPresenterImpl extends
     public ModulesPresenterImpl(Context context) {
         super(context);
         setController(new ModulesControllerImpl(this));
+        permissionUtils = PermissionUtils.getInstance(context);
     }
 
     @Override
@@ -84,10 +88,10 @@ public class ModulesPresenterImpl extends
         view.initView();
 
         final String userEmail = PreferenceUtils.getUserEmail(getContext());
-
         final DbUser user = controller.getUserByEmail(userEmail);
 
         if (user == null) {
+            Log.d(TAG, "User is null");
             view.startLoginActivity();
             return;
         }
@@ -101,7 +105,6 @@ public class ModulesPresenterImpl extends
             requestAvailableModules();
 
         } else {
-
             Log.d(TAG, "Installed modules found in the db. Showing them...");
 
             availableModuleResponseMapping = new HashMap<>();
@@ -141,24 +144,14 @@ public class ModulesPresenterImpl extends
             Log.d(TAG, apiResponse.toString());
 
             availableModules = new ArrayList<>(apiResponse.size());
+
             availableModules.addAll(apiResponse);
 
-            if (availableModuleResponseMapping == null) {
-                availableModuleResponseMapping = new HashMap<>();
-            } else {
-                availableModuleResponseMapping.clear();
-            }
+            doAvailableModuleResponseMapping(apiResponse);
 
-            for (ModuleResponseDto resp : apiResponse) {
-                availableModuleResponseMapping.put(resp.getModulePackage(), resp);
-            }
+            if (ServiceUtils.hasUserModules(getContext())) {
 
-            boolean hasUserRequestedActiveModules = PreferenceUtils
-                    .hasUserRequestedActiveModules(getContext());
-
-            if (hasUserRequestedActiveModules) {
-
-                mActiveModules = new HashSet<>(0);
+                mActiveModules = Collections.emptySet();
                 view.setSwipeRefreshing(false);
 
                 processAvailableModules(apiResponse);
@@ -172,10 +165,24 @@ public class ModulesPresenterImpl extends
             controller.requestActiveModules(userToken, this);
 
         } else {
-            availableModules = new ArrayList<>(0);
-            mActiveModules = new HashSet<>(0);
+
+            availableModules = Collections.emptyList();
+            mActiveModules = Collections.emptySet();
 
             view.setNoModulesView();
+        }
+    }
+
+    private void doAvailableModuleResponseMapping(List<ModuleResponseDto> apiResponse) {
+
+        if (availableModuleResponseMapping == null) {
+            availableModuleResponseMapping = new HashMap<>();
+        } else {
+            availableModuleResponseMapping.clear();
+        }
+
+        for (ModuleResponseDto resp : apiResponse) {
+            availableModuleResponseMapping.put(resp.getModulePackage(), resp);
         }
     }
 
@@ -191,15 +198,13 @@ public class ModulesPresenterImpl extends
 
         view.setSwipeRefreshing(false);
 
-        PreferenceUtils.setUserRequestedActiveModules(getContext(), true);
-
         if (activeModules != null && !activeModules.isEmpty()) {
 
             Log.d(TAG, activeModules.toString());
             mActiveModules = activeModules;
 
         } else {
-            mActiveModules = new HashSet<>(0);
+            mActiveModules = Collections.emptySet();
         }
 
         processAvailableModules(availableModules);
@@ -209,7 +214,7 @@ public class ModulesPresenterImpl extends
     public void onActiveModulesFailed(RetrofitError error) {
 
         doDefaultErrorProcessing(error);
-        mActiveModules = new HashSet<>(0);
+        mActiveModules = Collections.emptySet();
         view.setSwipeRefreshing(false);
         processAvailableModules(availableModules);
     }
@@ -227,10 +232,13 @@ public class ModulesPresenterImpl extends
         applyAlreadyActiveModulesFromRequest(convertedModules);
         applyAlreadyActiveModulesFromDb(convertedModules);
 
-        if (view.getModulesAmount() > 0) {
+        if (view.getDisplayedModulesCount() > 0) {
+
             // we have entries already -> just swap them with new ones
             view.swapModuleData(convertedModules);
+
         } else {
+
             // create new recycler view adapter
             view.setModuleList(convertedModules);
         }
@@ -268,6 +276,7 @@ public class ModulesPresenterImpl extends
 
         // there are NO active modules
         if (activeModulesList.isEmpty()) {
+            Log.d(TAG, "No active modules found in db.");
             return;
         }
 
@@ -276,7 +285,7 @@ public class ModulesPresenterImpl extends
         for (DbModule module : activeModulesList) {
 
             List<DbModuleCapability> capabilities = controller
-                    .getAllActiveModuleCapabilities(module.getId());
+                    .getAllActiveRequiredModuleCapabilities(module.getId());
 
             for (DbModuleCapability cap : capabilities) {
 
@@ -289,10 +298,9 @@ public class ModulesPresenterImpl extends
 
                     for (String perm : perms) {
 
-                        if (ContextCompat.checkSelfPermission(
-                                getContext(), perm) != PackageManager.PERMISSION_GRANTED) {
-
-                            permsToAsk.addAll(Arrays.asList(perms));
+                        // not granted -> ask user
+                        if (!permissionUtils.isGranted(perm)) {
+                            permsToAsk.add(perm);
                         }
                     }
                 }
@@ -464,8 +472,8 @@ public class ModulesPresenterImpl extends
                 if (declinedPermissions.size() > 0) {
                     view.showPermissionsAreCrucialDialog(declinedPermissions);
                 } else {
-                    presentModuleInstallation(ConverterUtils.convertModule(
-                            availableModuleResponseMapping.get(selectedModuleId)));
+                    presentModuleInstallation(ConverterUtils
+                            .convertModule(availableModuleResponseMapping.get(selectedModuleId)));
 
                     HarvesterServiceProvider.getInstance(getContext()).startSensingService();
                 }
@@ -502,10 +510,9 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void askUserEnablePermissions() {
+    public void askUserForPermissions() {
 
         if (availableModuleResponseMapping == null || availableModuleResponseMapping.isEmpty()) {
-
             Log.d(TAG, "availableModulesResponse is NULL or EMPTY");
             return;
         }
@@ -524,6 +531,12 @@ public class ModulesPresenterImpl extends
         // handle required perms
         if (requiredSensors != null) {
 
+            if (requiredSensors.isEmpty()) {
+                Log.d(TAG, "requiredSensors is EMPTY -> ABORT!");
+                view.showActionProhibited();
+                return;
+            }
+
             // these permissions are crucial for an operation of module
             for (ModuleCapabilityResponseDto capResponse : requiredSensors) {
 
@@ -539,8 +552,7 @@ public class ModulesPresenterImpl extends
                 for (String perm : perms) {
 
                     // check permission was already granted
-                    if (ContextCompat.checkSelfPermission(getContext(), perm) !=
-                            PackageManager.PERMISSION_GRANTED) {
+                    if (!PermissionUtils.getInstance(getContext()).isGranted(perm)) {
 
                         permsRequiredAccumulator.add(perm);
                     }
@@ -550,43 +562,43 @@ public class ModulesPresenterImpl extends
 
         // handle optional perms
         // get all checked optional sensors/events permissions
-        List<DbModuleCapability> optionalSensors = view.getAllEnabledOptionalPermissions();
-
-        if (optionalSensors != null) {
-
-            for (DbModuleCapability response : optionalSensors) {
-
-                if (response == null) {
-                    continue;
-                }
-
-                String apiType = response.getType();
-                String[] perms = PermissionUtils.getInstance(getContext())
-                        .getDangerousPermissionsToDtoMapping()
-                        .get(apiType);
-
-                if (perms == null) {
-                    continue;
-                }
-
-                for (String perm : perms) {
-
-                    // check permission was already granted
-                    if (ContextCompat.checkSelfPermission(getContext(), perm) !=
-                            PackageManager.PERMISSION_GRANTED) {
-
-                        permsRequiredAccumulator.add(perm);
-                    }
-                }
-            }
-        }
+//        List<DbModuleCapability> optionalSensors = view.getAllEnabledOptionalPermissions();
+//
+//        if (optionalSensors != null) {
+//
+//            for (DbModuleCapability response : optionalSensors) {
+//
+//                if (response == null) {
+//                    continue;
+//                }
+//
+//                String apiType = response.getType();
+//                String[] perms = PermissionUtils.getInstance(getContext())
+//                        .getDangerousPermissionsToDtoMapping()
+//                        .get(apiType);
+//
+//                if (perms == null) {
+//                    continue;
+//                }
+//
+//                for (String perm : perms) {
+//
+//                    // check permission was already granted
+//                    if (ContextCompat.checkSelfPermission(getContext(), perm) !=
+//                            PackageManager.PERMISSION_GRANTED) {
+//
+//                        permsRequiredAccumulator.add(perm);
+//                    }
+//                }
+//            }
+//        }
 
         if (permsRequiredAccumulator.isEmpty()) {
 
             Log.d(TAG, "permsRequiredAccumulator is empty. its ok. all perms granted");
 
-            presentModuleInstallation(ConverterUtils.convertModule(availableModuleResponseMapping
-                    .get(selectedModuleId)));
+            presentModuleInstallation(ConverterUtils
+                    .convertModule(availableModuleResponseMapping.get(selectedModuleId)));
 
         } else {
 
@@ -594,6 +606,11 @@ public class ModulesPresenterImpl extends
 
             view.askPermissions(permsRequiredAccumulator);
         }
+    }
+
+    @Override
+    public void presentModuleInstallationHasError(List<String> declinedPermissions) {
+        EventBus.getDefault().post(new ModuleInstallationErrorEvent(selectedModuleId));
     }
 
     @Override
@@ -661,8 +678,6 @@ public class ModulesPresenterImpl extends
 
                 controller.insertModuleCapabilitiesToDb(dbRequiredCaps);
                 controller.insertModuleCapabilitiesToDb(dbOptionalCaps);
-
-                PreferenceUtils.setUserHasModules(getContext(), true);
 
                 HarvesterServiceProvider.getInstance(getContext()).startSensingService();
 

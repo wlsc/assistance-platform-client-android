@@ -156,6 +156,7 @@
     <string name="error_user_token_not_valid">User token is not valid</string>
     <string name="error_service_retry_later">Error: please retry again later</string>
     <string name="error_user_login_not_valid">Error: your login is incorrect. Please do login procedure again</string>
+    <string name="error_that_action_is_prohibited">Error: that action is prohibited!</string>
     <string name="error_select_new_user_photo">Error occurred while selecting user photo!</string>
     <string name="error_module_not_installed">Error: sorry, unable to enable/disable module!</string>
 

@@ -63,7 +63,7 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
                     view.showRetryLaterNotification();
                     break;
                 case 401:
-                    view.showUserActionForbidden();
+                    view.showUserForbidden();
                     view.startLoginActivity();
                     break;
                 case 404:

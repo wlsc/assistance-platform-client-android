@@ -20,7 +20,9 @@ public interface CommonView {
 
     void showUnknownErrorOccurred();
 
-    void showUserActionForbidden();
+    void showUserForbidden();
+
+    void showActionProhibited();
 
     void showRetryLaterNotification();
 

@@ -6,18 +6,13 @@ package de.tudarmstadt.informatik.tk.android.assistance.event.module;
  */
 public class ModuleShowMoreInfoEvent {
 
-    private String moduleId;
+    private String modulePackageName;
 
-    public ModuleShowMoreInfoEvent(String moduleId) {
-        this.moduleId = moduleId;
+    public ModuleShowMoreInfoEvent(String modulePackageName) {
+        this.modulePackageName = modulePackageName;
     }
 
-    public String getModuleId() {
-        return moduleId;
+    public String getModulePackageName() {
+        return this.modulePackageName;
     }
-
-    public void setModuleId(String moduleId) {
-        this.moduleId = moduleId;
-    }
-
 }

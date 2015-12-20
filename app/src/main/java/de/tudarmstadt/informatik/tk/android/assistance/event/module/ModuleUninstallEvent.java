@@ -6,17 +6,13 @@ package de.tudarmstadt.informatik.tk.android.assistance.event.module;
  */
 public class ModuleUninstallEvent {
 
-    private String moduleId;
+    private String modulePackageName;
 
-    public ModuleUninstallEvent(String moduleId) {
-        this.moduleId = moduleId;
+    public ModuleUninstallEvent(String modulePackageName) {
+        this.modulePackageName = modulePackageName;
     }
 
-    public String getModuleId() {
-        return this.moduleId;
-    }
-
-    public void setModuleId(String moduleId) {
-        this.moduleId = moduleId;
+    public String getModulePackageName() {
+        return this.modulePackageName;
     }
 }

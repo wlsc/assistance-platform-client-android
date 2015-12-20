@@ -113,9 +113,9 @@ public class ModulesActivity extends
      * @param event
      */
     public void onEvent(ModuleInstallEvent event) {
-        Log.d(TAG, "Received installation event. Module id: " + event.getModuleId());
+        Log.d(TAG, "Received installation event. Module id: " + event.getModulePackageName());
 
-        presenter.setSelectedModuleId(event.getModuleId());
+        presenter.setSelectedModuleId(event.getModulePackageName());
         presenter.presentPermissionDialog();
     }
 
@@ -125,9 +125,9 @@ public class ModulesActivity extends
      * @param event
      */
     public void onEvent(ModuleUninstallEvent event) {
-        Log.d(TAG, "Received uninstall event. Module id: " + event.getModuleId());
+        Log.d(TAG, "Received uninstall event. Module id: " + event.getModulePackageName());
 
-        presenter.setSelectedModuleId(event.getModuleId());
+        presenter.setSelectedModuleId(event.getModulePackageName());
         presenter.presentUninstallDialog();
     }
 
@@ -137,9 +137,9 @@ public class ModulesActivity extends
      * @param event
      */
     public void onEvent(ModuleShowMoreInfoEvent event) {
-        Log.d(TAG, "Received show more info event. Module id: " + event.getModuleId());
+        Log.d(TAG, "Received show more info event. Module id: " + event.getModulePackageName());
 
-        presenter.setSelectedModuleId(event.getModuleId());
+        presenter.setSelectedModuleId(event.getModulePackageName());
         presenter.presentMoreModuleInformationDialog();
     }
 
@@ -351,8 +351,13 @@ public class ModulesActivity extends
     }
 
     @Override
-    public void showUserActionForbidden() {
+    public void showUserForbidden() {
         Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+    }
+
+    @Override
+    public void showActionProhibited() {
+        Toaster.showLong(getApplicationContext(), R.string.error_that_action_is_prohibited);
     }
 
     @Override
@@ -443,7 +448,7 @@ public class ModulesActivity extends
             public void onClick(DialogInterface dialog, int which) {
                 Log.d(TAG, "User tapped accept button");
 
-                presenter.askUserEnablePermissions();
+                presenter.askUserForPermissions();
             }
         });
 
@@ -570,6 +575,8 @@ public class ModulesActivity extends
     public void showPermissionsAreCrucialDialog(List<String> declinedPermissions) {
 
         Toaster.showLong(getApplicationContext(), R.string.permission_is_crucial);
+
+        presenter.presentModuleInstallationHasError(declinedPermissions);
     }
 
     @Override
