@@ -16,6 +16,8 @@ public interface CommonController {
 
     List<DbModuleCapability> getAllActiveModuleCapabilities(Long moduleId);
 
+    List<DbModuleCapability> getAllActiveRequiredModuleCapabilities(Long moduleId);
+
     DbUser getUserByToken(String userToken);
 
     DbUser getUserByEmail(String userEmail);

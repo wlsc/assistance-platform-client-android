@@ -32,6 +32,11 @@ public class CommonControllerImpl implements CommonController {
     }
 
     @Override
+    public List<DbModuleCapability> getAllActiveRequiredModuleCapabilities(Long moduleId) {
+        return daoProvider.getModuleCapabilityDao().getAllActiveRequired(moduleId);
+    }
+
+    @Override
     public DbUser getUserByToken(String userToken) {
         return daoProvider
                 .getUserDao()

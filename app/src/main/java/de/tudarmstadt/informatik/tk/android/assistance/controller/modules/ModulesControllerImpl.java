@@ -152,7 +152,7 @@ public class ModulesControllerImpl extends
 
                 for (String perm : perms) {
                     if (!PermissionUtils.getInstance(presenter.getContext())
-                            .isPermissionGranted(perm)) {
+                            .isGranted(perm)) {
 
                         permissionsToAsk.add(perm);
                     }
@@ -355,10 +355,5 @@ public class ModulesControllerImpl extends
 
         insertModuleCapabilitiesToDb(dbRequiredCaps);
         insertModuleCapabilitiesToDb(dbOptionalCaps);
-    }
-
-    @Override
-    public List<DbModuleCapability> getAllActiveModuleCapabilities(Long moduleId) {
-        return daoProvider.getModuleCapabilityDao().getAllActive(moduleId);
     }
 }

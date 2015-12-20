@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -24,9 +23,11 @@ import java.util.Date;
 import java.util.Locale;
 
 import de.tudarmstadt.informatik.tk.android.assistance.Config;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 
 /**
- * Created by Wladimir Schmidt (wlsc.dev@gmail.com) on 07.06.2015.
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 07.06.2015
  */
 public class CommonUtils {
 

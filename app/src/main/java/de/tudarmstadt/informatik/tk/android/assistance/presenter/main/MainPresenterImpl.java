@@ -17,6 +17,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenter
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
@@ -152,7 +153,7 @@ public class MainPresenterImpl extends
 
                 Log.d(TAG, "Back from available modules activity");
 
-                if (PreferenceUtils.hasUserModules(getContext())) {
+                if (ServiceUtils.isHarvesterAbleToRun(getContext())) {
 
                     Log.d(TAG, "User have modules installed");
 

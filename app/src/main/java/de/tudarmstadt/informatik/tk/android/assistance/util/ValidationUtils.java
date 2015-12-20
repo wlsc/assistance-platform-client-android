@@ -41,9 +41,6 @@ public class ValidationUtils {
      * @return
      */
     public static boolean isUserTokenValid(String token) {
-
         return token != null && !token.trim().isEmpty();
-
     }
-
 }

@@ -401,7 +401,7 @@ public class ModulesActivity extends
     }
 
     @Override
-    public int getModulesAmount() {
+    public int getDisplayedModulesCount() {
 
         ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView.getAdapter();
 
@@ -515,12 +515,14 @@ public class ModulesActivity extends
 
     @Override
     public void toggleShowRequiredPermissions(boolean isVisible) {
+
         permissionRequiredRecyclerView.setVisibility(isVisible ? View.GONE : View.VISIBLE);
         permissionsEmptyRequired.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void toggleShowOptionalPermissions(boolean isVisible) {
+
         permissionOptionalRecyclerView.setVisibility(isVisible ? View.GONE : View.VISIBLE);
         permissionsEmptyOptional.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
@@ -567,6 +569,7 @@ public class ModulesActivity extends
     @Override
     public void showPermissionsAreCrucialDialog(List<String> declinedPermissions) {
 
+        Toaster.showLong(getApplicationContext(), R.string.permission_is_crucial);
     }
 
     @Override

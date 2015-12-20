@@ -5,7 +5,8 @@ import android.content.Context;
 import java.util.Locale;
 
 /**
- * Created by Wladimir Schmidt on 04.07.2015.
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 04.07.2015
  */
 public class UserUtils {
 

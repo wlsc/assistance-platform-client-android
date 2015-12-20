@@ -23,7 +23,7 @@ public interface ModulesView extends CommonView {
 
     void setModuleList(List<DbModule> installedModules);
 
-    int getModulesAmount();
+    int getDisplayedModulesCount();
 
     void swapModuleData(List<DbModule> newModules);
 

@@ -156,7 +156,7 @@ public class DevelopmentSettingsFragment extends
 
         boolean isGranted = PermissionUtils
                 .getInstance(getActivity().getApplicationContext())
-                .isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                .isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (isGranted) {
 

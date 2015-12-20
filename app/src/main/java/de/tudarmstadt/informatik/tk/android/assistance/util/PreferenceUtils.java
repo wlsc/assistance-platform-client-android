@@ -7,7 +7,8 @@ import android.preference.PreferenceManager;
 import java.util.Set;
 
 /**
- * Created by Wladimir Schmidt on 12.07.2015.
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 12.07.2015
  */
 public class PreferenceUtils {
 
@@ -303,48 +304,6 @@ public class PreferenceUtils {
      */
     public static void setUserToken(Context context, String value) {
         setPreference(context, Constants.PREF_USER_TOKEN, value);
-    }
-
-    /**
-     * Returns user has any modules installed
-     *
-     * @param context
-     * @return
-     */
-    public static boolean hasUserModules(Context context) {
-        return getPreference(context, Constants.PREF_USER_HAS_MODULES, false);
-    }
-
-    /**
-     * Saves user has any modules installed
-     *
-     * @param context
-     * @param value
-     */
-    public static void setUserHasModules(Context context, boolean value) {
-        setPreference(context, Constants.PREF_USER_HAS_MODULES, value);
-    }
-
-    /**
-     * Returns user has requested active modules for the first time app starts
-     *
-     * @param context
-     * @return
-     */
-    public static boolean hasUserRequestedActiveModules(Context context) {
-        return getPreference(context,
-                Constants.PREF_USER_REQUESTED_ACTIVE_MODULES,
-                false);
-    }
-
-    /**
-     * Saves user has any modules installed
-     *
-     * @param context
-     * @param value
-     */
-    public static void setUserRequestedActiveModules(Context context, boolean value) {
-        setPreference(context, Constants.PREF_USER_REQUESTED_ACTIVE_MODULES, value);
     }
 
     /**

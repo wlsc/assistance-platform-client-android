@@ -1,7 +1,8 @@
 package de.tudarmstadt.informatik.tk.android.assistance.util;
 
 /**
- * Created by Wladimir Schmidt on 28.06.2015.
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 28.06.2015
  */
 public class Constants {
 
@@ -28,9 +29,7 @@ public class Constants {
     public static final String PREF_USER_FIRSTNAME = "user_firstname";
     public static final String PREF_USER_LASTNAME = "user_lastname";
     public static final String PREF_USER_PIC = "user_picture";
-    public static final String PREF_USER_HAS_MODULES = "user_has_modules";
     public static final String PREF_USER_ACTIVE_MODULES = "user_active_modules";
-    public static final String PREF_USER_REQUESTED_ACTIVE_MODULES = "user_requested_active_modules";
     public static final String PREF_USER_ID = "current_user_id";
     public static final String PREF_DEVICE_ID = "current_device_id";
     public static final String PREF_SERVER_DEVICE_ID = "server_device_id";

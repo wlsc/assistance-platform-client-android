@@ -3,8 +3,6 @@ package de.tudarmstadt.informatik.tk.android.assistance.util;
 import android.content.Context;
 
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.service.HarvesterService;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ServiceUtils;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -23,9 +21,6 @@ public class LoginUtils {
         PreferenceUtils.clearUserCredentials(context);
 
         // stop the sensing service
-        if (ServiceUtils.isServiceRunning(context, HarvesterService.class)) {
-
-            HarvesterServiceProvider.getInstance(context).stopSensingService();
-        }
+        HarvesterServiceProvider.getInstance(context).stopSensingService();
     }
 }
