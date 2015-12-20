@@ -16,6 +16,7 @@
     <string name="background">Background</string>
     <string name="none">none</string>
     <string name="no_data">no data</string>
+    <string name="permission_is_crucial">These permissions are crucial for this module</string>
 
     <!-- ACCESSIBILITY SERVICE TUTORIAL -->
     <string name="title_activity_accessibility_tutorial">Extended Accessibility Service Tutorial</string>
