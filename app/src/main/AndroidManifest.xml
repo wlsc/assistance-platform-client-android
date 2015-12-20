@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="de.tudarmstadt.informatik.tk.android.assistance"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="de.tudarmstadt.informatik.tk.android.assistance">
 
     <!-- Permissions -->
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_PROFILE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- none -->
 
     <application
         android:name=".App"
@@ -21,7 +15,7 @@
         tools:replace="android:icon">
         <meta-data
             android:name="com.google.android.gms.analytics.globalConfigResource"
-            android:resource="@xml/analytics_global_config"/>
+            android:resource="@xml/analytics_global_config" />
 
         <activity
             android:name=".activity.MainActivity"
@@ -30,22 +24,22 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.LoginActivity"/>
+                android:value=".activity.LoginActivity" />
         </activity>
 
         <activity
             android:name=".activity.LoginActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".activity.ModulesActivity"
-            android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize" />
 
         <activity
             android:name=".activity.RegisterActivity"
@@ -53,7 +47,7 @@
             android:parentActivityName=".activity.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.LoginActivity"/>
+                android:value=".activity.LoginActivity" />
         </activity>
 
         <activity
@@ -62,12 +56,12 @@
             android:parentActivityName=".activity.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.LoginActivity"/>
+                android:value=".activity.LoginActivity" />
         </activity>
 
         <activity
             android:name=".activity.SettingsActivity"
-            android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize" />
 
         <activity
             android:name=".activity.AccessibilityTutorialActivity"
@@ -77,7 +71,7 @@
             android:theme="@style/FullscreenTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.tudarmstadt.informatik.tk.android.assistance.activity.MainActivity"/>
+                android:value="de.tudarmstadt.informatik.tk.android.assistance.activity.MainActivity" />
         </activity>
     </application>
 
