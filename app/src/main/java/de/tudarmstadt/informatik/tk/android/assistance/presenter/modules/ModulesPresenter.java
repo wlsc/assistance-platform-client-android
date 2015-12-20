@@ -83,4 +83,6 @@ public interface ModulesPresenter extends CommonPresenter {
     void askUserForPermissions();
 
     void presentModuleInstallationHasError(List<String> declinedPermissions);
+
+    void presentSuccessfulUninstall();
 }

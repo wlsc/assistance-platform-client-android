@@ -35,6 +35,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstal
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenter;
@@ -156,6 +157,17 @@ public class ModulesActivity extends
     }
 
     /**
+     * On module successful uninstalled
+     *
+     * @param event
+     */
+    public void onEvent(ModuleUninstallSuccessfulEvent event) {
+        Log.d(TAG, "After module was successful uninstalled. Module id: " + event.getModulePackageName());
+
+        presenter.presentSuccessfulUninstall();
+    }
+
+    /**
      * Returns list of permissions which were optional enabled by user
      *
      * @return
@@ -213,6 +225,11 @@ public class ModulesActivity extends
                         })
                 .setActionTextColor(Color.RED)
                 .show();
+    }
+
+    @Override
+    public void showModuleUninstallSuccessful() {
+        Toaster.showShort(getApplicationContext(), R.string.module_uninstall_successful);
     }
 
     @Override

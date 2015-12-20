@@ -16,6 +16,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.controller.modules.Module
 import de.tudarmstadt.informatik.tk.android.assistance.controller.modules.ModulesControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationErrorEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
@@ -614,6 +615,12 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
+    public void presentSuccessfulUninstall() {
+
+        view.showModuleUninstallSuccessful();
+    }
+
+    @Override
     public void onModuleActivateSuccess(DbModule module, Response response) {
 
         if (response.getStatus() == 200 || response.getStatus() == 204) {
@@ -731,6 +738,8 @@ public class ModulesPresenterImpl extends
                 }
 
                 view.changeModuleLayout(module.getPackageName(), false);
+
+                EventBus.getDefault().post(new ModuleUninstallSuccessfulEvent(selectedModuleId));
 
 //            view.showUndoAction(module);
             }
