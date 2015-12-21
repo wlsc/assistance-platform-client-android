@@ -54,7 +54,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/AssistanceClientFeedbackTransferFormat-1.0.1.jar')
+    compile files('libs/AssistanceClientFeedbackTransferFormat-1.0.2.jar')
     // sensor information gathering
     compile project(':AssistanceSDK')
     // ui from json format
