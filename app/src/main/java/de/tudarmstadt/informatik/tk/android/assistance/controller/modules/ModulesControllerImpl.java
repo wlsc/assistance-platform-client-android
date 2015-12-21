@@ -98,9 +98,7 @@ public class ModulesControllerImpl extends
                 new Callback<Set<String>>() {
 
                     @Override
-                    public void success(Set<String> activeModules,
-                                        Response response) {
-
+                    public void success(Set<String> activeModules, Response response) {
                         handler.onActiveModulesReceived(activeModules, response);
                     }
 
@@ -309,12 +307,14 @@ public class ModulesControllerImpl extends
         DbUser user = getUserByEmail(PreferenceUtils.getUserEmail(presenter.getContext()));
 
         if (user == null) {
+            Log.d(TAG, "User is null");
             return;
         }
 
         DbModule module = ConverterUtils.convertModule(moduleResponse);
 
         if (module == null) {
+            Log.d(TAG, "Module is null");
             return;
         }
 
@@ -328,32 +328,37 @@ public class ModulesControllerImpl extends
         }
 
         List<ModuleCapabilityResponseDto> requiredCaps = moduleResponse.getSensorsRequired();
-        List<ModuleCapabilityResponseDto> optionalCaps = moduleResponse.getSensorsOptional();
+//        List<ModuleCapabilityResponseDto> optionalCaps = moduleResponse.getSensorsOptional();
 
         List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(requiredCaps.size());
-        List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(optionalCaps.size());
+//        List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(optionalCaps.size());
 
         for (ModuleCapabilityResponseDto response : requiredCaps) {
 
             final DbModuleCapability cap = ConverterUtils.convertModuleCapability(response);
 
+            if (cap == null) {
+                continue;
+            }
+
             cap.setModuleId(installId);
+            cap.setRequired(true);
             cap.setActive(true);
 
             dbRequiredCaps.add(cap);
         }
 
-        for (ModuleCapabilityResponseDto response : optionalCaps) {
-
-            final DbModuleCapability cap = ConverterUtils.convertModuleCapability(response);
-
-            cap.setModuleId(installId);
-            cap.setActive(true);
-
-            dbOptionalCaps.add(cap);
-        }
+//        for (ModuleCapabilityResponseDto response : optionalCaps) {
+//
+//            final DbModuleCapability cap = ConverterUtils.convertModuleCapability(response);
+//
+//            cap.setModuleId(installId);
+//            cap.setActive(true);
+//
+//            dbOptionalCaps.add(cap);
+//        }
 
         insertModuleCapabilitiesToDb(dbRequiredCaps);
-        insertModuleCapabilitiesToDb(dbOptionalCaps);
+//        insertModuleCapabilitiesToDb(dbOptionalCaps);
     }
 }

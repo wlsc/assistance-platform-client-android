@@ -5,7 +5,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.enums.FeedbackItemType;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.FeedbackItemType;
+
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)

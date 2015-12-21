@@ -629,6 +629,11 @@ public class ModulesActivity extends
 
         ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView.getAdapter();
 
+        if (adapter == null) {
+            Log.d(TAG, "ModulesAdapter is null!");
+            return;
+        }
+
         DbModule module = adapter.getItem(moduleId);
 
         // defensive programming

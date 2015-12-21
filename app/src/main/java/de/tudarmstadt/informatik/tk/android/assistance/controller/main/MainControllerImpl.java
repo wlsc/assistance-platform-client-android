@@ -23,7 +23,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.GcmUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
-import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.ClientFeedbackDto;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

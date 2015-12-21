@@ -6,7 +6,7 @@ import java.util.Set;
 import de.tudarmstadt.informatik.tk.android.assistance.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
-import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.ClientFeedbackDto;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
