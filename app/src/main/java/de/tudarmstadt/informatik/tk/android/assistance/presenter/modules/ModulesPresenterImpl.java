@@ -448,7 +448,7 @@ public class ModulesPresenterImpl extends
 
                 Log.d(TAG, "Back from module permissions request");
 
-                List<String> declinedPermissions = new ArrayList<>();
+                Set<String> declinedPermissions = new HashSet<>();
 
                 for (int i = 0, grantResultsLength = grantResults.length; i < grantResultsLength; i++) {
 
@@ -604,7 +604,7 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void presentModuleInstallationHasError(List<String> declinedPermissions) {
+    public void presentModuleInstallationHasError(Set<String> declinedPermissions) {
         EventBus.getDefault().post(new ModuleInstallationErrorEvent(selectedModuleId));
     }
 
