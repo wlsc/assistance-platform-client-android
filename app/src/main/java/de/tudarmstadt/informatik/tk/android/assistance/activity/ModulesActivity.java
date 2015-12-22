@@ -589,7 +589,7 @@ public class ModulesActivity extends
     }
 
     @Override
-    public void showPermissionsAreCrucialDialog(List<String> declinedPermissions) {
+    public void showPermissionsAreCrucialDialog(Set<String> declinedPermissions) {
 
         Toaster.showLong(getApplicationContext(), R.string.permission_is_crucial);
 

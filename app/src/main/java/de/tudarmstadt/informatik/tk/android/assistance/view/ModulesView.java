@@ -1,6 +1,7 @@
 package de.tudarmstadt.informatik.tk.android.assistance.view;
 
 import java.util.List;
+import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenter;
@@ -51,7 +52,7 @@ public interface ModulesView extends CommonView {
      *
      * @param declinedPermissions
      */
-    void showPermissionsAreCrucialDialog(List<String> declinedPermissions);
+    void showPermissionsAreCrucialDialog(Set<String> declinedPermissions);
 
     /**
      * Shows more information about an assistance module

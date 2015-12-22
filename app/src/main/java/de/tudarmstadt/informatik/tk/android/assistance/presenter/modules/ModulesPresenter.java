@@ -1,6 +1,7 @@
 package de.tudarmstadt.informatik.tk.android.assistance.presenter.modules;
 
 import java.util.List;
+import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.modules.ModulesController;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenter;
@@ -70,7 +71,7 @@ public interface ModulesPresenter extends CommonPresenter {
      */
     void askUserForPermissions();
 
-    void presentModuleInstallationHasError(List<String> declinedPermissions);
+    void presentModuleInstallationHasError(Set<String> declinedPermissions);
 
     void presentSuccessfulUninstall();
 }
