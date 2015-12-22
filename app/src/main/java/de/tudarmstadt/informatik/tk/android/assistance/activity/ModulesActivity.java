@@ -625,7 +625,11 @@ public class ModulesActivity extends
     @Override
     public void changeModuleLayout(String moduleId, boolean isModuleInstalled) {
 
-        Log.d(TAG, "Changing layout of a module to installed...");
+        if (isModuleInstalled) {
+            Log.d(TAG, "Changing layout of a module to installed...");
+        } else {
+            Log.d(TAG, "Changing layout of a module to uninstalled...");
+        }
 
         ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView.getAdapter();
 
