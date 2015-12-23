@@ -182,7 +182,7 @@ public class ModulesPresenterImpl extends
         }
 
         for (ModuleResponseDto resp : apiResponse) {
-            availableModuleResponseMapping.put(resp.getModulePackage(), resp);
+            availableModuleResponseMapping.put(resp.getPackageName(), resp);
         }
     }
 
@@ -291,7 +291,7 @@ public class ModulesPresenterImpl extends
             if (module.getActive()) {
 
                 // insert active module into db
-                controller.insertModuleWithCapabilities(availableModuleResponseMapping
+                controller.insertModuleResponseWithCapabilities(availableModuleResponseMapping
                         .get(module.getPackageName()));
 
                 // change layout after module insertion
@@ -344,39 +344,34 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void presentModuleInstallation(DbModule module) {
+    public void handleModuleActivationRequest(ModuleResponseDto moduleResponse) {
 
-        if (module == null) {
-            Log.d(TAG, "installModule: Module is NULL");
+        if (moduleResponse == null) {
+            Log.d(TAG, "installModule: Module response was NULL");
             return;
         }
 
         String userToken = PreferenceUtils.getUserToken(getContext());
 
-        DbUser user = controller.getUserByToken(userToken);
+        if (userToken.isEmpty()) {
+            view.startLoginActivity();
+            return;
+        }
+
+        final DbUser user = controller.getUserByToken(userToken);
 
         if (user == null) {
             view.startLoginActivity();
             return;
         }
 
-        DbModule existingModule = controller.getModuleByPackageIdUserId(
-                module.getPackageName(),
-                user.getId());
-
-        // module already existing for that user, abort installation
-        if (existingModule != null) {
-            Log.d(TAG, "existingModule is NULL");
-            return;
-        }
-
-        Log.d(TAG, "Installation of a module " + module.getPackageName() + " has started...");
+        Log.d(TAG, "Installation of a module " + moduleResponse.getPackageName() + " has started...");
         Log.d(TAG, "Requesting service...");
 
         ToggleModuleRequestDto toggleModuleRequest = new ToggleModuleRequestDto();
-        toggleModuleRequest.setModuleId(module.getPackageName());
+        toggleModuleRequest.setModuleId(moduleResponse.getPackageName());
 
-        controller.requestModuleActivation(toggleModuleRequest, userToken, module, this);
+        controller.requestModuleActivation(toggleModuleRequest, userToken, this);
     }
 
     @Override
@@ -405,7 +400,7 @@ public class ModulesPresenterImpl extends
         final ToggleModuleRequestDto toggleModuleRequest = new ToggleModuleRequestDto();
         toggleModuleRequest.setModuleId(module.getPackageName());
 
-        controller.requestModuleDeactivation(toggleModuleRequest, userToken, module, this);
+        controller.requestModuleDeactivation(toggleModuleRequest, userToken, this);
     }
 
     @Override
@@ -467,8 +462,7 @@ public class ModulesPresenterImpl extends
 
                 } else {
 
-                    presentModuleInstallation(ConverterUtils
-                            .convertModule(availableModuleResponseMapping.get(selectedModuleId)));
+                    handleModuleActivationRequest(getSelectedModuleResponse());
 
                     HarvesterServiceProvider.getInstance(getContext()).startSensingService();
                 }
@@ -497,7 +491,7 @@ public class ModulesPresenterImpl extends
 
         String userToken = PreferenceProvider.getInstance(getContext()).getUserToken();
 
-        controller.updateSensorTimingsFromDb(userToken);
+        controller.updateSensorTimingsFromDb();
 
         view.changeModuleLayout(selectedModuleId, true);
         startHarvester();
@@ -505,7 +499,7 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void askUserForPermissions() {
+    public void handleModulePermissions() {
 
         if (availableModuleResponseMapping == null || availableModuleResponseMapping.isEmpty()) {
             Log.d(TAG, "availableModulesResponse is NULL or EMPTY");
@@ -515,13 +509,14 @@ public class ModulesPresenterImpl extends
         // accumulate all permissions
         Set<String> permsRequiredAccumulator = new HashSet<>();
 
-        ModuleResponseDto module = availableModuleResponseMapping.get(selectedModuleId);
+        ModuleResponseDto moduleResponse = availableModuleResponseMapping.get(selectedModuleId);
 
-        if (module == null) {
+        if (moduleResponse == null) {
+            Log.d(TAG, "Module response is null");
             return;
         }
 
-        List<ModuleCapabilityResponseDto> requiredSensors = module.getSensorsRequired();
+        List<ModuleCapabilityResponseDto> requiredSensors = moduleResponse.getSensorsRequired();
 
         // handle required perms
         if (requiredSensors != null) {
@@ -541,6 +536,7 @@ public class ModulesPresenterImpl extends
                         .get(apiType);
 
                 if (perms == null) {
+                    Log.d(TAG, "Perms is null for type: " + apiType);
                     continue;
                 }
 
@@ -589,14 +585,11 @@ public class ModulesPresenterImpl extends
 //        }
 
         if (permsRequiredAccumulator.isEmpty()) {
-
             Log.d(TAG, "permsRequiredAccumulator is empty. its ok. all perms granted");
 
-            presentModuleInstallation(ConverterUtils
-                    .convertModule(availableModuleResponseMapping.get(selectedModuleId)));
+            handleModuleActivationRequest(moduleResponse);
 
         } else {
-
             Log.d(TAG, "Asking permissions...");
 
             view.askPermissions(permsRequiredAccumulator);
@@ -615,88 +608,41 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onModuleActivateSuccess(DbModule module, Response response) {
+    public ModuleResponseDto getSelectedModuleResponse() {
+
+        if (availableModuleResponseMapping == null) {
+            return null;
+        }
+
+        return availableModuleResponseMapping.get(selectedModuleId);
+    }
+
+    @Override
+    public void onModuleActivateSuccess(Response response) {
 
         if (response.getStatus() == 200 || response.getStatus() == 204) {
 
-            Log.d(TAG, "Module is activated!");
+            Log.d(TAG, "Module is successfully activated!");
 
-            String userEmail = PreferenceUtils.getUserEmail(getContext());
+            ModuleResponseDto moduleResponse = getSelectedModuleResponse();
 
-            DbUser user = controller.getUserByEmail(userEmail);
+            boolean isResultOk = controller.insertModuleResponseWithCapabilities(moduleResponse);
 
-            if (user == null) {
-                view.startLoginActivity();
-                return;
-            }
-
-            module.setActive(true);
-            module.setUserId(user.getId());
-
-            Long installId = controller.insertModuleToDb(module);
-
-            if (installId == null) {
+            if (!isResultOk) {
                 view.showModuleInstallationFailed();
                 return;
-            } else {
-
-                // saving module capabilities
-                ModuleResponseDto moduleResponse = availableModuleResponseMapping
-                        .get(module.getPackageName());
-
-                List<ModuleCapabilityResponseDto> requiredCaps = moduleResponse.getSensorsRequired();
-//                List<ModuleCapabilityResponseDto> optionalCaps = moduleResponse.getSensorsOptional();
-
-                if (requiredCaps == null) {
-                    Log.d(TAG, "requiredCaps is NULL! Cannot continue.");
-                    return;
-                }
-
-                List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(requiredCaps.size());
-//                List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(
-//                        optionalCaps == null ? 0 : optionalCaps.size());
-
-                for (ModuleCapabilityResponseDto capResponse : requiredCaps) {
-
-                    final DbModuleCapability cap = ConverterUtils.convertModuleCapability(capResponse);
-
-                    if (cap == null) {
-                        continue;
-                    }
-
-                    cap.setModuleId(installId);
-                    cap.setRequired(true);
-                    cap.setActive(true);
-
-                    dbRequiredCaps.add(cap);
-                }
-
-//                for (ModuleCapabilityResponseDto capResponse : optionalCaps) {
-//
-//                    final DbModuleCapability cap = ConverterUtils.convertModuleCapability(capResponse);
-//
-//                    if (cap == null) {
-//                        continue;
-//                    }
-//
-//                    cap.setModuleId(installId);
-//                    cap.setActive(true);
-//
-//                    dbOptionalCaps.add(cap);
-//                }
-
-                controller.insertModuleCapabilitiesToDb(dbRequiredCaps);
-//                controller.insertModuleCapabilitiesToDb(dbOptionalCaps);
-
-                HarvesterServiceProvider.getInstance(getContext()).startSensingService();
-
-                // update timing for sensors/events
-                controller.updateSensorTimingsFromDb(user.getToken());
-
-                view.showModuleInstallationSuccessful();
             }
 
-            Log.d(TAG, "Installation id: " + installId);
+            // check if service not running -> start it
+            if (!HarvesterServiceProvider.getInstance(getContext()).isServiceRunning()) {
+                HarvesterServiceProvider.getInstance(getContext()).startSensingService();
+            }
+
+            // update timing for sensors/events
+            controller.updateSensorTimingsFromDb();
+
+            view.showModuleInstallationSuccessful();
+
             Log.d(TAG, "Installation has finished!");
 
             Set<String> permsToAsk = controller.getGrantedPermissions();
@@ -705,7 +651,7 @@ public class ModulesPresenterImpl extends
                 view.askPermissions(permsToAsk);
             } else {
                 EventBus.getDefault().post(new ModuleInstallSuccessfulEvent(
-                        module.getPackageName()));
+                        moduleResponse.getPackageName()));
             }
 
         } else {
@@ -721,25 +667,30 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onModuleDeactivateSuccess(DbModule module, Response response) {
+    public void onModuleDeactivateSuccess(Response response) {
 
         // deactivation successful
         if (response.getStatus() == 200 || response.getStatus() == 204) {
 
-            if (controller.uninstallModuleFromDb(module)) {
+            String userToken = PreferenceUtils.getUserToken(getContext());
 
-                String userToken = PreferenceProvider.getInstance(getContext()).getUserToken();
+            if (userToken.isEmpty()) {
+                view.startLoginActivity();
+                return;
+            }
 
-                controller.updateSensorTimingsFromDb(userToken);
+            if (controller.uninstallModuleFromDb(userToken, selectedModuleId)) {
 
-                int numberOfModules = controller.getAllModules(module.getUserId()).size();
+                controller.updateSensorTimingsFromDb();
+
+                int numberOfModules = controller.getAllUserModules(userToken).size();
 
                 // we have no entries in db, stop the sensing
                 if (numberOfModules == 0) {
                     stopHarvester();
                 }
 
-                view.changeModuleLayout(module.getPackageName(), false);
+                view.changeModuleLayout(selectedModuleId, false);
 
                 EventBus.getDefault().post(new ModuleUninstallSuccessfulEvent(selectedModuleId));
 
@@ -749,27 +700,32 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onModuleDeactivateFailed(DbModule module, RetrofitError error) {
+    public void onModuleDeactivateFailed(RetrofitError error) {
 
         doDefaultErrorProcessing(error);
 
         // no such installed module -> remove it immediately
         if (error.getResponse() == null || error.getResponse().getStatus() == 400) {
 
-            if (controller.uninstallModuleFromDb(module)) {
+            String userToken = PreferenceUtils.getUserToken(getContext());
 
-                int numberOfModules = controller.getAllModules(module.getUserId()).size();
+            if (userToken.isEmpty()) {
+                view.startLoginActivity();
+                return;
+            }
+
+            if (controller.uninstallModuleFromDb(userToken, selectedModuleId)) {
+
+                int numberOfModules = controller.getAllUserModules(userToken).size();
 
                 // we have no entries in db, stop the sensing
                 if (numberOfModules == 0) {
                     stopHarvester();
                 }
 
-                String userToken = PreferenceProvider.getInstance(getContext()).getUserToken();
+                controller.updateSensorTimingsFromDb();
 
-                controller.updateSensorTimingsFromDb(userToken);
-
-                view.changeModuleLayout(module.getPackageName(), false);
+                view.changeModuleLayout(selectedModuleId, false);
 
 //                view.showUndoAction(module);
             }

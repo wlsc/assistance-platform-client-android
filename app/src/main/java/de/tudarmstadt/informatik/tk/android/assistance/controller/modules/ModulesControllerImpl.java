@@ -177,24 +177,37 @@ public class ModulesControllerImpl extends
     }
 
     @Override
-    public boolean uninstallModuleFromDb(DbModule module) {
+    public boolean uninstallModuleFromDb(String userToken, String modulePackageName) {
 
-        Log.d(TAG, "Removing module " + module.getTitle() + " from db...");
+        DbUser user = daoProvider.getUserDao().getByToken(userToken);
 
-        DbModule actualDbModule = daoProvider.getModuleDao().getByPackageIdUserId(
-                module.getPackageName(),
-                module.getUserId());
-
-        if (actualDbModule == null) {
-            Log.d(TAG, "actualDbModule was NULL");
+        if (user == null) {
+            Log.d(TAG, "User is null");
             return false;
         }
 
-        // remove module capabilities and module itself
-        daoProvider.getModuleCapabilityDao().delete(actualDbModule.getDbModuleCapabilityList());
+        DbModule actualDbModule = daoProvider.getModuleDao().getByPackageIdUserId(
+                modulePackageName,
+                user.getId());
+
+        if (actualDbModule == null) {
+            Log.d(TAG, "No such module instralled!");
+            return false;
+        }
+
+        Log.d(TAG, "Removing module " + actualDbModule.getTitle() + " from db...");
+
+        List<DbModuleCapability> moduleCaps = actualDbModule.getDbModuleCapabilityList();
+
+        // remove module capabilities
+        if (moduleCaps != null) {
+            daoProvider.getModuleCapabilityDao().delete(moduleCaps);
+        }
+
+        // remove module
         daoProvider.getModuleDao().delete(actualDbModule);
 
-        Log.d(TAG, "Finished removing module from db!");
+        Log.d(TAG, "Successfully removed module from db.");
 
         return true;
     }
@@ -202,7 +215,6 @@ public class ModulesControllerImpl extends
     @Override
     public void requestModuleActivation(ToggleModuleRequestDto toggleModuleRequest,
                                         String userToken,
-                                        final DbModule module,
                                         final OnModuleActivatedResponseHandler handler) {
 
         ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(
@@ -214,7 +226,7 @@ public class ModulesControllerImpl extends
 
                     @Override
                     public void success(Void aVoid, Response response) {
-                        handler.onModuleActivateSuccess(module, response);
+                        handler.onModuleActivateSuccess(response);
                     }
 
                     @Override
@@ -227,16 +239,7 @@ public class ModulesControllerImpl extends
     @Override
     public void requestModuleDeactivation(ToggleModuleRequestDto toggleModuleRequest,
                                           String userToken,
-                                          final DbModule module,
                                           final OnModuleDeactivatedResponseHandler handler) {
-
-        DbUser user = daoProvider.getUserDao().getByToken(userToken);
-
-        if (user == null) {
-            return;
-        }
-
-        module.setUserId(user.getId());
 
         ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(
                 presenter.getContext())
@@ -247,18 +250,20 @@ public class ModulesControllerImpl extends
 
                     @Override
                     public void success(Void aVoid, Response response) {
-                        handler.onModuleDeactivateSuccess(module, response);
+                        handler.onModuleDeactivateSuccess(response);
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        handler.onModuleDeactivateFailed(module, error);
+                        handler.onModuleDeactivateFailed(error);
                     }
                 });
     }
 
     @Override
-    public void updateSensorTimingsFromDb(String userToken) {
+    public void updateSensorTimingsFromDb() {
+
+        String userToken = PreferenceUtils.getUserToken(presenter.getContext());
 
         DbUser user = daoProvider.getUserDao().getByToken(userToken);
 
@@ -302,20 +307,20 @@ public class ModulesControllerImpl extends
     }
 
     @Override
-    public void insertModuleWithCapabilities(ModuleResponseDto moduleResponse) {
+    public boolean insertModuleResponseWithCapabilities(ModuleResponseDto moduleResponse) {
 
         DbUser user = getUserByEmail(PreferenceUtils.getUserEmail(presenter.getContext()));
 
         if (user == null) {
             Log.d(TAG, "User is null");
-            return;
+            return false;
         }
 
         DbModule module = ConverterUtils.convertModule(moduleResponse);
 
         if (module == null) {
             Log.d(TAG, "Module is null");
-            return;
+            return false;
         }
 
         module.setActive(true);
@@ -324,7 +329,7 @@ public class ModulesControllerImpl extends
         long installId = insertModuleToDb(module);
 
         if (installId == -1) {
-            return;
+            return false;
         }
 
         List<ModuleCapabilityResponseDto> requiredCaps = moduleResponse.getSensorsRequired();
@@ -360,5 +365,7 @@ public class ModulesControllerImpl extends
 
         insertModuleCapabilitiesToDb(dbRequiredCaps);
 //        insertModuleCapabilitiesToDb(dbOptionalCaps);
+
+        return true;
     }
 }

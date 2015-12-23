@@ -207,7 +207,7 @@ public class ModulesActivity extends
     }
 
     @Override
-    public void showUndoAction(final DbModule module) {
+    public void showUndoAction() {
 
         Snackbar
                 .make(findViewById(android.R.id.content),
@@ -220,7 +220,8 @@ public class ModulesActivity extends
                             public void onClick(View v) {
                                 Log.d(TAG, "User tapped UNDO uninstall of a module!");
 
-                                presenter.presentModuleInstallation(module);
+                                final ModuleResponseDto moduleResponse = presenter.getSelectedModuleResponse();
+                                presenter.handleModuleActivationRequest(moduleResponse);
                             }
                         })
                 .setActionTextColor(Color.RED)
@@ -465,7 +466,7 @@ public class ModulesActivity extends
             public void onClick(DialogInterface dialog, int which) {
                 Log.d(TAG, "User tapped accept button");
 
-                presenter.askUserForPermissions();
+                presenter.handleModulePermissions();
             }
         });
 
@@ -480,26 +481,26 @@ public class ModulesActivity extends
         TextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
         title.setText(selectedModule.getTitle());
 
-        CircularImageView imageView = ButterKnife.findById(dialogView, R.id.module_permission_icon);
+        CircularImageView circularImageView = ButterKnife.findById(dialogView, R.id.module_permission_icon);
 
         Picasso.with(this)
                 .load(selectedModule.getLogo())
                 .placeholder(R.drawable.no_image)
-                .into(imageView);
+                .into(circularImageView);
 
         permissionsEmptyRequired = ButterKnife.findById(
                 dialogView,
                 R.id.module_permissions_required_list_empty);
 
-        permissionsEmptyOptional = ButterKnife.findById(
-                dialogView,
-                R.id.module_permissions_optional_list_empty);
+//        permissionsEmptyOptional = ButterKnife.findById(
+//                dialogView,
+//                R.id.module_permissions_optional_list_empty);
 
         List<ModuleCapabilityResponseDto> requiredSensors = selectedModule.getSensorsRequired();
-        List<ModuleCapabilityResponseDto> optionalSensors = selectedModule.getSensorsOptional();
+//        List<ModuleCapabilityResponseDto> optionalSensors = selectedModule.getSensorsOptional();
 
         List<PermissionListItem> requiredModuleSensors = new ArrayList<>();
-        List<PermissionListItem> optionalModuleSensors = new ArrayList<>();
+//        List<PermissionListItem> optionalModuleSensors = new ArrayList<>();
 
         if (requiredSensors != null && !requiredSensors.isEmpty()) {
 
@@ -511,25 +512,25 @@ public class ModulesActivity extends
             toggleShowRequiredPermissions(true);
         }
 
-        if (optionalSensors != null && !optionalSensors.isEmpty()) {
-
-            for (ModuleCapabilityResponseDto capability : optionalSensors) {
-                optionalModuleSensors.add(new PermissionListItem(
-                        ConverterUtils.convertModuleCapability(capability)
-                ));
-            }
-        } else {
-            toggleShowOptionalPermissions(true);
-        }
+//        if (optionalSensors != null && !optionalSensors.isEmpty()) {
+//
+//            for (ModuleCapabilityResponseDto capability : optionalSensors) {
+//                optionalModuleSensors.add(new PermissionListItem(
+//                        ConverterUtils.convertModuleCapability(capability)
+//                ));
+//            }
+//        } else {
+//            toggleShowOptionalPermissions(true);
+//        }
 
 
         permissionRequiredRecyclerView.setAdapter(new PermissionAdapter(
                 requiredModuleSensors,
                 PermissionAdapter.REQUIRED));
 
-        permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(
-                optionalModuleSensors,
-                PermissionAdapter.OPTIONAL));
+//        permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(
+//                optionalModuleSensors,
+//                PermissionAdapter.OPTIONAL));
 
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();

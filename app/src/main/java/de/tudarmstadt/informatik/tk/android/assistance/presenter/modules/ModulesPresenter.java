@@ -45,7 +45,7 @@ public interface ModulesPresenter extends CommonPresenter {
     /**
      * Saves information into db / install a module for user
      */
-    void presentModuleInstallation(DbModule module);
+    void handleModuleActivationRequest(ModuleResponseDto moduleResponse);
 
     /**
      * Uninstalls currently selected module
@@ -69,9 +69,11 @@ public interface ModulesPresenter extends CommonPresenter {
     /**
      * Ask user for grant permissions
      */
-    void askUserForPermissions();
+    void handleModulePermissions();
 
     void presentModuleInstallationHasError(Set<String> declinedPermissions);
 
     void presentSuccessfulUninstall();
+
+    ModuleResponseDto getSelectedModuleResponse();
 }

@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller;
 
 import android.content.Context;
 
+import java.util.Collections;
 import java.util.List;
 
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
@@ -51,7 +52,14 @@ public class CommonControllerImpl implements CommonController {
     }
 
     @Override
-    public List<DbModule> getAllModules(Long userId) {
-        return daoProvider.getModuleDao().getAll(userId);
+    public List<DbModule> getAllUserModules(String userToken) {
+
+        DbUser user = daoProvider.getUserDao().getByToken(userToken);
+
+        if (user == null) {
+            return Collections.emptyList();
+        }
+
+        return daoProvider.getModuleDao().getAll(user.getId());
     }
 }

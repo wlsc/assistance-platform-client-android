@@ -1,6 +1,5 @@
 package de.tudarmstadt.informatik.tk.android.assistance.handler;
 
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -10,7 +9,7 @@ import retrofit.client.Response;
  */
 public interface OnModuleDeactivatedResponseHandler {
 
-    void onModuleDeactivateSuccess(DbModule module, Response response);
+    void onModuleDeactivateSuccess(Response response);
 
-    void onModuleDeactivateFailed(DbModule module, RetrofitError error);
+    void onModuleDeactivateFailed(RetrofitError error);
 }

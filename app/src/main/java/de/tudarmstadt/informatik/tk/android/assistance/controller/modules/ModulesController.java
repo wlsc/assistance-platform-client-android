@@ -42,26 +42,26 @@ public interface ModulesController extends CommonController {
 
     void insertModuleCapabilitiesToDb(List<DbModuleCapability> dbRequiredCaps);
 
-    void insertModuleWithCapabilities(ModuleResponseDto moduleResponseDto);
+    boolean insertModuleResponseWithCapabilities(ModuleResponseDto moduleResponseDto);
 
     DbModule getModuleByPackageIdUserId(String packageName, Long userId);
 
     /**
      * Removes module from db
      *
-     * @param module
+     * @param userToken
+     * @param modulePackageName
+     * @return
      */
-    boolean uninstallModuleFromDb(DbModule module);
+    boolean uninstallModuleFromDb(String userToken, String modulePackageName);
 
     void requestModuleActivation(ToggleModuleRequestDto toggleModuleRequest,
                                  String userToken,
-                                 DbModule module,
                                  OnModuleActivatedResponseHandler handler);
 
     void requestModuleDeactivation(ToggleModuleRequestDto toggleModuleRequest,
                                    String userToken,
-                                   DbModule module,
                                    OnModuleDeactivatedResponseHandler handler);
 
-    void updateSensorTimingsFromDb(String userToken);
+    void updateSensorTimingsFromDb();
 }

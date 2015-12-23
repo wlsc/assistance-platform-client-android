@@ -72,7 +72,7 @@ public interface ModulesView extends CommonView {
 
     void showModuleInstallationSuccessful();
 
-    void showUndoAction(DbModule module);
+    void showUndoAction();
 
     void showModuleUninstallSuccessful();
 }

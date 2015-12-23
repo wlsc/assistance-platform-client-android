@@ -22,5 +22,5 @@ public interface CommonController {
 
     DbUser getUserByEmail(String userEmail);
 
-    List<DbModule> getAllModules(Long userId);
+    List<DbModule> getAllUserModules(String userToken);
 }
