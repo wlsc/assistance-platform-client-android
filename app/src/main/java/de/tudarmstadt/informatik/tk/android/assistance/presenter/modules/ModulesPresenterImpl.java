@@ -138,7 +138,7 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onAvailableModulesSuccess(final List<ModuleResponseDto> apiResponse, final Response response) {
+    public void onAvailableModulesSuccess(List<ModuleResponseDto> apiResponse, final Response response) {
 
         if (apiResponse == null || apiResponse.isEmpty()) {
 
@@ -150,6 +150,10 @@ public class ModulesPresenterImpl extends
         } else {
 
             Log.d(TAG, apiResponse.toString());
+            Log.d(TAG, "Filtering list according to device sensor availability...");
+
+            // filter modules that have not runnable sensors in their required capabilities
+            apiResponse = controller.filterAvailableModulesList(apiResponse);
 
             availableModules = new ArrayList<>(apiResponse.size());
             availableModules.addAll(apiResponse);

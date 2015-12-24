@@ -25,6 +25,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
@@ -304,6 +305,48 @@ public class ModulesControllerImpl extends
                 }
             }
         }
+    }
+
+    @Override
+    public List<ModuleResponseDto> filterAvailableModulesList(List<ModuleResponseDto> apiResponse) {
+
+        if (apiResponse == null) {
+            return Collections.emptyList();
+        }
+
+        SensorProvider sensorProvider = SensorProvider.getInstance(presenter.getContext());
+
+        List<ModuleResponseDto> result = new ArrayList<>();
+
+        for (ModuleResponseDto moduleDto : apiResponse) {
+
+            List<ModuleCapabilityResponseDto> moduleReqCaps = moduleDto.getSensorsRequired();
+
+            if (moduleReqCaps == null) {
+                continue;
+            }
+
+            boolean canUseThatModule = true;
+
+            for (ModuleCapabilityResponseDto capDto : moduleReqCaps) {
+
+                if (capDto == null || capDto.getType() == null) {
+                    continue;
+                }
+
+                // if user CAN'T run that sensor
+                if (!sensorProvider.hasUserAbilityToRunSensor(capDto.getType())) {
+                    canUseThatModule = false;
+                }
+            }
+
+            // user can use this module -> add to list
+            if (canUseThatModule) {
+                result.add(moduleDto);
+            }
+        }
+
+        return result;
     }
 
     @Override

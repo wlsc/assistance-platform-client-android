@@ -64,4 +64,6 @@ public interface ModulesController extends CommonController {
                                    OnModuleDeactivatedResponseHandler handler);
 
     void updateSensorTimingsFromDb();
+
+    List<ModuleResponseDto> filterAvailableModulesList(List<ModuleResponseDto> apiResponse);
 }
