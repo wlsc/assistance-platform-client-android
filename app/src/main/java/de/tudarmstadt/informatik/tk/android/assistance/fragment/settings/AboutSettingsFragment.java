@@ -192,18 +192,30 @@ public class AboutSettingsFragment extends PreferenceFragment {
             builder.setView(dialogView);
             builder.setPositiveButton(R.string.button_ok_text, null);
 
+            // DEVELOPERS
             TextView devEmail1 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_developer_email_1);
             devEmail1.setMovementMethod(LinkMovementMethod.getInstance());
 
+            TextView devWebsite1 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_developer_website_1);
+            devWebsite1.setMovementMethod(LinkMovementMethod.getInstance());
+
+            // SUPERVISORS
             TextView supervisorEmail1 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_supervisor_email_1);
             supervisorEmail1.setMovementMethod(LinkMovementMethod.getInstance());
+
+            TextView supervisorWebsite1 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_supervisor_website_1);
+            supervisorWebsite1.setMovementMethod(LinkMovementMethod.getInstance());
 
             TextView supervisorEmail2 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_supervisor_email_2);
             supervisorEmail2.setMovementMethod(LinkMovementMethod.getInstance());
 
+            TextView supervisorWebsite2 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_supervisor_website_2);
+            supervisorWebsite2.setMovementMethod(LinkMovementMethod.getInstance());
+
             TextView supervisorEmail3 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_supervisor_email_3);
             supervisorEmail3.setMovementMethod(LinkMovementMethod.getInstance());
 
+            // FOOTER
             TextView footer = ButterKnife.findById(dialogView, R.id.settings_about_dialog_tk_lab_footer);
             footer.setMovementMethod(LinkMovementMethod.getInstance());
 

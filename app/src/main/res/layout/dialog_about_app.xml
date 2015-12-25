@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/settings_about_dialog_developer_name_1"
                 android:textIsSelectable="true"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/settings_about_dialog_developer_email_1"
@@ -41,7 +41,15 @@
                 android:layout_height="wrap_content"
                 android:text="@string/settings_about_dialog_developer_email_1"
                 android:textIsSelectable="true"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/settings_about_dialog_developer_website_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_about_dialog_developer_website_1"
+                android:textIsSelectable="true"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -71,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/settings_about_dialog_supervisor_name_1"
                     android:textIsSelectable="true"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/settings_about_dialog_supervisor_email_1"
@@ -79,7 +87,15 @@
                     android:layout_height="wrap_content"
                     android:text="@string/settings_about_dialog_supervisor_email_1"
                     android:textIsSelectable="true"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/settings_about_dialog_supervisor_website_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_about_dialog_supervisor_website_1"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -94,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/settings_about_dialog_supervisor_name_2"
                     android:textIsSelectable="true"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/settings_about_dialog_supervisor_email_2"
@@ -102,7 +118,15 @@
                     android:layout_height="wrap_content"
                     android:text="@string/settings_about_dialog_supervisor_email_2"
                     android:textIsSelectable="true"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/settings_about_dialog_supervisor_website_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_about_dialog_supervisor_website_2"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -117,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/settings_about_dialog_supervisor_name_3"
                     android:textIsSelectable="true"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/settings_about_dialog_supervisor_email_3"
@@ -125,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/settings_about_dialog_supervisor_email_3"
                     android:textIsSelectable="true"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -139,7 +163,7 @@
             android:gravity="center"
             android:text="@string/settings_about_dialog_tk_lab_footer"
             android:textIsSelectable="true"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 </ScrollView>
