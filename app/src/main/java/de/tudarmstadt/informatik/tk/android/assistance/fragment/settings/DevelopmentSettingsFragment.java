@@ -12,7 +12,6 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,8 +22,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity
 import de.tudarmstadt.informatik.tk.android.assistance.event.PermissionGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.Config;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.StorageUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 
 /**
@@ -60,6 +61,10 @@ public class DevelopmentSettingsFragment extends
         String customEndpoint = PreferenceUtils.getCustomEndpoint(getActivity().getApplicationContext());
 
         EditTextPreference editEndpointUrlPref = (EditTextPreference) findPreference("pref_edit_endpoint_url");
+
+        if (!AppUtils.isDebug(getActivity().getApplicationContext())) {
+            editEndpointUrlPref.setEnabled(false);
+        }
 
         if (customEndpoint.isEmpty()) {
 
