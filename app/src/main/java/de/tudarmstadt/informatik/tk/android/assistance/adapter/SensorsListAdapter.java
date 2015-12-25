@@ -1,8 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorsListFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.SensorsListItem;
@@ -50,13 +47,6 @@ public class SensorsListAdapter extends RecyclerView.Adapter<SensorsListAdapter.
         SensorsListItem currentSensor = mData.get(position);
 
         viewHolder.textView.setText(currentSensor.getName());
-
-        if (currentSensor.isVisible()) {
-            viewHolder.switchCompat.setVisibility(View.VISIBLE);
-            viewHolder.switchCompat.setChecked(currentSensor.isEnabled());
-        } else {
-            viewHolder.switchCompat.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -77,20 +67,10 @@ public class SensorsListAdapter extends RecyclerView.Adapter<SensorsListAdapter.
         @Bind(R.id.sensor_list_item)
         protected TextView textView;
 
-        @Bind(R.id.sensor_switch)
-        protected SwitchCompat switchCompat;
-
         public ViewHolder(View view) {
             super(view);
 
             ButterKnife.bind(this, view);
-        }
-
-        @OnCheckedChanged(R.id.sensor_switch)
-        void onSwitchStateChanged(boolean isEnabled) {
-            Log.d(TAG, "Switch state changed to: " + isEnabled);
-
-            //TODO: save state to db/prefs
         }
     }
 }

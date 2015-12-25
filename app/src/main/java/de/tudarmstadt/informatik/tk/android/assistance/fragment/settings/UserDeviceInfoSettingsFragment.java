@@ -13,6 +13,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.device.
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.DeviceEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.DaoProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import retrofit.Callback;
@@ -27,8 +28,6 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
 
     private static final String TAG = UserDeviceInfoSettingsFragment.class.getSimpleName();
 
-    private DaoProvider daoProvider;
-
     private Toolbar mParentToolbar;
 
     public UserDeviceInfoSettingsFragment() {
@@ -38,18 +37,20 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (daoProvider == null) {
-            daoProvider = DaoProvider.getInstance(getActivity().getApplicationContext());
-        }
-
         addPreferencesFromResource(R.xml.preference_user_device_info);
 
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
         mParentToolbar.setTitle(R.string.settings_header_user_device_title);
 
+        if (!AppUtils.isDebug(getActivity().getApplicationContext())) {
+            Preference sensorsList = findPreference("pref_list_of_sensors");
+            sensorsList.setEnabled(false);
+        }
+
         long currentDeviceId = PreferenceUtils.getCurrentDeviceId(getActivity().getApplicationContext());
 
-        DbDevice dbDevice = daoProvider.getDeviceDao().getById(currentDeviceId);
+        DbDevice dbDevice = DaoProvider.getInstance(getActivity().getApplicationContext())
+                .getDeviceDao().getById(currentDeviceId);
 
         if (dbDevice != null) {
 
@@ -131,18 +132,20 @@ public class UserDeviceInfoSettingsFragment extends PreferenceFragment implement
 
         Log.d(TAG, "Updating device's user defined name...");
 
-        DbDevice dbDevice = daoProvider.getDeviceDao().getById(currentDeviceId);
+        DbDevice dbDevice = DaoProvider.getInstance(getActivity().getApplicationContext())
+                .getDeviceDao().getById(currentDeviceId);
 
         if (dbDevice != null) {
-
-            dbDevice.setUserDefinedName(deviceName);
-
-            daoProvider.getDeviceDao().update(dbDevice);
-
-            Log.d(TAG, "Successful finished updating device's user defined name!");
-
-        } else {
             Log.d(TAG, "Cannot update device information in db");
+            return;
         }
+
+        dbDevice.setUserDefinedName(deviceName);
+
+        DaoProvider.getInstance(getActivity().getApplicationContext())
+                .getDeviceDao().update(dbDevice);
+
+        Log.d(TAG, "Successful finished updating device's user defined name!");
+
     }
 }

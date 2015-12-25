@@ -19,20 +19,7 @@
             android:paddingStart="10dp"
             android:textColor="@color/myTextPrimaryColor"
             android:textSize="14sp" />
-
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/sensor_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical">
-
-        </android.support.v7.widget.SwitchCompat>
-
+        
     </RelativeLayout>
 
 </LinearLayout>
