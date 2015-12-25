@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -23,14 +24,19 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
  */
 public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHolder> {
 
-//    private static final String TAG = ModulesAdapter.class.getSimpleName();
+    private static final String TAG = ModulesAdapter.class.getSimpleName();
 
     private static final int EMPTY_VIEW_TYPE = 10;
 
     private List<DbModule> modules;
 
     public ModulesAdapter(List<DbModule> modules) {
-        this.modules = modules;
+
+        if (modules == null) {
+            this.modules = Collections.emptyList();
+        } else {
+            this.modules = modules;
+        }
     }
 
     @Override
@@ -105,11 +111,6 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-
-        if (modules == null) {
-            return 0;
-        }
-
         return modules.size();
     }
 
@@ -129,7 +130,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
     }
 
     /**
-     * Returns item by pacakge id
+     * Returns item by package id
      *
      * @param modulePackageId
      * @return
@@ -167,8 +168,13 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
      */
     public void swapData(List<DbModule> newList) {
 
-        modules.clear();
-        modules.addAll(newList);
+        if (newList == null) {
+            modules = Collections.emptyList();
+        } else {
+            modules.clear();
+            modules.addAll(newList);
+        }
+
         notifyDataSetChanged();
     }
 
@@ -194,6 +200,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
 
         public ViewHolder(View view) {
             super(view);
+
             mMainTitle = ButterKnife.findById(view, R.id.main_title);
             mShortDescription = ButterKnife.findById(view, R.id.main_short_description);
             mMoreInfoModule = ButterKnife.findById(view, R.id.more_info_module);

@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorListSettingsFragment;
@@ -25,7 +25,12 @@ public class SensorsListAdapter extends RecyclerView.Adapter<SensorsListAdapter.
     private List<SensorsListItem> mData;
 
     public SensorsListAdapter(List<SensorsListItem> mData) {
-        this.mData = mData;
+
+        if (mData == null) {
+            this.mData = Collections.emptyList();
+        } else {
+            this.mData = mData;
+        }
     }
 
     @Override
@@ -56,7 +61,7 @@ public class SensorsListAdapter extends RecyclerView.Adapter<SensorsListAdapter.
 
     @Override
     public int getItemCount() {
-        return mData != null ? mData.size() : 0;
+        return mData.size();
     }
 
     /**
@@ -64,13 +69,12 @@ public class SensorsListAdapter extends RecyclerView.Adapter<SensorsListAdapter.
      */
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.sensor_list_item)
         protected TextView textView;
 
         public ViewHolder(View view) {
             super(view);
 
-            ButterKnife.bind(this, view);
+            textView = ButterKnife.findById(view, R.id.sensor_list_item);
         }
     }
 }

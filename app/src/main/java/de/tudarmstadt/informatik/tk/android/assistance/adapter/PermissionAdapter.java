@@ -7,10 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
@@ -30,13 +29,12 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
     private final int requiredState;
 
     public static final int OPTIONAL = 0;
-
     public static final int REQUIRED = 1;
 
     public PermissionAdapter(List<PermissionListItem> mData, int requiredState) {
 
         if (mData == null) {
-            this.mData = new ArrayList<>();
+            this.mData = Collections.emptyList();
         } else {
             this.mData = mData;
         }
@@ -83,7 +81,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
      */
     @Override
     public int getItemCount() {
-        return this.mData.size();
+        return mData.size();
     }
 
     /**
@@ -100,16 +98,15 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
      */
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.permission_item_title)
         protected TextView mTitle;
 
-        @Bind(R.id.permission_item_enabler)
         protected SwitchCompat mEnablerSwitch;
 
         public ViewHolder(View view) {
             super(view);
 
-            ButterKnife.bind(this, view);
+            mTitle = ButterKnife.findById(view, R.id.permission_item_title);
+            mEnablerSwitch = ButterKnife.findById(view, R.id.permission_item_enabler);
         }
     }
 

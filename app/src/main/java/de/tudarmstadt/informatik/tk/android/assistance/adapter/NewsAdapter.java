@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -24,7 +25,12 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<DbNews> news;
 
     public NewsAdapter(List<DbNews> news) {
-        this.news = news;
+
+        if (news == null) {
+            this.news = Collections.emptyList();
+        } else {
+            this.news = news;
+        }
     }
 
     @Override
@@ -63,11 +69,6 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-
-        if (news == null) {
-            return 0;
-        }
-
         return news.size();
     }
 
@@ -98,8 +99,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      */
     public void swapData(List<DbNews> newList) {
 
-        news.clear();
-        news.addAll(newList);
+        if (newList == null) {
+            news = Collections.emptyList();
+        } else {
+            news.clear();
+            news.addAll(newList);
+        }
+
         notifyDataSetChanged();
     }
 
