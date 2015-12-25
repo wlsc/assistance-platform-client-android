@@ -8,8 +8,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.controller.login.LoginCon
 import de.tudarmstadt.informatik.tk.android.assistance.controller.login.LoginControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnUserValidHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.login.LoginResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.login.LoginResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
@@ -60,16 +60,19 @@ public class LoginPresenterImpl extends
         // check for password
         if (!TextUtils.isEmpty(password) && !ValidationUtils.isPasswordLengthValid(password)) {
             view.showErrorPasswordInvalid();
+            view.setLoginButtonEnabled(true);
             return;
         }
 
         // check for email address
         if (TextUtils.isEmpty(email)) {
             view.showErrorEmailRequired();
+            view.setLoginButtonEnabled(true);
             return;
         } else {
             if (!ValidationUtils.isValidEmail(email)) {
                 view.showErrorEmailInvalid();
+                view.setLoginButtonEnabled(true);
                 return;
             }
         }
