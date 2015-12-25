@@ -38,6 +38,10 @@ public class DevelopmentSettingsFragment extends
 
     private static final String TAG = DevelopmentSettingsFragment.class.getSimpleName();
 
+    private EditTextPreference editEndpointUrlPref;
+
+    private Preference exportDbPref;
+
     public DevelopmentSettingsFragment() {
     }
 
@@ -58,9 +62,11 @@ public class DevelopmentSettingsFragment extends
         SwitchPreference beDevPref = (SwitchPreference) findPreference("pref_be_developer");
         beDevPref.setChecked(isUserDeveloper);
 
+        exportDbPref = findPreference("pref_export_database");
+
         String customEndpoint = PreferenceUtils.getCustomEndpoint(getActivity().getApplicationContext());
 
-        EditTextPreference editEndpointUrlPref = (EditTextPreference) findPreference("pref_edit_endpoint_url");
+        editEndpointUrlPref = (EditTextPreference) findPreference("pref_edit_endpoint_url");
 
         if (!AppUtils.isDebug(getActivity().getApplicationContext())) {
             editEndpointUrlPref.setEnabled(false);
@@ -87,15 +93,21 @@ public class DevelopmentSettingsFragment extends
 
         if (key.equals("pref_be_developer")) {
 
-            boolean isDeveloper = PreferenceUtils.isUserDeveloper(getActivity().getApplicationContext());
+            boolean isDeveloperSwitchEnabled = sharedPreferences.getBoolean("pref_be_developer", false);
 
-            if (isDeveloper) {
+            if (isDeveloperSwitchEnabled) {
                 Log.d(TAG, "Developer mode is ENABLED.");
             } else {
                 Log.d(TAG, "Developer mode is DISABLED.");
             }
 
-            PreferenceUtils.setDeveloperStatus(getActivity().getApplicationContext(), isDeveloper);
+            exportDbPref.setEnabled(isDeveloperSwitchEnabled);
+
+            if (AppUtils.isDebug(getActivity().getApplicationContext())) {
+                editEndpointUrlPref.setEnabled(isDeveloperSwitchEnabled);
+            }
+
+            PreferenceUtils.setDeveloperStatus(getActivity().getApplicationContext(), isDeveloperSwitchEnabled);
         }
 
         if (key.equals("pref_edit_endpoint_url")) {
@@ -122,6 +134,13 @@ public class DevelopmentSettingsFragment extends
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+
+        if (preference.getKey().equals("pref_be_developer")) {
+
+            Log.d(TAG, "User clicked switch developer ON/OFF");
+
+
+        }
 
         if (preference.getKey().equals("pref_export_database")) {
 
@@ -176,10 +195,6 @@ public class DevelopmentSettingsFragment extends
             // check if explanation is needed for this permission
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
 
                 Toaster.showLong(getActivity().getApplicationContext(), R.string.permission_is_mandatory);
             }
@@ -249,7 +264,6 @@ public class DevelopmentSettingsFragment extends
                 } else {
                     Toaster.showLong(getActivity().getApplicationContext(),
                             R.string.permission_is_mandatory);
-                    // TODO: show crucial permission view
                 }
 
                 break;
