@@ -14,12 +14,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.ApplicationAboutSettingsFragment;
-import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.ApplicationSettingsFragment;
-import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DevelopmentSettingsFragment;
-import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorsListFragment;
-import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDeviceInfoSettingsFragment;
-import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.AboutSettingsFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.AppSettingsFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DevSettingsFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorListSettingsFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DeviceSettingsFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
@@ -36,12 +36,12 @@ public class SettingsActivity extends PreferenceActivity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
     private final String[] VALID_FRAGMENTS = {
-            ApplicationAboutSettingsFragment.class.getName(),
-            ApplicationSettingsFragment.class.getName(),
-            DevelopmentSettingsFragment.class.getName(),
-            UserDeviceInfoSettingsFragment.class.getName(),
-            UserProfileFragment.class.getName(),
-            SensorsListFragment.class.getName()
+            AboutSettingsFragment.class.getName(),
+            AppSettingsFragment.class.getName(),
+            DevSettingsFragment.class.getName(),
+            DeviceSettingsFragment.class.getName(),
+            UserProfileSettingsFragment.class.getName(),
+            SensorListSettingsFragment.class.getName()
     };
 
     @Bind(R.id.toolbar)

@@ -27,16 +27,16 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 17.07.2015
  */
-public class SensorsListFragment extends Fragment {
+public class SensorListSettingsFragment extends Fragment {
 
-    private static final String TAG = SensorsListFragment.class.getSimpleName();
+    private static final String TAG = SensorListSettingsFragment.class.getSimpleName();
 
     private Toolbar mParentToolbar;
 
     @Bind(R.id.sensor_list)
     protected RecyclerView recyclerView;
 
-    public SensorsListFragment() {
+    public SensorListSettingsFragment() {
     }
 
     @Override

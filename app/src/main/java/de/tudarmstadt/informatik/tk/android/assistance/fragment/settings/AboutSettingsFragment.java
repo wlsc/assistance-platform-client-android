@@ -6,8 +6,13 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.method.LinkMovementMethod;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
@@ -20,9 +25,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 29.06.2015
  */
-public class ApplicationAboutSettingsFragment extends PreferenceFragment {
+public class AboutSettingsFragment extends PreferenceFragment {
 
-    private static final String TAG = ApplicationAboutSettingsFragment.class.getSimpleName();
+    private static final String TAG = AboutSettingsFragment.class.getSimpleName();
 
     private Toolbar mParentToolbar;
 
@@ -39,7 +44,7 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
     private Preference appVersionPref;
     private Preference buildNumberPref;
 
-    public ApplicationAboutSettingsFragment() {
+    public AboutSettingsFragment() {
         beDeveloperCounter = 0;
     }
 
@@ -178,8 +183,29 @@ public class ApplicationAboutSettingsFragment extends PreferenceFragment {
 
         if (dialog == null) {
 
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_about_app, null);
+
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("This an about dialog!");
+
+            builder.setTitle(getString(R.string.app_name) + " v" + BuildConfig.VERSION_NAME);
+            builder.setView(dialogView);
+            builder.setPositiveButton(R.string.button_ok_text, null);
+
+            TextView devEmail1 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_developer_email_1);
+            devEmail1.setMovementMethod(LinkMovementMethod.getInstance());
+
+            TextView supervisorEmail1 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_supervisor_email_1);
+            supervisorEmail1.setMovementMethod(LinkMovementMethod.getInstance());
+
+            TextView supervisorEmail2 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_supervisor_email_2);
+            supervisorEmail2.setMovementMethod(LinkMovementMethod.getInstance());
+
+            TextView supervisorEmail3 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_supervisor_email_3);
+            supervisorEmail3.setMovementMethod(LinkMovementMethod.getInstance());
+
+            TextView footer = ButterKnife.findById(dialogView, R.id.settings_about_dialog_tk_lab_footer);
+            footer.setMovementMethod(LinkMovementMethod.getInstance());
 
             dialog = builder.create();
         }

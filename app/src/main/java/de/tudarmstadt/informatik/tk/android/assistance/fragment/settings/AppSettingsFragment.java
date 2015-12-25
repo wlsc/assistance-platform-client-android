@@ -11,13 +11,13 @@ import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 29.06.2015
  */
-public class ApplicationSettingsFragment extends PreferenceFragment {
+public class AppSettingsFragment extends PreferenceFragment {
 
-    private static final String TAG = ApplicationSettingsFragment.class.getSimpleName();
+    private static final String TAG = AppSettingsFragment.class.getSimpleName();
 
     private Toolbar mParentToolbar;
 
-    public ApplicationSettingsFragment() {
+    public AppSettingsFragment() {
     }
 
     @Override

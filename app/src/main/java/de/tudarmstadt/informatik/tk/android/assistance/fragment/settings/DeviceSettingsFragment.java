@@ -24,13 +24,13 @@ import retrofit.client.Response;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 29.06.2015
  */
-public class UserDeviceInfoSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class DeviceSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = UserDeviceInfoSettingsFragment.class.getSimpleName();
+    private static final String TAG = DeviceSettingsFragment.class.getSimpleName();
 
     private Toolbar mParentToolbar;
 
-    public UserDeviceInfoSettingsFragment() {
+    public DeviceSettingsFragment() {
     }
 
     @Override

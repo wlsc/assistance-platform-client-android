@@ -32,17 +32,17 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 29.06.2015
  */
-public class DevelopmentSettingsFragment extends
+public class DevSettingsFragment extends
         PreferenceFragment implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = DevelopmentSettingsFragment.class.getSimpleName();
+    private static final String TAG = DevSettingsFragment.class.getSimpleName();
 
     private EditTextPreference editEndpointUrlPref;
 
     private Preference exportDbPref;
 
-    public DevelopmentSettingsFragment() {
+    public DevSettingsFragment() {
     }
 
     @Override

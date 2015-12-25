@@ -31,8 +31,8 @@
     <string name="settings_header_user_device_summary">Mobile device information</string>
     <string name="settings_header_development_title">Development</string>
     <string name="settings_header_development_summary">Development settings</string>
-    <string name="settings_header_help_and_about_title">Help and About</string>
-    <string name="settings_header_help_and_about_summary">About the application</string>
+    <string name="settings_header_help_and_about_title">Help and legal information</string>
+    <string name="settings_header_help_and_about_summary">About</string>
     <string name="settings_header_logout_title">Log out</string>
     <string name="settings_header_logout_summary">Switch to another account</string>
 
@@ -54,7 +54,7 @@
 
     <!-- SETTINGS: HELP / ABOUT -->
     <string name="settings_about_title">About</string>
-    <string name="settings_about_summary">About the app and used licenses</string>
+    <string name="settings_about_summary">About the app and its licenses</string>
     <string name="settings_faq_title">FAQ</string>
     <string name="settings_faq_summary">Collection of helpful hints</string>
     <string name="settings_feedback_title">Send us a feedback</string>
@@ -66,6 +66,19 @@
     <string name="settings_build_press_some_more">You pressed it %1$d</string>
     <string name="settings_build_press_now_you_developer">Now you are a developer!</string>
     <string name="settings_build_press_already_developer">You are already a developer.</string>
+
+    <!-- SETTINGS: ABOUT THE APP -->
+    <string name="settings_about_dialog_header_developers">DEVELOPERS</string>
+    <string name="settings_about_dialog_developer_name_1">Wladimir Schmidt</string>
+    <string name="settings_about_dialog_developer_email_1">Email: <a href="mailto:wlsc.dev@gmail.com">wlsc.dev@gmail.com</a></string>
+    <string name="settings_about_dialog_supervisor_text">SUPERVISORS</string>
+    <string name="settings_about_dialog_supervisor_name_1">Prof. Dr. Max Mühlhäuser</string>
+    <string name="settings_about_dialog_supervisor_email_1">Email: <a href="mailto:max@tk.tu-darmstadt.de">max@tk.tu-darmstadt.de</a></string>
+    <string name="settings_about_dialog_supervisor_name_2">Christian Meurisch</string>
+    <string name="settings_about_dialog_supervisor_email_2">Email: <a href="mailto:meurisch@tk.tu-darmstadt.de">meurisch@tk.tu-darmstadt.de</a></string>
+    <string name="settings_about_dialog_supervisor_name_3">Benedikt Schmidt</string>
+    <string name="settings_about_dialog_supervisor_email_3">Email: <a href="mailto:benedikt.schmidt@tk.informatik.tu-darmstadt.de">benedikt.schmidt@tk.informatik.tu-darmstadt.de</a></string>
+    <string name="settings_about_dialog_tk_lab_footer">2015 © <a href="http://www.tk.informatik.tu-darmstadt.de">Telecooperation Lab</a></string>
 
     <!-- SPLASH SCREEN -->
     <string name="splash_loading">Loading</string>

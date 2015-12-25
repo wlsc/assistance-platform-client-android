@@ -57,27 +57,27 @@
     </screenName>
 
     <!-- FRAGMENTS -->
-    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.ApplicationAboutSettingsFragment">
+    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.AboutSettingsFragment">
         Application About Fragment View
     </screenName>
 
-    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.ApplicationSettingsFragment">
+    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.AppSettingsFragment">
         Application About Fragment View
     </screenName>
 
-    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DevelopmentSettingsFragment">
+    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DevSettingsFragment">
         Application Development Fragment View
     </screenName>
 
-    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorsListFragment">
+    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorListSettingsFragment">
         Application Sensors List Fragment View
     </screenName>
 
-    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserDeviceInfoSettingsFragment">
+    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DeviceSettingsFragment">
         Application User Device Information Fragment View
     </screenName>
 
-    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileFragment">
+    <screenName name="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileSettingsFragment">
         Application User Profile Fragment View
     </screenName>
 

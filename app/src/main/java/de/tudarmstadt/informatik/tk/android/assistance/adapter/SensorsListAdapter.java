@@ -11,7 +11,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorsListFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorListSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.SensorsListItem;
 
 /**
@@ -20,7 +20,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.item.SensorsListIte
  */
 public class SensorsListAdapter extends RecyclerView.Adapter<SensorsListAdapter.ViewHolder> {
 
-    private static final String TAG = SensorsListFragment.class.getSimpleName();
+    private static final String TAG = SensorListSettingsFragment.class.getSimpleName();
 
     private List<SensorsListItem> mData;
 
