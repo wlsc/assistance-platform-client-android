@@ -47,7 +47,7 @@ public class MainControllerImpl extends
 
     @Override
     public List<DbNews> getCachedNews(long userId) {
-        return daoProvider.getNewsDao().get(userId);
+        return daoProvider.getNewsDao().getAll(userId);
     }
 
     @Override

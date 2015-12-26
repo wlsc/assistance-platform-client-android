@@ -147,6 +147,8 @@
 
     <!-- MODULE SETTIGNS SCREEN -->
     <string name="module_settings_activity_title">Modules settings</string>
+    <string name="module_settings_module_activated">active</string>
+    <string name="module_settings_module_disabled">disabled</string>
 
     <!-- USER PROFILE SCREEN -->
     <string name="user_profile_title">Profile</string>

@@ -44,6 +44,8 @@
 
     <color name="pink">#e91e63</color>
 
+    <color name="lightGray">#d3d3d3</color>
+
     <!-- SPLASH VIEW -->
     <color name="splashScreenBackground">#F1F1F1</color>
 

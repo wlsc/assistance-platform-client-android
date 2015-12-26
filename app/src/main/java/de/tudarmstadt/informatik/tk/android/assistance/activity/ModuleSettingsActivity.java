@@ -90,6 +90,12 @@ public class ModuleSettingsActivity extends
         }
     }
 
+//    @OnItemLongClick(R.id.moduleSettingsRecyclerView)
+//    boolean onModuleSettingsLongPress(int position) {
+//        Toaster.showShort(getApplicationContext(), "works");
+//        return true;
+//    }
+
     @Override
     public void startLoginActivity() {
 
