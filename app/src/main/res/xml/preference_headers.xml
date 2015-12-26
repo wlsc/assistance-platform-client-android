@@ -4,7 +4,6 @@
     <!-- Application -->
     <header
         android:id="@+id/application_settings"
-        android:fragment="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.AppSettingsFragment"
         android:icon="@drawable/ic_settings_applications_black_48dp"
         android:summary="@string/settings_header_application_summary"
         android:title="@string/settings_header_application_title" />
@@ -24,20 +23,6 @@
         android:icon="@drawable/ic_perm_device_information_black_48dp"
         android:summary="@string/settings_header_user_device_summary"
         android:title="@string/settings_header_user_device_title" />
-
-    <!-- Data Usage -->
-    <!--<header
-        android:id="@+id/data_usage_settings"
-        android:fragment="de.tudarmstadt.informatik.tk.android.assistance.fragments.DataUsageSummary"
-        android:title="@string/data_usage_summary_title"
-        android:icon="@drawable/ic_settings_data_usage" />-->
-
-    <!-- Backup and reset -->
-    <!--<header
-        android:fragment="de.tudarmstadt.informatik.tk.android.assistance.fragments.PrivacySettings"
-        android:icon="@drawable/ic_settings_backup"
-        android:title="@string/privacy_settings_title"
-        android:id="@+id/privacy_settings" />-->
 
     <!-- Development -->
     <header

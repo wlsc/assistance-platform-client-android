@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.presenter.modules;
+package de.tudarmstadt.informatik.tk.android.assistance.presenter.module;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 import de.greenrobot.event.EventBus;
-import de.tudarmstadt.informatik.tk.android.assistance.controller.modules.ModulesController;
-import de.tudarmstadt.informatik.tk.android.assistance.controller.modules.ModulesControllerImpl;
+import de.tudarmstadt.informatik.tk.android.assistance.controller.module.ModulesController;
+import de.tudarmstadt.informatik.tk.android.assistance.controller.module.ModulesControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationErrorEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallSuccessfulEvent;

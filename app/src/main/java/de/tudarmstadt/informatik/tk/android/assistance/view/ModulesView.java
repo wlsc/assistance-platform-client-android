@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenter;
+import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 

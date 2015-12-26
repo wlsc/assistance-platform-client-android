@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.controller.modules;
+package de.tudarmstadt.informatik.tk.android.assistance.controller.module;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +15,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModule
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenter;
+import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;

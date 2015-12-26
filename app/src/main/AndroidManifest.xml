@@ -64,6 +64,10 @@
             android:configChanges="orientation|screenSize" />
 
         <activity
+            android:name=".activity.ModuleSettingsActivity"
+            android:configChanges="orientation|screenSize" />
+
+        <activity
             android:name=".activity.AccessibilityTutorialActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_accessibility_tutorial"

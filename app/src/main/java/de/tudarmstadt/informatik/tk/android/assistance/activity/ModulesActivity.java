@@ -38,8 +38,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninst
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
-import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenter;
-import de.tudarmstadt.informatik.tk.android.assistance.presenter.modules.ModulesPresenterImpl;
+import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenter;
+import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleCapabilityResponseDto;

@@ -1,9 +1,9 @@
-package de.tudarmstadt.informatik.tk.android.assistance.presenter.modules;
+package de.tudarmstadt.informatik.tk.android.assistance.presenter.module;
 
 import java.util.List;
 import java.util.Set;
 
-import de.tudarmstadt.informatik.tk.android.assistance.controller.modules.ModulesController;
+import de.tudarmstadt.informatik.tk.android.assistance.controller.module.ModulesController;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;

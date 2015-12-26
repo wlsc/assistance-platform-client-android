@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.controller.modules;
+package de.tudarmstadt.informatik.tk.android.assistance.controller.module;
 
 import java.util.List;
 import java.util.Set;
