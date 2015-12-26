@@ -15,8 +15,11 @@ import java.util.List;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleDetailedSettingsEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.handler.OnItemClickHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.event.ModuleStateChangeEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -52,7 +55,7 @@ public class ModuleSettingsListAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
         if (holder instanceof ModuleSettingsViewHolder) {
 
@@ -84,6 +87,22 @@ public class ModuleSettingsListAdapter extends RecyclerView.Adapter<RecyclerView
                     }
 
                     EventBus.getDefault().post(new ModuleStateChangeEvent(moduleId, isChecked));
+                }
+            });
+
+            viewHolder.setClickHandler(new OnItemClickHandler() {
+
+                @Override
+                public void onClick(View view, boolean isLongClick) {
+
+                    if (isLongClick) {
+                        Log.d(TAG, "on long click");
+                    } else {
+                        Log.d(TAG, "on click");
+
+                        // file the event
+                        EventBus.getDefault().post(new ModuleDetailedSettingsEvent(dbModule));
+                    }
                 }
             });
         }
@@ -124,12 +143,14 @@ public class ModuleSettingsListAdapter extends RecyclerView.Adapter<RecyclerView
     /**
      * UI holder
      */
-    protected static class ModuleSettingsViewHolder extends RecyclerView.ViewHolder {
+    protected static class ModuleSettingsViewHolder extends
+            RecyclerView.ViewHolder implements
+            View.OnClickListener, View.OnLongClickListener {
+
+        private OnItemClickHandler itemClickHandler;
 
         protected final TextView title;
-
         protected final Switch activationStatusSwitch;
-
         protected final TextView activationStatus;
 
         public ModuleSettingsViewHolder(View view) {
@@ -138,6 +159,24 @@ public class ModuleSettingsListAdapter extends RecyclerView.Adapter<RecyclerView
             title = ButterKnife.findById(view, R.id.title);
             activationStatusSwitch = ButterKnife.findById(view, R.id.activationStatusSwitch);
             activationStatus = ButterKnife.findById(view, R.id.activationStatus);
+
+            view.setOnClickListener(this);
+            view.setOnLongClickListener(this);
+        }
+
+        public void setClickHandler(OnItemClickHandler itemClickHandler) {
+            this.itemClickHandler = itemClickHandler;
+        }
+
+        @Override
+        public void onClick(View v) {
+            itemClickHandler.onClick(v, false);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            itemClickHandler.onClick(v, true);
+            return true;
         }
     }
 }
