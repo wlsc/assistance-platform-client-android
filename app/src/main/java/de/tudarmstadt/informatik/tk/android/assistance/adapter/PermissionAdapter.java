@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -11,10 +12,13 @@ import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleCapabilityHasChangedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.DtoType;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -57,7 +61,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         PermissionListItem permItem = mData.get(position);
-        DbModuleCapability capability = permItem.getCapability();
+        final DbModuleCapability capability = permItem.getCapability();
 
         String title = "";
 
@@ -71,6 +75,27 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
         if (requiredState == REQUIRED) {
             holder.mEnablerSwitch.setChecked(true);
             holder.mEnablerSwitch.setEnabled(false);
+        } else {
+            holder.mEnablerSwitch.setVisibility(View.VISIBLE);
+
+            holder.mEnablerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    if (isChecked) {
+                        Log.d(TAG, "Optional permission was ENABLED");
+                    } else {
+                        Log.d(TAG, "Optional permission was DISABLED");
+                    }
+
+                    // change capability state
+                    capability.setActive(isChecked);
+
+                    // fire state changed
+                    EventBus.getDefault().post(new ModuleCapabilityHasChangedEvent(capability));
+                }
+            });
         }
     }
 
@@ -106,7 +131,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
             super(view);
 
             mTitle = ButterKnife.findById(view, R.id.permission_item_title);
-            mEnablerSwitch = ButterKnife.findById(view, R.id.permission_item_enabler);
+            mEnablerSwitch = ButterKnife.findById(view, R.id.permission_item_switcher);
         }
     }
 

@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.presenter.module.setting
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.module.settings.ModuleSettingsController;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenter;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModuleSettingsView;
 
 /**
@@ -13,4 +14,6 @@ public interface ModuleSettingsPresenter extends CommonPresenter {
     void setView(ModuleSettingsView view);
 
     void setController(ModuleSettingsController controller);
+
+    void handleModuleCapabilityStateChanged(DbModuleCapability moduleCapability);
 }

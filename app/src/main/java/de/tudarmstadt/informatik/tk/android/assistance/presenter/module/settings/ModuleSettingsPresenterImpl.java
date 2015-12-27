@@ -8,6 +8,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.controller.module.setting
 import de.tudarmstadt.informatik.tk.android.assistance.controller.module.settings.ModuleSettingsControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModuleSettingsView;
 
@@ -50,5 +51,15 @@ public class ModuleSettingsPresenterImpl extends
     @Override
     public void setController(ModuleSettingsController controller) {
         this.controller = controller;
+    }
+
+    @Override
+    public void handleModuleCapabilityStateChanged(DbModuleCapability moduleCapability) {
+
+        if (moduleCapability == null) {
+            return;
+        }
+
+        controller.updateModuleCapability(moduleCapability);
     }
 }

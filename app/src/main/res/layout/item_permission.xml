@@ -11,7 +11,7 @@
         android:gravity="center_vertical|start" />
 
     <Switch
-        android:id="@+id/permission_item_enabler"
+        android:id="@+id/permission_item_switcher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

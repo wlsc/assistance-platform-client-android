@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.module.settin
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.settings.ModuleSettingsPresenter;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -16,5 +17,16 @@ public class ModuleSettingsControllerImpl extends
     public ModuleSettingsControllerImpl(ModuleSettingsPresenter presenter) {
         super(presenter.getContext());
         this.presenter = presenter;
+    }
+
+    @Override
+    public void updateModuleCapability(DbModuleCapability moduleCapability) {
+
+        if (moduleCapability == null) {
+            return;
+        }
+
+//        moduleId = moduleCapability.getModuleId()
+        daoProvider.getModuleCapabilityDao().update(moduleCapability);
     }
 }

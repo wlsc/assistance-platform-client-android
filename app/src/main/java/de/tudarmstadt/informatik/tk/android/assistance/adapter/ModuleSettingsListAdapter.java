@@ -18,7 +18,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleDetailedSettingsEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnItemClickHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.event.ModuleStateChangeEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleStateChangeEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 
 /**
@@ -68,7 +68,7 @@ public class ModuleSettingsListAdapter extends RecyclerView.Adapter<RecyclerView
 
             if (dbModule.getActive()) {
                 viewHolder.activationStatus.setText(R.string.module_settings_module_activated);
-//                viewHolder.activationStatus.setTextColor(Color.GREEN);
+//                viewHolder.activationStatus.setTextColor(Color.BLACK);
             } else {
                 viewHolder.activationStatus.setText(R.string.module_settings_module_disabled);
 //                viewHolder.activationStatus.setTextColor(Color.RED);

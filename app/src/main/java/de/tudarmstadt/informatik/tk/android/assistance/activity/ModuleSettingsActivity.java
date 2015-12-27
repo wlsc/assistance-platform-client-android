@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
@@ -29,6 +30,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.settings
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.settings.ModuleSettingsPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleCapabilityHasChangedEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleStateChangeEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.ModuleProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModuleSettingsView;
@@ -189,6 +193,21 @@ public class ModuleSettingsActivity extends
     }
 
     /**
+     * On module install event
+     *
+     * @param event
+     */
+    public void onEvent(ModuleStateChangeEvent event) {
+
+        Log.d(TAG, "Received module state change event");
+        Log.d(TAG, "Module id: " + event.getModuleId());
+        Log.d(TAG, "IsEnabled: " + event.isActive());
+
+        ModuleProvider.getInstance(getApplicationContext())
+                .toggleModuleState(event.getModuleId(), event.isActive());
+    }
+
+    /**
      * Handler for module detailed settings event
      *
      * @param event
@@ -196,6 +215,22 @@ public class ModuleSettingsActivity extends
     public void onEvent(ModuleDetailedSettingsEvent event) {
         Log.d(TAG, "Module detailed settings event called");
         launchModuleDetailedSettingsView(event.getModule());
+    }
+
+    /**
+     * Handler for module capability state change event
+     *
+     * @param event
+     */
+    public void onEvent(ModuleCapabilityHasChangedEvent event) {
+        Log.d(TAG, "Module capability state has been changed");
+
+        if (event.getModuleCapability() == null) {
+            Log.d(TAG, "Module capability is null!");
+            return;
+        }
+
+        presenter.handleModuleCapabilityStateChanged(event.getModuleCapability());
     }
 
     /**
@@ -281,6 +316,18 @@ public class ModuleSettingsActivity extends
         requiredPermListView.setAdapter(new PermissionAdapter(reqList, PermissionAdapter.REQUIRED));
 
         optionalPermListView.setLayoutManager(new LinearLayoutManager(this));
-        optionalPermListView.setAdapter(new PermissionAdapter(optList, PermissionAdapter.OPTIONAL));
+        optionalPermListView.setAdapter(new PermissionAdapter(reqList, PermissionAdapter.OPTIONAL));
+
+        if (reqList.isEmpty()) {
+            TextView noData = ButterKnife.findById(dialogView, R.id.module_permissions_required_list_empty);
+            noData.setVisibility(View.VISIBLE);
+            requiredPermListView.setVisibility(View.GONE);
+        }
+
+        if (reqList.isEmpty()) {
+            TextView noData = ButterKnife.findById(dialogView, R.id.module_permissions_optional_list_empty);
+            noData.setVisibility(View.VISIBLE);
+            optionalPermListView.setVisibility(View.GONE);
+        }
     }
 }
