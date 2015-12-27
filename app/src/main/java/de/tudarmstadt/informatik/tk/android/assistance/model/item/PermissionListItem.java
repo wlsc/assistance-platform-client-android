@@ -12,11 +12,6 @@ public class PermissionListItem {
 
     private boolean checked;
 
-    public PermissionListItem() {
-        this.capability = null;
-        this.checked = true;
-    }
-
     public PermissionListItem(DbModuleCapability capability) {
         this.capability = capability;
         this.checked = true;

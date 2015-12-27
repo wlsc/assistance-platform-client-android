@@ -85,7 +85,7 @@
 
     <!-- SPLASH SCREEN -->
     <string name="splash_loading">Loading</string>
-    <string name="splash_logo_description">Kraken Logo</string>
+    <string name="splash_logo_description">Assistance Logo</string>
     <string name="splash_copyright_year">Telecooperation\nTU Darmstadt\n2015</string>
 
     <!-- MAIN SCREEN -->
@@ -145,10 +145,11 @@
     <string name="module_uninstall_successful">Uninstall was successful!</string>
     <string name="module_uninstall_unsuccessful">Installation has failed :(</string>
 
-    <!-- MODULE SETTIGNS SCREEN -->
+    <!-- MODULE SETTINGS SCREEN -->
     <string name="module_settings_activity_title">Modules settings</string>
     <string name="module_settings_module_activated">active</string>
     <string name="module_settings_module_disabled">disabled</string>
+    <string name="module_settings_dialog_header">Switch sensors ON/OFF</string>
 
     <!-- USER PROFILE SCREEN -->
     <string name="user_profile_title">Profile</string>

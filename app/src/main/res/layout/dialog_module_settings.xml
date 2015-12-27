@@ -9,11 +9,14 @@
     android:paddingTop="@dimen/dialog_padding_top_material">
 
     <TextView
-        android:id="@+id/dialog_module_settings_title"
+        android:id="@+id/dialog_module_settings_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/alertDialogBackground"
         android:textColor="@color/alertDialogTitle"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <include layout="@layout/module_permissions_list" />
 
 </LinearLayout>

@@ -286,7 +286,7 @@ public class ModulesActivity extends
 
         Log.d(TAG, "Init view...");
 
-        setContentView(R.layout.activity_available_modules);
+        setContentView(R.layout.activity_module_list);
 
         mToolbar = ButterKnife.findById(this, R.id.toolbar);
 

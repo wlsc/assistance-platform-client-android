@@ -10,10 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -22,7 +22,9 @@ import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.ModuleSettingsListAdapter;
+import de.tudarmstadt.informatik.tk.android.assistance.adapter.PermissionAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleDetailedSettingsEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.settings.ModuleSettingsPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.settings.ModuleSettingsPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
@@ -203,30 +205,25 @@ public class ModuleSettingsActivity extends
      */
     private void launchModuleDetailedSettingsView(DbModule module) {
 
-        List<DbModuleCapability> capabilties = module.getDbModuleCapabilityList();
+        if (module == null) {
+            Log.d(TAG, "Module is null");
+            return;
+        }
 
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_module_settings, null);
 
-        TextView title = ButterKnife.findById(dialogView, R.id.dialog_module_settings_title);
-        title.setText(capabilties.get(0).getType());
+        assignCapabilitiesToView(module.getDbModuleCapabilityList(), dialogView);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
+        builder.setTitle(R.string.module_settings_dialog_header);
 
         builder.setPositiveButton(R.string.button_ok_text, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Log.d(TAG, "Dialog OK pressed");
-            }
-        });
-
-        builder.setNegativeButton(R.string.button_cancel_text, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "Dialog cancel pressed");
             }
         });
 
@@ -240,5 +237,50 @@ public class ModuleSettingsActivity extends
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    /**
+     * Assigns information from module capabilities to views
+     *
+     * @param capabilities
+     * @param dialogView
+     */
+    private void assignCapabilitiesToView(List<DbModuleCapability> capabilities, View dialogView) {
+
+        if (capabilities == null || dialogView == null) {
+            Log.d(TAG, "Illegal arguments");
+            return;
+        }
+
+        List<PermissionListItem> reqList = new ArrayList<>();
+        List<PermissionListItem> optList = new ArrayList<>();
+
+        for (DbModuleCapability cap : capabilities) {
+
+            if (cap == null) {
+                continue;
+            }
+
+            PermissionListItem item = new PermissionListItem(cap, cap.getActive());
+
+            if (cap.getRequired()) {
+                reqList.add(item);
+            } else {
+                optList.add(item);
+            }
+        }
+
+        RecyclerView requiredPermListView = ButterKnife.findById(
+                dialogView,
+                R.id.module_permission_required_list);
+        RecyclerView optionalPermListView = ButterKnife.findById(
+                dialogView,
+                R.id.module_permission_optional_list);
+
+        requiredPermListView.setLayoutManager(new LinearLayoutManager(this));
+        requiredPermListView.setAdapter(new PermissionAdapter(reqList, PermissionAdapter.REQUIRED));
+
+        optionalPermListView.setLayoutManager(new LinearLayoutManager(this));
+        optionalPermListView.setAdapter(new PermissionAdapter(optList, PermissionAdapter.OPTIONAL));
     }
 }

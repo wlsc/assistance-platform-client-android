@@ -1,10 +1,10 @@
 package de.tudarmstadt.informatik.tk.android.assistance.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -22,7 +22,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.DtoType
  */
 public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.ViewHolder> {
 
-//    private static final String TAG = PermissionAdapter.class.getSimpleName();
+    private static final String TAG = PermissionAdapter.class.getSimpleName();
 
     private final List<PermissionListItem> mData;
 
@@ -100,7 +100,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
 
         protected TextView mTitle;
 
-        protected SwitchCompat mEnablerSwitch;
+        protected Switch mEnablerSwitch;
 
         public ViewHolder(View view) {
             super(view);
