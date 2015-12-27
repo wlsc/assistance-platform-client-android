@@ -316,7 +316,7 @@ public class ModuleSettingsActivity extends
         requiredPermListView.setAdapter(new PermissionAdapter(reqList, PermissionAdapter.REQUIRED));
 
         optionalPermListView.setLayoutManager(new LinearLayoutManager(this));
-        optionalPermListView.setAdapter(new PermissionAdapter(reqList, PermissionAdapter.OPTIONAL));
+        optionalPermListView.setAdapter(new PermissionAdapter(optList, PermissionAdapter.OPTIONAL));
 
         if (reqList.isEmpty()) {
             TextView noData = ButterKnife.findById(dialogView, R.id.module_permissions_required_list_empty);
@@ -324,7 +324,7 @@ public class ModuleSettingsActivity extends
             requiredPermListView.setVisibility(View.GONE);
         }
 
-        if (reqList.isEmpty()) {
+        if (optList.isEmpty()) {
             TextView noData = ButterKnife.findById(dialogView, R.id.module_permissions_optional_list_empty);
             noData.setVisibility(View.VISIBLE);
             optionalPermListView.setVisibility(View.GONE);
