@@ -16,6 +16,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.Pro
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
@@ -74,9 +75,16 @@ public class MainPresenterImpl extends
             PreferenceUtils.setDeveloperStatus(getContext(), true);
         }
 
-        long userId = PreferenceUtils.getCurrentUserId(getContext());
+        String userToken = PreferenceUtils.getUserToken(getContext());
 
-        List<DbNews> assistanceNews = controller.getCachedNews(userId);
+        DbUser user = controller.getUserByToken(userToken);
+
+        if (user == null) {
+            view.startLoginActivity();
+            return;
+        }
+
+        List<DbNews> assistanceNews = controller.getCachedNews(user.getId());
 
         if (assistanceNews.isEmpty()) {
             view.showNoNews();
@@ -84,15 +92,15 @@ public class MainPresenterImpl extends
             view.setNewsItems(assistanceNews);
         }
 
+        controller.initUUID(user);
+
         view.prepareGCMRegistration();
 
-        List<DbModule> installedModules = controller.getAllActiveModules(userId);
+        List<DbModule> installedModules = controller.getAllActiveModules(user.getId());
 
         if (installedModules == null || installedModules.isEmpty()) {
 
             stopHarvester();
-
-            final String userToken = PreferenceUtils.getUserToken(getContext());
 
             controller.requestActiveModules(userToken, this);
 

@@ -48,8 +48,6 @@ public class MainActivity extends
     @Bind(R.id.assistance_list)
     protected RecyclerView mRecyclerView;
 
-    private Menu menu;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +103,6 @@ public class MainActivity extends
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.news_menu, menu);
-        this.menu = menu;
         return true;
     }
 

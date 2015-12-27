@@ -19,6 +19,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresen
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.GcmUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
@@ -185,6 +186,26 @@ public class MainControllerImpl extends
                 user.setLastLogin(DateUtils.dateToISO8601String(new Date(apiResponse.getLastLogin()), Locale.getDefault()));
             }
 
+            daoProvider.getUserDao().update(user);
+        }
+    }
+
+    @Override
+    public void initUUID(DbUser user) {
+
+        if (user == null) {
+            Log.d(TAG, "User is null");
+            return;
+        }
+
+        String uuidToken = user.getUuid();
+
+        if (uuidToken == null || uuidToken.isEmpty()) {
+
+            // generate new
+            user.setUuid(AppUtils.generateUUID());
+
+            // update db entry
             daoProvider.getUserDao().update(user);
         }
     }

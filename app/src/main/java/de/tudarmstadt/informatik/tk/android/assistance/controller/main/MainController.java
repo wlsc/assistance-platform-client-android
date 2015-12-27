@@ -11,6 +11,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleFeedbackR
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -40,4 +41,6 @@ public interface MainController extends CommonController {
      * @param apiResponse
      */
     void persistLogin(ProfileResponseDto apiResponse);
+
+    void initUUID(DbUser userId);
 }
