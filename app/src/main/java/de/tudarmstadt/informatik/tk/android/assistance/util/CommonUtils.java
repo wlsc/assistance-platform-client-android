@@ -16,8 +16,6 @@ import com.squareup.picasso.Target;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -34,49 +32,6 @@ public class CommonUtils {
     private static final String TAG = CommonUtils.class.getSimpleName();
 
     private CommonUtils() {
-    }
-
-    /**
-     * Generates SHA256 hash in HEX of a given string
-     *
-     * @param someString
-     * @return
-     */
-    public static String generateSHA256(String someString) {
-
-        MessageDigest md = null;
-        String result = "";
-
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-
-            md.update(someString.getBytes());
-
-            byte bytes[] = md.digest();
-
-            result = CommonUtils.convertBytesToString(bytes);
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
-
-    /**
-     * Converts bytes to string
-     *
-     * @param bytes
-     * @return
-     */
-    public static String convertBytesToString(byte[] bytes) {
-
-        StringBuilder sb = new StringBuilder();
-        for (byte aByte : bytes) {
-            sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
-        }
-
-        return sb.toString();
     }
 
     /**
