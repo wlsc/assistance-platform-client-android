@@ -492,15 +492,15 @@ public class ModulesActivity extends
                 dialogView,
                 R.id.module_permissions_required_list_empty);
 
-//        permissionsEmptyOptional = ButterKnife.findById(
-//                dialogView,
-//                R.id.module_permissions_optional_list_empty);
+        permissionsEmptyOptional = ButterKnife.findById(
+                dialogView,
+                R.id.module_permissions_optional_list_empty);
 
         List<ModuleCapabilityResponseDto> requiredSensors = selectedModule.getSensorsRequired();
-//        List<ModuleCapabilityResponseDto> optionalSensors = selectedModule.getSensorsOptional();
+        List<ModuleCapabilityResponseDto> optionalSensors = selectedModule.getSensorsOptional();
 
         List<PermissionListItem> requiredModuleSensors = new ArrayList<>();
-//        List<PermissionListItem> optionalModuleSensors = new ArrayList<>();
+        List<PermissionListItem> optionalModuleSensors = new ArrayList<>();
 
         if (requiredSensors != null && !requiredSensors.isEmpty()) {
 
@@ -512,25 +512,25 @@ public class ModulesActivity extends
             toggleShowRequiredPermissions(true);
         }
 
-//        if (optionalSensors != null && !optionalSensors.isEmpty()) {
-//
-//            for (ModuleCapabilityResponseDto capability : optionalSensors) {
-//                optionalModuleSensors.add(new PermissionListItem(
-//                        ConverterUtils.convertModuleCapability(capability)
-//                ));
-//            }
-//        } else {
-//            toggleShowOptionalPermissions(true);
-//        }
+        if (optionalSensors != null && !optionalSensors.isEmpty()) {
+
+            for (ModuleCapabilityResponseDto capability : optionalSensors) {
+                optionalModuleSensors.add(new PermissionListItem(
+                        ConverterUtils.convertModuleCapability(capability)
+                ));
+            }
+        } else {
+            toggleShowOptionalPermissions(true);
+        }
 
 
         permissionRequiredRecyclerView.setAdapter(new PermissionAdapter(
                 requiredModuleSensors,
                 PermissionAdapter.REQUIRED));
 
-//        permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(
-//                optionalModuleSensors,
-//                PermissionAdapter.OPTIONAL));
+        permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(
+                optionalModuleSensors,
+                PermissionAdapter.OPTIONAL));
 
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();

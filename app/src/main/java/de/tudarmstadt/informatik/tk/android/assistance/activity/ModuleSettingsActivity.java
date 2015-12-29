@@ -308,6 +308,7 @@ public class ModuleSettingsActivity extends
         RecyclerView requiredPermListView = ButterKnife.findById(
                 dialogView,
                 R.id.module_permission_required_list);
+
         RecyclerView optionalPermListView = ButterKnife.findById(
                 dialogView,
                 R.id.module_permission_optional_list);
@@ -319,12 +320,14 @@ public class ModuleSettingsActivity extends
         optionalPermListView.setAdapter(new PermissionAdapter(optList, PermissionAdapter.OPTIONAL));
 
         if (reqList.isEmpty()) {
+
             TextView noData = ButterKnife.findById(dialogView, R.id.module_permissions_required_list_empty);
             noData.setVisibility(View.VISIBLE);
             requiredPermListView.setVisibility(View.GONE);
         }
 
         if (optList.isEmpty()) {
+
             TextView noData = ButterKnife.findById(dialogView, R.id.module_permissions_optional_list_empty);
             noData.setVisibility(View.VISIBLE);
             optionalPermListView.setVisibility(View.GONE);
