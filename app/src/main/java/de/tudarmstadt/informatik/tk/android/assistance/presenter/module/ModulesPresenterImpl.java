@@ -25,7 +25,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenter
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.DtoType;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
@@ -155,14 +154,6 @@ public class ModulesPresenterImpl extends
 
             // filter modules that have not runnable sensors in their required capabilities
             apiResponse = controller.filterAvailableModulesList(apiResponse);
-
-            // TEST
-            ModuleResponseDto value = apiResponse.get(0);
-            List<ModuleCapabilityResponseDto> oldReq = value.getSensorsRequired();
-            oldReq.add(new ModuleCapabilityResponseDto(DtoType.getApiName(DtoType.CALENDAR), 0.5, 0.004, 1));
-            value.setSensorsRequired(oldReq);
-            apiResponse.set(0, value);
-            // _______________________________
 
             availableModules = new ArrayList<>(apiResponse.size());
             availableModules.addAll(apiResponse);
