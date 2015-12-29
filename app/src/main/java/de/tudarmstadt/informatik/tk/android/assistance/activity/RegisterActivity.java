@@ -72,6 +72,11 @@ public class RegisterActivity extends
     }
 
     @Override
+    public void showErrorEmailAreadyExists() {
+        Toaster.showLong(getApplicationContext(), R.string.error_email_exists);
+    }
+
+    @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
         Log.d(TAG, "onDestroy -> unbound resources");

@@ -25,4 +25,6 @@ public interface RegisterView extends CommonView {
     void hideKeyboard();
 
     void saveUserCredentials();
+
+    void showErrorEmailAreadyExists();
 }

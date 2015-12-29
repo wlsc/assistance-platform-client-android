@@ -2,10 +2,15 @@ package de.tudarmstadt.informatik.tk.android.assistance.presenter;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.error.ErrorDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.error.ApiHttpErrorCodes;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CommonView;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -58,9 +63,25 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
 
         if (response != null) {
 
+            String jsonError = new String(((TypedByteArray) error
+                    .getResponse()
+                    .getBody())
+                    .getBytes());
+
+            Gson gson = new Gson();
+            ErrorDto apiError = gson.fromJson(jsonError, ErrorDto.class);
+
             switch (response.getStatus()) {
                 case 400:
-                    view.showRetryLaterNotification();
+
+                    switch (apiError.getCode()) {
+                        case ApiHttpErrorCodes.EMAIL_ALREADY_EXISTS:
+                            presentEMailAlreadyExists();
+                            break;
+                        default:
+                            view.showRetryLaterNotification();
+                            break;
+                    }
                     break;
                 case 401:
                     view.showUserForbidden();
@@ -80,4 +101,6 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
             view.showServiceUnavailable();
         }
     }
+
+    protected abstract void presentEMailAlreadyExists();
 }

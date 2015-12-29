@@ -131,4 +131,9 @@ public class RegisterPresenterImpl extends
     public void doInitView() {
         view.initView();
     }
+
+    @Override
+    protected void presentEMailAlreadyExists() {
+        view.showErrorEmailAreadyExists();
+    }
 }

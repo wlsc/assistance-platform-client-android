@@ -176,10 +176,7 @@ public class LoginActivity extends
 
     @Override
     public void saveUserCredentialsToPreference(String token) {
-
         PreferenceUtils.setUserToken(getApplicationContext(), token);
-        PreferenceUtils.setUserEmail(getApplicationContext(), mEmailTextView.getText().toString().trim());
-        PreferenceUtils.setUserPassword(getApplicationContext(), mPasswordView.getText().toString().trim());
     }
 
     @Override
