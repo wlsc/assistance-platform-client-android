@@ -102,5 +102,8 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
         }
     }
 
-    protected abstract void presentEMailAlreadyExists();
+    @Override
+    public void presentEMailAlreadyExists() {
+        // empty
+    }
 }

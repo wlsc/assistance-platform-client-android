@@ -133,7 +133,7 @@ public class RegisterPresenterImpl extends
     }
 
     @Override
-    protected void presentEMailAlreadyExists() {
+    public void presentEMailAlreadyExists() {
         view.showErrorEmailAreadyExists();
     }
 }

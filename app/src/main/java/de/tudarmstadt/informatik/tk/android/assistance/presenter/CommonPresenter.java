@@ -28,4 +28,6 @@ public interface CommonPresenter {
     void stopHarvester();
 
     void doDefaultErrorProcessing(RetrofitError error);
+
+    void presentEMailAlreadyExists();
 }
