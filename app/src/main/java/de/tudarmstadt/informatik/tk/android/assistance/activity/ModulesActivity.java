@@ -10,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -20,6 +19,8 @@ import android.widget.TextView;
 
 import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
+
+import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,6 +78,7 @@ public class ModulesActivity extends
 
     private TextView permissionsEmptyRequired;
     private TextView permissionsEmptyOptional;
+    private TextView noData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -300,6 +302,8 @@ public class ModulesActivity extends
 
         setTitle(R.string.module_list_activity_title);
 
+        noData = ButterKnife.findById(this, R.id.noData);
+
         mAvailableModulesRecyclerView = ButterKnife.findById(this, R.id.moduleListRecyclerView);
         mAvailableModulesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -410,6 +414,8 @@ public class ModulesActivity extends
     @Override
     public void setNoModulesView() {
         mAvailableModulesRecyclerView.setAdapter(new ModulesAdapter(Collections.EMPTY_LIST));
+        mAvailableModulesRecyclerView.setVisibility(View.GONE);
+        noData.setVisibility(View.VISIBLE);
         setSwipeRefreshing(false);
     }
 
@@ -421,6 +427,8 @@ public class ModulesActivity extends
     @Override
     public void setModuleList(List<DbModule> installedModules) {
         mAvailableModulesRecyclerView.setAdapter(new ModulesAdapter(installedModules));
+        mAvailableModulesRecyclerView.setVisibility(View.VISIBLE);
+        noData.setVisibility(View.GONE);
     }
 
     @Override
@@ -439,6 +447,9 @@ public class ModulesActivity extends
         if (adapter != null) {
             adapter.swapData(newModules);
         }
+
+        mAvailableModulesRecyclerView.setVisibility(View.VISIBLE);
+        noData.setVisibility(View.GONE);
     }
 
     @Override
