@@ -468,10 +468,10 @@ public class ModulesActivity extends
         permissionOptionalRecyclerView.setLayoutManager(
                 new org.solovyev.android.views.llm.LinearLayoutManager(this));
 
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setView(dialogView);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
 
-        dialogBuilder.setPositiveButton(R.string.button_accept_text, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.button_accept_text, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -481,7 +481,16 @@ public class ModulesActivity extends
             }
         });
 
-        dialogBuilder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+        builder.setNegativeButton(R.string.button_cancel_text, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d(TAG, "User canceled module install");
+                dialog.cancel();
+            }
+        });
+
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
 
             @Override
             public void onCancel(DialogInterface dialog) {
@@ -527,7 +536,8 @@ public class ModulesActivity extends
 
             for (ModuleCapabilityResponseDto capability : optionalSensors) {
                 optionalModuleSensors.add(new PermissionListItem(
-                        ConverterUtils.convertModuleCapability(capability)
+                        ConverterUtils.convertModuleCapability(capability),
+                        false
                 ));
             }
         } else {
@@ -543,7 +553,7 @@ public class ModulesActivity extends
                 optionalModuleSensors,
                 PermissionAdapter.OPTIONAL));
 
-        AlertDialog alertDialog = dialogBuilder.create();
+        AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
 

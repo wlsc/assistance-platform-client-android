@@ -21,8 +21,8 @@
     </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
@@ -38,11 +38,12 @@
 
         <TextView
             android:id="@+id/noData"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center|center_vertical"
-            android:gravity="center|center_vertical"
-            android:text="@string/none"
+            android:gravity="center"
+            android:text="@string/module_list_no_data"
+            android:textStyle="bold"
             android:visibility="gone" />
 
     </LinearLayout>

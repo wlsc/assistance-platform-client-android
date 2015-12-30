@@ -11,13 +11,15 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleCapabilityHasChangedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
-import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleCapabilityHasChangedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.DtoType;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 
 /**
@@ -58,7 +60,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
 
         PermissionListItem permItem = mData.get(position);
         final DbModuleCapability capability = permItem.getCapability();
@@ -92,8 +94,10 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
                     // change capability state
                     capability.setActive(isChecked);
 
-                    // fire state changed
-                    EventBus.getDefault().post(new ModuleCapabilityHasChangedEvent(capability));
+                    if (ServiceUtils.isHarvesterAbleToRun(holder.mEnablerSwitch.getContext())) {
+                        // fire state changed
+                        EventBus.getDefault().post(new ModuleCapabilityHasChangedEvent(capability));
+                    }
                 }
             });
         }
@@ -123,15 +127,16 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
      */
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
+        @Bind(R.id.permission_item_title)
         protected TextView mTitle;
 
+        @Bind(R.id.permission_item_switcher)
         protected Switch mEnablerSwitch;
 
         public ViewHolder(View view) {
             super(view);
 
-            mTitle = ButterKnife.findById(view, R.id.permission_item_title);
-            mEnablerSwitch = ButterKnife.findById(view, R.id.permission_item_switcher);
+            ButterKnife.bind(this, view);
         }
     }
 

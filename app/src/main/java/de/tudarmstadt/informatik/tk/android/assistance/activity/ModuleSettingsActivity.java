@@ -55,6 +55,9 @@ public class ModuleSettingsActivity extends
     @Bind(R.id.moduleSettingsRecyclerView)
     protected RecyclerView moduleSettingsRecyclerView;
 
+    @Bind(R.id.noData)
+    protected TextView noData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,7 +185,16 @@ public class ModuleSettingsActivity extends
 
     @Override
     public void setAdapter(List<DbModule> allModules) {
+
         moduleSettingsRecyclerView.setAdapter(new ModuleSettingsListAdapter(allModules));
+
+        if (allModules.isEmpty()) {
+            noData.setVisibility(View.VISIBLE);
+            moduleSettingsRecyclerView.setVisibility(View.GONE);
+        } else {
+            noData.setVisibility(View.GONE);
+            moduleSettingsRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
