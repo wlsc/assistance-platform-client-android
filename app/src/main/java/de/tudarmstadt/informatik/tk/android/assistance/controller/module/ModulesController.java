@@ -66,4 +66,6 @@ public interface ModulesController extends CommonController {
     void updateSensorTimingsFromDb();
 
     List<ModuleResponseDto> filterAvailableModulesList(List<ModuleResponseDto> apiResponse);
+
+    void updateModuleCapability(DbModuleCapability moduleCapability);
 }

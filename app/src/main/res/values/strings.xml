@@ -23,8 +23,8 @@
 
     <!-- SETTINGS: SCREEN -->
     <string name="settings_activity_title">Settings</string>
-    <string name="settings_header_application_title">Module settings</string>
-    <string name="settings_header_application_summary">Change particular module settings</string>
+    <string name="settings_header_application_title">App settings</string>
+    <string name="settings_header_application_summary">General App tweaks</string>
     <string name="settings_header_user_profile_title">Profile</string>
     <string name="settings_header_user_profile_summary">Edit your profile</string>
     <string name="settings_header_user_device_title">Your device</string>
@@ -93,10 +93,10 @@
     <string name="main_activity_module_menu_enabled">Module enabled</string>
     <string name="main_activity_module_menu_enable">Enable</string>
     <string name="main_activity_module_menu_disable">Disable</string>
-    <string name="main_activity_module_menu_uninstall">Uninstall module</string>
-    <string name="main_activity_undo_uninstall">Cancel uninstall?</string>
+    <string name="main_activity_module_menu_uninstall">Deactivate module</string>
+    <string name="main_activity_undo_uninstall">Cancel deactivation?</string>
     <string name="main_activity_undo_uninstall_button_title">UNDO</string>
-    <string name="main_activity_no_module_data_available">No news</string>
+    <string name="main_activity_no_module_data_available">No information yet...</string>
 
     <!-- LOGIN SCREEN -->
     <string name="login_header">Welcome!</string>
@@ -126,9 +126,9 @@
     <!-- AVAILABLE MODULE LIST SCREEN -->
     <string name="module_list_activity_title">Available modules</string>
     <string name="module_list_no_data">No modules available</string>
-    <string name="module_action_install">Install</string>
-    <string name="module_action_uninstall">Uninstall</string>
-    <string name="module_action_more_info">More</string>
+    <string name="module_action_activate">Activate</string>
+    <string name="module_action_deactivate">Deactivate</string>
+    <string name="module_action_more_info">Edit</string>
 
     <!-- MODULE LIST PERMISSION DIALOG -->
     <string name="module_permission_dialog_icon_description">Icon for a module</string>
@@ -141,16 +141,10 @@
     <string name="module_installation_unsuccessful">Installation has failed :(</string>
 
     <!-- MODULE UNINSTALL -->
-    <string name="module_uninstall_title">Uninstalling %1$s</string>
-    <string name="module_uninstall_message">Do you really want to uninstall this module?</string>
-    <string name="module_uninstall_successful">Uninstall was successful!</string>
-    <string name="module_uninstall_unsuccessful">Installation has failed :(</string>
-
-    <!-- MODULE SETTINGS SCREEN -->
-    <string name="module_settings_activity_title">Modules settings</string>
-    <string name="module_settings_module_activated">active</string>
-    <string name="module_settings_module_disabled">disabled</string>
-    <string name="module_settings_dialog_header">Switch sensors ON/OFF</string>
+    <string name="module_uninstall_title">Deactivating %1$s</string>
+    <string name="module_uninstall_message">Do you really want to deactivate the module?</string>
+    <string name="module_uninstall_successful">Deactivation was successful!</string>
+    <string name="module_uninstall_unsuccessful">Activation has failed :(</string>
 
     <!-- USER PROFILE SCREEN -->
     <string name="user_profile_title">Profile</string>

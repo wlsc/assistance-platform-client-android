@@ -4,6 +4,7 @@
     <!-- Application -->
     <header
         android:id="@+id/application_settings"
+        android:fragment="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.AppSettingsFragment"
         android:icon="@drawable/ic_settings_applications_black_48dp"
         android:summary="@string/settings_header_application_summary"
         android:title="@string/settings_header_application_title" />

@@ -379,6 +379,16 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
+    public void handleModuleCapabilityStateChanged(DbModuleCapability moduleCapability) {
+
+        if (moduleCapability == null) {
+            return;
+        }
+
+        controller.updateModuleCapability(moduleCapability);
+    }
+
+    @Override
     public void presentModuleUninstall(final DbModule module) {
 
         final String userToken = PreferenceUtils.getUserToken(getContext());

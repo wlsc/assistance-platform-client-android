@@ -6,6 +6,7 @@ import java.util.Set;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.module.ModulesController;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
 
@@ -46,6 +47,8 @@ public interface ModulesPresenter extends CommonPresenter {
      * Saves information into db / install a module for user
      */
     void handleModuleActivationRequest(ModuleResponseDto moduleResponse);
+
+    void handleModuleCapabilityStateChanged(DbModuleCapability moduleCapability);
 
     /**
      * Uninstalls currently selected module

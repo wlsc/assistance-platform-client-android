@@ -29,7 +29,7 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
+            android:gravity="end"
             android:orientation="horizontal">
 
             <Button
@@ -46,7 +46,7 @@
                 style="@style/BtnSuccess"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/module_action_install"
+                android:text="@string/module_action_activate"
                 android:textAllCaps="true"
                 android:textStyle="bold" />
 
@@ -55,7 +55,9 @@
                 style="@style/BtnDanger"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/module_action_uninstall"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
+                android:text="@string/module_action_deactivate"
                 android:textAllCaps="true"
                 android:textStyle="bold"
                 android:visibility="gone" />

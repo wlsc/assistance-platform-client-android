@@ -38,6 +38,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstal
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallSuccessfulEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleCapabilityHasChangedEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleStateChangeEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenter;
@@ -169,6 +171,37 @@ public class ModulesActivity extends
         Log.d(TAG, "After module was successful uninstalled. Module id: " + event.getModulePackageName());
 
         presenter.presentSuccessfulUninstall();
+    }
+
+    /**
+     * On module install event
+     *
+     * @param event
+     */
+    public void onEvent(ModuleStateChangeEvent event) {
+
+        Log.d(TAG, "Received module state change event");
+        Log.d(TAG, "Module id: " + event.getModuleId());
+        Log.d(TAG, "IsEnabled: " + event.isActive());
+
+        ModuleProvider.getInstance(getApplicationContext())
+                .toggleModuleState(event.getModuleId(), event.isActive());
+    }
+
+    /**
+     * Handler for module capability state change event
+     *
+     * @param event
+     */
+    public void onEvent(ModuleCapabilityHasChangedEvent event) {
+        Log.d(TAG, "Module capability state has been changed");
+
+        if (event.getModuleCapability() == null) {
+            Log.d(TAG, "Module capability is null!");
+            return;
+        }
+
+        presenter.handleModuleCapabilityStateChanged(event.getModuleCapability());
     }
 
     /**

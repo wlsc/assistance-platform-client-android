@@ -47,13 +47,13 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
         if (viewType == EMPTY_VIEW_TYPE) {
             // list is empty
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_empty_view, parent, false);
+                    .inflate(R.layout.item_empty_list_view, parent, false);
 
             return new EmptyViewHolder(view);
         } else {
             // list has items
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_available_module_card, parent, false);
+                    .inflate(R.layout.item_module_card, parent, false);
 
             return new ViewHolder(view);
         }

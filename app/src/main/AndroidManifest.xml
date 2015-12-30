@@ -57,9 +57,6 @@
             android:name=".activity.SettingsActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".activity.ModuleSettingsActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
             android:name=".activity.AccessibilityTutorialActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_accessibility_tutorial"
@@ -73,7 +70,7 @@
             android:name=".activity.NoPlayServicesActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/activity_no_play_services_title"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
     </application>
 
 </manifest>

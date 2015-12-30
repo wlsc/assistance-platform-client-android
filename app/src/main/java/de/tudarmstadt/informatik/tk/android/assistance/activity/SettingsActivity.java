@@ -1,6 +1,5 @@
 package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.AboutSettingsFragment;
+import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.AppSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DevSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DeviceSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorListSettingsFragment;
@@ -37,7 +37,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     private final String[] VALID_FRAGMENTS = {
             AboutSettingsFragment.class.getName(),
-//            AppSettingsFragment.class.getName(),
+            AppSettingsFragment.class.getName(),
             DevSettingsFragment.class.getName(),
             DeviceSettingsFragment.class.getName(),
             UserProfileSettingsFragment.class.getName(),
@@ -142,11 +142,6 @@ public class SettingsActivity extends PreferenceActivity {
         super.onHeaderClick(header, position);
 
         switch ((int) header.id) {
-
-            case R.id.application_settings:
-                Intent intent = new Intent(this, ModuleSettingsActivity.class);
-                startActivity(intent);
-                break;
 
             case R.id.logout_settings:
                 LoginUtils.doLogout(getApplicationContext());
