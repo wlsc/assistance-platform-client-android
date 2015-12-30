@@ -103,6 +103,13 @@ public class MainActivity extends
     }
 
     @Override
+    public void showGooglePlayServicesImportantView() {
+
+        Intent intent = new Intent(getApplicationContext(), NoPlayServicesActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.news_menu, menu);

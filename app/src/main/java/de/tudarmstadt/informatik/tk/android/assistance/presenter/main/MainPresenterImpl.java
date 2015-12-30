@@ -200,8 +200,7 @@ public class MainPresenterImpl extends
 
         PreferenceUtils.setGcmTokenWasSent(getContext(), false);
 
-        // TODO: tell user that it is impossible without play services
-        // or just make here impl without play services.
+        view.showGooglePlayServicesImportantView();
     }
 
     @Override
