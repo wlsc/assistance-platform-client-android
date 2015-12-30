@@ -110,6 +110,13 @@ public class MainActivity extends
     }
 
     @Override
+    public void showModulesList() {
+
+        Intent intent = new Intent(this, ModulesActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.news_menu, menu);

@@ -24,4 +24,6 @@ public interface MainView extends CommonView {
     void startGcmRegistrationService();
 
     void showGooglePlayServicesImportantView();
+
+    void showModulesList();
 }

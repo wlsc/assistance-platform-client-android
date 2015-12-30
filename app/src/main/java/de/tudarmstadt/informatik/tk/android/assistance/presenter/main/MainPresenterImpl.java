@@ -214,6 +214,8 @@ public class MainPresenterImpl extends
                     Constants.PREF_USER_ACTIVE_MODULES,
                     activeModules);
         }
+
+        view.showModulesList();
     }
 
     @Override
