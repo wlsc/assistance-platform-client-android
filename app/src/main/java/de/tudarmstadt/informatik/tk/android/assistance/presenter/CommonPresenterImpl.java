@@ -3,6 +3,8 @@ package de.tudarmstadt.informatik.tk.android.assistance.presenter;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.error.ErrorDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.error.ApiHttpErrorCodes;
@@ -17,6 +19,8 @@ import retrofit.mime.TypedByteArray;
  * @date 01.12.2015
  */
 public abstract class CommonPresenterImpl implements CommonPresenter {
+
+    private static final String TAG = CommonPresenterImpl.class.getSimpleName();
 
     private final Context context;
 
@@ -69,7 +73,9 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
                     .getBytes());
 
             Gson gson = new Gson();
-            ErrorDto apiError = gson.fromJson(jsonError, ErrorDto.class);
+            JsonParser parser = new JsonParser();
+            JsonObject jObj = parser.parse(jsonError).getAsJsonObject();
+            ErrorDto apiError = gson.fromJson(jObj, ErrorDto.class);
 
             switch (response.getStatus()) {
                 case 400:
