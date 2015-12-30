@@ -162,6 +162,11 @@
     <string name="user_profile_account_twitter">Twitter account</string>
     <string name="user_profile_account_github">Github account</string>
 
+    <!-- No Google Play Services view -->
+    <string name="activity_no_play_services_title">No Google Play Services</string>
+    <string name="activity_no_play_services_login_button">Check again</string>
+    <string name="activity_no_play_services_content">The Google Play Services is really important for this application to use. Without it, its impossible to use the application</string>
+
     <!-- ERROR MESSAGES -->
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
