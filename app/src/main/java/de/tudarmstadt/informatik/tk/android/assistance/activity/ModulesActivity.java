@@ -32,6 +32,7 @@ import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.ModulesAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.PermissionAdapter;
+import de.tudarmstadt.informatik.tk.android.assistance.event.CheckModuleCapabilityPermissionEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleShowMoreInfoEvent;
@@ -46,6 +47,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.ModuleProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
@@ -167,6 +169,19 @@ public class ModulesActivity extends
         Log.d(TAG, "After module was successful uninstalled. Module id: " + event.getModulePackageName());
 
         presenter.presentSuccessfulUninstall();
+    }
+
+    /**
+     * On module install capability permission check
+     *
+     * @param event
+     */
+    public void onEvent(CheckModuleCapabilityPermissionEvent event) {
+        Log.d(TAG, "CheckModuleCapabilityPermissionEvent was invoked");
+        Log.d(TAG, "Capability: " + event.getCapability().toString());
+
+        ModuleProvider.getInstance(getApplicationContext())
+                .checkModuleCapabilityPermission(this, event.getCapability());
     }
 
     /**

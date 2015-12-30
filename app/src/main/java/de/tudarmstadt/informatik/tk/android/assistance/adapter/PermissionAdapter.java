@@ -15,6 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.event.CheckModuleCapabilityPermissionEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleCapabilityHasChangedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
@@ -78,8 +79,8 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
             holder.mEnablerSwitch.setChecked(true);
             holder.mEnablerSwitch.setEnabled(false);
         } else {
-            holder.mEnablerSwitch.setVisibility(View.VISIBLE);
 
+            holder.mEnablerSwitch.setVisibility(View.VISIBLE);
             holder.mEnablerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                 @Override
@@ -89,6 +90,10 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
                         Log.d(TAG, "Optional permission was ENABLED");
                     } else {
                         Log.d(TAG, "Optional permission was DISABLED");
+                    }
+
+                    if (isChecked) {
+                        EventBus.getDefault().post(new CheckModuleCapabilityPermissionEvent(capability));
                     }
 
                     // change capability state
