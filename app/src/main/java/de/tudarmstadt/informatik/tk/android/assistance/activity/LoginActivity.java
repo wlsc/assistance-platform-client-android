@@ -14,6 +14,14 @@ import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
 import java.util.Set;
 
 import butterknife.Bind;
@@ -61,7 +69,7 @@ public class LoginActivity extends
 
     // SOCIAL BUTTONS
     @Bind(R.id.ibFacebookLogo)
-    protected ImageButton mFacebookLogo;
+    protected LoginButton mFacebookLogo;
 
     @Bind(R.id.ibGooglePlusLogo)
     protected ImageButton mGooglePlusLogo;
@@ -82,9 +90,14 @@ public class LoginActivity extends
 
     private LoginPresenter presenter;
 
+    private CallbackManager callbackManager;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
 
         setPresenter(new LoginPresenterImpl(this));
         presenter.doInitView();
@@ -197,6 +210,8 @@ public class LoginActivity extends
         setTitle(R.string.login_activity_title);
 
         ButterKnife.bind(this);
+
+        mFacebookLogo.setReadPermissions("email", "user_likes", "user_friends");
     }
 
     @Override
@@ -250,7 +265,28 @@ public class LoginActivity extends
 
     @OnClick(R.id.ibFacebookLogo)
     protected void onFacebookLogoPressed() {
-        Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+
+        //callback registration
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        // App code
+                        Log.d(TAG, "Facebook Access Token: " + loginResult.getAccessToken());
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                        Toast.makeText(getApplication(), "fail", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                        Toast.makeText(getApplication(), "error", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @OnClick(R.id.ibGooglePlusLogo)
@@ -315,6 +351,7 @@ public class LoginActivity extends
 
     @Override
     public void initView() {
+
         // just init EventBus there
         HarvesterServiceProvider.getInstance(getApplicationContext());
 
@@ -365,5 +402,11 @@ public class LoginActivity extends
     @Override
     public void askPermissions(Set<String> permsToAsk) {
         // empty
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }

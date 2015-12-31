@@ -100,7 +100,7 @@
                 android:orientation="horizontal">
 
 
-                <ImageButton
+                <com.facebook.login.widget.LoginButton
                     android:id="@+id/ibFacebookLogo"
                     style="@style/SocialButtonsMargin"
                     android:layout_width="wrap_content"
