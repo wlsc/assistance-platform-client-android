@@ -102,23 +102,21 @@ public class LoginActivity extends
         //callback registration
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
+
                     @Override
                     public void onSuccess(LoginResult loginResult) {
 
                         // App code
-                        Log.d(TAG, "Facebook Access Token: " + loginResult.getAccessToken());
-
+                        Log.d(TAG, "Facebook Access Token: " + loginResult.getAccessToken().getToken());
                     }
 
                     @Override
                     public void onCancel() {
-                        // App code
                         Toaster.showShort(getApplicationContext(), "fail");
                     }
 
                     @Override
-                    public void onError(FacebookException exception) {
-                        // App code
+                    public void onError(FacebookException error) {
                         Toaster.showShort(getApplicationContext(), "error");
                     }
                 });
