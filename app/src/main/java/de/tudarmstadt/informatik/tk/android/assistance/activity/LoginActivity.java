@@ -20,8 +20,8 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -69,7 +69,7 @@ public class LoginActivity extends
 
     // SOCIAL BUTTONS
     @Bind(R.id.ibFacebookLogo)
-    protected LoginButton mFacebookLogo;
+    protected ImageButton mFacebookLogo;
 
     @Bind(R.id.ibGooglePlusLogo)
     protected ImageButton mGooglePlusLogo;
@@ -98,6 +98,30 @@ public class LoginActivity extends
 
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
+
+        //callback registration
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+
+                        // App code
+                        Log.d(TAG, "Facebook Access Token: " + loginResult.getAccessToken());
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                        Toaster.showShort(getApplicationContext(), "fail");
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                        Toaster.showShort(getApplicationContext(), "error");
+                    }
+                });
 
         setPresenter(new LoginPresenterImpl(this));
         presenter.doInitView();
@@ -210,8 +234,6 @@ public class LoginActivity extends
         setTitle(R.string.login_activity_title);
 
         ButterKnife.bind(this);
-
-        mFacebookLogo.setReadPermissions("email", "user_likes", "user_friends");
     }
 
     @Override
@@ -266,27 +288,9 @@ public class LoginActivity extends
     @OnClick(R.id.ibFacebookLogo)
     protected void onFacebookLogoPressed() {
 
-        //callback registration
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        // App code
-                        Log.d(TAG, "Facebook Access Token: " + loginResult.getAccessToken());
-                    }
+        Log.d(TAG, "Facebook logo was pressed");
 
-                    @Override
-                    public void onCancel() {
-                        // App code
-                        Toast.makeText(getApplication(), "fail", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                        // App code
-                        Toast.makeText(getApplication(), "error", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email"));
     }
 
     @OnClick(R.id.ibGooglePlusLogo)

@@ -98,9 +98,8 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center_vertical|center_horizontal"
                 android:orientation="horizontal">
-
-
-                <com.facebook.login.widget.LoginButton
+                
+                <ImageButton
                     android:id="@+id/ibFacebookLogo"
                     style="@style/SocialButtonsMargin"
                     android:layout_width="wrap_content"
