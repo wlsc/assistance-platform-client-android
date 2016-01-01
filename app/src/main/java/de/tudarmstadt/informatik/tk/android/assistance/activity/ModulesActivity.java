@@ -9,7 +9,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -30,6 +29,7 @@ import java.util.Set;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.ModulesAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.PermissionAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.event.CheckModuleCapabilityPermissionEvent;
@@ -46,8 +46,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesP
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleCapabilityResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.ModuleProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
@@ -63,7 +63,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
  * @date 28.06.2015
  */
 public class ModulesActivity extends
-        AppCompatActivity implements
+        BaseActivity implements
         ModulesView {
 
     private static final String TAG = ModulesActivity.class.getSimpleName();
@@ -112,6 +112,21 @@ public class ModulesActivity extends
         }
 
         super.onPause();
+    }
+
+    @Override
+    protected void subscribeRequests() {
+
+    }
+
+    @Override
+    protected void unsubscribeRequests() {
+
+    }
+
+    @Override
+    protected void recreateRequests() {
+
     }
 
     /**
@@ -285,8 +300,6 @@ public class ModulesActivity extends
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy -> unbound resources");
-
         ButterKnife.unbind(this);
 
         if (EventBus.getDefault().isRegistered(this)) {

@@ -3,7 +3,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.login;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnUserValidHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.login.LoginResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.login.LoginResponseDto;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)

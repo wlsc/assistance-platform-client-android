@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +19,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.jakewharton.rxbinding.widget.RxTextView;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPresenterImpl;
@@ -39,6 +40,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.LoginView;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
+import rx.Observable;
+import rx.Subscription;
 
 /**
  * A login screen that offers login via email/password
@@ -47,7 +50,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
  * @date 28.06.2015
  */
 public class LoginActivity extends
-        AppCompatActivity implements
+        BaseActivity implements
         LoginView {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -92,8 +95,10 @@ public class LoginActivity extends
 
     private CallbackManager callbackManager;
 
+    private Subscription subLoginButtonEnabled;
+
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         FacebookSdk.sdkInitialize(this.getApplicationContext());
@@ -189,21 +194,7 @@ public class LoginActivity extends
             mSplashView = new SplashView(this);
         }
 
-        // Set an event handler on the SplashView object, so that as soon
-        // as it completes drawing we are
-        // informed.  In response to that cue, we will *then* put up the main view,
-        // replacing the content view of the main activity with that main view.
-        mSplashView.setSplashScreenEvent(new SplashView.SplashScreenEvent() {
-            @Override
-            public void onSplashDrawComplete() {
-                uiThreadHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        presenter.getSplashView();
-                    }
-                });
-            }
-        });
+        mSplashView.setSplashScreenEvent(() -> uiThreadHandler.post(() -> presenter.getSplashView()));
 
         // show splash screen
         setContentView(mSplashView);
@@ -232,6 +223,12 @@ public class LoginActivity extends
         setTitle(R.string.login_activity_title);
 
         ButterKnife.bind(this);
+
+        subLoginButtonEnabled = Observable.combineLatest(
+                RxTextView.textChanges(mEmailTextView),
+                RxTextView.textChanges(mPasswordView),
+                (login, password) -> login.length() > 0 && password.length() > 0
+        ).subscribe(mLoginButton::setEnabled);
     }
 
     @Override
@@ -333,13 +330,7 @@ public class LoginActivity extends
 
         Toaster.showLong(this, R.string.action_back_button_pressed_once);
 
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                mBackButtonPressedOnce = false;
-            }
-        }, Constants.BACK_BUTTON_DELAY_MILLIS);
+        new Handler().postDelayed(() -> mBackButtonPressedOnce = false, Constants.BACK_BUTTON_DELAY_MILLIS);
     }
 
     @Override
@@ -347,8 +338,26 @@ public class LoginActivity extends
         ButterKnife.unbind(this);
         mSplashView = null;
         uiThreadHandler = null;
-        Log.d(TAG, "onDestroy -> unbound resources");
+
+        if (subLoginButtonEnabled != null) {
+            subLoginButtonEnabled.unsubscribe();
+        }
         super.onDestroy();
+    }
+
+    @Override
+    protected void subscribeRequests() {
+
+    }
+
+    @Override
+    protected void unsubscribeRequests() {
+
+    }
+
+    @Override
+    protected void recreateRequests() {
+
     }
 
     @Override

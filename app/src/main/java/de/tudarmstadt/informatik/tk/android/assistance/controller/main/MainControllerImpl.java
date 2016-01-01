@@ -12,13 +12,13 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesRe
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleFeedbackResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.ProfileResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.UserApi;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApi;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.GcmUtils;
@@ -79,9 +79,9 @@ public class MainControllerImpl extends
     public void requestActiveModules(final String userToken,
                                      final OnActiveModulesResponseHandler handler) {
 
-        final ModuleEndpoint moduleEndpoint = EndpointGenerator
+        final ModuleApi moduleEndpoint = ApiGenerator
                 .getInstance(presenter.getContext())
-                .create(ModuleEndpoint.class);
+                .create(ModuleApi.class);
 
         moduleEndpoint.getActiveModules(userToken,
                 new Callback<Set<String>>() {
@@ -103,9 +103,9 @@ public class MainControllerImpl extends
     @Override
     public void requestUserProfile(String userToken, final OnResponseHandler<ProfileResponseDto> handler) {
 
-        UserEndpoint userService = EndpointGenerator
+        UserApi userService = ApiGenerator
                 .getInstance(presenter.getContext())
-                .create(UserEndpoint.class);
+                .create(UserApi.class);
 
         userService.getUserProfileShort(userToken, new Callback<ProfileResponseDto>() {
 
@@ -123,13 +123,14 @@ public class MainControllerImpl extends
 
     @Override
     public void requestModuleFeedback(String userToken,
+                                      Long deviceId,
                                       final OnModuleFeedbackResponseHandler handler) {
 
-        final ModuleEndpoint moduleEndpoint = EndpointGenerator
+        final ModuleApi moduleEndpoint = ApiGenerator
                 .getInstance(presenter.getContext())
-                .create(ModuleEndpoint.class);
+                .create(ModuleApi.class);
 
-        moduleEndpoint.getModuleFeedback(userToken, new Callback<List<ClientFeedbackDto>>() {
+        moduleEndpoint.getModuleFeedback(userToken, deviceId, new Callback<List<ClientFeedbackDto>>() {
 
             @Override
             public void success(List<ClientFeedbackDto> clientFeedbackDto, Response response) {

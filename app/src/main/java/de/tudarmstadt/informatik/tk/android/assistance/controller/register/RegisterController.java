@@ -2,8 +2,8 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.register;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.registration.RegistrationRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.registration.RegistrationResponseDto;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)

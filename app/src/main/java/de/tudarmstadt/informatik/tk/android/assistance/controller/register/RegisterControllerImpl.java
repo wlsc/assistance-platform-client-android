@@ -2,11 +2,11 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.register;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.registration.RegistrationRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.registration.RegistrationResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.UserApi;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.register.RegisterPresenter;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -30,9 +30,9 @@ public class RegisterControllerImpl extends
     public void doRegisterUser(RegistrationRequestDto request, final OnResponseHandler handler) {
 
         // calling api service
-        UserEndpoint service = EndpointGenerator
+        UserApi service = ApiGenerator
                 .getInstance(presenter.getContext())
-                .create(UserEndpoint.class);
+                .create(UserApi.class);
 
         service.registerUser(request, new Callback<RegistrationResponseDto>() {
 

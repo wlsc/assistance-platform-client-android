@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.error.ErrorDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.error.ApiError;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.error.ApiHttpErrorCodes;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.view.CommonView;
@@ -75,7 +75,7 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
             Gson gson = new Gson();
             JsonParser parser = new JsonParser();
             JsonObject jObj = parser.parse(jsonError).getAsJsonObject();
-            ErrorDto apiError = gson.fromJson(jObj, ErrorDto.class);
+            ApiError apiError = gson.fromJson(jObj, ApiError.class);
 
             switch (response.getStatus()) {
                 case 400:

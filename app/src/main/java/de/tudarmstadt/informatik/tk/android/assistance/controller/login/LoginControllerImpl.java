@@ -11,19 +11,20 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPres
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbDevice;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.login.LoginRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.login.LoginResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.login.UserDeviceDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.LoginEndpoint;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.login.LoginRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.login.LoginResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.login.UserDeviceDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.login.LoginApi;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.HardwareUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
-import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -71,11 +72,6 @@ public class LoginControllerImpl extends
         /**
          * Forming a login request
          */
-        LoginRequestDto loginRequest = new LoginRequestDto();
-
-        loginRequest.setUserEmail(email);
-        loginRequest.setPassword(password);
-
         UserDeviceDto userDevice = new UserDeviceDto();
 
         if (serverDeviceId != null) {
@@ -88,27 +84,37 @@ public class LoginControllerImpl extends
         userDevice.setModel(HardwareUtils.getDeviceModelName());
         userDevice.setDeviceId(HardwareUtils.getAndroidId(presenter.getContext()));
 
-        loginRequest.setDevice(userDevice);
+        LoginRequestDto loginRequest = new LoginRequestDto(email, password, userDevice);
 
         /**
          * Logging in the user
          */
-        LoginEndpoint userEndpoint = EndpointGenerator
+        LoginApi userEndpoint = ApiGenerator
                 .getInstance(presenter.getContext())
-                .create(LoginEndpoint.class);
+                .create(LoginApi.class);
 
-        userEndpoint.loginUser(loginRequest, new Callback<LoginResponseDto>() {
+        userEndpoint.loginUser(loginRequest)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<LoginResponseDto>() {
 
-            @Override
-            public void success(LoginResponseDto apiResponse, Response response) {
-                handler.onSuccess(apiResponse, response);
-            }
+                    @Override
+                    public void onCompleted() {
+                        // do nothing
+                    }
 
-            @Override
-            public void failure(RetrofitError error) {
-                handler.onError(error);
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof RetrofitError) {
+                            handler.onError((RetrofitError) e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(LoginResponseDto response) {
+                        handler.onSuccess(response, null);
+                    }
+                });
     }
 
     @Override

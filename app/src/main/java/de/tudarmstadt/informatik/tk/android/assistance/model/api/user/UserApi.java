@@ -1,11 +1,11 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.user;
 
 import de.tudarmstadt.informatik.tk.android.assistance.Config;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.ProfileResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.UpdateProfileRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.registration.RegistrationResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.resetpassword.ResetPasswordRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.ProfileResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.UpdateProfileRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.registration.RegistrationRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.registration.RegistrationResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.resetpassword.ResetPasswordRequestDto;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -20,7 +20,7 @@ import retrofit.http.PUT;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public interface UserEndpoint {
+public interface UserApi {
 
     @POST(Config.ASSISTANCE_USER_REGISTER_ENDPOINT)
     void registerUser(@Body RegistrationRequestDto body,

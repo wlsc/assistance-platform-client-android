@@ -9,9 +9,9 @@ import android.support.v7.widget.Toolbar;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbDevice;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.device.DeviceUserDefinedNameRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.DeviceEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.device.DeviceUserDefinedNameRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.device.DeviceApi;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
@@ -103,8 +103,8 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
             deviceUserDefinedNameRequest.setDeviceId(currentDeviceId);
             deviceUserDefinedNameRequest.setUserDefinedName(deviceName);
 
-            DeviceEndpoint deviceEndpoint = EndpointGenerator.getInstance(getActivity().getApplicationContext()).create(DeviceEndpoint.class);
-            deviceEndpoint.setUserDefinedName(userToken, deviceUserDefinedNameRequest, new Callback<Void>() {
+            DeviceApi deviceApi = ApiGenerator.getInstance(getActivity().getApplicationContext()).create(DeviceApi.class);
+            deviceApi.setUserDefinedName(userToken, deviceUserDefinedNameRequest, new Callback<Void>() {
 
                 @Override
                 public void success(Void aVoid, Response response) {

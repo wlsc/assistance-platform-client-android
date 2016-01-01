@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile;
+package de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

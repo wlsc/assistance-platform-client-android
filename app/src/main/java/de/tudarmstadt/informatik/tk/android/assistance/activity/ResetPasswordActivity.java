@@ -2,7 +2,6 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 
 import java.util.Set;
@@ -11,10 +10,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.password.ResetPasswordPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.password.ResetPasswordPresenterImpl;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ResetPasswordView;
 
@@ -25,7 +24,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.view.ResetPasswordView;
  * @date 28.06.2015
  */
 public class ResetPasswordActivity extends
-        AppCompatActivity implements
+        BaseActivity implements
         ResetPasswordView {
 
     private static final String TAG = ResetPasswordActivity.class.getSimpleName();
@@ -46,8 +45,22 @@ public class ResetPasswordActivity extends
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
-        Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
+    }
+
+    @Override
+    protected void subscribeRequests() {
+
+    }
+
+    @Override
+    protected void unsubscribeRequests() {
+
+    }
+
+    @Override
+    protected void recreateRequests() {
+
     }
 
     @OnClick(R.id.reset_button)

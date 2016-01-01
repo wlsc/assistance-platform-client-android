@@ -9,7 +9,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.controller.login.LoginCon
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnUserValidHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.login.LoginResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.login.LoginResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;

@@ -2,7 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.handler;
 
 import java.util.List;
 
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

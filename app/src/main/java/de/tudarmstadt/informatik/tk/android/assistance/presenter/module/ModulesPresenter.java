@@ -7,7 +7,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.controller.module.Modules
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
 
 /**

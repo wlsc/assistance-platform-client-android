@@ -14,17 +14,17 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesRe
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.ModuleEndpoint;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.event.UpdateSensorIntervalEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.DtoType;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleCapabilityResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ModuleResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.dto.module.ToggleModuleRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.DtoType;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApi;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
@@ -54,9 +54,9 @@ public class ModulesControllerImpl extends
     @Override
     public void requestAvailableModules(String userToken, final OnAvailableModulesResponseHandler availableModulesHandler) {
 
-        final ModuleEndpoint moduleEndpoint = EndpointGenerator
+        final ModuleApi moduleEndpoint = ApiGenerator
                 .getInstance(presenter.getContext())
-                .create(ModuleEndpoint.class);
+                .create(ModuleApi.class);
 
         moduleEndpoint.getAvailableModules(userToken,
                 new Callback<List<ModuleResponseDto>>() {
@@ -91,9 +91,9 @@ public class ModulesControllerImpl extends
     public void requestActiveModules(final String userToken,
                                      final OnActiveModulesResponseHandler handler) {
 
-        final ModuleEndpoint moduleEndpoint = EndpointGenerator
+        final ModuleApi moduleEndpoint = ApiGenerator
                 .getInstance(presenter.getContext())
-                .create(ModuleEndpoint.class);
+                .create(ModuleApi.class);
 
         moduleEndpoint.getActiveModules(userToken,
                 new Callback<Set<String>>() {
@@ -223,9 +223,9 @@ public class ModulesControllerImpl extends
                                         String userToken,
                                         final OnModuleActivatedResponseHandler handler) {
 
-        ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(
+        ModuleApi moduleEndpoint = ApiGenerator.getInstance(
                 presenter.getContext())
-                .create(ModuleEndpoint.class);
+                .create(ModuleApi.class);
 
         moduleEndpoint.activateModule(userToken, toggleModuleRequest,
                 new Callback<Void>() {
@@ -247,9 +247,9 @@ public class ModulesControllerImpl extends
                                           String userToken,
                                           final OnModuleDeactivatedResponseHandler handler) {
 
-        ModuleEndpoint moduleEndpoint = EndpointGenerator.getInstance(
+        ModuleApi moduleEndpoint = ApiGenerator.getInstance(
                 presenter.getContext())
-                .create(ModuleEndpoint.class);
+                .create(ModuleApi.class);
 
         moduleEndpoint.deactivateModule(userToken, toggleModuleRequest,
                 new Callback<Void>() {

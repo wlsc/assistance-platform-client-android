@@ -2,7 +2,6 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 
 import java.util.Set;
@@ -11,10 +10,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.register.RegisterPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.register.RegisterPresenterImpl;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.RegisterView;
@@ -26,7 +25,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.view.RegisterView;
  * @date 28.06.2015
  */
 public class RegisterActivity extends
-        AppCompatActivity implements
+        BaseActivity implements
         RegisterView {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
@@ -79,8 +78,22 @@ public class RegisterActivity extends
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
-        Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
+    }
+
+    @Override
+    protected void subscribeRequests() {
+
+    }
+
+    @Override
+    protected void unsubscribeRequests() {
+
+    }
+
+    @Override
+    protected void recreateRequests() {
+
     }
 
     @Override

@@ -9,7 +9,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesRe
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleFeedbackResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.ProfileResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 
@@ -33,7 +33,7 @@ public interface MainController extends CommonController {
      */
     void requestUserProfile(String userToken, OnResponseHandler<ProfileResponseDto> handler);
 
-    void requestModuleFeedback(String userToken, OnModuleFeedbackResponseHandler handler);
+    void requestModuleFeedback(String userToken, Long deviceId, OnModuleFeedbackResponseHandler handler);
 
     /**
      * Updates existent user login or creates one in db

@@ -2,10 +2,10 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.password;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnEmptyResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.resetpassword.ResetPasswordRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.resetpassword.ResetPasswordRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.UserApi;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.password.ResetPasswordPresenter;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -28,9 +28,9 @@ public class ResetPasswordControllerImpl extends
     @Override
     public void resetUserPassword(ResetPasswordRequestDto resetRequest, final OnEmptyResponseHandler handler) {
 
-        UserEndpoint service = EndpointGenerator
+        UserApi service = ApiGenerator
                 .getInstance(presenter.getContext())
-                .create(UserEndpoint.class);
+                .create(UserApi.class);
 
         service.resetUserPassword(resetRequest, new Callback<Void>() {
 

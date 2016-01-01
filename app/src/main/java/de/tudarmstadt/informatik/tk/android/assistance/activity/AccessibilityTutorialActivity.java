@@ -2,11 +2,11 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AccessibilityUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
@@ -19,7 +19,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 10.10.2015
  */
-public class AccessibilityTutorialActivity extends AppCompatActivity {
+public class AccessibilityTutorialActivity extends BaseActivity {
 
     private static final String TAG = AccessibilityTutorialActivity.class.getSimpleName();
 
@@ -38,9 +38,23 @@ public class AccessibilityTutorialActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy: Unbinding resources...");
         ButterKnife.unbind(this);
         super.onDestroy();
+    }
+
+    @Override
+    protected void subscribeRequests() {
+
+    }
+
+    @Override
+    protected void unsubscribeRequests() {
+
+    }
+
+    @Override
+    protected void recreateRequests() {
+
     }
 
     @OnClick(R.id.ignore_button)

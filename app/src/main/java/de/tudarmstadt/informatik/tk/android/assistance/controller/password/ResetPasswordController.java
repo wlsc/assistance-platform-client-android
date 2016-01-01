@@ -2,7 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.password;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnEmptyResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.resetpassword.ResetPasswordRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.resetpassword.ResetPasswordRequestDto;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)

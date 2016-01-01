@@ -18,11 +18,11 @@ import butterknife.ButterKnife;
 import butterknife.OnTextChanged;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.ProfileResponseDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.UpdateProfileRequestDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.dto.profile.UserSocialServiceDto;
-import de.tudarmstadt.informatik.tk.android.assistance.model.api.endpoint.UserEndpoint;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.endpoint.EndpointGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.ProfileResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.UpdateProfileRequestDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.UserSocialServiceDto;
+import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.UserApi;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
@@ -128,8 +128,8 @@ public class UserProfileSettingsFragment extends Fragment {
 //                userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_image));
 //            }
 
-            UserEndpoint userEndpoint = EndpointGenerator.getInstance(getActivity().getApplicationContext()).create(UserEndpoint.class);
-            userEndpoint.getUserProfileFull(userToken, new Callback<ProfileResponseDto>() {
+            UserApi userApi = ApiGenerator.getInstance(getActivity().getApplicationContext()).create(UserApi.class);
+            userApi.getUserProfileFull(userToken, new Callback<ProfileResponseDto>() {
 
                 @Override
                 public void success(ProfileResponseDto profileResponse, Response response) {
@@ -345,8 +345,8 @@ public class UserProfileSettingsFragment extends Fragment {
         /**
          * SEND UPDATED USER PROFILE TO SERVER
          */
-        UserEndpoint userEndpoint = EndpointGenerator.getInstance(getActivity().getApplicationContext()).create(UserEndpoint.class);
-        userEndpoint.updateUserProfile(userToken, request, new Callback<Void>() {
+        UserApi userApi = ApiGenerator.getInstance(getActivity().getApplicationContext()).create(UserApi.class);
+        userApi.updateUserProfile(userToken, request, new Callback<Void>() {
 
             @Override
             public void success(Void aVoid, Response response) {

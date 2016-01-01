@@ -12,18 +12,8 @@ public class Config {
     }
 
     /**
-     * ENDPOINTS
+     * API ENDPOINTS
      */
-
-    public static final String ASSISTANCE_MODULE_LIST_ENDPOINT = "/assistance/list";
-
-    public static final String ASSISTANCE_MODULE_ACTIVE_ENDPOINT = "/assistance/activations";
-
-    public static final String ASSISTANCE_MODULE_ACTIVATE_ENDPOINT = "/assistance/activate";
-
-    public static final String ASSISTANCE_MODULE_DEACTIVATE_ENDPOINT = "/assistance/deactivate";
-
-    public static final String ASSISTANCE_MODULE_FEEDBACK_ENDPOINT = "/assistance/feedback";
 
     public static final String ASSISTANCE_USER_REGISTER_ENDPOINT = "/users/register";
 
