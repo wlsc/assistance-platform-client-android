@@ -84,6 +84,14 @@ public class MainPresenterImpl extends
             return;
         }
 
+        List<DbNews> assistanceNews = controller.getCachedNews(user.getId());
+
+        if (assistanceNews.isEmpty()) {
+            view.showNoNews();
+        } else {
+            view.setNewsItems(controller.convertDbEntries(assistanceNews));
+        }
+
         List<DbModule> installedActiveModules = controller.getAllActiveModules(user.getId());
 
         if (installedActiveModules == null || installedActiveModules.isEmpty()) {
@@ -99,14 +107,6 @@ public class MainPresenterImpl extends
             view.prepareGCMRegistration();
 
             Log.d(TAG, "Active modules: " + installedActiveModules.size());
-
-            List<DbNews> assistanceNews = controller.getCachedNews(user.getId());
-
-            if (assistanceNews.isEmpty()) {
-                view.showNoNews();
-            } else {
-                view.setNewsItems(controller.convertDbEntries(assistanceNews));
-            }
 
             // start sensing
             startHarvester();
