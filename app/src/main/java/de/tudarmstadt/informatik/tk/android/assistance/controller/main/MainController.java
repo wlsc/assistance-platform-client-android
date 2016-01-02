@@ -3,7 +3,6 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.main;
 import android.app.Activity;
 
 import java.util.List;
-import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
@@ -29,11 +28,6 @@ public interface MainController extends CommonController {
     List<DbNews> convertDtos(List<ClientFeedbackDto> dbNews);
 
     void registerGCMPush(Activity activity, OnGooglePlayServicesAvailable handler);
-
-    /**
-     * Asks backend for activated modules
-     */
-    Observable<Set<String>> requestActiveModules(String userToken);
 
     /**
      * Requests user profile information

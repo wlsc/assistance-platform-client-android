@@ -16,6 +16,7 @@ import java.util.Set;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.NewsAdapter;
@@ -26,7 +27,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.Acti
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.MainView;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
@@ -264,7 +264,10 @@ public class MainActivity extends
             return;
         }
 
-        requestPermissions(permsToAsk.toArray(new String[permsToAsk.size()]), 88);
+        requestPermissions(
+                permsToAsk.toArray(new String[permsToAsk.size()]),
+                Constants.PERM_MODULE_ACTIVATED_REQUEST
+        );
     }
 
     @Override

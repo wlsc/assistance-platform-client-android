@@ -20,18 +20,6 @@ import rx.Observable;
 public interface ModulesController extends CommonController {
 
     /**
-     * Request available modules from service
-     */
-    Observable<List<ModuleResponseDto>> requestAvailableModules(String userToken);
-
-    /**
-     * Request for active modules
-     *
-     * @param userToken
-     */
-    Observable<Set<String>> requestActiveModules(String userToken);
-
-    /**
      * Request for combined active modules and available modules
      *
      * @param userToken

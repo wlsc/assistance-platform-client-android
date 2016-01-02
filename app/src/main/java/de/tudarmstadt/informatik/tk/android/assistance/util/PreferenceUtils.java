@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 
 import java.util.Set;
 
+import de.tudarmstadt.informatik.tk.android.assistance.Constants;
+
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 12.07.2015

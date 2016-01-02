@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainController;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
@@ -27,7 +28,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.MainView;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
@@ -69,12 +69,6 @@ public class MainPresenterImpl extends
     @Override
     public void doInitView() {
 
-//        boolean accessibilityServiceActivated = PreferenceProvider
-//                .getInstance(getContext())
-//                .getActivated();
-
-//        if (accessibilityServiceActivated) {
-
         view.initView();
 
         if (AppUtils.isDebug(getContext())) {
@@ -90,40 +84,33 @@ public class MainPresenterImpl extends
             return;
         }
 
-        List<DbNews> assistanceNews = controller.getCachedNews(user.getId());
+        List<DbModule> installedActiveModules = controller.getAllActiveModules(user.getId());
 
-        if (assistanceNews.isEmpty()) {
-            view.showNoNews();
-        } else {
-            view.setNewsItems(controller.convertDbEntries(assistanceNews));
-        }
-
-        controller.initUUID(user);
-
-        view.prepareGCMRegistration();
-
-        List<DbModule> installedModules = controller.getAllActiveModules(user.getId());
-
-        if (installedModules == null || installedModules.isEmpty()) {
+        if (installedActiveModules == null || installedActiveModules.isEmpty()) {
 
             stopHarvester();
+
+            controller.initUUID(user);
 
             view.subscribeActiveAvailableModules(controller.requestActivatedModules(userToken));
 
         } else {
 
-            Log.d(TAG, "Active modules: " + installedModules.size());
+            view.prepareGCMRegistration();
 
-            // user got some active modules
+            Log.d(TAG, "Active modules: " + installedActiveModules.size());
+
+            List<DbNews> assistanceNews = controller.getCachedNews(user.getId());
+
+            if (assistanceNews.isEmpty()) {
+                view.showNoNews();
+            } else {
+                view.setNewsItems(controller.convertDbEntries(assistanceNews));
+            }
+
+            // start sensing
             startHarvester();
         }
-
-//        } else {
-//
-//            Log.d(TAG, "Accessibility Service is NOT active! Showing tutorial...");
-//
-//            view.showAccessibilityServiceTutorial();
-//        }
     }
 
     @Override
@@ -281,7 +268,7 @@ public class MainPresenterImpl extends
     public void presentRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
 
         switch (requestCode) {
-            case 88:
+            case Constants.PERM_MODULE_ACTIVATED_REQUEST:
 
                 Log.d(TAG, "Back from permissions request");
 

@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
@@ -125,12 +124,6 @@ public class MainControllerImpl extends
 
             handler.onPlayServicesNotAvailable();
         }
-    }
-
-    @Override
-    public Observable<Set<String>> requestActiveModules(final String userToken) {
-
-        return moduleApiManager.getActiveModulesRequest(userToken);
     }
 
     @Override

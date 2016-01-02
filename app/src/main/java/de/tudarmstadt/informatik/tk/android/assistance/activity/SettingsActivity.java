@@ -21,7 +21,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DeviceS
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.SensorListSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileSettingsFragment;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
+import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.LoginUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 

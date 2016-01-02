@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.util;
+package de.tudarmstadt.informatik.tk.android.assistance;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -54,4 +54,5 @@ public class Constants {
      * REQUEST PERMISSIONS
      */
     public static final int PERM_MODULE_INSTALL = 250;
+    public static final int PERM_MODULE_ACTIVATED_REQUEST = 88;
 }

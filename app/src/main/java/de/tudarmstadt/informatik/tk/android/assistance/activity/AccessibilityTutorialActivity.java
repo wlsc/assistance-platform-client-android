@@ -10,7 +10,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivit
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AccessibilityUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
-import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
+import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 
 /**
  * A tutorial for accessibility service to enable
