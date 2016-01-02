@@ -56,18 +56,6 @@ public class ModulesControllerImpl extends
     }
 
     @Override
-    public Observable<List<ModuleResponseDto>> requestAvailableModules(String userToken) {
-
-        return moduleApiManager.getAvailableModules(userToken);
-    }
-
-    @Override
-    public Observable<Set<String>> requestActiveModules(final String userToken) {
-
-        return moduleApiManager.getActiveModulesRequest(userToken);
-    }
-
-    @Override
     public Observable<ActivatedModulesResponse> requestActivatedModules(String userToken) {
         return moduleApiManager.getActivatedModules(userToken);
     }

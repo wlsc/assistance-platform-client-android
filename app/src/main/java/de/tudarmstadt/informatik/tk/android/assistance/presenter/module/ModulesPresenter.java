@@ -7,10 +7,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.controller.module.Modules
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -23,14 +23,6 @@ public interface ModulesPresenter extends CommonPresenter {
     void setController(ModulesController controller);
 
     void requestAvailableModules();
-
-    void onAvailableModulesSuccess(List<ModuleResponseDto> apiResponse);
-
-    void onAvailableModulesError(RetrofitError error);
-
-    void onActiveModulesReceived(Set<String> activeModules);
-
-    void onActiveModulesFailed(RetrofitError error);
 
     /**
      * Populates and saves available modules
@@ -89,4 +81,8 @@ public interface ModulesPresenter extends CommonPresenter {
     void presentSuccessfulUninstall();
 
     ModuleResponseDto getSelectedModuleResponse();
+
+    void onActivatedModulesReceived(ActivatedModulesResponse activatedModulesResponse);
+
+    void onActivatedModulesFailed(RetrofitError error);
 }

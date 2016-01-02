@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.greenrobot.event.EventBus;
+import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.module.ModulesController;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.module.ModulesControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
@@ -23,6 +24,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenter
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ToggleModuleRequestDto;
@@ -32,7 +34,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
-import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
 import retrofit.RetrofitError;
@@ -129,48 +130,8 @@ public class ModulesPresenterImpl extends
 
         final String userToken = PreferenceUtils.getUserToken(getContext());
 
-        // call api service
-        view.subscribeAvailableModules(controller.requestAvailableModules(userToken));
-    }
-
-    @Override
-    public void onAvailableModulesSuccess(List<ModuleResponseDto> apiResponse) {
-
-        if (apiResponse == null || apiResponse.isEmpty()) {
-
-            availableModules = Collections.emptyList();
-            mActiveModules = Collections.emptySet();
-
-            view.setNoModulesView();
-
-        } else {
-
-            Log.d(TAG, apiResponse.toString());
-            Log.d(TAG, "Filtering list according to device sensor availability...");
-
-            // filter modules that have not runnable sensors in their required capabilities
-            apiResponse = controller.filterAvailableModulesList(apiResponse);
-
-            availableModules = new ArrayList<>(apiResponse.size());
-            availableModules.addAll(apiResponse);
-
-            doMappingAvailableModuleResponse(apiResponse);
-
-            if (ServiceUtils.hasUserModules(getContext())) {
-
-                mActiveModules = Collections.emptySet();
-                view.setSwipeRefreshing(false);
-
-                processAvailableModules(apiResponse);
-
-                return;
-            }
-
-            final String userToken = PreferenceUtils.getUserToken(getContext());
-
-            // get list of already activated modules
-            view.subscribeActiveModules(controller.requestActiveModules(userToken));
-        }
+        // subscribe to call api service
+        view.subscribeActivatedModules(controller.requestActivatedModules(userToken));
     }
 
     private void doMappingAvailableModuleResponse(List<ModuleResponseDto> apiResponse) {
@@ -184,39 +145,6 @@ public class ModulesPresenterImpl extends
         for (ModuleResponseDto resp : apiResponse) {
             availableModuleResponseMapping.put(resp.getPackageName(), resp);
         }
-    }
-
-    @Override
-    public void onAvailableModulesError(RetrofitError error) {
-
-        doDefaultErrorProcessing(error);
-        view.setErrorView();
-    }
-
-    @Override
-    public void onActiveModulesReceived(Set<String> activeModules) {
-
-        view.setSwipeRefreshing(false);
-
-        if (activeModules != null && !activeModules.isEmpty()) {
-
-            Log.d(TAG, activeModules.toString());
-            mActiveModules = activeModules;
-
-        } else {
-            mActiveModules = Collections.emptySet();
-        }
-
-        processAvailableModules(availableModules);
-    }
-
-    @Override
-    public void onActiveModulesFailed(RetrofitError error) {
-
-        doDefaultErrorProcessing(error);
-        mActiveModules = Collections.emptySet();
-        view.setSwipeRefreshing(false);
-        processAvailableModules(availableModules);
     }
 
     @Override
@@ -625,6 +553,66 @@ public class ModulesPresenterImpl extends
         }
 
         return availableModuleResponseMapping.get(selectedModuleId);
+    }
+
+    @Override
+    public void onActivatedModulesReceived(ActivatedModulesResponse activatedModulesResponse) {
+
+        view.setSwipeRefreshing(false);
+
+        if (activatedModulesResponse == null) {
+
+            availableModules = Collections.emptyList();
+            mActiveModules = Collections.emptySet();
+
+            view.setNoModulesView();
+
+        } else {
+
+            List<ModuleResponseDto> modulesResponse = activatedModulesResponse.getAvailableModules();
+
+            Log.d(TAG, modulesResponse.toString());
+            Log.d(TAG, "Filtering list according to device sensor availability...");
+
+            // filter modules that have not runnable sensors in their required capabilities
+            modulesResponse = controller.filterAvailableModulesList(modulesResponse);
+
+            availableModules = new ArrayList<>(modulesResponse.size());
+            availableModules.addAll(modulesResponse);
+
+            doMappingAvailableModuleResponse(modulesResponse);
+
+            if (ServiceUtils.hasUserModules(getContext())) {
+
+                mActiveModules = Collections.emptySet();
+                view.setSwipeRefreshing(false);
+
+                processAvailableModules(modulesResponse);
+
+                return;
+            }
+
+            Set<String> activeModules = activatedModulesResponse.getActiveModules();
+
+            if (activeModules != null && !activeModules.isEmpty()) {
+
+                Log.d(TAG, activeModules.toString());
+                mActiveModules = activeModules;
+
+            } else {
+                mActiveModules = Collections.emptySet();
+            }
+
+            processAvailableModules(availableModules);
+        }
+    }
+
+    @Override
+    public void onActivatedModulesFailed(RetrofitError error) {
+
+        doDefaultErrorProcessing(error);
+        mActiveModules = Collections.emptySet();
+        view.setErrorView();
     }
 
     @Override

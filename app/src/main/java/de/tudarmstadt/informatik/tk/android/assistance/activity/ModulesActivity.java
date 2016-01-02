@@ -28,6 +28,7 @@ import java.util.Set;
 
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
+import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.ModulesAdapter;
@@ -46,6 +47,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesP
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
@@ -53,7 +55,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.ModuleProvid
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
-import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
 import retrofit.RetrofitError;
@@ -89,8 +90,7 @@ public class ModulesActivity extends
     private TextView permissionsEmptyOptional;
     private TextView noData;
 
-    private Subscription subAvailableModule;
-    private Subscription subActiveModules;
+    private Subscription subActivatedModules;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -307,45 +307,25 @@ public class ModulesActivity extends
     }
 
     @Override
-    public void subscribeAvailableModules(Observable<List<ModuleResponseDto>> availableModuleObserver) {
+    public void subscribeActivatedModules(Observable<ActivatedModulesResponse> observable) {
 
-        subAvailableModule = availableModuleObserver.subscribe(new Subscriber<List<ModuleResponseDto>>() {
+        subActivatedModules = observable.subscribe(new Subscriber<ActivatedModulesResponse>() {
 
             @Override
             public void onCompleted() {
-
+                // empty
             }
 
             @Override
             public void onError(Throwable e) {
-                presenter.onAvailableModulesError((RetrofitError) e);
+                if (e instanceof RetrofitError) {
+                    presenter.onActivatedModulesFailed((RetrofitError) e);
+                }
             }
 
             @Override
-            public void onNext(List<ModuleResponseDto> response) {
-                presenter.onAvailableModulesSuccess(response);
-            }
-        });
-    }
-
-    @Override
-    public void subscribeActiveModules(Observable<Set<String>> activeModulesObserver) {
-
-        subActiveModules = activeModulesObserver.subscribe(new Subscriber<Set<String>>() {
-
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                presenter.onActiveModulesFailed((RetrofitError) e);
-            }
-
-            @Override
-            public void onNext(Set<String> response) {
-                presenter.onActiveModulesReceived(response);
+            public void onNext(ActivatedModulesResponse activatedModulesResponse) {
+                presenter.onActivatedModulesReceived(activatedModulesResponse);
             }
         });
     }
@@ -358,8 +338,7 @@ public class ModulesActivity extends
             EventBus.getDefault().unregister(this);
         }
 
-        RxUtils.unsubscribe(subAvailableModule);
-        RxUtils.unsubscribe(subActiveModules);
+        RxUtils.unsubscribe(subActivatedModules);
 
         super.onDestroy();
     }

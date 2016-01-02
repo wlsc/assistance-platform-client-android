@@ -6,6 +6,7 @@ import java.util.Set;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import rx.Observable;
 
@@ -77,7 +78,5 @@ public interface ModulesView extends CommonView {
 
     void showModuleUninstallSuccessful();
 
-    void subscribeAvailableModules(Observable<List<ModuleResponseDto>> listObservable);
-
-    void subscribeActiveModules(Observable<Set<String>> setObservable);
+    void subscribeActivatedModules(Observable<ActivatedModulesResponse> observable);
 }
