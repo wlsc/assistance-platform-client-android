@@ -10,8 +10,6 @@ import java.util.Set;
 
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenter;
@@ -22,6 +20,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.event.UpdateSensorInt
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.DtoType;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApi;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApiManager;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ToggleModuleRequestDto;
@@ -33,6 +32,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observable;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -46,68 +46,24 @@ public class ModulesControllerImpl extends
 
     private final ModulesPresenter presenter;
 
+    private final ModuleApiManager moduleApiManager;
+
     public ModulesControllerImpl(ModulesPresenter presenter) {
         super(presenter.getContext());
         this.presenter = presenter;
+        this.moduleApiManager = ModuleApiManager.getInstance(presenter.getContext());
     }
 
     @Override
-    public void requestAvailableModules(String userToken, final OnAvailableModulesResponseHandler availableModulesHandler) {
+    public Observable<List<ModuleResponseDto>> requestAvailableModules(String userToken) {
 
-        final ModuleApi moduleEndpoint = ApiGenerator
-                .getInstance(presenter.getContext())
-                .create(ModuleApi.class);
-
-        moduleEndpoint.getAvailableModules(userToken,
-                new Callback<List<ModuleResponseDto>>() {
-
-                    /**
-                     * Successful HTTP response.
-                     *
-                     * @param availableModulesList
-                     * @param response
-                     */
-                    @Override
-                    public void success(final List<ModuleResponseDto> availableModulesList,
-                                        Response response) {
-                        availableModulesHandler.onAvailableModulesSuccess(availableModulesList,
-                                response);
-                    }
-
-                    /**
-                     * Unsuccessful HTTP response due to network failure, non-2XX status code, or unexpected
-                     * exception.
-                     *
-                     * @param error
-                     */
-                    @Override
-                    public void failure(RetrofitError error) {
-                        availableModulesHandler.onAvailableModulesError(error);
-                    }
-                });
+        return moduleApiManager.getAvailableModules(userToken);
     }
 
     @Override
-    public void requestActiveModules(final String userToken,
-                                     final OnActiveModulesResponseHandler handler) {
+    public Observable<Set<String>> requestActiveModules(final String userToken) {
 
-        final ModuleApi moduleEndpoint = ApiGenerator
-                .getInstance(presenter.getContext())
-                .create(ModuleApi.class);
-
-        moduleEndpoint.getActiveModules(userToken,
-                new Callback<Set<String>>() {
-
-                    @Override
-                    public void success(Set<String> activeModules, Response response) {
-                        handler.onActiveModulesReceived(activeModules, response);
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        handler.onActiveModulesFailed(error);
-                    }
-                });
+        return moduleApiManager.getActiveModulesRequest(userToken);
     }
 
     @Override

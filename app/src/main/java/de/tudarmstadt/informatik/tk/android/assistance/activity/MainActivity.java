@@ -2,7 +2,6 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,6 +17,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.NewsAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenter;
@@ -28,6 +28,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.MainView;
+import retrofit.RetrofitError;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
 
 /**
  * Module information dashboard
@@ -36,7 +40,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.view.MainView;
  * @date 28.06.2015
  */
 public class MainActivity extends
-        AppCompatActivity implements
+        BaseActivity implements
         MainView {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -48,6 +52,8 @@ public class MainActivity extends
 
     @Bind(R.id.assistance_list)
     protected RecyclerView mRecyclerView;
+
+    private Subscription subActiveModules;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +123,28 @@ public class MainActivity extends
     }
 
     @Override
+    public void subscribeActiveModules(Observable<Set<String>> observable) {
+
+        subActiveModules = observable.subscribe(new Subscriber<Set<String>>() {
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                presenter.onActiveModulesFailed((RetrofitError) e);
+            }
+
+            @Override
+            public void onNext(Set<String> response) {
+                presenter.onActiveModulesReceived(response);
+            }
+        });
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.news_menu, menu);
@@ -138,9 +166,28 @@ public class MainActivity extends
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy -> unbound resources");
         ButterKnife.unbind(this);
+
+        if (subActiveModules != null) {
+            subActiveModules.unsubscribe();
+        }
+
         super.onDestroy();
+    }
+
+    @Override
+    protected void subscribeRequests() {
+
+    }
+
+    @Override
+    protected void unsubscribeRequests() {
+
+    }
+
+    @Override
+    protected void recreateRequests() {
+
     }
 
     @Override

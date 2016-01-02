@@ -8,7 +8,6 @@ import java.util.Locale;
 import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleFeedbackResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
@@ -19,6 +18,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApi;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApiManager;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.GcmUtils;
@@ -28,6 +28,7 @@ import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.Cli
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observable;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -41,9 +42,12 @@ public class MainControllerImpl extends
 
     private final MainPresenter presenter;
 
+    private final ModuleApiManager moduleApiManager;
+
     public MainControllerImpl(MainPresenter presenter) {
         super(presenter.getContext());
         this.presenter = presenter;
+        this.moduleApiManager = ModuleApiManager.getInstance(presenter.getContext());
     }
 
     @Override
@@ -76,28 +80,9 @@ public class MainControllerImpl extends
     }
 
     @Override
-    public void requestActiveModules(final String userToken,
-                                     final OnActiveModulesResponseHandler handler) {
+    public Observable<Set<String>> requestActiveModules(final String userToken) {
 
-        final ModuleApi moduleEndpoint = ApiGenerator
-                .getInstance(presenter.getContext())
-                .create(ModuleApi.class);
-
-        moduleEndpoint.getActiveModules(userToken,
-                new Callback<Set<String>>() {
-
-                    @Override
-                    public void success(Set<String> activeModules,
-                                        Response response) {
-
-                        handler.onActiveModulesReceived(activeModules, response);
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        handler.onActiveModulesFailed(error);
-                    }
-                });
+        return moduleApiManager.getActiveModulesRequest(userToken);
     }
 
     @Override

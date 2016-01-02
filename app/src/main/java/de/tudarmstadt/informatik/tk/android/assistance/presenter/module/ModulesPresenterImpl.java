@@ -17,8 +17,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.controller.module.Modules
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationErrorEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallSuccessfulEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
@@ -47,8 +45,6 @@ import retrofit.client.Response;
 public class ModulesPresenterImpl extends
         CommonPresenterImpl implements
         ModulesPresenter,
-        OnAvailableModulesResponseHandler,
-        OnActiveModulesResponseHandler,
         OnModuleActivatedResponseHandler,
         OnModuleDeactivatedResponseHandler {
 
@@ -134,11 +130,11 @@ public class ModulesPresenterImpl extends
         final String userToken = PreferenceUtils.getUserToken(getContext());
 
         // call api service
-        controller.requestAvailableModules(userToken, this);
+        view.subscribeAvailableModules(controller.requestAvailableModules(userToken));
     }
 
     @Override
-    public void onAvailableModulesSuccess(List<ModuleResponseDto> apiResponse, final Response response) {
+    public void onAvailableModulesSuccess(List<ModuleResponseDto> apiResponse) {
 
         if (apiResponse == null || apiResponse.isEmpty()) {
 
@@ -173,7 +169,7 @@ public class ModulesPresenterImpl extends
             final String userToken = PreferenceUtils.getUserToken(getContext());
 
             // get list of already activated modules
-            controller.requestActiveModules(userToken, this);
+            view.subscribeActiveModules(controller.requestActiveModules(userToken));
         }
     }
 
@@ -198,7 +194,7 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onActiveModulesReceived(Set<String> activeModules, Response response) {
+    public void onActiveModulesReceived(Set<String> activeModules) {
 
         view.setSwipeRefreshing(false);
 

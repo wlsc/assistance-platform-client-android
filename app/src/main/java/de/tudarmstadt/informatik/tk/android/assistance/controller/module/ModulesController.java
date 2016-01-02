@@ -4,14 +4,13 @@ import java.util.List;
 import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonController;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnAvailableModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ToggleModuleRequestDto;
+import rx.Observable;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -22,16 +21,14 @@ public interface ModulesController extends CommonController {
     /**
      * Request available modules from service
      */
-    void requestAvailableModules(String userToken, OnAvailableModulesResponseHandler availableModulesHandler);
+    Observable<List<ModuleResponseDto>> requestAvailableModules(String userToken);
 
     /**
      * Request for active modules
      *
      * @param userToken
-     * @param handler
      */
-    void requestActiveModules(String userToken,
-                              OnActiveModulesResponseHandler handler);
+    Observable<Set<String>> requestActiveModules(String userToken);
 
     /**
      * Check permissions is still granted to modules

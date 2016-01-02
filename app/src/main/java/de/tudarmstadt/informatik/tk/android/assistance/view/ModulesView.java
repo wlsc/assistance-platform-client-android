@@ -3,10 +3,11 @@ package de.tudarmstadt.informatik.tk.android.assistance.view;
 import java.util.List;
 import java.util.Set;
 
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
+import rx.Observable;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -75,4 +76,8 @@ public interface ModulesView extends CommonView {
     void showUndoAction();
 
     void showModuleUninstallSuccessful();
+
+    void subscribeAvailableModules(Observable<List<ModuleResponseDto>> listObservable);
+
+    void subscribeActiveModules(Observable<Set<String>> setObservable);
 }

@@ -55,6 +55,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
+import retrofit.RetrofitError;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
 
 /**
  * Shows a list of available assistance modules
@@ -83,6 +87,9 @@ public class ModulesActivity extends
     private TextView permissionsEmptyRequired;
     private TextView permissionsEmptyOptional;
     private TextView noData;
+
+    private Subscription subAvailableModule;
+    private Subscription subActiveModules;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -299,11 +306,63 @@ public class ModulesActivity extends
     }
 
     @Override
+    public void subscribeAvailableModules(Observable<List<ModuleResponseDto>> availableModuleObserver) {
+
+        subAvailableModule = availableModuleObserver.subscribe(new Subscriber<List<ModuleResponseDto>>() {
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                presenter.onAvailableModulesError((RetrofitError) e);
+            }
+
+            @Override
+            public void onNext(List<ModuleResponseDto> response) {
+                presenter.onAvailableModulesSuccess(response);
+            }
+        });
+    }
+
+    @Override
+    public void subscribeActiveModules(Observable<Set<String>> activeModulesObserver) {
+
+        subActiveModules = activeModulesObserver.subscribe(new Subscriber<Set<String>>() {
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                presenter.onActiveModulesFailed((RetrofitError) e);
+            }
+
+            @Override
+            public void onNext(Set<String> response) {
+                presenter.onActiveModulesReceived(response);
+            }
+        });
+    }
+
+    @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
 
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
+        }
+
+        if (subAvailableModule != null) {
+            subAvailableModule.unsubscribe();
+        }
+
+        if (subActiveModules != null) {
+            subActiveModules.unsubscribe();
         }
 
         super.onDestroy();

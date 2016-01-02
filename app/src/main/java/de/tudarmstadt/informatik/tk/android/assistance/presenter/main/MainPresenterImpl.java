@@ -8,7 +8,6 @@ import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainController;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainControllerImpl;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnActiveModulesResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleFeedbackResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
@@ -35,7 +34,6 @@ public class MainPresenterImpl extends
         CommonPresenterImpl implements
         MainPresenter,
         OnGooglePlayServicesAvailable,
-        OnActiveModulesResponseHandler,
         OnResponseHandler<ProfileResponseDto>,
         OnModuleFeedbackResponseHandler {
 
@@ -102,7 +100,7 @@ public class MainPresenterImpl extends
 
             stopHarvester();
 
-            controller.requestActiveModules(userToken, this);
+            view.subscribeActiveModules(controller.requestActiveModules(userToken));
 
         } else {
 
@@ -204,7 +202,7 @@ public class MainPresenterImpl extends
     }
 
     @Override
-    public void onActiveModulesReceived(Set<String> activeModules, Response response) {
+    public void onActiveModulesReceived(Set<String> activeModules) {
 
         if (activeModules != null && !activeModules.isEmpty()) {
 

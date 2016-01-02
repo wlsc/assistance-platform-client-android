@@ -1,9 +1,11 @@
 package de.tudarmstadt.informatik.tk.android.assistance.view;
 
 import java.util.List;
+import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
+import rx.Observable;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -26,4 +28,6 @@ public interface MainView extends CommonView {
     void showGooglePlayServicesImportantView();
 
     void showModulesList();
+
+    void subscribeActiveModules(Observable<Set<String>> setObservable);
 }
