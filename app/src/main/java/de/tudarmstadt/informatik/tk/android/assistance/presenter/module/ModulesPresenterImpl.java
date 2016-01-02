@@ -94,35 +94,35 @@ public class ModulesPresenterImpl extends
             return;
         }
 
-        final List<DbModule> installedModules = user.getDbModuleList();
+//        final List<DbModule> installedModules = user.getDbModuleList();
 
         // no modules was found -> request from server
-        if (installedModules.isEmpty()) {
-            Log.d(TAG, "Module list not found in db. Requesting from server...");
+//        if (installedModules.isEmpty()) {
+//            Log.d(TAG, "Module list not found in db. Requesting from server...");
 
-            requestAvailableModules();
+        requestAvailableModules();
 
-        } else {
-            Log.d(TAG, "Installed modules found in the db. Showing them...");
-
-            availableModuleResponseMapping = new HashMap<>();
-
-            for (DbModule module : installedModules) {
-
-                availableModuleResponseMapping.put(
-                        module.getPackageName(),
-                        ConverterUtils.convertModule(module));
-            }
-
-            view.setModuleList(installedModules);
-
-            Set<String> permsToAsk = controller.getGrantedPermissions();
-
-            // ask if there is something to ask
-            if (!permsToAsk.isEmpty()) {
-                view.askPermissions(permsToAsk);
-            }
-        }
+//        } else {
+//            Log.d(TAG, "Installed modules found in the db. Showing them...");
+//
+//            availableModuleResponseMapping = new HashMap<>();
+//
+//            for (DbModule module : installedModules) {
+//
+//                availableModuleResponseMapping.put(
+//                        module.getPackageName(),
+//                        ConverterUtils.convertModule(module));
+//            }
+//
+//            view.setModuleList(installedModules);
+//
+//            Set<String> permsToAsk = controller.getGrantedPermissions();
+//
+//            // ask if there is something to ask
+//            if (!permsToAsk.isEmpty()) {
+//                view.askPermissions(permsToAsk);
+//            }
+//        }
     }
 
     @Override
