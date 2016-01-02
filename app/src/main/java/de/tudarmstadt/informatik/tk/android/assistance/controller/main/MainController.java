@@ -12,6 +12,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import rx.Observable;
 
 /**
@@ -44,4 +45,6 @@ public interface MainController extends CommonController {
     void persistLogin(ProfileResponseDto apiResponse);
 
     void initUUID(DbUser userId);
+
+    Observable<ActivatedModulesResponse> requestActivatedModules(String userToken);
 }

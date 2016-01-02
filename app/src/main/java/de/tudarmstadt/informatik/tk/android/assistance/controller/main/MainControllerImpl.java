@@ -17,6 +17,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresen
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApi;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApiManager;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
@@ -194,5 +195,10 @@ public class MainControllerImpl extends
             // update db entry
             daoProvider.getUserDao().update(user);
         }
+    }
+
+    @Override
+    public Observable<ActivatedModulesResponse> requestActivatedModules(String userToken) {
+        return moduleApiManager.getActivatedModules(userToken);
     }
 }

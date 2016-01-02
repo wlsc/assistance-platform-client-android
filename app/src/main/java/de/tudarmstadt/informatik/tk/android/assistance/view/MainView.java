@@ -5,6 +5,7 @@ import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import rx.Observable;
 
 /**
@@ -29,5 +30,7 @@ public interface MainView extends CommonView {
 
     void showModulesList();
 
-    void subscribeActiveModules(Observable<Set<String>> setObservable);
+    void subscribeActiveAvailableModules(Observable<ActivatedModulesResponse> observable);
+
+    void showPermissionsAreCrucialDialog(Set<String> declinedPermissions);
 }

@@ -23,7 +23,9 @@ import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.service.GcmRegistrationIntentService;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
@@ -53,7 +55,7 @@ public class MainActivity extends
     @Bind(R.id.assistance_list)
     protected RecyclerView mRecyclerView;
 
-    private Subscription subActiveModules;
+    private Subscription subActivatedModules;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,9 +125,9 @@ public class MainActivity extends
     }
 
     @Override
-    public void subscribeActiveModules(Observable<Set<String>> observable) {
+    public void subscribeActiveAvailableModules(Observable<ActivatedModulesResponse> observable) {
 
-        subActiveModules = observable.subscribe(new Subscriber<Set<String>>() {
+        subActivatedModules = observable.subscribe(new Subscriber<ActivatedModulesResponse>() {
 
             @Override
             public void onCompleted() {
@@ -134,14 +136,22 @@ public class MainActivity extends
 
             @Override
             public void onError(Throwable e) {
-                presenter.onActiveModulesFailed((RetrofitError) e);
+                if (e instanceof RetrofitError) {
+                    presenter.onActivatedModulesFailed((RetrofitError) e);
+                }
             }
 
             @Override
-            public void onNext(Set<String> response) {
-                presenter.onActiveModulesReceived(response);
+            public void onNext(ActivatedModulesResponse activatedModulesResponse) {
+                presenter.onActivatedModulesReceived(activatedModulesResponse);
             }
         });
+    }
+
+    @Override
+    public void showPermissionsAreCrucialDialog(Set<String> declinedPermissions) {
+
+        Toaster.showLong(getApplicationContext(), R.string.permission_is_crucial);
     }
 
     @Override
@@ -167,11 +177,7 @@ public class MainActivity extends
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
-
-        if (subActiveModules != null) {
-            subActiveModules.unsubscribe();
-        }
-
+        RxUtils.unsubscribe(subActivatedModules);
         super.onDestroy();
     }
 
@@ -253,7 +259,12 @@ public class MainActivity extends
 
     @Override
     public void askPermissions(Set<String> permsToAsk) {
-        // empty
+
+        if (permsToAsk.isEmpty()) {
+            return;
+        }
+
+        requestPermissions(permsToAsk.toArray(new String[permsToAsk.size()]), 88);
     }
 
     @Override
@@ -267,5 +278,10 @@ public class MainActivity extends
 
         Intent intent = new Intent(this, AccessibilityTutorialActivity.class);
         startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        presenter.presentRequestPermissionResult(requestCode, permissions, grantResults);
     }
 }

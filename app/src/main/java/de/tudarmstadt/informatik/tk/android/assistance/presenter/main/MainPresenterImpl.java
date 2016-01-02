@@ -2,8 +2,11 @@ package de.tudarmstadt.informatik.tk.android.assistance.presenter.main;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainController;
@@ -16,7 +19,12 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenter
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
@@ -100,7 +108,7 @@ public class MainPresenterImpl extends
 
             stopHarvester();
 
-            view.subscribeActiveModules(controller.requestActiveModules(userToken));
+            view.subscribeActiveAvailableModules(controller.requestActivatedModules(userToken));
 
         } else {
 
@@ -202,23 +210,107 @@ public class MainPresenterImpl extends
     }
 
     @Override
-    public void onActiveModulesReceived(Set<String> activeModules) {
+    public void onActivatedModulesReceived(ActivatedModulesResponse activatedModulesResponse) {
 
-        if (activeModules != null && !activeModules.isEmpty()) {
+        Log.d(TAG, "Received on activated modules");
 
-            Log.d(TAG, "Modules activated: " + activeModules.toString());
-
-            PreferenceUtils.setPreference(getContext(),
-                    Constants.PREF_USER_ACTIVE_MODULES,
-                    activeModules);
+        if (activatedModulesResponse == null) {
+            Log.d(TAG, "ActivatedModulesResponse was null");
+            return;
         }
 
-        view.showModulesList();
+        Set<String> activeModules = activatedModulesResponse.getActiveModules();
+
+        if (activeModules == null || activeModules.isEmpty()) {
+            Log.d(TAG, "No active modules found");
+            view.showModulesList();
+            return;
+        }
+
+        List<ModuleResponseDto> availableModules = activatedModulesResponse.getAvailableModules();
+
+        if (availableModules == null || availableModules.isEmpty()) {
+            Log.d(TAG, "availableModules is null or empty");
+            return;
+        }
+
+        PermissionUtils permissionUtils = PermissionUtils.getInstance(getContext());
+        Map<String, String[]> dangerousGroupPerms = permissionUtils.getDangerousPermissionsToDtoMapping();
+        Set<String> permissionsToAsk = new HashSet<>();
+
+        for (ModuleResponseDto moduleResponseDto : availableModules) {
+
+            if (activeModules.contains(moduleResponseDto.getPackageName())) {
+
+                List<ModuleCapabilityResponseDto> reqCaps = moduleResponseDto.getSensorsRequired();
+
+                if (reqCaps == null || reqCaps.isEmpty()) {
+                    continue;
+                }
+
+                for (ModuleCapabilityResponseDto capDto : reqCaps) {
+
+                    if (capDto == null || capDto.getType() == null) {
+                        continue;
+                    }
+
+                    String[] groupPerm = dangerousGroupPerms.get(capDto.getType());
+
+                    if (groupPerm == null || groupPerm.length == 0) {
+                        continue;
+                    }
+
+                    for (String perm : groupPerm) {
+
+                        if (!permissionUtils.isGranted(perm)) {
+                            permissionsToAsk.add(perm);
+                        }
+                    }
+                }
+            }
+        }
+
+        view.askPermissions(permissionsToAsk);
     }
 
     @Override
-    public void onActiveModulesFailed(RetrofitError error) {
+    public void onActivatedModulesFailed(RetrofitError error) {
         doDefaultErrorProcessing(error);
+    }
+
+    @Override
+    public void presentRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        switch (requestCode) {
+            case 88:
+
+                Log.d(TAG, "Back from permissions request");
+
+                Set<String> declinedPermissions = new HashSet<>();
+
+                for (int i = 0, grantResultsLength = grantResults.length; i < grantResultsLength; i++) {
+
+                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                        // permission denied, it should be asked again
+
+                        declinedPermissions.add(permissions[i]);
+                    }
+                }
+
+                // ask user about permissions again
+                if (declinedPermissions.size() > 0) {
+
+                    view.showPermissionsAreCrucialDialog(declinedPermissions);
+
+                } else {
+
+                    HarvesterServiceProvider.getInstance(getContext()).startSensingService();
+                }
+
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

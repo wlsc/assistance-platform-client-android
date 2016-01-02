@@ -51,6 +51,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.Modu
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.ModuleProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
@@ -357,13 +358,8 @@ public class ModulesActivity extends
             EventBus.getDefault().unregister(this);
         }
 
-        if (subAvailableModule != null) {
-            subAvailableModule.unsubscribe();
-        }
-
-        if (subActiveModules != null) {
-            subActiveModules.unsubscribe();
-        }
+        RxUtils.unsubscribe(subAvailableModule);
+        RxUtils.unsubscribe(subActiveModules);
 
         super.onDestroy();
     }

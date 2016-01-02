@@ -8,6 +8,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivated
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ToggleModuleRequestDto;
 import rx.Observable;
@@ -29,6 +30,14 @@ public interface ModulesController extends CommonController {
      * @param userToken
      */
     Observable<Set<String>> requestActiveModules(String userToken);
+
+    /**
+     * Request for combined active modules and available modules
+     *
+     * @param userToken
+     * @return
+     */
+    Observable<ActivatedModulesResponse> requestActivatedModules(String userToken);
 
     /**
      * Check permissions is still granted to modules
