@@ -6,6 +6,7 @@ import java.util.Set;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import rx.Observable;
 
 /**
@@ -20,7 +21,7 @@ public interface MainView extends CommonView {
 
     void showNoNews();
 
-    void setNewsItems(List<DbNews> assistanceNews);
+    void setNewsItems(List<ClientFeedbackDto> assistanceNews);
 
     void prepareGCMRegistration();
 

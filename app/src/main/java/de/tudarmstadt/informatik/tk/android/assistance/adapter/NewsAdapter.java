@@ -12,7 +12,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -22,9 +22,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int EMPTY_VIEW_TYPE = 10;
 
-    private List<DbNews> news;
+    private List<ClientFeedbackDto> news;
 
-    public NewsAdapter(List<DbNews> news) {
+    public NewsAdapter(List<ClientFeedbackDto> news) {
 
         if (news == null) {
             this.news = Collections.emptyList();
@@ -60,10 +60,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         if (holder instanceof NewsViewHolder) {
 
-            final DbNews newsCard = getItem(position);
+            final ClientFeedbackDto newsCard = getItem(position);
             final NewsViewHolder viewHolder = (NewsViewHolder) holder;
 
-            viewHolder.mContent.setText(newsCard.getContent());
+            viewHolder.mContent.setText(newsCard.getContent().toString());
         }
     }
 
@@ -73,7 +73,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     @Nullable
-    public DbNews getItem(int position) {
+    public ClientFeedbackDto getItem(int position) {
 
         if (position < 0 || position >= news.size()) {
             return null;
@@ -97,7 +97,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      *
      * @param newList
      */
-    public void swapData(List<DbNews> newList) {
+    public void swapData(List<ClientFeedbackDto> newList) {
 
         if (newList == null) {
             news = Collections.emptyList();

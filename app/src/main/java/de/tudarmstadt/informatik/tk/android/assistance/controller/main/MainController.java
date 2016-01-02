@@ -13,6 +13,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.Pr
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import rx.Observable;
 
 /**
@@ -22,6 +23,10 @@ import rx.Observable;
 public interface MainController extends CommonController {
 
     List<DbNews> getCachedNews(long userId);
+
+    List<ClientFeedbackDto> convertDbEntries(List<DbNews> dbNews);
+
+    List<DbNews> convertDtos(List<ClientFeedbackDto> dbNews);
 
     void registerGCMPush(Activity activity, OnGooglePlayServicesAvailable handler);
 

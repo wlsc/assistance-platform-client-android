@@ -22,7 +22,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.adapter.NewsAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenterImpl;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.RxUtils;
@@ -30,6 +29,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.MainView;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import retrofit.RetrofitError;
 import rx.Observable;
 import rx.Subscriber;
@@ -90,7 +90,7 @@ public class MainActivity extends
     }
 
     @Override
-    public void setNewsItems(List<DbNews> assistanceNews) {
+    public void setNewsItems(List<ClientFeedbackDto> assistanceNews) {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new NewsAdapter(assistanceNews));

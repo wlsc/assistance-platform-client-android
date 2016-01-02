@@ -2,6 +2,8 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.main;
 
 import android.app.Activity;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +22,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerato
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApi;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApiManager;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.dao.news.NewsDao;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.GcmUtils;
@@ -54,6 +57,50 @@ public class MainControllerImpl extends
     @Override
     public List<DbNews> getCachedNews(long userId) {
         return daoProvider.getNewsDao().getAll(userId);
+    }
+
+    @Override
+    public List<ClientFeedbackDto> convertDbEntries(List<DbNews> dbNews) {
+
+        if (dbNews == null) {
+            return Collections.emptyList();
+        }
+
+        List<ClientFeedbackDto> result = new ArrayList<>();
+        NewsDao newsDao = daoProvider.getNewsDao();
+
+        for (DbNews entry : dbNews) {
+
+            if (entry == null) {
+                continue;
+            }
+
+            result.add(newsDao.convert(entry));
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<DbNews> convertDtos(List<ClientFeedbackDto> feedbackDtos) {
+
+        if (feedbackDtos == null) {
+            return Collections.emptyList();
+        }
+
+        List<DbNews> result = new ArrayList<>();
+        NewsDao newsDao = daoProvider.getNewsDao();
+
+        for (ClientFeedbackDto entry : feedbackDtos) {
+
+            if (entry == null) {
+                continue;
+            }
+
+            result.add(newsDao.convert(entry));
+        }
+
+        return result;
     }
 
     @Override

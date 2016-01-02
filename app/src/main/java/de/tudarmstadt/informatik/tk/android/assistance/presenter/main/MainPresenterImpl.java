@@ -95,7 +95,7 @@ public class MainPresenterImpl extends
         if (assistanceNews.isEmpty()) {
             view.showNoNews();
         } else {
-            view.setNewsItems(assistanceNews);
+            view.setNewsItems(controller.convertDbEntries(assistanceNews));
         }
 
         controller.initUUID(user);
@@ -189,8 +189,7 @@ public class MainPresenterImpl extends
         if (clientFeedbackDto.isEmpty()) {
             view.showNoNews();
         } else {
-//            view.
-
+            view.setNewsItems(clientFeedbackDto);
         }
     }
 
