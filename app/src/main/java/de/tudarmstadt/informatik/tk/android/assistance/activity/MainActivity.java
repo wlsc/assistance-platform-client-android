@@ -150,8 +150,8 @@ public class MainActivity extends
 
     @Override
     public void showPermissionsAreCrucialDialog(Set<String> declinedPermissions) {
-
         Toaster.showLong(getApplicationContext(), R.string.permission_is_crucial);
+        Toaster.showLong(getApplicationContext(), R.string.error_modules_were_disabled);
     }
 
     @Override

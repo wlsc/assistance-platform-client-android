@@ -15,7 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.event.CheckModuleCapabilityPermissionEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.CheckIfModuleCapabilityPermissionWasGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleCapabilityHasChangedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
@@ -93,7 +93,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
                     }
 
                     if (isChecked) {
-                        EventBus.getDefault().post(new CheckModuleCapabilityPermissionEvent(capability));
+                        EventBus.getDefault().post(new CheckIfModuleCapabilityPermissionWasGrantedEvent(capability));
                     }
 
                     // change capability state

@@ -28,10 +28,9 @@ public interface ModulesPresenter extends CommonPresenter {
      * Populates and saves available modules
      *
      * @param availableModulesResponse
+     * @param activeModules
      */
-    void processAvailableModules(List<ModuleResponseDto> availableModulesResponse);
-
-    void applyAlreadyActiveModulesFromDb(List<DbModule> modules);
+    void processAvailableModules(List<ModuleResponseDto> availableModulesResponse, Set<String> activeModules);
 
     /**
      * Insert already activated modules earlier
@@ -43,7 +42,7 @@ public interface ModulesPresenter extends CommonPresenter {
     /**
      * Request permissions for installed active modules
      */
-    void requestActiveModulesPermissions();
+    void requestModulesPermissions();
 
     /**
      * Saves information into db / install a module for user
@@ -85,4 +84,6 @@ public interface ModulesPresenter extends CommonPresenter {
     void onActivatedModulesReceived(ActivatedModulesResponse activatedModulesResponse);
 
     void onActivatedModulesFailed(RetrofitError error);
+
+    void refreshModuleList();
 }

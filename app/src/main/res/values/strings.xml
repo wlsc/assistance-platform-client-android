@@ -181,5 +181,6 @@
     <string name="error_that_action_is_prohibited">Error: that action is prohibited!</string>
     <string name="error_select_new_user_photo">Error occurred while selecting user photo!</string>
     <string name="error_module_not_installed">Error: sorry, unable to enable/disable module!</string>
+    <string name="error_modules_were_disabled">Some modules were disabled</string>
 
 </resources>

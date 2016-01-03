@@ -23,6 +23,22 @@ public class CommonControllerImpl implements CommonController {
     }
 
     @Override
+    public List<DbModule> getAllActiveModules(String userToken) {
+
+        if (userToken == null) {
+            return Collections.emptyList();
+        }
+
+        DbUser user = daoProvider.getUserDao().getByToken(userToken);
+
+        if (user == null) {
+            return Collections.emptyList();
+        }
+
+        return daoProvider.getModuleDao().getAllActive(user.getId());
+    }
+
+    @Override
     public List<DbModule> getAllActiveModules(Long userId) {
         return daoProvider.getModuleDao().getAllActive(userId);
     }

@@ -3,10 +3,13 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.main;
 import android.app.Activity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
@@ -15,16 +18,22 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.UserApi;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenter;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApi;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApiManager;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.dao.news.NewsDao;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.GcmUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
@@ -240,5 +249,169 @@ public class MainControllerImpl extends
     @Override
     public Observable<ActivatedModulesResponse> requestActivatedModules(String userToken) {
         return moduleApiManager.getActivatedModules(userToken);
+    }
+
+    @Override
+    public void disableModules(String userToken, Set<String> declinedPermissions) {
+
+        if (declinedPermissions == null || declinedPermissions.isEmpty()) {
+            return;
+        }
+
+        DbUser user = daoProvider.getUserDao().getByToken(userToken);
+
+        if (user == null) {
+            return;
+        }
+
+        List<DbModule> activeModules = daoProvider.getModuleDao().getAllActive(user.getId());
+
+        if (activeModules.isEmpty()) {
+            return;
+        }
+
+        PermissionUtils permissionUtils = PermissionUtils.getInstance(presenter.getContext());
+        Map<String, String[]> dangerousPermissions = permissionUtils.getDangerousPermissionsToDtoMapping();
+
+        for (DbModule activeModule : activeModules) {
+
+            boolean isTimeToBreak = false;
+
+            List<DbModuleCapability> caps = activeModule.getDbModuleCapabilityList();
+
+            if (caps.isEmpty()) {
+                continue;
+            }
+
+            for (DbModuleCapability dbCap : caps) {
+
+                // optional capability -> skip
+                if (!dbCap.getRequired()) {
+                    continue;
+                }
+
+                String[] capPerms = dangerousPermissions.get(dbCap.getType());
+
+                if (capPerms == null || capPerms.length == 0) {
+                    continue;
+                }
+
+                for (String perm : Arrays.asList(capPerms)) {
+
+                    // we have declined permission in required for a module
+                    // disable that module
+                    if (declinedPermissions.contains(perm)) {
+                        activeModule.setActive(false);
+                        isTimeToBreak = true;
+                        break;
+                    }
+                }
+
+                if (isTimeToBreak) {
+                    break;
+                }
+            }
+        }
+
+        // update information about module state
+        daoProvider.getModuleDao().update(activeModules);
+    }
+
+    @Override
+    public void insertActiveModules(List<ModuleResponseDto> modulesToInstall) {
+
+        if (modulesToInstall == null || modulesToInstall.isEmpty()) {
+            return;
+        }
+
+        for (ModuleResponseDto moduleResponseDto : modulesToInstall) {
+            insertModuleResponseWithCapabilities(moduleResponseDto);
+        }
+    }
+
+    @Override
+    public long insertModuleToDb(DbModule module) {
+
+        if (module == null) {
+            return -1l;
+        }
+
+        return daoProvider.getModuleDao().insert(module);
+    }
+
+    @Override
+    public void insertModuleCapabilitiesToDb(List<DbModuleCapability> dbRequiredCaps) {
+        daoProvider.getModuleCapabilityDao().insert(dbRequiredCaps);
+    }
+
+    @Override
+    public boolean insertModuleResponseWithCapabilities(ModuleResponseDto moduleResponse) {
+
+        DbUser user = getUserByEmail(PreferenceUtils.getUserEmail(presenter.getContext()));
+
+        if (user == null) {
+            Log.d(TAG, "User is null");
+            return false;
+        }
+
+        DbModule module = ConverterUtils.convertModule(moduleResponse);
+
+        if (module == null) {
+            Log.d(TAG, "Module is null");
+            return false;
+        }
+
+        module.setActive(true);
+        module.setUserId(user.getId());
+
+        DbModule existingModule = daoProvider.getModuleDao()
+                .getByPackageIdUserId(module.getPackageName(), module.getUserId());
+
+        long installId;
+
+        if (existingModule == null) {
+
+            installId = insertModuleToDb(module);
+
+            if (installId == -1) {
+                return false;
+            }
+
+            List<ModuleCapabilityResponseDto> requiredCaps = moduleResponse.getSensorsRequired();
+            List<ModuleCapabilityResponseDto> optionalCaps = moduleResponse.getSensorsOptional();
+
+            List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(requiredCaps.size());
+            List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(optionalCaps.size());
+
+            for (ModuleCapabilityResponseDto response : requiredCaps) {
+
+                final DbModuleCapability cap = ConverterUtils.convertModuleCapability(response);
+
+                if (cap == null) {
+                    continue;
+                }
+
+                cap.setModuleId(installId);
+                cap.setRequired(true);
+                cap.setActive(true);
+
+                dbRequiredCaps.add(cap);
+            }
+
+//        for (ModuleCapabilityResponseDto response : optionalCaps) {
+//
+//            final DbModuleCapability cap = ConverterUtils.convertModuleCapability(response);
+//
+//            cap.setModuleId(installId);
+//            cap.setActive(true);
+//
+//            dbOptionalCaps.add(cap);
+//        }
+
+            insertModuleCapabilitiesToDb(dbRequiredCaps);
+//        insertModuleCapabilitiesToDb(dbOptionalCaps);
+        }
+
+        return true;
     }
 }

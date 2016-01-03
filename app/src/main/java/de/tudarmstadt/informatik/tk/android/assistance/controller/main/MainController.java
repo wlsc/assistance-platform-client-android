@@ -3,15 +3,19 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.main;
 import android.app.Activity;
 
 import java.util.List;
+import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleFeedbackResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.ProfileResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import rx.Observable;
 
@@ -46,4 +50,14 @@ public interface MainController extends CommonController {
     void initUUID(DbUser userId);
 
     Observable<ActivatedModulesResponse> requestActivatedModules(String userToken);
+
+    void disableModules(String userToken, Set<String> declinedPermissions);
+
+    void insertActiveModules(List<ModuleResponseDto> modulesToInstall);
+
+    long insertModuleToDb(DbModule module);
+
+    void insertModuleCapabilitiesToDb(List<DbModuleCapability> dbRequiredCaps);
+
+    boolean insertModuleResponseWithCapabilities(ModuleResponseDto moduleResponseDto);
 }

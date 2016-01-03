@@ -12,6 +12,8 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
  */
 public interface CommonController {
 
+    List<DbModule> getAllActiveModules(String userToken);
+
     List<DbModule> getAllActiveModules(Long userId);
 
     List<DbModuleCapability> getAllActiveModuleCapabilities(Long moduleId);

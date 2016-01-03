@@ -115,6 +115,15 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
     }
 
     /**
+     * Gives back module items
+     *
+     * @return
+     */
+    public List<DbModule> getItems() {
+        return modules;
+    }
+
+    /**
      * Returns item on given position
      *
      * @param position

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +17,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.controller.module.Modules
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationErrorEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallSuccessfulEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModulesListRefreshEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
@@ -32,7 +32,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterSer
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
@@ -55,9 +54,6 @@ public class ModulesPresenterImpl extends
     private ModulesController controller;
 
     private final PermissionUtils permissionUtils;
-
-    private List<ModuleResponseDto> availableModules;
-    private Set<String> mActiveModules;
 
     private Map<String, ModuleResponseDto> availableModuleResponseMapping;
 
@@ -134,21 +130,9 @@ public class ModulesPresenterImpl extends
         view.subscribeActivatedModules(controller.requestActivatedModules(userToken));
     }
 
-    private void doMappingAvailableModuleResponse(List<ModuleResponseDto> apiResponse) {
-
-        if (availableModuleResponseMapping == null) {
-            availableModuleResponseMapping = new HashMap<>();
-        } else {
-            availableModuleResponseMapping.clear();
-        }
-
-        for (ModuleResponseDto resp : apiResponse) {
-            availableModuleResponseMapping.put(resp.getPackageName(), resp);
-        }
-    }
-
     @Override
-    public void processAvailableModules(List<ModuleResponseDto> availableModulesResponse) {
+    public void processAvailableModules(List<ModuleResponseDto> availableModulesResponse,
+                                        Set<String> activeModules) {
 
         List<DbModule> convertedModules = new ArrayList<>();
 
@@ -156,59 +140,48 @@ public class ModulesPresenterImpl extends
             convertedModules.add(ConverterUtils.convertModule(response));
         }
 
-        if (mActiveModules != null && !mActiveModules.isEmpty()) {
-
-            long userId = PreferenceUtils.getCurrentUserId(getContext());
-
-            for (DbModule module : convertedModules) {
-
-                if (mActiveModules.contains(module.getPackageName())) {
-
-                    module.setActive(true);
-                    module.setUserId(userId);
-                }
-            }
-        }
-
-        applyAlreadyActiveModulesFromDb(convertedModules);
-
-        // insert only active modules into db
-        insertActiveModulesIntoDb(convertedModules);
-
-        // request permissions to inserted modules
-        requestActiveModulesPermissions();
-
         if (view.getDisplayedModulesCount() > 0) {
-            // we have entries already -> just swap them with new ones
+            // list has items -> just swap them with new ones
             view.swapModuleData(convertedModules);
-
         } else {
             // create new recycler view adapter
             view.setModuleList(convertedModules);
         }
-    }
-
-    @Override
-    public void applyAlreadyActiveModulesFromDb(List<DbModule> modules) {
-
-        long userId = PreferenceUtils.getCurrentUserId(getContext());
-
-        List<DbModule> activeModules = controller.getAllActiveModules(userId);
 
         if (activeModules != null && !activeModules.isEmpty()) {
 
-            List<String> allActiveModulePackageIds = new ArrayList<>();
+            Log.d(TAG, "Active modules: " + activeModules.toString());
 
-            for (DbModule activeModule : activeModules) {
-                allActiveModulePackageIds.add(activeModule.getPackageName());
-            }
+            long userId = PreferenceUtils.getCurrentUserId(getContext());
 
-            for (DbModule dbModule : modules) {
-                if (allActiveModulePackageIds.contains(dbModule.getPackageName())) {
-                    dbModule.setActive(true);
+            for (int i = 0, convertedModulesSize = convertedModules.size(); i < convertedModulesSize; i++) {
+
+                DbModule module = convertedModules.get(i);
+
+                if (activeModules.contains(module.getPackageName())) {
+
+                    module.setActive(true);
+                    module.setUserId(userId);
+//                    List<ModuleCapabilityResponseDto> reqPerms = availableModulesResponse.get(i).getSensorsRequired();
                 }
             }
+
+            // insert only active modules into db
+            insertActiveModulesIntoDb(convertedModules);
+
+            for (DbModule module : convertedModules) {
+
+                if (module.getActive()) {
+                    // change layout after module insertion
+                    view.changeModuleLayout(module.getPackageName(), true);
+                }
+            }
+        } else {
+            Log.d(TAG, "No active modules");
         }
+
+        // request permissions to inserted modules
+        requestModulesPermissions();
     }
 
     @Override
@@ -221,15 +194,12 @@ public class ModulesPresenterImpl extends
                 // insert active module into db
                 controller.insertModuleResponseWithCapabilities(availableModuleResponseMapping
                         .get(module.getPackageName()));
-
-                // change layout after module insertion
-                view.changeModuleLayout(module.getPackageName(), true);
             }
         }
     }
 
     @Override
-    public void requestActiveModulesPermissions() {
+    public void requestModulesPermissions() {
 
         long userId = PreferenceUtils.getCurrentUserId(getContext());
 
@@ -387,23 +357,18 @@ public class ModulesPresenterImpl extends
 
                     if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                         // permission denied, it should be asked again
-
                         declinedPermissions.add(permissions[i]);
                     }
                 }
 
                 // ask user about permissions again
                 if (declinedPermissions.size() > 0) {
-
-                    view.changeModuleLayout(selectedModuleId, false);
                     view.showPermissionsAreCrucialDialog(declinedPermissions);
-
                 } else {
-
                     handleModuleActivationRequest(getSelectedModuleResponse());
-
-                    HarvesterServiceProvider.getInstance(getContext()).startSensingService();
                 }
+
+                EventBus.getDefault().post(new ModulesListRefreshEvent());
 
                 break;
             default:
@@ -426,8 +391,6 @@ public class ModulesPresenterImpl extends
 
     @Override
     public void presentSuccessfulInstallation() {
-
-        String userToken = PreferenceProvider.getInstance(getContext()).getUserToken();
 
         controller.updateSensorTimingsFromDb();
 
@@ -561,12 +524,7 @@ public class ModulesPresenterImpl extends
         view.setSwipeRefreshing(false);
 
         if (activatedModulesResponse == null) {
-
-            availableModules = Collections.emptyList();
-            mActiveModules = Collections.emptySet();
-
             view.setNoModulesView();
-
         } else {
 
             List<ModuleResponseDto> modulesResponse = activatedModulesResponse.getAvailableModules();
@@ -577,33 +535,19 @@ public class ModulesPresenterImpl extends
             // filter modules that have not runnable sensors in their required capabilities
             modulesResponse = controller.filterAvailableModulesList(modulesResponse);
 
-            availableModules = new ArrayList<>(modulesResponse.size());
-            availableModules.addAll(modulesResponse);
-
-            doMappingAvailableModuleResponse(modulesResponse);
-
-            if (ServiceUtils.hasUserModules(getContext())) {
-
-                mActiveModules = Collections.emptySet();
-                view.setSwipeRefreshing(false);
-
-                processAvailableModules(modulesResponse);
-
-                return;
-            }
-
-            Set<String> activeModules = activatedModulesResponse.getActiveModules();
-
-            if (activeModules != null && !activeModules.isEmpty()) {
-
-                Log.d(TAG, activeModules.toString());
-                mActiveModules = activeModules;
-
+            // mapping to available modules response
+            if (availableModuleResponseMapping == null) {
+                availableModuleResponseMapping = new HashMap<>();
             } else {
-                mActiveModules = Collections.emptySet();
+                availableModuleResponseMapping.clear();
             }
 
-            processAvailableModules(availableModules);
+            for (ModuleResponseDto resp : modulesResponse) {
+                availableModuleResponseMapping.put(resp.getPackageName(), resp);
+            }
+            // -------- mapping finished
+
+            processAvailableModules(modulesResponse, activatedModulesResponse.getActiveModules());
         }
     }
 
@@ -611,8 +555,30 @@ public class ModulesPresenterImpl extends
     public void onActivatedModulesFailed(RetrofitError error) {
 
         doDefaultErrorProcessing(error);
-        mActiveModules = Collections.emptySet();
         view.setErrorView();
+    }
+
+    @Override
+    public void refreshModuleList() {
+
+        String userToken = PreferenceProvider.getInstance(getContext()).getUserToken();
+        List<DbModule> allActiveModules = controller.getAllActiveModules(userToken);
+        List<DbModule> displayedModules = view.getDisplayedModules();
+        List<DbModule> newDisplayedList = new ArrayList<>();
+
+        for (DbModule activeModule : allActiveModules) {
+            for (DbModule displayedModule : displayedModules) {
+                if (activeModule.getPackageName().equals(displayedModule.getPackageName())) {
+                    displayedModule.setActive(true);
+                }
+
+                if (!newDisplayedList.contains(displayedModule)) {
+                    newDisplayedList.add(displayedModule);
+                }
+            }
+        }
+
+        view.swapModuleData(newDisplayedList);
     }
 
     @Override
@@ -650,6 +616,7 @@ public class ModulesPresenterImpl extends
             } else {
                 EventBus.getDefault().post(new ModuleInstallSuccessfulEvent(
                         moduleResponse.getPackageName()));
+                EventBus.getDefault().post(new ModulesListRefreshEvent());
             }
 
         } else {
@@ -691,6 +658,7 @@ public class ModulesPresenterImpl extends
                 view.changeModuleLayout(selectedModuleId, false);
 
                 EventBus.getDefault().post(new ModuleUninstallSuccessfulEvent(selectedModuleId));
+                EventBus.getDefault().post(new ModulesListRefreshEvent());
 
 //            view.showUndoAction(module);
             }

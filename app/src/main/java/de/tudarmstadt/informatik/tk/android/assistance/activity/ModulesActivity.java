@@ -33,12 +33,13 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.ModulesAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.PermissionAdapter;
-import de.tudarmstadt.informatik.tk.android.assistance.event.CheckModuleCapabilityPermissionEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.CheckIfModuleCapabilityPermissionWasGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallSuccessfulEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModulesListRefreshEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleCapabilityHasChangedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleStateChangeEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
@@ -138,6 +139,17 @@ public class ModulesActivity extends
     }
 
     /**
+     * When some1 needs to refresh the modules list
+     *
+     * @param event
+     */
+    public void onEvent(ModulesListRefreshEvent event) {
+        Log.d(TAG, "ModulesListRefreshEvent is arrived");
+
+        presenter.refreshModuleList();
+    }
+
+    /**
      * On module install event
      *
      * @param event
@@ -232,8 +244,8 @@ public class ModulesActivity extends
      *
      * @param event
      */
-    public void onEvent(CheckModuleCapabilityPermissionEvent event) {
-        Log.d(TAG, "CheckModuleCapabilityPermissionEvent was invoked");
+    public void onEvent(CheckIfModuleCapabilityPermissionWasGrantedEvent event) {
+        Log.d(TAG, "CheckIfModuleCapabilityPermissionWasGrantedEvent was invoked");
         Log.d(TAG, "Capability: " + event.getCapability().toString());
 
         ModuleProvider.getInstance(getApplicationContext())
@@ -491,6 +503,7 @@ public class ModulesActivity extends
                     permsToAsk.toArray(new String[permsToAsk.size()]),
                     Constants.PERM_MODULE_INSTALL);
         } else {
+            EventBus.getDefault().post(new ModulesListRefreshEvent());
             HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
         }
     }
@@ -508,6 +521,7 @@ public class ModulesActivity extends
 
     @Override
     public void setNoModulesView() {
+
         mAvailableModulesRecyclerView.setAdapter(new ModulesAdapter(Collections.EMPTY_LIST));
         mAvailableModulesRecyclerView.setVisibility(View.GONE);
         noData.setVisibility(View.VISIBLE);
@@ -521,9 +535,24 @@ public class ModulesActivity extends
 
     @Override
     public void setModuleList(List<DbModule> installedModules) {
+
+        Log.d(TAG, "Set new module data list...");
+
         mAvailableModulesRecyclerView.setAdapter(new ModulesAdapter(installedModules));
         mAvailableModulesRecyclerView.setVisibility(View.VISIBLE);
         noData.setVisibility(View.GONE);
+    }
+
+    @Override
+    public List<DbModule> getDisplayedModules() {
+
+        ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView.getAdapter();
+
+        if (adapter == null) {
+            return Collections.emptyList();
+        }
+
+        return adapter.getItems();
     }
 
     @Override
@@ -537,14 +566,21 @@ public class ModulesActivity extends
     @Override
     public void swapModuleData(List<DbModule> newModules) {
 
+        Log.d(TAG, "Swapping module data list...");
+
         ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView.getAdapter();
 
         if (adapter != null) {
             adapter.swapData(newModules);
         }
 
-        mAvailableModulesRecyclerView.setVisibility(View.VISIBLE);
-        noData.setVisibility(View.GONE);
+        if (newModules.isEmpty()) {
+            mAvailableModulesRecyclerView.setVisibility(View.GONE);
+            noData.setVisibility(View.VISIBLE);
+        } else {
+            mAvailableModulesRecyclerView.setVisibility(View.VISIBLE);
+            noData.setVisibility(View.GONE);
+        }
     }
 
     @Override

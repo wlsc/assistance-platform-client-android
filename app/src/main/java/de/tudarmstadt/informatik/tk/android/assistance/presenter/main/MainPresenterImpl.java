@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.Acti
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ServiceUtils;
@@ -49,6 +51,8 @@ public class MainPresenterImpl extends
 
     private MainView view;
     private MainController controller;
+
+    private List<ModuleResponseDto> modulesToInstall = new ArrayList<>();
 
     public MainPresenterImpl(Context context) {
         super(context);
@@ -248,11 +252,14 @@ public class MainPresenterImpl extends
 
                     for (String perm : groupPerm) {
 
+                        // NOT granted
                         if (!permissionUtils.isGranted(perm)) {
                             permissionsToAsk.add(perm);
                         }
                     }
                 }
+
+                modulesToInstall.add(moduleResponseDto);
             }
         }
 
@@ -276,9 +283,8 @@ public class MainPresenterImpl extends
 
                 for (int i = 0, grantResultsLength = grantResults.length; i < grantResultsLength; i++) {
 
+                    // permission denied
                     if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                        // permission denied, it should be asked again
-
                         declinedPermissions.add(permissions[i]);
                     }
                 }
@@ -288,7 +294,12 @@ public class MainPresenterImpl extends
 
                     view.showPermissionsAreCrucialDialog(declinedPermissions);
 
+                    String userToken = PreferenceProvider.getInstance(getContext()).getUserToken();
+                    controller.disableModules(userToken, declinedPermissions);
+
                 } else {
+
+                    controller.insertActiveModules(modulesToInstall);
 
                     HarvesterServiceProvider.getInstance(getContext()).startSensingService();
                 }
