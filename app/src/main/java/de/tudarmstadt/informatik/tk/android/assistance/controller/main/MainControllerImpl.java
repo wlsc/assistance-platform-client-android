@@ -28,6 +28,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.Modu
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApiManager;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.dao.news.NewsDao;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
@@ -327,6 +328,8 @@ public class MainControllerImpl extends
         for (ModuleResponseDto moduleResponseDto : modulesToInstall) {
             insertModuleResponseWithCapabilities(moduleResponseDto);
         }
+
+        SensorProvider.getInstance(presenter.getContext()).synchronizeRunningSensorsWithDb();
     }
 
     @Override

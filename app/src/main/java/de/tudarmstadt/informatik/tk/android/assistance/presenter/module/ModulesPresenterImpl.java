@@ -30,6 +30,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.Modu
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
@@ -169,13 +170,8 @@ public class ModulesPresenterImpl extends
             // insert only active modules into db
             insertActiveModulesIntoDb(convertedModules);
 
-            for (DbModule module : convertedModules) {
+            EventBus.getDefault().post(new ModulesListRefreshEvent());
 
-                if (module.getActive()) {
-                    // change layout after module insertion
-                    view.changeModuleLayout(module.getPackageName(), true);
-                }
-            }
         } else {
             Log.d(TAG, "No active modules");
         }
@@ -365,7 +361,8 @@ public class ModulesPresenterImpl extends
                 if (declinedPermissions.size() > 0) {
                     view.showPermissionsAreCrucialDialog(declinedPermissions);
                 } else {
-                    handleModuleActivationRequest(getSelectedModuleResponse());
+//                    handleModuleActivationRequest(getSelectedModuleResponse());
+                    HarvesterServiceProvider.getInstance(getContext()).startSensingService();
                 }
 
                 EventBus.getDefault().post(new ModulesListRefreshEvent());
@@ -505,6 +502,7 @@ public class ModulesPresenterImpl extends
     @Override
     public void presentSuccessfulUninstall() {
 
+        SensorProvider.getInstance(getContext()).synchronizeRunningSensorsWithDb();
         view.showModuleUninstallSuccessful();
     }
 
