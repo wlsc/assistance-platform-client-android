@@ -10,18 +10,26 @@ public class CheckIfModuleCapabilityPermissionWasGrantedEvent {
 
     private DbModuleCapability capability;
 
-    public CheckIfModuleCapabilityPermissionWasGrantedEvent(DbModuleCapability capability) {
+    private int position;
+
+    public CheckIfModuleCapabilityPermissionWasGrantedEvent(DbModuleCapability capability, int position) {
         this.capability = capability;
+        this.position = position;
     }
 
     public DbModuleCapability getCapability() {
         return this.capability;
     }
 
+    public int getPosition() {
+        return this.position;
+    }
+
     @Override
     public String toString() {
         return "CheckIfModuleCapabilityPermissionWasGrantedEvent{" +
                 "capability=" + capability +
+                ", position=" + position +
                 '}';
     }
 }

@@ -30,7 +30,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
 
     private static final String TAG = PermissionAdapter.class.getSimpleName();
 
-    private final List<PermissionListItem> mData;
+    private List<PermissionListItem> mData;
 
     private final int requiredState;
 
@@ -92,7 +92,8 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
                 }
 
                 if (isChecked) {
-                    EventBus.getDefault().post(new CheckIfModuleCapabilityPermissionWasGrantedEvent(capability));
+                    EventBus.getDefault().post(
+                            new CheckIfModuleCapabilityPermissionWasGrantedEvent(capability, position));
                 }
 
                 // change capability state
@@ -108,6 +109,23 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
         if (requiredState == HIDDEN) {
             holder.mEnablerSwitch.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * Swaps out old data with new data in the adapter
+     *
+     * @param newList
+     */
+    public void swapData(List<PermissionListItem> newList) {
+
+        if (newList == null) {
+            mData = Collections.emptyList();
+        } else {
+            mData.clear();
+            mData.addAll(newList);
+        }
+
+        notifyDataSetChanged();
     }
 
     /**

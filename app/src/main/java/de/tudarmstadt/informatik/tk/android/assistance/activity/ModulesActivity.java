@@ -57,7 +57,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.Modu
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.ModuleProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
@@ -249,14 +248,15 @@ public class ModulesActivity extends
 
                     @Override
                     protected void call() {
-                        EventBus.getDefault().post(new ModuleOptionalPermissionEvent(notGrantedPerms[0]));
+                        EventBus.getDefault().post(
+                                new ModuleOptionalPermissionEvent(false, event.getPosition()));
                     }
                 })
                 .onAllGranted(new Func() {
 
                     @Override
                     protected void call() {
-                        EventBus.getDefault().post(new ModuleOptionalPermissionEvent(null));
+                        EventBus.getDefault().post(new ModuleOptionalPermissionEvent(true, event.getPosition()));
                     }
                 })
                 .ask(Config.PERM_MODULE_OPTIONAL_CAPABILITY);
@@ -268,10 +268,41 @@ public class ModulesActivity extends
      * @param event
      */
     public void onEvent(ModuleOptionalPermissionEvent event) {
-        String permission = event.getPermission();
 
-        if (!PermissionUtils.getInstance(getApplicationContext()).isGranted(permission)) {
-//            EventBus.getDefault().post(new );
+        // permission was not granted
+        if (event.isGranted()) {
+            // OK
+        } else {
+            // uncheck optional sensor
+            PermissionAdapter adapter = (PermissionAdapter) permissionOptionalRecyclerView.getAdapter();
+
+            if (adapter == null) {
+                Log.d(TAG, "Adapter null");
+                return;
+            }
+
+            List<PermissionListItem> items = adapter.getData();
+
+            if (items.isEmpty()) {
+                Log.d(TAG, "Capability items are empty");
+                return;
+            }
+
+            int position = event.getPosition();
+
+            if (position >= items.size() || position < 0) {
+                Log.d(TAG, "Wrong item position!");
+                return;
+            }
+
+            PermissionListItem permissionListItem = items.get(position);
+            permissionListItem.setChecked(false);
+            DbModuleCapability oldCap = permissionListItem.getCapability();
+            oldCap.setActive(false);
+            permissionListItem.setCapability(oldCap);
+            items.set(position, permissionListItem);
+
+            permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(items, PermissionAdapter.OPTIONAL));
         }
     }
 
@@ -524,7 +555,6 @@ public class ModulesActivity extends
 
         if (permsToAsk != null && !permsToAsk.isEmpty()) {
 
-
             mRequestObject = PermissionUtil.with(this)
                     .request(permsToAsk.toArray(new String[permsToAsk.size()]))
                     .onAllGranted(
@@ -545,9 +575,6 @@ public class ModulesActivity extends
                                 }
                             }).ask(Constants.PERM_MODULE_INSTALL);
 
-//            ActivityCompat.requestPermissions(this,
-//                    permsToAsk.toArray(new String[permsToAsk.size()]),
-//                    Constants.PERM_MODULE_INSTALL);
         } else {
             EventBus.getDefault().post(new ModulesListRefreshEvent());
             HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();

@@ -6,13 +6,28 @@ package de.tudarmstadt.informatik.tk.android.assistance.event.module;
  */
 public class ModuleOptionalPermissionEvent {
 
-    private String permission;
+    private boolean isGranted;
 
-    public ModuleOptionalPermissionEvent(String permission) {
-        this.permission = permission;
+    private int position;
+
+    public ModuleOptionalPermissionEvent(boolean isGranted, int position) {
+        this.position = position;
+        this.isGranted = isGranted;
     }
 
-    public String getPermission() {
-        return this.permission;
+    public boolean isGranted() {
+        return this.isGranted;
+    }
+
+    public int getPosition() {
+        return this.position;
+    }
+
+    @Override
+    public String toString() {
+        return "ModuleOptionalPermissionEvent{" +
+                "isGranted=" + isGranted +
+                ", position=" + position +
+                '}';
     }
 }

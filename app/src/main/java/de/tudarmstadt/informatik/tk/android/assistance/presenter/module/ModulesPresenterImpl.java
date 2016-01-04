@@ -363,15 +363,10 @@ public class ModulesPresenterImpl extends
     @Override
     public void handleModulePermissions() {
 
-        if (availableModuleResponseMapping == null || availableModuleResponseMapping.isEmpty()) {
-            Log.d(TAG, "availableModulesResponse is NULL or EMPTY");
-            return;
-        }
-
         // accumulate all permissions
         Set<String> permsRequiredAccumulator = new HashSet<>();
 
-        ModuleResponseDto moduleResponse = availableModuleResponseMapping.get(selectedModuleId);
+        ModuleResponseDto moduleResponse = getSelectedModuleResponse();
 
         if (moduleResponse == null) {
             Log.d(TAG, "Module response is null");
@@ -389,13 +384,14 @@ public class ModulesPresenterImpl extends
                 return;
             }
 
+            Map<String, String[]> dangerousPerms = permissionUtils
+                    .getDangerousPermissionsToDtoMapping();
+
             // these permissions are crucial for an operation of module
             for (ModuleCapabilityResponseDto capResponse : requiredSensors) {
 
                 String apiType = capResponse.getType();
-                String[] perms = PermissionUtils.getInstance(getContext())
-                        .getDangerousPermissionsToDtoMapping()
-                        .get(apiType);
+                String[] perms = dangerousPerms.get(apiType);
 
                 if (perms == null) {
                     Log.d(TAG, "Perms is null for type: " + apiType);
@@ -405,8 +401,7 @@ public class ModulesPresenterImpl extends
                 for (String perm : perms) {
 
                     // check permission was already granted
-                    if (!PermissionUtils.getInstance(getContext()).isGranted(perm)) {
-
+                    if (!permissionUtils.isGranted(perm)) {
                         permsRequiredAccumulator.add(perm);
                     }
                 }
