@@ -42,21 +42,6 @@ public class AccessibilityTutorialActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
-    }
-
     @OnClick(R.id.ignore_button)
     protected void onIgnoreButton() {
         Log.d(TAG, "User has chosen to ignore accessibility service!");

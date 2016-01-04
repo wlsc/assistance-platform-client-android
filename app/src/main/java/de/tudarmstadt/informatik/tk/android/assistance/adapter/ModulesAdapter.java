@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
@@ -77,35 +78,20 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
                 viewHolder.mUninstallModule.setVisibility(View.VISIBLE);
                 viewHolder.mInstallModule.setVisibility(View.GONE);
 
-                viewHolder.mUninstallModule.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        EventBus.getDefault().post(new ModuleUninstallEvent(module.getPackageName()));
-                    }
-                });
+                viewHolder.mUninstallModule.setOnClickListener(v ->
+                        EventBus.getDefault().post(new ModuleUninstallEvent(module.getPackageName())));
 
             } else {
 
                 viewHolder.mUninstallModule.setVisibility(View.GONE);
                 viewHolder.mInstallModule.setVisibility(View.VISIBLE);
 
-                viewHolder.mInstallModule.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        EventBus.getDefault().post(new ModuleInstallEvent(module.getPackageName()));
-                    }
-                });
+                viewHolder.mInstallModule.setOnClickListener(v ->
+                        EventBus.getDefault().post(new ModuleInstallEvent(module.getPackageName())));
             }
 
-            viewHolder.mMoreInfoModule.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(new ModuleShowMoreInfoEvent(module.getPackageName()));
-                }
-            });
+            viewHolder.mMoreInfoModule.setOnClickListener(v ->
+                    EventBus.getDefault().post(new ModuleShowMoreInfoEvent(module.getPackageName())));
         }
     }
 
@@ -201,20 +187,21 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
      */
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
-        protected final TextView mMainTitle;
-        protected final TextView mShortDescription;
-        protected final Button mMoreInfoModule;
-        protected final Button mInstallModule;
-        protected final Button mUninstallModule;
+        @Bind(R.id.main_title)
+        protected TextView mMainTitle;
+        @Bind(R.id.main_short_description)
+        protected TextView mShortDescription;
+        @Bind(R.id.more_info_module)
+        protected Button mMoreInfoModule;
+        @Bind(R.id.install_module)
+        protected Button mInstallModule;
+        @Bind(R.id.uninstall_module)
+        protected Button mUninstallModule;
 
         public ViewHolder(View view) {
             super(view);
 
-            mMainTitle = ButterKnife.findById(view, R.id.main_title);
-            mShortDescription = ButterKnife.findById(view, R.id.main_short_description);
-            mMoreInfoModule = ButterKnife.findById(view, R.id.more_info_module);
-            mInstallModule = ButterKnife.findById(view, R.id.install_module);
-            mUninstallModule = ButterKnife.findById(view, R.id.uninstall_module);
+            ButterKnife.bind(this, view);
         }
     }
 }

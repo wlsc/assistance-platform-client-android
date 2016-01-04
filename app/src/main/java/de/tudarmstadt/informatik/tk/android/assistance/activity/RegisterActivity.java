@@ -82,21 +82,6 @@ public class RegisterActivity extends
     }
 
     @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
-    }
-
-    @Override
     public void setPresenter(RegisterPresenter presenter) {
         this.presenter = presenter;
         this.presenter.setView(this);

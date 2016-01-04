@@ -1,14 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    style="@style/AlertDialog.AppCompat.Light"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:minHeight="60dp"
+    android:background="@color/alertDialogBackground"
     android:orientation="vertical"
-    android:padding="@dimen/dialog_padding_material">
+    android:padding="@dimen/dialog_padding_material"
+    android:paddingTop="@dimen/dialog_padding_top_material">
 
     <TextView
         android:id="@+id/module_more_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <include
+        layout="@layout/module_permissions_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp" />
 
 </LinearLayout>

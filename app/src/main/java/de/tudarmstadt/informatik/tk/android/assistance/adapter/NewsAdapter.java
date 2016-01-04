@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
@@ -123,11 +124,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      */
     protected static class NewsViewHolder extends RecyclerView.ViewHolder {
 
-        protected final TextView mContent;
+        @Bind(R.id.content)
+        protected TextView mContent;
 
         public NewsViewHolder(View view) {
             super(view);
-            mContent = ButterKnife.findById(view, R.id.content);
+
+            ButterKnife.bind(this, view);
         }
     }
 }

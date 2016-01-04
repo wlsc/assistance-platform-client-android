@@ -28,6 +28,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
@@ -36,7 +37,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPres
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
-import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.LoginView;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
@@ -343,21 +343,6 @@ public class LoginActivity extends
             subLoginButtonEnabled.unsubscribe();
         }
         super.onDestroy();
-    }
-
-    @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
     }
 
     @Override

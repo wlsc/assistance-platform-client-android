@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.kayvannj.permission_utils.Func;
+import com.github.kayvannj.permission_utils.PermissionUtil;
 import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -36,6 +37,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.adapter.PermissionAdapter
 import de.tudarmstadt.informatik.tk.android.assistance.event.CheckIfModuleCapabilityPermissionWasGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleOptionalPermissionEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallSuccessfulEvent;
@@ -46,6 +48,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionList
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenterImpl;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
@@ -54,6 +57,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.Modu
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.ModuleProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
@@ -93,6 +97,8 @@ public class ModulesActivity extends
 
     private Subscription subActivatedModules;
 
+    private PermissionUtil.PermissionRequestObject mRequestObject;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,21 +127,6 @@ public class ModulesActivity extends
         }
 
         super.onPause();
-    }
-
-    @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
     }
 
     /**
@@ -205,6 +196,7 @@ public class ModulesActivity extends
     public void onEvent(ModuleUninstallSuccessfulEvent event) {
         Log.d(TAG, "After module was successful uninstalled. Module id: " + event.getModulePackageName());
 
+        presenter.setSelectedModuleId(event.getModulePackageName());
         presenter.presentSuccessfulUninstall();
     }
 
@@ -248,8 +240,39 @@ public class ModulesActivity extends
         Log.d(TAG, "CheckIfModuleCapabilityPermissionWasGrantedEvent was invoked");
         Log.d(TAG, "Capability: " + event.getCapability().toString());
 
-        ModuleProvider.getInstance(getApplicationContext())
-                .checkModuleCapabilityPermission(this, event.getCapability());
+        String[] notGrantedPerms = ModuleProvider.getInstance(getApplicationContext())
+                .getNotGrantedModuleCapabilityPermission(this, event.getCapability());
+
+        mRequestObject = PermissionUtil.with(this)
+                .request(notGrantedPerms)
+                .onAnyDenied(new Func() {
+
+                    @Override
+                    protected void call() {
+                        EventBus.getDefault().post(new ModuleOptionalPermissionEvent(notGrantedPerms[0]));
+                    }
+                })
+                .onAllGranted(new Func() {
+
+                    @Override
+                    protected void call() {
+                        EventBus.getDefault().post(new ModuleOptionalPermissionEvent(null));
+                    }
+                })
+                .ask(Config.PERM_MODULE_OPTIONAL_CAPABILITY);
+    }
+
+    /**
+     * Tell module about granted optional permission
+     *
+     * @param event
+     */
+    public void onEvent(ModuleOptionalPermissionEvent event) {
+        String permission = event.getPermission();
+
+        if (!PermissionUtils.getInstance(getApplicationContext()).isGranted(permission)) {
+//            EventBus.getDefault().post(new );
+        }
     }
 
     /**
@@ -387,7 +410,9 @@ public class ModulesActivity extends
             EventBus.getDefault().register(this);
         }
 
-        presenter.presentRequestPermissionResult(requestCode, permissions, grantResults);
+        mRequestObject.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+//        presenter.presentRequestPermissionResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -499,9 +524,30 @@ public class ModulesActivity extends
 
         if (permsToAsk != null && !permsToAsk.isEmpty()) {
 
-            ActivityCompat.requestPermissions(this,
-                    permsToAsk.toArray(new String[permsToAsk.size()]),
-                    Constants.PERM_MODULE_INSTALL);
+
+            mRequestObject = PermissionUtil.with(this)
+                    .request(permsToAsk.toArray(new String[permsToAsk.size()]))
+                    .onAllGranted(
+                            new Func() {
+                                @Override
+                                protected void call() {
+                                    // TODO: take a look at handleModuleActivationRequest function -> its sometimes buggy
+                                    presenter.handleModuleActivationRequest(presenter.getSelectedModuleResponse());
+                                    HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
+                                    EventBus.getDefault().post(new ModulesListRefreshEvent());
+                                }
+                            }).onAnyDenied(
+                            new Func() {
+                                @Override
+                                protected void call() {
+                                    showPermissionsAreCrucialDialog(permsToAsk);
+                                    EventBus.getDefault().post(new ModulesListRefreshEvent());
+                                }
+                            }).ask(Constants.PERM_MODULE_INSTALL);
+
+//            ActivityCompat.requestPermissions(this,
+//                    permsToAsk.toArray(new String[permsToAsk.size()]),
+//                    Constants.PERM_MODULE_INSTALL);
         } else {
             EventBus.getDefault().post(new ModulesListRefreshEvent());
             HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
@@ -589,15 +635,15 @@ public class ModulesActivity extends
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_permissions, null);
 
-        permissionRequiredRecyclerView = ButterKnife.findById(dialogView,
+        permissionRequiredRecyclerView = ButterKnife.findById(
+                dialogView,
                 R.id.module_permission_required_list);
-        permissionRequiredRecyclerView.setLayoutManager(
-                new org.solovyev.android.views.llm.LinearLayoutManager(this));
+        permissionRequiredRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        permissionOptionalRecyclerView = ButterKnife.findById(dialogView,
+        permissionOptionalRecyclerView = ButterKnife.findById(
+                dialogView,
                 R.id.module_permission_optional_list);
-        permissionOptionalRecyclerView.setLayoutManager(
-                new org.solovyev.android.views.llm.LinearLayoutManager(this));
+        permissionOptionalRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
@@ -754,6 +800,62 @@ public class ModulesActivity extends
 
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_module_more_info, null);
+
+        permissionRequiredRecyclerView = ButterKnife.findById(
+                dialogView,
+                R.id.module_permission_required_list
+        );
+        permissionRequiredRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        permissionOptionalRecyclerView = ButterKnife.findById(
+                dialogView,
+                R.id.module_permission_optional_list
+        );
+        permissionOptionalRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        permissionsEmptyRequired = ButterKnife.findById(
+                dialogView,
+                R.id.module_permissions_required_list_empty);
+
+        permissionsEmptyOptional = ButterKnife.findById(
+                dialogView,
+                R.id.module_permissions_optional_list_empty);
+
+        List<ModuleCapabilityResponseDto> requiredSensors = selectedModule.getSensorsRequired();
+        List<ModuleCapabilityResponseDto> optionalSensors = selectedModule.getSensorsOptional();
+
+        List<PermissionListItem> requiredModuleSensors = new ArrayList<>();
+        List<PermissionListItem> optionalModuleSensors = new ArrayList<>();
+
+        if (requiredSensors != null && !requiredSensors.isEmpty()) {
+
+            for (ModuleCapabilityResponseDto capability : requiredSensors) {
+                requiredModuleSensors.add(new PermissionListItem(
+                        ConverterUtils.convertModuleCapability(capability)
+                ));
+            }
+        } else {
+            toggleShowRequiredPermissions(true);
+        }
+
+        if (optionalSensors != null && !optionalSensors.isEmpty()) {
+
+            for (ModuleCapabilityResponseDto capability : optionalSensors) {
+                optionalModuleSensors.add(new PermissionListItem(
+                        ConverterUtils.convertModuleCapability(capability)
+                ));
+            }
+        } else {
+            toggleShowOptionalPermissions(true);
+        }
+
+        permissionRequiredRecyclerView.setAdapter(new PermissionAdapter(
+                requiredModuleSensors,
+                PermissionAdapter.REQUIRED));
+
+        permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(
+                optionalModuleSensors,
+                PermissionAdapter.HIDDEN));
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setView(dialogView);

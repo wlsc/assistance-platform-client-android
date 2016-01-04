@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity.base;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 
 /**
@@ -27,18 +28,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        subscribeRequests();
+        SensorProvider.getInstance(getApplicationContext()).synchronizeRunningSensorsWithDb();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unsubscribeRequests();
     }
-
-    protected abstract void subscribeRequests();
-
-    protected abstract void unsubscribeRequests();
-
-    protected abstract void recreateRequests();
 }

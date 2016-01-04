@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.view.View;
-import android.widget.Button;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,22 +24,14 @@ public class NoPlayServicesActivity extends BaseActivity {
 
     private static final String TAG = NoPlayServicesActivity.class.getSimpleName();
 
-    private static final boolean AUTO_HIDE = true;
-
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
-
     private static final int UI_ANIMATION_DELAY = 300;
 
     private final Handler mHideHandler = new Handler();
 
-    private View mContentView;
-
-    @Bind(R.id.check_button)
-    protected Button checkButton;
-
     private final Runnable mHidePart2Runnable = () -> CommonUtils.hideSystemUI(getWindow());
 
-    private View mControlsView;
+    @Bind(R.id.fullscreen_content_controls)
+    protected View mControlsView;
 
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
@@ -63,17 +54,10 @@ public class NoPlayServicesActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_no_play_services);
-
         ButterKnife.bind(this);
 
         mVisible = true;
-
-        mControlsView = ButterKnife.findById(this, R.id.fullscreen_content_controls);
-        mContentView = ButterKnife.findById(this, R.id.fullscreen_content);
-
-        mContentView.setOnClickListener(view -> toggleView());
     }
 
     @Override
@@ -88,19 +72,9 @@ public class NoPlayServicesActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
+    @OnClick(R.id.fullscreen_content)
+    void onContentView() {
+        toggleView();
     }
 
     @OnClick(R.id.check_button)

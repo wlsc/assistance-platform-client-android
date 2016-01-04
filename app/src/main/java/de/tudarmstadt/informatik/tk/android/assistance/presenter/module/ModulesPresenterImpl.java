@@ -1,7 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.presenter.module;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import de.greenrobot.event.EventBus;
-import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.module.ModulesController;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.module.ModulesControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
@@ -340,40 +338,6 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void presentRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        switch (requestCode) {
-            case Constants.PERM_MODULE_INSTALL:
-
-                Log.d(TAG, "Back from module permissions request");
-
-                Set<String> declinedPermissions = new HashSet<>();
-
-                for (int i = 0, grantResultsLength = grantResults.length; i < grantResultsLength; i++) {
-
-                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                        // permission denied, it should be asked again
-                        declinedPermissions.add(permissions[i]);
-                    }
-                }
-
-                // ask user about permissions again
-                if (declinedPermissions.size() > 0) {
-                    view.showPermissionsAreCrucialDialog(declinedPermissions);
-                } else {
-//                    handleModuleActivationRequest(getSelectedModuleResponse());
-                    HarvesterServiceProvider.getInstance(getContext()).startSensingService();
-                }
-
-                EventBus.getDefault().post(new ModulesListRefreshEvent());
-
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
     public void presentMoreModuleInformationDialog() {
 
         final ModuleResponseDto selectedModule = availableModuleResponseMapping
@@ -564,15 +528,15 @@ public class ModulesPresenterImpl extends
         List<DbModule> displayedModules = view.getDisplayedModules();
         List<DbModule> newDisplayedList = new ArrayList<>();
 
-        for (DbModule activeModule : allActiveModules) {
-            for (DbModule displayedModule : displayedModules) {
+        for (DbModule displayedModule : displayedModules) {
+            for (DbModule activeModule : allActiveModules) {
                 if (activeModule.getPackageName().equals(displayedModule.getPackageName())) {
                     displayedModule.setActive(true);
                 }
+            }
 
-                if (!newDisplayedList.contains(displayedModule)) {
-                    newDisplayedList.add(displayedModule);
-                }
+            if (!newDisplayedList.contains(displayedModule)) {
+                newDisplayedList.add(displayedModule);
             }
         }
 

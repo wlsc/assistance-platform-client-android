@@ -46,6 +46,7 @@
                 style="@style/BtnSuccess"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
                 android:text="@string/module_action_activate"
                 android:textAllCaps="true"
                 android:textStyle="bold" />
@@ -57,6 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
+                android:padding="10dp"
                 android:text="@string/module_action_deactivate"
                 android:textAllCaps="true"
                 android:textStyle="bold"

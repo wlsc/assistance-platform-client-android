@@ -64,8 +64,6 @@ public interface ModulesPresenter extends CommonPresenter {
 
     void setSelectedModuleId(String packageName);
 
-    void presentRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults);
-
     void presentMoreModuleInformationDialog();
 
     void presentSuccessfulInstallation();

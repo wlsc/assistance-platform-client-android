@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -37,6 +36,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
 
     public static final int OPTIONAL = 0;
     public static final int REQUIRED = 1;
+    public static final int HIDDEN = 2;
 
     public PermissionAdapter(List<PermissionListItem> mData, int requiredState) {
 
@@ -78,33 +78,35 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
         if (requiredState == REQUIRED) {
             holder.mEnablerSwitch.setChecked(true);
             holder.mEnablerSwitch.setEnabled(false);
-        } else {
+        }
+
+        if (requiredState == OPTIONAL) {
 
             holder.mEnablerSwitch.setVisibility(View.VISIBLE);
-            holder.mEnablerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            holder.mEnablerSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Log.d(TAG, "Optional permission was ENABLED");
+                } else {
+                    Log.d(TAG, "Optional permission was DISABLED");
+                }
 
-                    if (isChecked) {
-                        Log.d(TAG, "Optional permission was ENABLED");
-                    } else {
-                        Log.d(TAG, "Optional permission was DISABLED");
-                    }
+                if (isChecked) {
+                    EventBus.getDefault().post(new CheckIfModuleCapabilityPermissionWasGrantedEvent(capability));
+                }
 
-                    if (isChecked) {
-                        EventBus.getDefault().post(new CheckIfModuleCapabilityPermissionWasGrantedEvent(capability));
-                    }
+                // change capability state
+//                capability.setActive(isChecked);
 
-                    // change capability state
-                    capability.setActive(isChecked);
-
-                    if (ServiceUtils.isHarvesterAbleToRun(holder.mEnablerSwitch.getContext())) {
-                        // fire state changed
-                        EventBus.getDefault().post(new ModuleCapabilityHasChangedEvent(capability));
-                    }
+                if (ServiceUtils.isHarvesterAbleToRun(holder.mEnablerSwitch.getContext())) {
+                    // fire state changed
+                    EventBus.getDefault().post(new ModuleCapabilityHasChangedEvent(capability));
                 }
             });
+        }
+
+        if (requiredState == HIDDEN) {
+            holder.mEnablerSwitch.setVisibility(View.GONE);
         }
     }
 

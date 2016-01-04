@@ -182,21 +182,6 @@ public class MainActivity extends
     }
 
     @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         Log.d(TAG, "onActivityResult. RequestCode: " + requestCode + " resultCode: " + resultCode);

@@ -128,7 +128,7 @@
     <string name="module_list_no_data">No modules available</string>
     <string name="module_action_activate">Activate</string>
     <string name="module_action_deactivate">Deactivate</string>
-    <string name="module_action_more_info">Edit</string>
+    <string name="module_action_more_info">Info</string>
 
     <!-- MODULE LIST PERMISSION DIALOG -->
     <string name="module_permission_dialog_icon_description">Icon for a module</string>

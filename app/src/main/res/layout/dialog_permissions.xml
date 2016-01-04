@@ -53,6 +53,9 @@
 
     </LinearLayout>
 
-    <include layout="@layout/module_permissions_list" />
+    <include
+        layout="@layout/module_permissions_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
