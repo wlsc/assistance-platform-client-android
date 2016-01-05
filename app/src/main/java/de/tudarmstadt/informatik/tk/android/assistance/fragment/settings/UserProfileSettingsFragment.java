@@ -161,7 +161,7 @@ public class UserProfileSettingsFragment extends Fragment {
         List<UserSocialServiceDto> socialServices = profileResponse.getSocialServices();
 
         if (!socialServices.isEmpty()) {
-            String serviceName = "";
+            String serviceName;
 
             for (UserSocialServiceDto service : socialServices) {
                 if (service == null) {

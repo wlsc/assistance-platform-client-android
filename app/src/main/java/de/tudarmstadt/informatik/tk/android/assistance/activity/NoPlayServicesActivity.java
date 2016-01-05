@@ -49,7 +49,7 @@ public class NoPlayServicesActivity extends BaseActivity {
 
     private boolean mVisible;
 
-    private final Runnable mHideRunnable = () -> hide();
+    private final Runnable mHideRunnable = this::hide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -84,44 +84,40 @@ public class CommonUtils {
             @Override
             public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
 
-                new Thread(new Runnable() {
+                new Thread(() -> {
 
-                    @Override
-                    public void run() {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    String currentTimeStamp = format.format(new Date());
+                    String filename = oldFilename;
 
-                        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-                        String currentTimeStamp = format.format(new Date());
-                        String filename = oldFilename;
+                    if (oldFilename.isEmpty()) {
+                        filename = "assi_" + currentTimeStamp;
 
-                        if (oldFilename.isEmpty()) {
-                            filename = "assi_" + currentTimeStamp;
+                        Log.d(TAG, "new user pic filename: " + filename);
+                    }
 
-                            Log.d(TAG, "new user pic filename: " + filename);
-                        }
+                    PreferenceUtils.setUserPicFilename(context, filename);
 
-                        PreferenceUtils.setUserPicFilename(context, filename);
+                    Log.e(TAG, Environment.getExternalStorageDirectory().getPath() + '/' + Config.USER_PIC_PATH + '/' + filename + ".jpg");
 
-                        Log.e(TAG, Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + filename + ".jpg");
+                    File file = new File(Environment.getExternalStorageDirectory().getPath() + '/' + Config.USER_PIC_PATH + '/' + filename + ".jpg");
+                    FileOutputStream oStream = null;
+                    try {
+                        file.createNewFile();
 
-                        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + filename + ".jpg");
-                        FileOutputStream oStream = null;
+                        oStream = new FileOutputStream(file);
+
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, oStream);
+
+                    } catch (Exception e) {
+                        Log.e(TAG, "Cannot save image to internal file storage! Error: " + e.getMessage());
+                    } finally {
                         try {
-                            file.createNewFile();
-
-                            oStream = new FileOutputStream(file);
-
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, oStream);
-
-                        } catch (Exception e) {
-                            Log.e(TAG, "Cannot save image to internal file storage! Error: " + e.getMessage());
-                        } finally {
-                            try {
-                                if (oStream != null) {
-                                    oStream.close();
-                                }
-                            } catch (IOException e) {
-                                Log.e(TAG, "Cannot close output stream! Error: " + e.getMessage());
+                            if (oStream != null) {
+                                oStream.close();
                             }
+                        } catch (IOException e) {
+                            Log.e(TAG, "Cannot close output stream! Error: " + e.getMessage());
                         }
                     }
                 }).start();

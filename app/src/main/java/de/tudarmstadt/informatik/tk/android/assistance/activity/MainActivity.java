@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -249,7 +250,7 @@ public class MainActivity extends
             return;
         }
 
-        requestPermissions(
+        ActivityCompat.requestPermissions(this,
                 permsToAsk.toArray(new String[permsToAsk.size()]),
                 Constants.PERM_MODULE_ACTIVATED_REQUEST
         );

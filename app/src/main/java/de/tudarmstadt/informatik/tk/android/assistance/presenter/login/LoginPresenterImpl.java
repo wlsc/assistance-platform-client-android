@@ -32,7 +32,7 @@ public class LoginPresenterImpl extends
 
     public LoginPresenterImpl(Context context) {
         super(context);
-        setController(new LoginControllerImpl(this));
+        this.controller = new LoginControllerImpl(this);
     }
 
     @Override

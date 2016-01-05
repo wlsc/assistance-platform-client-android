@@ -30,7 +30,7 @@ public class RegisterPresenterImpl extends
 
     public RegisterPresenterImpl(Context context) {
         super(context);
-        setController(new RegisterControllerImpl(this));
+        this.controller = new RegisterControllerImpl(this);
     }
 
     @Override

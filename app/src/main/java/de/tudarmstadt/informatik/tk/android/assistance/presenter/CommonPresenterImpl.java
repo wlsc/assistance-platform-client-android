@@ -42,12 +42,12 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
 
     @Override
     public void startHarvester() {
-        HarvesterServiceProvider.getInstance(getContext()).startSensingService();
+        HarvesterServiceProvider.getInstance(this.context).startSensingService();
     }
 
     @Override
     public void stopHarvester() {
-        HarvesterServiceProvider.getInstance(getContext()).stopSensingService();
+        HarvesterServiceProvider.getInstance(this.context).stopSensingService();
     }
 
     @Override

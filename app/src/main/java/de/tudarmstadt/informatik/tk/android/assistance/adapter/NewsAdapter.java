@@ -37,7 +37,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = null;
+        View view;
 
         if (viewType == EMPTY_VIEW_TYPE) {
             // list is empty
@@ -64,7 +64,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final ClientFeedbackDto newsCard = getItem(position);
             final NewsViewHolder viewHolder = (NewsViewHolder) holder;
 
-            viewHolder.mContent.setText(newsCard.getContent().toString());
+            viewHolder.mContent.setText(newsCard != null ? newsCard.getContent().toString() : "");
         }
     }
 
@@ -113,7 +113,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /**
      * An empty view holder if no items available
      */
-    public class EmptyViewHolder extends RecyclerView.ViewHolder {
+    public static class EmptyViewHolder extends RecyclerView.ViewHolder {
         public EmptyViewHolder(View view) {
             super(view);
         }

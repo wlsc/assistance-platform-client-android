@@ -56,7 +56,7 @@ public class MainPresenterImpl extends
 
     public MainPresenterImpl(Context context) {
         super(context);
-        setController(new MainControllerImpl(this));
+        this.controller = new MainControllerImpl(this);
     }
 
     @Override

@@ -135,7 +135,7 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
         DbDevice dbDevice = DaoProvider.getInstance(getActivity().getApplicationContext())
                 .getDeviceDao().getById(currentDeviceId);
 
-        if (dbDevice != null) {
+        if (dbDevice == null) {
             Log.d(TAG, "Cannot update device information in db");
             return;
         }

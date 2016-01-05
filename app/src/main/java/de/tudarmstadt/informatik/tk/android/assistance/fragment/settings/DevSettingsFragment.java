@@ -10,6 +10,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 
@@ -119,12 +120,12 @@ public class DevSettingsFragment extends
 
             if (customEndpoint.isEmpty()) {
 
-                editEndpointUrlPref.setTitle(getString(R.string.settings_edit_endpoint_url) + " " + Config.ASSISTANCE_ENDPOINT);
+                editEndpointUrlPref.setTitle(getString(R.string.settings_edit_endpoint_url) + ' ' + Config.ASSISTANCE_ENDPOINT);
                 editEndpointUrlPref.setText(Config.ASSISTANCE_ENDPOINT);
 
             } else {
 
-                editEndpointUrlPref.setTitle(getString(R.string.settings_edit_endpoint_url) + " " + customEndpoint);
+                editEndpointUrlPref.setTitle(getString(R.string.settings_edit_endpoint_url) + ' ' + customEndpoint);
                 editEndpointUrlPref.setText(customEndpoint);
             }
 
@@ -217,7 +218,7 @@ public class DevSettingsFragment extends
                     Environment
                             .getExternalStoragePublicDirectory(
                                     Environment.DIRECTORY_DOWNLOADS).getPath() +
-                            "/" +
+                            '/' +
                             Config.DATABASE_NAME);
 
             Toaster.showLong(getActivity().getApplicationContext(), R.string.settings_export_database_successful);
@@ -249,7 +250,7 @@ public class DevSettingsFragment extends
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         switch (requestCode) {
             case Config.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:

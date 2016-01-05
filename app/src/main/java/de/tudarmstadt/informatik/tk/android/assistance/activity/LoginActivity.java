@@ -22,6 +22,7 @@ import com.facebook.login.LoginResult;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -194,7 +195,7 @@ public class LoginActivity extends
             mSplashView = new SplashView(this);
         }
 
-        mSplashView.setSplashScreenEvent(() -> uiThreadHandler.post(() -> presenter.getSplashView()));
+        mSplashView.setSplashScreenEvent(() -> uiThreadHandler.post(presenter::getSplashView));
 
         // show splash screen
         setContentView(mSplashView);
@@ -285,7 +286,7 @@ public class LoginActivity extends
 
         Log.d(TAG, "Facebook logo was pressed");
 
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Collections.singletonList("email"));
     }
 
     @OnClick(R.id.ibGooglePlusLogo)

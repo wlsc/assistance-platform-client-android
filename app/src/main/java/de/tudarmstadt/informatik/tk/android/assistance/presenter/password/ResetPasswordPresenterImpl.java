@@ -29,7 +29,7 @@ public class ResetPasswordPresenterImpl extends
 
     public ResetPasswordPresenterImpl(Context context) {
         super(context);
-        setController(new ResetPasswordControllerImpl(this));
+        this.controller = new ResetPasswordControllerImpl(this);
     }
 
     @Override

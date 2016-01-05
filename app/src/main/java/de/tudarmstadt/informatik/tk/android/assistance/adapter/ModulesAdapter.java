@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.adapter;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +44,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = null;
+        View view;
 
         if (viewType == EMPTY_VIEW_TYPE) {
             // list is empty
@@ -115,6 +116,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
      * @param position
      * @return
      */
+    @Nullable
     public DbModule getItem(int position) {
 
         if (position < 0 || position >= modules.size()) {
@@ -130,6 +132,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
      * @param modulePackageId
      * @return
      */
+    @Nullable
     public DbModule getItem(String modulePackageId) {
 
         if (getItemCount() == 0 || modulePackageId == null) {
@@ -176,7 +179,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
     /**
      * An empty view holder if no items available
      */
-    public class EmptyViewHolder extends ModulesAdapter.ViewHolder {
+    public static class EmptyViewHolder extends ModulesAdapter.ViewHolder {
         public EmptyViewHolder(View view) {
             super(view);
         }

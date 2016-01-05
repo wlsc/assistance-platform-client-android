@@ -17,29 +17,23 @@
         android:textSize="26sp"
         android:textStyle="bold" />
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/fullscreen_content_controls"
+        style="?metaButtonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@color/black_overlay"
+        android:fitsSystemWindows="true"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="?metaButtonBarStyle"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/check_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:text="@string/activity_no_play_services_login_button" />
 
-            <Button
-                android:id="@+id/check_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/activity_no_play_services_login_button" />
-
-        </LinearLayout>
-    </FrameLayout>
-
+    </LinearLayout>
 </FrameLayout>

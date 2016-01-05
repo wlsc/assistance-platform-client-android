@@ -77,7 +77,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
         }
 
         if (buildCodeStr.length() == 3) {
-            buildCodeStr = "0" + buildCodeStr;
+            buildCodeStr = '0' + buildCodeStr;
         }
 
         buildNumberPref.setSummary(buildCodeStr);
@@ -97,25 +97,15 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
         if (aboutClickHandler == null) {
 
-            aboutClickHandler = new Preference.OnPreferenceClickListener() {
-
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    showAboutInformation();
-                    return false;
-                }
+            aboutClickHandler = preference -> {
+                showAboutInformation();
+                return false;
             };
         }
 
         if (buildNumberClickHandler == null) {
 
-            buildNumberClickHandler = new Preference.OnPreferenceClickListener() {
-
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    return processBuildButton();
-                }
-            };
+            buildNumberClickHandler = preference -> processBuildButton();
         }
 
         aboutPref.setOnPreferenceClickListener(aboutClickHandler);
@@ -156,13 +146,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
             return true;
         }
 
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                beDeveloperCounter = 0;
-            }
-        }, Constants.BACK_BUTTON_DELAY_MILLIS);
+        new Handler().postDelayed(() -> beDeveloperCounter = 0, Constants.BACK_BUTTON_DELAY_MILLIS);
 
         return false;
     }

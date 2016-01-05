@@ -96,7 +96,7 @@
     <string name="main_activity_module_menu_uninstall">Deactivate module</string>
     <string name="main_activity_undo_uninstall">Cancel deactivation?</string>
     <string name="main_activity_undo_uninstall_button_title">UNDO</string>
-    <string name="main_activity_no_module_data_available">No information yet...</string>
+    <string name="main_activity_no_module_data_available">No information yet…</string>
 
     <!-- LOGIN SCREEN -->
     <string name="login_header">Welcome!</string>

@@ -1,5 +1,7 @@
 package de.tudarmstadt.informatik.tk.android.assistance.util;
 
+import android.support.annotation.Nullable;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -30,6 +32,7 @@ public class JsonUtils {
      * @param oldObject
      * @return
      */
+    @Nullable
     public static JsonObject mapFeedbackToJson2ViewFormat(JsonObject oldObject)
             throws ClassCastException, IllegalStateException {
 
@@ -37,7 +40,7 @@ public class JsonUtils {
             return null;
         }
 
-        JsonObject newObject = null;
+        JsonObject newObject;
 
         String contentTypeJson = oldObject.get("type").getAsString();
         FeedbackItemType contentType = FeedbackItemType.getEnum(contentTypeJson);
@@ -91,6 +94,7 @@ public class JsonUtils {
      * @param oldObject
      * @return
      */
+    @Nullable
     private static JsonObject formatImageObject(JsonObject oldObject) {
 
         if (oldObject == null) {
@@ -117,6 +121,7 @@ public class JsonUtils {
      * @param oldObject
      * @return
      */
+    @Nullable
     private static JsonObject formatButtonObject(JsonObject oldObject)
             throws ClassCastException, IllegalStateException {
 
@@ -154,6 +159,7 @@ public class JsonUtils {
      * @param oldObject
      * @return
      */
+    @Nullable
     private static JsonObject formatTextObject(JsonObject oldObject) {
 
         if (oldObject == null) {
@@ -224,6 +230,7 @@ public class JsonUtils {
      * @param object
      * @return
      */
+    @Nullable
     public static JsonElement convert(JSONObject object) {
 
         if (object == null) {
