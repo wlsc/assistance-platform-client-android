@@ -18,7 +18,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.event.UpdateSensorIntervalEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.DtoType;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.sensing.SensorApiType;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApi;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApiManager;
@@ -259,7 +259,7 @@ public class ModulesControllerImpl extends
                     // firing up an event to change sensors collection frequencies
                     EventBus.getDefault().post(
                             new UpdateSensorIntervalEvent(
-                                    DtoType.getDtoType(cap.getType()),
+                                    SensorApiType.getDtoType(cap.getType()),
                                     cap.getCollectionInterval()));
                 }
             }

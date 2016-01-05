@@ -18,7 +18,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.CheckIfModuleCapabi
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleCapabilityHasChangedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.DtoType;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.sensing.SensorApiType;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 
@@ -69,7 +69,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
         String title = "";
 
         if (capability != null) {
-            title = DtoType.getName(DtoType.getDtoType(capability.getType()), holder.mTitle.getResources());
+            title = SensorApiType.getName(SensorApiType.getDtoType(capability.getType()), holder.mTitle.getResources());
         }
 
         holder.mTitle.setText(title);
