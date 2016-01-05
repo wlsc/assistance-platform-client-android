@@ -249,6 +249,10 @@ public class ModulesControllerImpl extends
 
             for (DbModuleCapability cap : moduleActiveCaps) {
 
+                if (cap == null) {
+                    continue;
+                }
+
                 // insert when only new capability type is present
                 if (activeCapabilities.get(cap.getType()) == null) {
 
@@ -256,7 +260,7 @@ public class ModulesControllerImpl extends
                     EventBus.getDefault().post(
                             new UpdateSensorIntervalEvent(
                                     DtoType.getDtoType(cap.getType()),
-                                    cap.getCollectionFrequency()));
+                                    cap.getCollectionInterval()));
                 }
             }
         }
