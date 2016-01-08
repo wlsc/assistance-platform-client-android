@@ -187,6 +187,9 @@ public class MainPresenterImpl extends
     @Override
     public void onPlayServicesAvailable() {
 
+        // activate Harvester Watcher service
+        HarvesterServiceProvider.getInstance(getContext()).startPlanBService();
+
         view.startGcmRegistrationService();
         PreferenceUtils.setGcmTokenWasSent(getContext(), true);
     }
