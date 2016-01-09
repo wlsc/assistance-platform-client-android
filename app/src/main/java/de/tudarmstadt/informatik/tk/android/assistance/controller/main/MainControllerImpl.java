@@ -25,7 +25,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApi;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApiManager;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.api.ModuleApiProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.SensorProvider;
@@ -55,12 +55,12 @@ public class MainControllerImpl extends
 
     private final MainPresenter presenter;
 
-    private final ModuleApiManager moduleApiManager;
+    private final ModuleApiProvider moduleApiProvider;
 
     public MainControllerImpl(MainPresenter presenter) {
         super(presenter.getContext());
         this.presenter = presenter;
-        this.moduleApiManager = ModuleApiManager.getInstance(presenter.getContext());
+        this.moduleApiProvider = ModuleApiProvider.getInstance(presenter.getContext());
     }
 
     @Override
@@ -249,7 +249,7 @@ public class MainControllerImpl extends
 
     @Override
     public Observable<ActivatedModulesResponse> requestActivatedModules(String userToken) {
-        return moduleApiManager.getActivatedModules(userToken);
+        return moduleApiProvider.getActivatedModules(userToken);
     }
 
     @Override
