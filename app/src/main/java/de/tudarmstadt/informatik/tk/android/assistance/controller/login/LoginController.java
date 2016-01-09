@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.login;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnUserValidHandler;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.login.LoginResponseDto;
 
 /**
@@ -34,4 +35,6 @@ public interface LoginController extends CommonController {
      * @param response
      */
     void saveLoginIntoDb(LoginResponseDto response);
+
+    void initAllowedModuleCaps(DbUser user);
 }

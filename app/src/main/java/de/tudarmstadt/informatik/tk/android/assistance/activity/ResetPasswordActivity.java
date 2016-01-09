@@ -39,7 +39,7 @@ public class ResetPasswordActivity extends
         super.onCreate(savedInstanceState);
 
         setPresenter(new ResetPasswordPresenterImpl(getApplicationContext()));
-        presenter.doInitView();
+        presenter.initView();
     }
 
     @Override

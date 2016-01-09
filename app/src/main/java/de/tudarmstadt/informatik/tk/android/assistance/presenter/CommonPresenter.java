@@ -15,7 +15,7 @@ public interface CommonPresenter {
 
     void setView(CommonView view);
 
-    void doInitView();
+    void initView();
 
     /**
      * Starting harvesting service if not running

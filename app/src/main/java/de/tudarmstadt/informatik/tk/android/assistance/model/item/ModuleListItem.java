@@ -3,7 +3,8 @@ package de.tudarmstadt.informatik.tk.android.assistance.model.item;
 import android.graphics.drawable.Drawable;
 
 /**
- * Created by Wladimir Schmidt on 17.06.2015.
+ * @author Wladimir Schmidt (wlsc.dev@gmail.com)
+ * @date 17.06.2015
  */
 public class ModuleListItem {
 
@@ -11,7 +12,7 @@ public class ModuleListItem {
     private String mTitle;
     private String mShortDescription;
 
-    public void ModuleListItem(Drawable logo, String title, String shortDescription){
+    public void ModuleListItem(Drawable logo, String title, String shortDescription) {
         this.mLogo = logo;
         this.mTitle = title;
         this.mShortDescription = shortDescription;

@@ -2,4 +2,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="pref_screen_application">
 
+    <Preference
+        android:key="pref_module_types_permissions"
+        android:summary="@string/settings_module_types_permission_summary"
+        android:title="@string/settings_module_types_permission_title" />
+
 </PreferenceScreen>

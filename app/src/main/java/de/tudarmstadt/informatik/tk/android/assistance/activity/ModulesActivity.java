@@ -103,7 +103,7 @@ public class ModulesActivity extends
         super.onCreate(savedInstanceState);
 
         setPresenter(new ModulesPresenterImpl(this));
-        presenter.doInitView();
+        presenter.initView();
     }
 
     @Override

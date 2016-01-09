@@ -21,6 +21,11 @@
     <!-- ACCESSIBILITY SERVICE TUTORIAL -->
     <string name="title_activity_accessibility_tutorial">Extended Accessibility Service Tutorial</string>
 
+    <!-- SETTINGS: APP SETTINGS -->
+    <string name="settings_module_types_permission_title">Module permissions</string>
+    <string name="settings_module_types_permission_summary">Turn on or off permissions that module can use</string>
+    <string name="settings_module_types_permission_required_by_modules">Required by %1$d modules</string>
+
     <!-- SETTINGS: SCREEN -->
     <string name="settings_activity_title">Settings</string>
     <string name="settings_header_application_title">App settings</string>

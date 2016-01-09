@@ -76,12 +76,12 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void doInitView() {
+    public void initView() {
 
         view.initView();
 
-        final String userEmail = PreferenceUtils.getUserEmail(getContext());
-        final DbUser user = controller.getUserByEmail(userEmail);
+        final String userToken = PreferenceUtils.getUserToken(getContext());
+        final DbUser user = controller.getUserByToken(userToken);
 
         if (user == null) {
             Log.d(TAG, "User is null");

@@ -71,7 +71,7 @@ public class MainPresenterImpl extends
     }
 
     @Override
-    public void doInitView() {
+    public void initView() {
 
         view.initView();
 

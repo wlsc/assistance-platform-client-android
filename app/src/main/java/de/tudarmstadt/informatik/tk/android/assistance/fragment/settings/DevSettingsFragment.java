@@ -139,8 +139,6 @@ public class DevSettingsFragment extends
         if (preference.getKey().equals("pref_be_developer")) {
 
             Log.d(TAG, "User clicked switch developer ON/OFF");
-
-
         }
 
         if (preference.getKey().equals("pref_export_database")) {

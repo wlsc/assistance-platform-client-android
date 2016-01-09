@@ -46,7 +46,7 @@ public class RegisterActivity extends
         super.onCreate(savedInstanceState);
 
         setPresenter(new RegisterPresenterImpl(getApplicationContext()));
-        presenter.doInitView();
+        presenter.initView();
     }
 
     /**

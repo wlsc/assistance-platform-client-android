@@ -1,11 +1,16 @@
 package de.tudarmstadt.informatik.tk.android.assistance.fragment.settings;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.activity.ModuleTypesPermissionActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.SettingsActivity;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -28,5 +33,19 @@ public class AppSettingsFragment extends PreferenceFragment {
 
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
         mParentToolbar.setTitle(R.string.settings_header_application_title);
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+
+        if (preference.getKey().equals("pref_module_types_permissions")) {
+
+            Log.d(TAG, "User clicked launch module types permission list view");
+
+            Intent intent = new Intent(getActivity(), ModuleTypesPermissionActivity.class);
+            getActivity().startActivity(intent);
+        }
+
+        return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 }

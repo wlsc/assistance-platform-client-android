@@ -70,6 +70,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/activity_no_play_services_title"
             android:theme="@style/FullscreenTheme" />
+        <activity android:name=".activity.ModuleTypesPermissionActivity"></activity>
     </application>
 
 </manifest>

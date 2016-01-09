@@ -36,7 +36,7 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
     }
 
     @Override
-    public void doInitView() {
+    public void initView() {
         // common view injector
     }
 

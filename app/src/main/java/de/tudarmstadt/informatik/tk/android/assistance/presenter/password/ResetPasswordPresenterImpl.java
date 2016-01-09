@@ -80,7 +80,7 @@ public class ResetPasswordPresenterImpl extends
     }
 
     @Override
-    public void doInitView() {
+    public void initView() {
         view.initView();
     }
 }

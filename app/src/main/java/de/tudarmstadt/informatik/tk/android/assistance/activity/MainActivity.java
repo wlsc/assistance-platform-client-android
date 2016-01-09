@@ -63,7 +63,7 @@ public class MainActivity extends
         super.onCreate(savedInstanceState);
 
         setPresenter(new MainPresenterImpl(this));
-        presenter.doInitView();
+        presenter.initView();
     }
 
     @Override

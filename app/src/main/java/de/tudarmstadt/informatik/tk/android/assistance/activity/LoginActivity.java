@@ -21,7 +21,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
@@ -128,7 +127,7 @@ public class LoginActivity extends
                 });
 
         setPresenter(new LoginPresenterImpl(this));
-        presenter.doInitView();
+        presenter.initView();
     }
 
     @Override

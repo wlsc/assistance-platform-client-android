@@ -1,8 +1,10 @@
 package de.tudarmstadt.informatik.tk.android.assistance.controller.login;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
@@ -10,14 +12,17 @@ import de.tudarmstadt.informatik.tk.android.assistance.handler.OnUserValidHandle
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbDevice;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleAllowedCapabilities;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.login.LoginApi;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.login.LoginRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.login.LoginResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.login.UserDeviceDto;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.login.LoginApi;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.sensing.SensorApiType;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.HardwareUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.ValidationUtils;
@@ -214,6 +219,56 @@ public class LoginControllerImpl extends
             }
 
             PreferenceUtils.setCurrentUserId(presenter.getContext(), user.getId());
+        }
+    }
+
+    @Override
+    public void initAllowedModuleCaps(DbUser user) {
+
+        if (user == null) {
+            Log.d(TAG, "user is NULL");
+            return;
+        }
+
+        List<DbModuleAllowedCapabilities> allAllowed = user.getDbModuleAllowedCapabilitiesList();
+
+        // only when nothing found
+        if (allAllowed.isEmpty()) {
+
+            List<String> allAllowedTypesToInsert = SensorApiType.getAllPossibleModuleTypes();
+            List<DbModuleAllowedCapabilities> allAllowedNew = new ArrayList<>(allAllowedTypesToInsert.size());
+
+            PermissionUtils permissionUtils = PermissionUtils
+                    .getInstance(presenter.getContext());
+            Map<String, String[]> dangerousPerms = permissionUtils
+                    .getDangerousPermissionsToDtoMapping();
+
+            String created = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
+
+            for (String typeStr : allAllowedTypesToInsert) {
+
+                boolean isAllowedByDefault = true;
+
+                if (dangerousPerms.get(typeStr) != null) {
+
+                    String[] perms = dangerousPerms.get(typeStr);
+                    isAllowedByDefault = permissionUtils.isGranted(perms[0]) ? true : false;
+                }
+
+                DbModuleAllowedCapabilities newModuleCapPerm = new DbModuleAllowedCapabilities();
+
+                newModuleCapPerm.setDbUser(user);
+                newModuleCapPerm.setType(typeStr);
+                newModuleCapPerm.setIsAllowed(isAllowedByDefault);
+                newModuleCapPerm.setCreated(created);
+
+                allAllowedNew.add(newModuleCapPerm);
+            }
+
+            // insert only when list is not empty
+            if (!allAllowedNew.isEmpty()) {
+                daoProvider.getModuleAllowedCapsDao().insert(allAllowedNew);
+            }
         }
     }
 }
