@@ -14,24 +14,10 @@ public class ModuleAllowedTypeItem {
 
     private int requiredByModules;
 
-    public ModuleAllowedTypeItem(int type, String title, int requiredByModules) {
-        this.type = type;
-        this.title = title;
-        this.allowed = true;
-        this.requiredByModules = requiredByModules;
-    }
-
-    public ModuleAllowedTypeItem(int type, String title) {
-        this.type = type;
-        this.title = title;
-        this.allowed = true;
-        this.requiredByModules = 0;
-    }
-
     public ModuleAllowedTypeItem(int type, String title, boolean allowed, int requiredByModules) {
         this.type = type;
         this.title = title;
-        this.allowed = requiredByModules == 0 ? allowed : true;
+        this.allowed = allowed;
         this.requiredByModules = requiredByModules;
     }
 

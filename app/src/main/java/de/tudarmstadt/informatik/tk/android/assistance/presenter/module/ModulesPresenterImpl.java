@@ -261,7 +261,7 @@ public class ModulesPresenterImpl extends
         Log.d(TAG, "Requesting service...");
 
         ToggleModuleRequestDto toggleModuleRequest = new ToggleModuleRequestDto();
-        toggleModuleRequest.setModuleId(moduleResponse.getPackageName());
+        toggleModuleRequest.setModulePackageName(moduleResponse.getPackageName());
 
         controller.requestModuleActivation(toggleModuleRequest, userToken, this);
     }
@@ -300,7 +300,7 @@ public class ModulesPresenterImpl extends
 
         // forming request to server
         final ToggleModuleRequestDto toggleModuleRequest = new ToggleModuleRequestDto();
-        toggleModuleRequest.setModuleId(module.getPackageName());
+        toggleModuleRequest.setModulePackageName(module.getPackageName());
 
         controller.requestModuleDeactivation(toggleModuleRequest, userToken, this);
     }

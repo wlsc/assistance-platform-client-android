@@ -4,7 +4,7 @@
 
     <Preference
         android:key="pref_module_types_permissions"
-        android:summary="@string/settings_module_types_permission_summary"
-        android:title="@string/settings_module_types_permission_title" />
+        android:summary="@string/settings_module_allowed_capability_summary"
+        android:title="@string/settings_module_allowed_capability_title" />
 
 </PreferenceScreen>

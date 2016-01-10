@@ -376,7 +376,7 @@ public class ModulesControllerImpl extends
 //
 //            final DbModuleCapability cap = ConverterUtils.convertModuleCapability(response);
 //
-//            cap.setModuleId(installId);
+//            cap.setModulePackageName(installId);
 //            cap.setActive(true);
 //
 //            dbOptionalCaps.add(cap);

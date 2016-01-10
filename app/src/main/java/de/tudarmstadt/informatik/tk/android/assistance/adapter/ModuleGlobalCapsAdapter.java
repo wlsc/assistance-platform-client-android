@@ -16,8 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.event.module.CheckModuleAllowedPermissionEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.event.module.UpdateModuleAllowedCapabilityStateEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleAllowedPermissionStateChangedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.ModuleAllowedTypeItem;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 
@@ -25,13 +24,13 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 09.01.2016
  */
-public class ModuleTypesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ModuleGlobalCapsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final String TAG = "ModuleTypesAdapter";
+    private static final String TAG = "ModuleGlobalCapsAdapter";
 
     private List<ModuleAllowedTypeItem> mData;
 
-    public ModuleTypesAdapter(List<ModuleAllowedTypeItem> data) {
+    public ModuleGlobalCapsAdapter(List<ModuleAllowedTypeItem> data) {
 
         if (data == null) {
             mData = Collections.emptyList();
@@ -74,12 +73,11 @@ public class ModuleTypesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     Log.d(TAG, "Permission DISABLED");
                 }
 
-                if (isChecked) {
-                    EventBus.getDefault().post(new CheckModuleAllowedPermissionEvent(item.getType()));
-                }
-
                 EventBus.getDefault().post(
-                        new UpdateModuleAllowedCapabilityStateEvent(item.getType(), isChecked));
+                        new ModuleAllowedPermissionStateChangedEvent(
+                                item.getType(),
+                                isChecked,
+                                item.getRequiredByModules()));
             });
 
             if (item.getRequiredByModules() == 0) {
@@ -89,7 +87,7 @@ public class ModuleTypesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 holder.requiredByModules.setText(holder
                         .requiredByModules
                         .getResources()
-                        .getQuantityString(R.plurals.settings_module_types_permission_required_by_modules,
+                        .getQuantityString(R.plurals.settings_module_allowed_capability_required_by_modules,
                                 item.getRequiredByModules(), item.getRequiredByModules()));
             }
         }

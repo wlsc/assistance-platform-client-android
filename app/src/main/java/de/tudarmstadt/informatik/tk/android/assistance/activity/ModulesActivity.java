@@ -675,32 +675,19 @@ public class ModulesActivity extends
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
 
-        builder.setPositiveButton(R.string.button_accept_text, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.button_accept_text, (dialog, which) -> {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "User tapped accept button");
-
-                presenter.handleModulePermissions();
-            }
+            Log.d(TAG, "User tapped accept button");
+            presenter.handleModulePermissions();
         });
 
-        builder.setNegativeButton(R.string.button_cancel_text, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.button_cancel_text, (dialog, which) -> {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "User canceled module install");
-                dialog.cancel();
-            }
+            Log.d(TAG, "User canceled module install");
+            dialog.cancel();
         });
 
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                presenter.setSelectedModuleId("");
-            }
-        });
+        builder.setOnCancelListener(dialog -> presenter.setSelectedModuleId(""));
 
         TextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
         title.setText(selectedModule.getTitle());
@@ -778,39 +765,26 @@ public class ModulesActivity extends
     @Override
     public void showUninstallDialog(final ModuleResponseDto selectedModule) {
 
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        dialogBuilder.setPositiveButton(R.string.button_ok_text, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.button_ok_text, (dialog, which) -> {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "User tapped UNINSTALL " + selectedModule.getTitle() + " module");
-
-                presenter.presentModuleUninstall(ConverterUtils.convertModule(selectedModule));
-            }
+            Log.d(TAG, "User tapped UNINSTALL " + selectedModule.getTitle() + " module");
+            presenter.presentModuleUninstall(ConverterUtils.convertModule(selectedModule));
         });
 
-        dialogBuilder.setNegativeButton(R.string.button_cancel_text, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.button_cancel_text, (dialog, which) -> {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "User tapped cancel uninstall procedure");
-                presenter.setSelectedModuleId("");
-            }
+            Log.d(TAG, "User tapped cancel uninstall procedure");
+            presenter.setSelectedModuleId("");
         });
 
-        dialogBuilder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+        builder.setOnCancelListener(dialog -> presenter.setSelectedModuleId(""));
 
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                presenter.setSelectedModuleId("");
-            }
-        });
+        builder.setTitle(getString(R.string.module_uninstall_title, selectedModule.getTitle()));
+        builder.setMessage(R.string.module_uninstall_message);
 
-        dialogBuilder.setTitle(getString(R.string.module_uninstall_title, selectedModule.getTitle()));
-        dialogBuilder.setMessage(R.string.module_uninstall_message);
-
-        AlertDialog alertDialog = dialogBuilder.create();
+        AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
 
@@ -887,12 +861,8 @@ public class ModulesActivity extends
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setView(dialogView);
 
-        dialogBuilder.setPositiveButton(R.string.button_ok_text, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "User tapped more information about the " + selectedModule.getTitle() + " module");
-            }
+        dialogBuilder.setPositiveButton(R.string.button_ok_text, (dialog, which) -> {
+            Log.d(TAG, "User tapped more information about the " + selectedModule.getTitle() + " module");
         });
 
         dialogBuilder.setTitle(selectedModule.getTitle());
