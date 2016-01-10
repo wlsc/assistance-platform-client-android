@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.tk.android.assistance.event;
+package de.tudarmstadt.informatik.tk.android.assistance.event.module;
 
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 

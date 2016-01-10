@@ -6,28 +6,37 @@ package de.tudarmstadt.informatik.tk.android.assistance.model.item;
  */
 public class ModuleAllowedTypeItem {
 
+    private int type;
+
     private String title;
 
     private boolean allowed;
 
     private int requiredByModules;
 
-    public ModuleAllowedTypeItem(String title, int requiredByModules) {
+    public ModuleAllowedTypeItem(int type, String title, int requiredByModules) {
+        this.type = type;
         this.title = title;
         this.allowed = true;
         this.requiredByModules = requiredByModules;
     }
 
-    public ModuleAllowedTypeItem(String title) {
+    public ModuleAllowedTypeItem(int type, String title) {
+        this.type = type;
         this.title = title;
         this.allowed = true;
         this.requiredByModules = 0;
     }
 
-    public ModuleAllowedTypeItem(String title, boolean allowed, int requiredByModules) {
+    public ModuleAllowedTypeItem(int type, String title, boolean allowed, int requiredByModules) {
+        this.type = type;
         this.title = title;
-        this.allowed = allowed;
+        this.allowed = requiredByModules == 0 ? allowed : true;
         this.requiredByModules = requiredByModules;
+    }
+
+    public int getType() {
+        return this.type;
     }
 
     public String getTitle() {
@@ -42,10 +51,27 @@ public class ModuleAllowedTypeItem {
         return this.requiredByModules;
     }
 
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setAllowed(boolean allowed) {
+        this.allowed = allowed;
+    }
+
+    public void setRequiredByModules(int requiredByModules) {
+        this.requiredByModules = requiredByModules;
+    }
+
     @Override
     public String toString() {
         return "ModuleAllowedTypeItem{" +
-                "title='" + title + '\'' +
+                "type=" + type +
+                ", title='" + title + '\'' +
                 ", allowed=" + allowed +
                 ", requiredByModules=" + requiredByModules +
                 '}';

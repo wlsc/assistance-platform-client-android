@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.common.collect.Lists;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -14,7 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.event.CheckIfModuleCapabilityPermissionWasGrantedEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.CheckIfModuleCapabilityPermissionWasGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleCapabilityHasChangedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
@@ -121,8 +123,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
         if (newList == null) {
             mData = Collections.emptyList();
         } else {
-            mData.clear();
-            mData.addAll(newList);
+            mData = Lists.newArrayList(newList);
         }
 
         notifyDataSetChanged();

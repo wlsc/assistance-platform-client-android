@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical|start" />
+            android:gravity="center_vertical|start"
+            android:textSize="15sp" />
 
         <Switch
             android:id="@+id/switcher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical|start"
+            android:paddingEnd="16dp"
+            android:paddingRight="16dp" />
 
     </LinearLayout>
 
@@ -25,6 +31,7 @@
         android:id="@+id/requiredBy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/pink" />
+        android:textColor="@color/pink"
+        android:visibility="invisible" />
 
 </LinearLayout>

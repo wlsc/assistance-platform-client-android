@@ -34,7 +34,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.ModulesAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.PermissionAdapter;
-import de.tudarmstadt.informatik.tk.android.assistance.event.CheckIfModuleCapabilityPermissionWasGrantedEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.CheckIfModuleCapabilityPermissionWasGrantedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleOptionalPermissionEvent;

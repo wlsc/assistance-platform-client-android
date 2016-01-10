@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.common.collect.Lists;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -103,8 +105,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (newList == null) {
             news = Collections.emptyList();
         } else {
-            news.clear();
-            news.addAll(newList);
+            news = Lists.newArrayList(newList);
         }
 
         notifyDataSetChanged();

@@ -7,13 +7,19 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.common.collect.Lists;
+
 import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.CheckModuleAllowedPermissionEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.UpdateModuleAllowedCapabilityStateEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.ModuleAllowedTypeItem;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -34,23 +40,6 @@ public class ModuleTypesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    /**
-     * Swaps out old data with new data in the adapter
-     *
-     * @param newList
-     */
-    public void swapData(List<ModuleAllowedTypeItem> newList) {
-
-        if (newList == null) {
-            mData = Collections.emptyList();
-        } else {
-            mData.clear();
-            mData.addAll(newList);
-        }
-
-        notifyDataSetChanged();
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -62,21 +51,42 @@ public class ModuleTypesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
 
-        if (holder instanceof ModuleTypesViewHolder) {
+        if (viewHolder instanceof ModuleTypesViewHolder) {
 
             final ModuleAllowedTypeItem item = getItem(position);
-            final ModuleTypesViewHolder viewHolder = (ModuleTypesViewHolder) holder;
+            final ModuleTypesViewHolder holder = (ModuleTypesViewHolder) viewHolder;
 
-            viewHolder.title.setText(item != null ? item.getTitle() : "");
-            viewHolder.switcher.setChecked(item.isAllowed());
+            holder.title.setText(item != null ? item.getTitle() : "");
+
+            if (holder.switcher.isChecked() != item.isAllowed()) {
+                holder.switcher.setChecked(item.isAllowed());
+            }
+
+            holder.switcher.setOnClickListener(v -> {
+
+                boolean isChecked = holder.switcher.isChecked();
+
+                if (isChecked) {
+                    Log.d(TAG, "Permission ENABLED");
+                } else {
+                    Log.d(TAG, "Permission DISABLED");
+                }
+
+                if (isChecked) {
+                    EventBus.getDefault().post(new CheckModuleAllowedPermissionEvent(item.getType()));
+                }
+
+                EventBus.getDefault().post(
+                        new UpdateModuleAllowedCapabilityStateEvent(item.getType(), isChecked));
+            });
 
             if (item.getRequiredByModules() == 0) {
-                viewHolder.requiredByModules.setVisibility(View.INVISIBLE);
+                holder.requiredByModules.setVisibility(View.INVISIBLE);
             } else {
-                viewHolder.requiredByModules.setVisibility(View.VISIBLE);
-                viewHolder.requiredByModules.setText(((ModuleTypesViewHolder) holder)
+                holder.requiredByModules.setVisibility(View.VISIBLE);
+                holder.requiredByModules.setText(holder
                         .requiredByModules
                         .getResources()
                         .getQuantityString(R.plurals.settings_module_types_permission_required_by_modules,
@@ -88,6 +98,26 @@ public class ModuleTypesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemCount() {
         return mData.size();
+    }
+
+    /**
+     * Swaps out old data with new data in the adapter
+     *
+     * @param newList
+     */
+    public void swapData(List<ModuleAllowedTypeItem> newList) {
+
+        if (newList == null) {
+            mData = Collections.emptyList();
+        } else {
+            mData = Lists.newArrayList(newList);
+        }
+
+        notifyDataSetChanged();
+    }
+
+    public List<ModuleAllowedTypeItem> getData() {
+        return mData;
     }
 
     public ModuleAllowedTypeItem getItem(int position) {

@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.common.collect.Lists;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -169,8 +171,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
         if (newList == null) {
             modules = Collections.emptyList();
         } else {
-            modules.clear();
-            modules.addAll(newList);
+            modules = Lists.newArrayList(newList);
         }
 
         notifyDataSetChanged();
