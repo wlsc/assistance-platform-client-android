@@ -32,7 +32,10 @@ public class AppSettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.preference_application);
 
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
-        mParentToolbar.setTitle(R.string.settings_header_application_title);
+
+        if (mParentToolbar != null) {
+            mParentToolbar.setTitle(R.string.settings_header_application_title);
+        }
     }
 
     @Override
