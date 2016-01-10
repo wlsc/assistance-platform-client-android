@@ -24,7 +24,10 @@
     <!-- SETTINGS: APP SETTINGS -->
     <string name="settings_module_types_permission_title">Module permissions</string>
     <string name="settings_module_types_permission_summary">Turn on or off permissions that module can use</string>
-    <string name="settings_module_types_permission_required_by_modules">Required by %1$d modules</string>
+    <plurals name="settings_module_types_permission_required_by_modules">
+        <item quantity="one">Required by %1$d module</item>
+        <item quantity="other">Required by %1$d modules</item>
+    </plurals>
 
     <!-- SETTINGS: SCREEN -->
     <string name="settings_activity_title">Settings</string>

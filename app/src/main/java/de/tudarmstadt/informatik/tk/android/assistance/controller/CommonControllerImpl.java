@@ -8,6 +8,7 @@ import java.util.List;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.ApiProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.DaoProvider;
 
 /**
@@ -18,8 +19,11 @@ public class CommonControllerImpl implements CommonController {
 
     protected final DaoProvider daoProvider;
 
+    protected final ApiProvider apiProvider;
+
     public CommonControllerImpl(Context context) {
         this.daoProvider = DaoProvider.getInstance(context);
+        this.apiProvider = ApiProvider.getInstance(context);
     }
 
     @Override

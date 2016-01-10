@@ -25,10 +25,10 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApi;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.api.ModuleApiProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.SensorProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.api.ModuleApiProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.dao.news.NewsDao;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
@@ -60,7 +60,7 @@ public class MainControllerImpl extends
     public MainControllerImpl(MainPresenter presenter) {
         super(presenter.getContext());
         this.presenter = presenter;
-        this.moduleApiProvider = ModuleApiProvider.getInstance(presenter.getContext());
+        this.moduleApiProvider = apiProvider.getModuleApiProvider();
     }
 
     @Override

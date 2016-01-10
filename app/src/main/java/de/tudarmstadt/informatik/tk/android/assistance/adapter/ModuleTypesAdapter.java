@@ -75,11 +75,12 @@ public class ModuleTypesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (item.getRequiredByModules() == 0) {
                 viewHolder.requiredByModules.setVisibility(View.INVISIBLE);
             } else {
+                viewHolder.requiredByModules.setVisibility(View.VISIBLE);
                 viewHolder.requiredByModules.setText(((ModuleTypesViewHolder) holder)
                         .requiredByModules
                         .getResources()
-                        .getString(R.string.settings_module_types_permission_required_by_modules,
-                                item.getRequiredByModules()));
+                        .getQuantityString(R.plurals.settings_module_types_permission_required_by_modules,
+                                item.getRequiredByModules(), item.getRequiredByModules()));
             }
         }
     }
@@ -91,7 +92,7 @@ public class ModuleTypesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public ModuleAllowedTypeItem getItem(int position) {
 
-        if (position < 0 || position >= getItemCount()) {
+        if (position < 0 || position >= mData.size()) {
             return null;
         }
 
