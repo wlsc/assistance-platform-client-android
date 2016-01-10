@@ -216,7 +216,8 @@ public class MainPresenterImpl extends
 
         if (activeModules == null || activeModules.isEmpty()) {
             Log.d(TAG, "No active modules found");
-            view.showModulesList();
+//            view.showModulesList();
+            view.showAvailableModulesTutorial();
             return;
         }
 

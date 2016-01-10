@@ -113,6 +113,10 @@
     <string name="main_activity_undo_uninstall_button_title">UNDO</string>
     <string name="main_activity_no_module_data_available">No information yet…</string>
 
+    <!-- MAIN SCREEN: TUTORIAL -->
+    <string name="main_activity_tutorial_title">TUTORIAL</string>
+    <string name="main_activity_tutorial_text">You have no modules. Please, tap on highlighted button to see available modules for you</string>
+
     <!-- LOGIN SCREEN -->
     <string name="login_header">Welcome!</string>
     <string name="login_activity_title">SIGN IN</string>

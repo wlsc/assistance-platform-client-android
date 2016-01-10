@@ -1,13 +1,18 @@
 package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
@@ -56,7 +61,12 @@ public class MainActivity extends
     @Bind(R.id.assistance_list)
     protected RecyclerView mRecyclerView;
 
+    @Bind(R.id.show_available_modules)
+    protected FloatingActionButton showAvailableModules;
+
     private Subscription subActivatedModules;
+
+    private ShowcaseView showCaseTutorial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +163,30 @@ public class MainActivity extends
     public void showPermissionsAreCrucialDialog(Set<String> declinedPermissions) {
         Toaster.showLong(getApplicationContext(), R.string.permission_is_crucial);
         Toaster.showLong(getApplicationContext(), R.string.error_modules_were_disabled);
+    }
+
+    @Override
+    public void showAvailableModulesTutorial() {
+
+        if (showCaseTutorial != null && showCaseTutorial.isShowing()) {
+            showCaseTutorial.hide();
+        }
+
+        ShowcaseView.Builder showCaseBuilder = new ShowcaseView.Builder(this);
+
+        showCaseBuilder.setTarget(new ViewTarget((showAvailableModules)));
+        showCaseBuilder.setContentTitle(R.string.main_activity_tutorial_title);
+        showCaseBuilder.setContentText(R.string.main_activity_tutorial_text);
+        showCaseBuilder.setStyle(R.style.AppTheme);
+        showCaseBuilder.withNewStyleShowcase();
+
+        showCaseTutorial = showCaseBuilder.build();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        showAvailableModulesTutorial();
     }
 
     @Override
