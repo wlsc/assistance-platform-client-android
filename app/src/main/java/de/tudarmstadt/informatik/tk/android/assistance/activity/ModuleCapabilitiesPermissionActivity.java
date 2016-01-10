@@ -23,6 +23,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.ModuleTypesAdapter;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.CheckModuleAllowedPermissionEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.event.module.UpdateModuleAllowedCapabilityStateEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.ModuleAllowedTypeItem;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
@@ -202,14 +203,6 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
         Log.d(TAG, "CheckModuleAllowedPermissionEvent invoked");
 
-        String userToken = PreferenceUtils.getUserToken(getApplicationContext());
-        DbUser user = daoProvider.getUserDao().getByToken(userToken);
-
-        if (user == null) {
-            Log.d(TAG, "User is NULL");
-            return;
-        }
-
         String type = SensorApiType.getApiName(event.getDtoType());
 
         Map<String, String[]> dangerousGroup = PermissionUtils
@@ -242,6 +235,30 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                     }
                 })
                 .ask(Config.PERM_MODULE_ALLOWED_CAPABILITY);
+    }
+
+    /**
+     * Updating module permission state into db
+     *
+     * @param event
+     */
+    public void onEvent(UpdateModuleAllowedCapabilityStateEvent event) {
+
+        Log.d(TAG, "UpdateModuleAllowedCapabilityStateEvent invoked");
+
+        String type = SensorApiType.getApiName(event.getType());
+        DbModuleAllowedCapabilities allowedCapability = daoProvider.getModuleAllowedCapsDao().get(type);
+
+        if (allowedCapability == null) {
+            Log.d(TAG, "allowedCapability is NULL");
+            return;
+        }
+
+        allowedCapability.setIsAllowed(event.isChecked());
+
+        daoProvider.getModuleAllowedCapsDao().update(allowedCapability);
+
+        Log.d(TAG, "Allowed capability was refreshed: " + event.isChecked());
     }
 
     /**
