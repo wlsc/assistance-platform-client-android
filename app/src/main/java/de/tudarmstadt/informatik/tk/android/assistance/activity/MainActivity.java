@@ -32,6 +32,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresen
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.RxUtils;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.MainView;
@@ -104,7 +105,7 @@ public class MainActivity extends
     public void setNewsItems(List<ClientFeedbackDto> assistanceNews) {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(new NewsAdapter(assistanceNews));
+        mRecyclerView.setAdapter(new NewsAdapter(assistanceNews, getApplicationContext()));
         mRecyclerView.setVisibility(View.VISIBLE);
         ButterKnife.findById(this, R.id.noData).setVisibility(View.GONE);
     }
@@ -174,11 +175,12 @@ public class MainActivity extends
 
         ShowcaseView.Builder showCaseBuilder = new ShowcaseView.Builder(this);
 
-        showCaseBuilder.setTarget(new ViewTarget((showAvailableModules)));
+        showCaseBuilder.setTarget(new ViewTarget(showAvailableModules));
         showCaseBuilder.setContentTitle(R.string.main_activity_tutorial_title);
         showCaseBuilder.setContentText(R.string.main_activity_tutorial_text);
         showCaseBuilder.setStyle(R.style.AppTheme);
         showCaseBuilder.withNewStyleShowcase();
+        showCaseBuilder.singleShot(10);
 
         showCaseTutorial = showCaseBuilder.build();
     }
@@ -186,7 +188,10 @@ public class MainActivity extends
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        showAvailableModulesTutorial();
+
+        if (!ServiceUtils.isHarvesterAbleToRun(getApplicationContext())) {
+            showAvailableModulesTutorial();
+        }
     }
 
     @Override
@@ -207,6 +212,12 @@ public class MainActivity extends
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        presenter.requestNewNews();
+        super.onResume();
     }
 
     @Override

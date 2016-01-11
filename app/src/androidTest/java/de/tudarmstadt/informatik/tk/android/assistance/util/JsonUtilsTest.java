@@ -5,7 +5,6 @@ import android.support.test.runner.AndroidJUnit4;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import org.junit.After;
 import org.junit.Before;
@@ -58,10 +57,7 @@ public class JsonUtilsTest {
         resource.setHighlighted(Boolean.FALSE);
         resource.setAlignment(TextAlignment.LEFT.getValue());
 
-        JsonParser gsonParser = new JsonParser();
-        JsonObject gsonJsonObject = gsonParser.parse(gson.toJson(resource)).getAsJsonObject();
-
-        JsonObject json2ViewFormat = JsonUtils.mapFeedbackToJson2ViewFormat(gsonJsonObject);
+        JsonObject json2ViewFormat = JsonUtils.getInstance().getJson2ViewFormat(resource);
 
         assertNotNull(json2ViewFormat.get("widget"));
         assertThat(jsonObjectShould.get("widget").getAsString(), is(json2ViewFormat.get("widget").getAsString()));

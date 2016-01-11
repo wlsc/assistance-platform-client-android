@@ -11,6 +11,7 @@ import com.google.gson.JsonSyntaxException;
 
 import org.json.JSONObject;
 
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ContentDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.FeedbackItemType;
 
 
@@ -22,7 +23,43 @@ public class JsonUtils {
 
     private static final String TAG = JsonUtils.class.getSimpleName();
 
+    private static JsonUtils INSTANCE;
+
+    private static Gson gson;
+
     private JsonUtils() {
+        gson = new Gson();
+    }
+
+    public static JsonUtils getInstance() {
+
+        if (INSTANCE == null) {
+            INSTANCE = new JsonUtils();
+        }
+
+        return INSTANCE;
+    }
+
+    public Gson getGson() {
+        return gson;
+    }
+
+    /**
+     * Returns right json2view format from Gson object
+     *
+     * @param contentDto
+     * @return
+     */
+    public JsonObject getJson2ViewFormat(ContentDto contentDto) {
+
+        if (contentDto == null) {
+            return new JsonObject();
+        }
+
+        JsonParser gsonParser = new JsonParser();
+        JsonObject gsonObject = gsonParser.parse(gson.toJson(contentDto)).getAsJsonObject();
+
+        return mapFeedbackToJson2ViewFormat(gsonObject);
     }
 
     /**
@@ -33,7 +70,7 @@ public class JsonUtils {
      * @return
      */
     @Nullable
-    public static JsonObject mapFeedbackToJson2ViewFormat(JsonObject oldObject)
+    private JsonObject mapFeedbackToJson2ViewFormat(JsonObject oldObject)
             throws ClassCastException, IllegalStateException {
 
         if (oldObject == null) {
@@ -76,7 +113,7 @@ public class JsonUtils {
      * @param oldObject
      * @return
      */
-    private static JsonObject formatGroupObject(JsonObject oldObject) {
+    private JsonObject formatGroupObject(JsonObject oldObject) {
 
         JsonObject newObject = null;
 
@@ -95,7 +132,7 @@ public class JsonUtils {
      * @return
      */
     @Nullable
-    private static JsonObject formatImageObject(JsonObject oldObject) {
+    private JsonObject formatImageObject(JsonObject oldObject) {
 
         if (oldObject == null) {
             return null;
@@ -122,7 +159,7 @@ public class JsonUtils {
      * @return
      */
     @Nullable
-    private static JsonObject formatButtonObject(JsonObject oldObject)
+    private JsonObject formatButtonObject(JsonObject oldObject)
             throws ClassCastException, IllegalStateException {
 
         if (oldObject == null) {
@@ -153,14 +190,14 @@ public class JsonUtils {
      * "caption": "test",
      * "highlighted": false,
      * "style": [],
-     * "textAlignment": "LEFT",
+     * "alignment": "LEFT",
      * "type": "text"
      *
      * @param oldObject
      * @return
      */
     @Nullable
-    private static JsonObject formatTextObject(JsonObject oldObject) {
+    private JsonObject formatTextObject(JsonObject oldObject) {
 
         if (oldObject == null) {
             return null;
@@ -168,7 +205,7 @@ public class JsonUtils {
 
         String caption = oldObject.get("caption").getAsString();
         boolean highlighted = oldObject.get("highlighted").getAsBoolean();
-        String alignment = oldObject.get("textAlignment").getAsString();
+        String alignment = oldObject.get("alignment").getAsString();
 
         JsonArray properties = new JsonArray();
 
@@ -210,15 +247,11 @@ public class JsonUtils {
      * @param json
      * @return
      */
-
-    public static boolean isValidJSON(String json) {
+    public boolean isValidJSON(String json) {
 
         try {
-
-            Gson gson = new Gson();
             gson.fromJson(json, Object.class);
             return true;
-
         } catch (JsonSyntaxException e) {
             return false;
         }
@@ -231,7 +264,7 @@ public class JsonUtils {
      * @return
      */
     @Nullable
-    public static JsonElement convert(JSONObject object) {
+    public JsonElement convert(JSONObject object) {
 
         if (object == null) {
             return null;

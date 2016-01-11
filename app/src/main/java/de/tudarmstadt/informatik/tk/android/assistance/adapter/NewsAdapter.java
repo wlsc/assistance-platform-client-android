@@ -1,11 +1,12 @@
 package de.tudarmstadt.informatik.tk.android.assistance.adapter;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.google.common.collect.Lists;
 
@@ -15,7 +16,12 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.util.UiUtils;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.ContentFactory;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ContentDto;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.FeedbackItemType;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.TextDto;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -25,15 +31,23 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int EMPTY_VIEW_TYPE = 10;
 
+    private final Context context;
+
+    private final UiUtils uiUtils;
+
     private List<ClientFeedbackDto> news;
 
-    public NewsAdapter(List<ClientFeedbackDto> news) {
+    public NewsAdapter(List<ClientFeedbackDto> news, Context context) {
 
         if (news == null) {
             this.news = Collections.emptyList();
         } else {
             this.news = news;
         }
+
+        this.context = context;
+
+        uiUtils = UiUtils.getInstance(context);
     }
 
     @Override
@@ -63,10 +77,19 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         if (holder instanceof NewsViewHolder) {
 
-            final ClientFeedbackDto newsCard = getItem(position);
             final NewsViewHolder viewHolder = (NewsViewHolder) holder;
 
-            viewHolder.mContent.setText(newsCard != null ? newsCard.getContent().toString() : "");
+            final ClientFeedbackDto newsCard = getItem(position);
+            final ContentDto cardContent = newsCard.getContent();
+
+            FeedbackItemType feedbackType = FeedbackItemType.getEnum(cardContent.getType());
+
+            switch (feedbackType) {
+                case TEXT:
+                    TextDto textDto = ContentFactory.getText(cardContent);
+                    viewHolder.mContainer.addView(uiUtils.getText(textDto));
+                    break;
+            }
         }
     }
 
@@ -125,8 +148,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      */
     protected static class NewsViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.content)
-        protected TextView mContent;
+        @Bind(R.id.newsContainer)
+        protected LinearLayout mContainer;
 
         public NewsViewHolder(View view) {
             super(view);

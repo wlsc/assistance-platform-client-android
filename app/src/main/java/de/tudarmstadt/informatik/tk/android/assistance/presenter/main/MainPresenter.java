@@ -34,4 +34,6 @@ public interface MainPresenter extends CommonPresenter {
     void onActivatedModulesFailed(RetrofitError error);
 
     void presentRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults);
+
+    void requestNewNews();
 }

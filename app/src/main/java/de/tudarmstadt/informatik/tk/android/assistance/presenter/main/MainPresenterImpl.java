@@ -315,6 +315,14 @@ public class MainPresenterImpl extends
     }
 
     @Override
+    public void requestNewNews() {
+
+        String userToken = PreferenceUtils.getUserToken(getContext());
+
+        controller.requestModuleFeedback(userToken, PreferenceUtils.getCurrentDeviceId(getContext()), this);
+    }
+
+    @Override
     public void onSuccess(ProfileResponseDto apiResponse, Response response) {
 
         if (apiResponse == null) {
