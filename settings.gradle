@@ -1,5 +1,4 @@
-include ':app', ':AssistanceSDK', ':LiveSDK', ':json2view'
+include ':app', ':AssistanceSDK', ':LiveSDK'
 
 project(':AssistanceSDK').projectDir = new File(settingsDir, '../client_android_krakensdk/AssistanceSDK/app')
 project(':LiveSDK').projectDir = new File(settingsDir, '../client_android_krakensdk/AssistanceSDK/libs/LiveSDK/src')
-project(':json2view').projectDir = new File(settingsDir, '../client_android_krakensdk/AssistanceSDK/libs/json2view/json2view')
