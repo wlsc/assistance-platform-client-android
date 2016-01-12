@@ -2,11 +2,20 @@ package de.tudarmstadt.informatik.tk.android.assistance.util;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.Nullable;
 import android.view.Gravity;
-import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.StringUtils;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.TextAlignment;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.ButtonDto;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.ImageDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.TextDto;
 
 /**
@@ -33,42 +42,128 @@ public class UiUtils {
     }
 
     /**
-     * Returns TextView with according settings from feedback text type
+     * Returns TextView with according settings from feedback text DTO type
      *
      * @param textDto
      * @return
      */
+    @Nullable
     public TextView getText(TextDto textDto) {
 
         if (textDto == null) {
             return null;
         }
 
+        String caption = textDto.getCaption();
+        String alignment = textDto.getAlignment();
+        Boolean isHighlighted = textDto.getHighlighted();
+        String[] style = textDto.getStyle();
+
         TextView textView = new TextView(context);
 
-        textView.setText(textDto.getCaption());
-        textView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
 
-        if (textDto.getHighlighted()) {
+        textView.setText(StringUtils.isNullOrEmpty(caption) ? "" : caption);
+
+        if (style != null) {
+            // TODO: do something with style of text
+        }
+
+        /*
+         *  HIGHLIGHT
+         */
+        if (isHighlighted != null && isHighlighted) {
             textView.setTextColor(Color.RED);
         } else {
             textView.setTextColor(Color.BLACK);
         }
 
-        if (textDto.getAlignment().equalsIgnoreCase("CENTER")) {
+        /*
+         *  ALIGNMENT
+         */
+        if (StringUtils.isNotNullAndEmpty(alignment)) {
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT);
+            if (TextAlignment.LEFT.getValue().equalsIgnoreCase(alignment)) {
+
+                params.weight = 1.0f;
+                params.gravity = Gravity.LEFT;
+                params.gravity = Gravity.START;
+            }
+
+            if (TextAlignment.CENTER.getValue().equalsIgnoreCase(alignment)) {
+
+                params.weight = 1.0f;
+                params.gravity = Gravity.CENTER;
+            }
+
+            if (TextAlignment.RIGHT.getValue().equalsIgnoreCase(alignment)) {
+
+                params.weight = 1.0f;
+                params.gravity = Gravity.RIGHT;
+                params.gravity = Gravity.END;
+            }
+        } else {
+            // DEFAULT VALUES
 
             params.weight = 1.0f;
-            params.gravity = Gravity.CENTER;
-
-            textView.setLayoutParams(params);
+            params.gravity = Gravity.LEFT;
+            params.gravity = Gravity.START;
         }
 
+        textView.setLayoutParams(params);
+
         return textView;
+    }
+
+    /**
+     * Returns ImageView with according settings from feedback image DTO type
+     *
+     * @param imageDto
+     * @return
+     */
+    @Nullable
+    public ImageView getImage(ImageDto imageDto) {
+
+        if (imageDto == null) {
+            return null;
+        }
+
+        ImageView imageView = new ImageView(context);
+
+        String source = imageDto.getSource();
+
+        if (source != null) {
+
+            Picasso.with(context)
+                    .load(source)
+                    .placeholder(R.drawable.no_image)
+                    .into(imageView);
+        }
+
+        return imageView;
+    }
+
+    /**
+     * Returns Button with according settings from feedback button DTO type
+     *
+     * @param buttonDto
+     * @return
+     */
+    @Nullable
+    public Button getButton(ButtonDto buttonDto) {
+
+        if (buttonDto == null) {
+            return null;
+        }
+
+        Button button = new Button(context);
+
+        String caption = buttonDto.getCaption();
+
+        button.setText(StringUtils.isNullOrEmpty(caption) ? "" : caption);
+
+        return button;
     }
 }
