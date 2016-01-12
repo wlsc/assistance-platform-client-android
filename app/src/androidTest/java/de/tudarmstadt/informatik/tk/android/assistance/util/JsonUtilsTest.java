@@ -3,8 +3,6 @@ package de.tudarmstadt.informatik.tk.android.assistance.util;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +27,7 @@ public class JsonUtilsTest {
     private Gson gson;
 
     public JsonUtilsTest() {
-        gson = new Gson();
+        gson = JsonUtils.getInstance().getGson();
     }
 
     @Before
@@ -43,11 +41,7 @@ public class JsonUtilsTest {
     }
 
     @Test
-    public void testJson2viewFormatIsOK() {
-
-        JsonObject jsonObjectShould = new JsonObject();
-        jsonObjectShould.addProperty("widget", "TextView");
-        jsonObjectShould.add("properties", new JsonArray());
+    public void testIsJsonValid() {
 
         ContentDto resource = new ContentDto();
 
@@ -57,9 +51,7 @@ public class JsonUtilsTest {
         resource.setHighlighted(Boolean.FALSE);
         resource.setAlignment(TextAlignment.LEFT.getValue());
 
-        JsonObject json2ViewFormat = JsonUtils.getInstance().getJson2ViewFormat(resource);
-
-        assertNotNull(json2ViewFormat.get("widget"));
-        assertThat(jsonObjectShould.get("widget").getAsString(), is(json2ViewFormat.get("widget").getAsString()));
+        assertNotNull(gson.toJson(resource));
+        assertThat(true, is(JsonUtils.getInstance().isValidJSON(gson.toJson(resource))));
     }
 }
