@@ -135,6 +135,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         if (holder instanceof NewsViewHolder) {
 
             final NewsViewHolder viewHolder = (NewsViewHolder) holder;
+            viewHolder.itemView.setHapticFeedbackEnabled(true);
 
             final ClientFeedbackDto newsCard = getItem(position);
             final ContentDto cardContent = newsCard.getContent();
@@ -183,9 +184,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 case MAP:
                     MapDto mapDto = ContentFactory.getMap(cardContent);
                     setMapPoints(mapDto.getPoints());
-                    mapView = uiUtils.getMap(mapDto);
-                    mapView.onCreate(null);
-                    mapView.getMapAsync(this);
+                    mapView = uiUtils.getMap(mapDto, this);
                     viewHolder.mContainer.addView(mapView);
                     break;
                 case GROUP:

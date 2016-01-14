@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.squareup.picasso.Picasso;
 
 import de.tudarmstadt.informatik.tk.android.assistance.R;
@@ -172,7 +173,7 @@ public class UiUtils {
     }
 
     @Nullable
-    public MapView getMap(MapDto mapDto) {
+    public MapView getMap(MapDto mapDto, OnMapReadyCallback callback) {
 
         if (mapDto == null) {
             return null;
@@ -180,7 +181,8 @@ public class UiUtils {
 
         MapView mapView = new MapView(context);
 
-
+        mapView.onCreate(null);
+        mapView.getMapAsync(callback);
 
         return mapView;
     }
