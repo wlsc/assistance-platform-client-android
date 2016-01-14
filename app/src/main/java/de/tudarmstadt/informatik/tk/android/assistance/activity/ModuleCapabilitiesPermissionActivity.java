@@ -185,6 +185,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                             counters.get(type)));
         }
 
+        mPermissionsRecyclerView.setHasFixedSize(true);
         mPermissionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mPermissionsRecyclerView.setAdapter(new ModuleGlobalCapsAdapter(allAllowedModuleCaps));
     }
