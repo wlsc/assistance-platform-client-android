@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.adapter;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     private static final String TAG = "NewsAdapter";
 
     public static final float GOOGLE_MAPS_ZOOM = 10.0f;
+
+    public static final float CARD_MAX_HEIGHT_IN_DP = 200.0f;
 
     private static final int ICON_SETTINGS_MAX_WIDTH = 100;
     private static final int ICON_SETTINGS_MAX_HEIGHT = 70;
@@ -173,20 +176,30 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     TextDto textDto = ContentFactory.getText(cardContent);
                     viewHolder.mContainer.addView(uiUtils.getText(textDto));
                     break;
+                
                 case BUTTON:
                     ButtonDto buttonDto = ContentFactory.getButton(cardContent);
                     viewHolder.mContainer.addView(uiUtils.getButton(buttonDto));
                     break;
+
                 case IMAGE:
                     ImageDto imageDto = ContentFactory.getImage(cardContent);
                     viewHolder.mContainer.addView(uiUtils.getImage(imageDto));
                     break;
+
                 case MAP:
                     MapDto mapDto = ContentFactory.getMap(cardContent);
                     setMapPoints(mapDto.getPoints());
                     mapView = uiUtils.getMap(mapDto, this);
                     viewHolder.mContainer.addView(mapView);
+
+                    ViewGroup.LayoutParams currentLayoutParams = viewHolder.itemView.getLayoutParams();
+                    currentLayoutParams.height = (int) TypedValue
+                            .applyDimension(TypedValue.COMPLEX_UNIT_DIP, CARD_MAX_HEIGHT_IN_DP, context.getResources().getDisplayMetrics());
+                    viewHolder.itemView.setLayoutParams(currentLayoutParams);
+
                     break;
+
                 case GROUP:
                     GroupDto groupDto = ContentFactory.getGroup(cardContent);
                     viewHolder.mContainer.addView(uiUtils.getGroup(groupDto));
