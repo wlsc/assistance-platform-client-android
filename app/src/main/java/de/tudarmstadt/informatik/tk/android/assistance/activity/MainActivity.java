@@ -71,6 +71,7 @@ public class MainActivity extends
     protected FloatingActionButton showAvailableModules;
 
     private Subscription subActivatedModules;
+    private Subscription subModulesFeedback;
 
     private ShowcaseView showCaseTutorial;
 
@@ -191,6 +192,37 @@ public class MainActivity extends
     }
 
     @Override
+    public void subscribeModuleFeedback(Observable<List<ClientFeedbackDto>> observable) {
+
+        subModulesFeedback = observable.subscribe(new Subscriber<List<ClientFeedbackDto>>() {
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+                if (e instanceof RetrofitError) {
+                    presenter.doDefaultErrorProcessing((RetrofitError) e);
+                }
+            }
+
+            @Override
+            public void onNext(List<ClientFeedbackDto> clientFeedbackDtos) {
+
+                if (clientFeedbackDtos == null) {
+                    showUnknownErrorOccurred();
+                    return;
+                }
+
+                presenter.presentModuleCardNews(clientFeedbackDtos);
+            }
+        });
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
@@ -244,6 +276,7 @@ public class MainActivity extends
     protected void onDestroy() {
         ButterKnife.unbind(this);
         RxUtils.unsubscribe(subActivatedModules);
+        RxUtils.unsubscribe(subModulesFeedback);
         super.onDestroy();
     }
 

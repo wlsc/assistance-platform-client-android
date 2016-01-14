@@ -57,7 +57,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
     private PermissionUtil.PermissionRequestObject mRequestObject;
 
-    private Subscription moduleDisableSubscription;
+    private Subscription subModuleDeactivation;
 
     @Bind(R.id.toolbar)
     protected Toolbar mToolbar;
@@ -215,7 +215,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
-        RxUtils.unsubscribe(moduleDisableSubscription);
+        RxUtils.unsubscribe(subModuleDeactivation);
         super.onDestroy();
     }
 
@@ -357,7 +357,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
         for (DbModule dbModule : activeModules) {
 
             // deactivate module
-            moduleDisableSubscription = apiProvider
+            subModuleDeactivation = apiProvider
                     .getModuleApiProvider()
                     .deactivateModule(userToken, request)
                     .subscribe(new Subscriber<Void>() {
@@ -365,7 +365,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                         @Override
                         public void onCompleted() {
 
-                            Log.d(TAG, "moduleDisableSubscription has been completed");
+                            Log.d(TAG, "subModuleDeactivation has been completed");
                         }
 
                         @Override
@@ -375,7 +375,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
                         @Override
                         public void onNext(Void aVoid) {
-                            Log.d(TAG, "moduleDisableSubscription successfully called");
+                            Log.d(TAG, "subModuleDeactivation successfully called");
                         }
                     });
 

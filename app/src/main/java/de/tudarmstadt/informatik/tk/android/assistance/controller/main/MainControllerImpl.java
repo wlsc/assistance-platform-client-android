@@ -13,7 +13,6 @@ import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleFeedbackResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.UserApi;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.ProfileResponseDto;
@@ -24,7 +23,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApi;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.SensorProvider;
@@ -158,26 +156,9 @@ public class MainControllerImpl extends
     }
 
     @Override
-    public void requestModuleFeedback(String userToken,
-                                      Long deviceId,
-                                      final OnModuleFeedbackResponseHandler handler) {
-
-        final ModuleApi moduleEndpoint = ApiGenerator
-                .getInstance(presenter.getContext())
-                .create(ModuleApi.class);
-
-        moduleEndpoint.getModuleFeedback(userToken, deviceId, new Callback<List<ClientFeedbackDto>>() {
-
-            @Override
-            public void success(List<ClientFeedbackDto> clientFeedbackDto, Response response) {
-                handler.onModuleFeedbackSuccess(clientFeedbackDto, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                handler.onModuleFeedbackFailed(error);
-            }
-        });
+    public Observable<List<ClientFeedbackDto>> requestModuleFeedback(String userToken,
+                                                                     Long deviceId) {
+        return moduleApiProvider.moduleFeedback(userToken, deviceId);
     }
 
     @Override

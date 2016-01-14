@@ -14,7 +14,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainController;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.main.MainControllerImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnGooglePlayServicesAvailable;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleFeedbackResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
@@ -44,8 +43,7 @@ public class MainPresenterImpl extends
         CommonPresenterImpl implements
         MainPresenter,
         OnGooglePlayServicesAvailable,
-        OnResponseHandler<ProfileResponseDto>,
-        OnModuleFeedbackResponseHandler {
+        OnResponseHandler<ProfileResponseDto> {
 
     private static final String TAG = MainPresenterImpl.class.getSimpleName();
 
@@ -319,7 +317,9 @@ public class MainPresenterImpl extends
 
         String userToken = PreferenceUtils.getUserToken(getContext());
 
-        controller.requestModuleFeedback(userToken, PreferenceUtils.getCurrentDeviceId(getContext()), this);
+        view.subscribeModuleFeedback(controller.requestModuleFeedback(
+                userToken,
+                PreferenceUtils.getCurrentDeviceId(getContext())));
     }
 
     @Override
@@ -338,22 +338,6 @@ public class MainPresenterImpl extends
 
     @Override
     public void onError(RetrofitError error) {
-        doDefaultErrorProcessing(error);
-    }
-
-    @Override
-    public void onModuleFeedbackSuccess(List<ClientFeedbackDto> clientFeedbackDto, Response response) {
-
-        if (clientFeedbackDto == null) {
-            view.showUnknownErrorOccurred();
-            return;
-        }
-
-        presentModuleCardNews(clientFeedbackDto);
-    }
-
-    @Override
-    public void onModuleFeedbackFailed(RetrofitError error) {
         doDefaultErrorProcessing(error);
     }
 }

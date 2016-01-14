@@ -35,4 +35,6 @@ public interface MainView extends CommonView {
     void showPermissionsAreCrucialDialog(Set<String> declinedPermissions);
 
     void showAvailableModulesTutorial();
+
+    void subscribeModuleFeedback(Observable<List<ClientFeedbackDto>> listObservable);
 }
