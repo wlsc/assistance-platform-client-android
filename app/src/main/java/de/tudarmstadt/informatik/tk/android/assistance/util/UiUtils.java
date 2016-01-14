@@ -9,13 +9,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.MapView;
 import com.squareup.picasso.Picasso;
 
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.StringUtils;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.GroupAlignment;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.TextAlignment;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.ButtonDto;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.GroupDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.ImageDto;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.MapDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.TextDto;
 
 /**
@@ -165,5 +169,49 @@ public class UiUtils {
         button.setText(StringUtils.isNullOrEmpty(caption) ? "" : caption);
 
         return button;
+    }
+
+    @Nullable
+    public MapView getMap(MapDto mapDto) {
+
+        if (mapDto == null) {
+            return null;
+        }
+
+        MapView mapView = new MapView(context);
+
+
+
+        return mapView;
+    }
+
+    @Nullable
+    public LinearLayout getGroup(GroupDto groupDto) {
+
+        if (groupDto == null) {
+            return null;
+        }
+
+        String alignment = groupDto.getAlignment();
+
+        LinearLayout linearLayout = new LinearLayout(context);
+
+        if (StringUtils.isNotNullAndEmpty(alignment)) {
+
+            if (GroupAlignment.HORIZONTAL.getValue().equalsIgnoreCase(alignment)) {
+                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            }
+
+            if (GroupAlignment.VERTICAL.getValue().equalsIgnoreCase(alignment)) {
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+            }
+
+        } else {
+            // DEFAULT VALUES
+
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        }
+
+        return linearLayout;
     }
 }
