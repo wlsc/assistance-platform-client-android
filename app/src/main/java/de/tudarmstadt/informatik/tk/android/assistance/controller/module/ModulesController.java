@@ -62,4 +62,6 @@ public interface ModulesController extends CommonController {
     List<ModuleResponseDto> filterAvailableModulesList(List<ModuleResponseDto> apiResponse);
 
     void updateModuleCapability(DbModuleCapability moduleCapability);
+
+    void updateAvailabilityOfModuleCapability(Set<String> grantedPermissions);
 }

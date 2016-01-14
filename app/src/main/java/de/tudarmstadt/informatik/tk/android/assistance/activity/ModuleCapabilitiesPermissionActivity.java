@@ -277,8 +277,17 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
         Log.d(TAG, "UpdateModuleAllowedCapabilityStateEvent invoked");
 
+        String userToken = PreferenceUtils.getUserToken(getApplicationContext());
+        DbUser user = daoProvider.getUserDao().getByToken(userToken);
+
+        if (user == null) {
+            Log.d(TAG, "User is NULL");
+            return;
+        }
+
         String type = SensorApiType.getApiName(capType);
-        DbModuleAllowedCapabilities allowedCapability = daoProvider.getModuleAllowedCapsDao().get(type);
+        DbModuleAllowedCapabilities allowedCapability = daoProvider.getModuleAllowedCapsDao()
+                .get(type, user.getId());
 
         if (allowedCapability == null) {
             Log.d(TAG, "allowedCapability is NULL");

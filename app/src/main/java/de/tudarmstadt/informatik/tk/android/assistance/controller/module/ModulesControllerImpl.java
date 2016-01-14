@@ -319,6 +319,11 @@ public class ModulesControllerImpl extends
     }
 
     @Override
+    public void updateAvailabilityOfModuleCapability(Set<String> grantedPermissions) {
+
+    }
+
+    @Override
     public boolean insertModuleResponseWithCapabilities(ModuleResponseDto moduleResponse) {
 
         DbUser user = getUserByEmail(PreferenceUtils.getUserEmail(presenter.getContext()));

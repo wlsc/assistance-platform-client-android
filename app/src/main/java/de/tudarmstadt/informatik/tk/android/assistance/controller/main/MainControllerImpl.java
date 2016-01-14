@@ -18,6 +18,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.UserApi;
 import de.tudarmstadt.informatik.tk.android.assistance.model.api.user.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleAllowedCapabilities;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
@@ -27,6 +28,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.Modu
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.api.ModuleApiProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.dao.module.ModuleAllowedCapsDao;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.dao.news.NewsDao;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
@@ -397,5 +399,67 @@ public class MainControllerImpl extends
         }
 
         return true;
+    }
+
+    @Override
+    public void updateAvailabilityOfModuleCapability(Set<String> grantedPermissions) {
+
+        if (grantedPermissions == null || grantedPermissions.isEmpty()) {
+            return;
+        }
+
+        String userToken = PreferenceUtils.getUserToken(presenter.getContext());
+        DbUser user = daoProvider.getUserDao().getByToken(userToken);
+
+        if (user == null) {
+            Log.d(TAG, "User is NULL");
+            return;
+        }
+
+        List<DbModuleAllowedCapabilities> allPossibleCaps = daoProvider.getModuleAllowedCapsDao().getAll();
+
+        if (allPossibleCaps.isEmpty()) {
+            return;
+        }
+
+        ModuleAllowedCapsDao moduleAllowedCaps = daoProvider.getModuleAllowedCapsDao();
+
+        Map<String, String[]> dangerousPerms = PermissionUtils.getInstance(presenter.getContext())
+                .getDangerousPermissionsToDtoMapping();
+
+        List<String> grantedDtoTypes = new ArrayList<>();
+
+        for (String perm : grantedPermissions) {
+
+            for (Map.Entry<String, String[]> entry : dangerousPerms.entrySet()) {
+
+                String[] values = entry.getValue();
+
+                if (values == null) {
+                    continue;
+                }
+
+                if (Arrays.asList(values).contains(perm)) {
+                    grantedDtoTypes.add(entry.getKey());
+                }
+            }
+        }
+
+        /**
+         * Update state for allowed module capability in db
+         */
+        for (DbModuleAllowedCapabilities cap : allPossibleCaps) {
+
+            if (grantedDtoTypes.contains(cap.getType())) {
+                DbModuleAllowedCapabilities oldCap = moduleAllowedCaps
+                        .get(cap.getType(), user.getId());
+
+                oldCap.setIsAllowed(true);
+
+                daoProvider.getModuleAllowedCapsDao().update(oldCap);
+            }
+        }
+
+        Log.d(TAG, "Successfully updated allowed module capability!");
     }
 }

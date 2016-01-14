@@ -59,4 +59,6 @@ public interface MainController extends CommonController {
     void insertModuleCapabilitiesToDb(List<DbModuleCapability> dbRequiredCaps);
 
     boolean insertModuleResponseWithCapabilities(ModuleResponseDto moduleResponseDto);
+
+    void updateAvailabilityOfModuleCapability(Set<String> grantedPermissions);
 }
