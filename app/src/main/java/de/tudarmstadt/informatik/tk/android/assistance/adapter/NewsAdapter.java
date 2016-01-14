@@ -1,7 +1,6 @@
 package de.tudarmstadt.informatik.tk.android.assistance.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,7 +20,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.common.collect.Lists;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +28,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.model.image.ScaledDownTransformation;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.ModuleProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UiUtils;
@@ -47,14 +46,14 @@ import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ite
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 24.10.2015
  */
-public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnMapReadyCallback {
 
     private static final String TAG = "NewsAdapter";
 
+    private static final int ICON_SETTINGS_MAX_WIDTH = 100;
+    private static final int ICON_SETTINGS_MAX_HEIGHT = 70;
+
     private static final int EMPTY_VIEW_TYPE = 10;
-    private static final int GOOGLE_MAP_VIEW_TYPE = 11;
-    private static final int TEXT_VIEW_TYPE = 12;
-    private static final int BUTTON_VIEW_TYPE = 13;
 
     private final Context context;
 
@@ -64,6 +63,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<ClientFeedbackDto> data;
 
+    private GoogleMap googleMap;
+    private MapView mapView;
+    private LatLng mapPoint;
     private LatLng[] mapPoints;
 
     public NewsAdapter(List<ClientFeedbackDto> data, Context context) {
@@ -134,36 +136,17 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             viewHolder.title.setText(moduleProvider.getModuleTitle(newsCard.getModuleId()));
 
-            Transformation scaleDownTransformation = new Transformation() {
-
-                private static final String ICON_MODULE_SETTINGS_WIDTH = "10dp";
-
-                @Override
-                public Bitmap transform(Bitmap source) {
-
-                    int targetWidth = viewHolder.cardSettings.getWidth();
-                    float aspectRatio = source.getHeight() / source.getWidth();
-                    int targetHeight = (int) (targetWidth * aspectRatio);
-
-                    Bitmap bitmap = Bitmap.createScaledBitmap(source, targetWidth, targetHeight, false);
-
-                    if (bitmap != source) {
-                        source.recycle();
-                    }
-
-                    return bitmap;
-                }
-
-                @Override
-                public String key() {
-                    return "transformation" + " " + ICON_MODULE_SETTINGS_WIDTH;
-                }
-            };
+            int size = (int) Math.ceil(Math.sqrt(ICON_SETTINGS_MAX_WIDTH * ICON_SETTINGS_MAX_HEIGHT));
 
             Picasso.with(context)
                     .load(R.drawable.ic_more_vert_black_48dp)
                     .placeholder(R.drawable.no_image)
-                    .transform(scaleDownTransformation)
+                    .transform(new ScaledDownTransformation(
+                            ICON_SETTINGS_MAX_WIDTH,
+                            ICON_SETTINGS_MAX_HEIGHT))
+                    .skipMemoryCache()
+                    .resize(size, size)
+                    .centerInside()
                     .into(viewHolder.cardSettings);
 
 
@@ -188,7 +171,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     break;
                 case MAP:
                     MapDto mapDto = ContentFactory.getMap(cardContent);
-                    viewHolder.mContainer.addView(uiUtils.getMap(mapDto));
+                    mapView = uiUtils.getMap(mapDto);
+                    mapView = getSetuppedMap(mapView);
+                    viewHolder.mContainer.addView(mapView);
                     break;
                 case GROUP:
                     GroupDto groupDto = ContentFactory.getGroup(cardContent);
@@ -196,6 +181,14 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     break;
             }
         }
+    }
+
+    private MapView getSetuppedMap(MapView mapView) {
+
+        mapView.onCreate(null);
+        mapView.getMapAsync(this);
+
+        return mapView;
     }
 
     @Override
@@ -239,90 +232,54 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        this.googleMap = googleMap;
+
+        MapsInitializer.initialize(mapView.getContext());
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+
+        if (mapPoint != null) {
+            updateMapPoint();
+        }
+    }
+
+    private void updateMapPoint() {
+        googleMap.clear();
+
+        // Update the mapView feature data and camera position.
+        googleMap.addMarker(new MarkerOptions().position(mapPoint));
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mapPoint, 10.0f);
+
+        googleMap.moveCamera(cameraUpdate);
+    }
+
+    protected void setLocation() {
+
+        if (googleMap != null) {
+            updateMapPoint();
+        }
+    }
+
+    /**
+     * Setting data only if we need map in the view
+     *
+     * @param mapView
+     * @param mapPoint
+     */
+    protected void setGoogleMap(MapView mapView, LatLng mapPoint) {
+        this.mapView = mapView;
+        this.mapPoint = mapPoint;
+    }
+
     /**
      * An empty view holder if no items available
      */
     protected static class EmptyViewHolder extends RecyclerView.ViewHolder {
         public EmptyViewHolder(View view) {
             super(view);
-        }
-    }
-
-    /**
-     * Text View Holder
-     */
-    protected static class TextViewHolder extends RecyclerView.ViewHolder {
-
-        @Bind(R.id.text)
-        protected TextView textView;
-
-        public TextViewHolder(View view) {
-            super(view);
-
-            ButterKnife.bind(this, view);
-        }
-    }
-
-    /**
-     * Google Maps View Holder
-     */
-    protected static class GoogleMapViewHolder extends RecyclerView.ViewHolder implements OnMapReadyCallback {
-
-        protected GoogleMap googleMap;
-        protected LatLng mapPoint;
-
-        @Bind(R.id.map)
-        protected MapView mapView;
-
-        public GoogleMapViewHolder(View view) {
-            super(view);
-
-            ButterKnife.bind(this, view);
-
-            this.mapView.onCreate(null);
-            this.mapView.getMapAsync(this);
-        }
-
-        protected void setLocation() {
-
-            if (googleMap != null) {
-                updateMapPoint();
-            }
-        }
-
-        /**
-         * Setting data only if we need map in the view
-         *
-         * @param mapView
-         * @param mapPoint
-         */
-        protected void setGoogleMap(MapView mapView, LatLng mapPoint) {
-            this.mapView = mapView;
-            this.mapPoint = mapPoint;
-        }
-
-        @Override
-        public void onMapReady(GoogleMap googleMap) {
-
-            this.googleMap = googleMap;
-
-            MapsInitializer.initialize(mapView.getContext());
-            googleMap.getUiSettings().setMapToolbarEnabled(false);
-
-            if (mapPoint != null) {
-                updateMapPoint();
-            }
-        }
-
-        private void updateMapPoint() {
-            googleMap.clear();
-
-            // Update the mapView feature data and camera position.
-            googleMap.addMarker(new MarkerOptions().position(mapPoint));
-
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mapPoint, 10.0f);
-
-            googleMap.moveCamera(cameraUpdate);
         }
     }
 
