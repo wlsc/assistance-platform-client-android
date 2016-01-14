@@ -27,8 +27,11 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
+import de.tudarmstadt.informatik.tk.android.assistance.event.ShowGoogleMapEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.model.image.ScaledDownTransformation;
+import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.ModuleProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.UiUtils;
@@ -46,9 +49,12 @@ import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ite
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 24.10.2015
  */
-public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnMapReadyCallback {
+public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
+        OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
     private static final String TAG = "NewsAdapter";
+
+    public static final float GOOGLE_MAPS_ZOOM = 10.0f;
 
     private static final int ICON_SETTINGS_MAX_WIDTH = 100;
     private static final int ICON_SETTINGS_MAX_HEIGHT = 70;
@@ -65,7 +71,6 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     private GoogleMap googleMap;
     private MapView mapView;
-    private LatLng mapPoint;
     private LatLng[] mapPoints;
 
     public NewsAdapter(List<ClientFeedbackDto> data, Context context) {
@@ -134,6 +139,12 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             final ClientFeedbackDto newsCard = getItem(position);
             final ContentDto cardContent = newsCard.getContent();
 
+            // TEST !!!!!!!
+//            List<Double[]> tmp = new ArrayList<>();
+//            tmp.add(new Double[]{49.8752582, 8.6693696});
+//            cardContent.setPoints(tmp.toArray(new Double[tmp.size()][]));
+            // !!!!!!!!!!!!
+
             viewHolder.title.setText(moduleProvider.getModuleTitle(newsCard.getModuleId()));
 
             int size = (int) Math.ceil(Math.sqrt(ICON_SETTINGS_MAX_WIDTH * ICON_SETTINGS_MAX_HEIGHT));
@@ -144,14 +155,14 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     .transform(new ScaledDownTransformation(
                             ICON_SETTINGS_MAX_WIDTH,
                             ICON_SETTINGS_MAX_HEIGHT))
-                    .skipMemoryCache()
                     .resize(size, size)
                     .centerInside()
                     .into(viewHolder.cardSettings);
 
-
             viewHolder.cardSettings.setOnClickListener(v -> {
                 Log.d(TAG, "User selected more for " + newsCard.getModuleId() + " module");
+
+                Toaster.showShort(v.getContext(), R.string.feature_is_under_construction);
             });
 
             FeedbackItemType feedbackType = FeedbackItemType.getEnum(cardContent.getType());
@@ -171,8 +182,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     break;
                 case MAP:
                     MapDto mapDto = ContentFactory.getMap(cardContent);
+                    setMapPoints(mapDto.getPoints());
                     mapView = uiUtils.getMap(mapDto);
-                    mapView = getSetuppedMap(mapView);
+                    mapView.onCreate(null);
+                    mapView.getMapAsync(this);
                     viewHolder.mContainer.addView(mapView);
                     break;
                 case GROUP:
@@ -181,14 +194,6 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     break;
             }
         }
-    }
-
-    private MapView getSetuppedMap(MapView mapView) {
-
-        mapView.onCreate(null);
-        mapView.getMapAsync(this);
-
-        return mapView;
     }
 
     @Override
@@ -237,41 +242,37 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
         this.googleMap = googleMap;
 
+        googleMap.setOnMapClickListener(this);
+
         MapsInitializer.initialize(mapView.getContext());
         googleMap.getUiSettings().setMapToolbarEnabled(false);
 
-        if (mapPoint != null) {
+        if (mapPoints != null) {
             updateMapPoint();
-        }
-    }
-
-    private void updateMapPoint() {
-        googleMap.clear();
-
-        // Update the mapView feature data and camera position.
-        googleMap.addMarker(new MarkerOptions().position(mapPoint));
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mapPoint, 10.0f);
-
-        googleMap.moveCamera(cameraUpdate);
-    }
-
-    protected void setLocation() {
-
-        if (googleMap != null) {
-            updateMapPoint();
+        } else {
+            Log.d(TAG, "Map points are null");
         }
     }
 
     /**
-     * Setting data only if we need map in the view
-     *
-     * @param mapView
-     * @param mapPoint
+     * Updated points/markers on Google Map
      */
-    protected void setGoogleMap(MapView mapView, LatLng mapPoint) {
-        this.mapView = mapView;
-        this.mapPoint = mapPoint;
+    private void updateMapPoint() {
+
+        // first clear it
+        googleMap.clear();
+
+        for (LatLng point : mapPoints) {
+            googleMap.addMarker(new MarkerOptions().position(point));
+        }
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mapPoints[0], GOOGLE_MAPS_ZOOM);
+        googleMap.moveCamera(cameraUpdate);
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        EventBus.getDefault().post(new ShowGoogleMapEvent(latLng));
     }
 
     /**

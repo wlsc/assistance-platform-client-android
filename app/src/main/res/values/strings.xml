@@ -16,6 +16,7 @@
     <string name="button_next_text">next</string>
     <string name="background">Background</string>
     <string name="none">none</string>
+    <string name="feature_is_under_construction">This feature is under construction!</string>
     <string name="no_data">no data</string>
     <string name="permission_is_crucial">These permissions are crucial for this module</string>
 

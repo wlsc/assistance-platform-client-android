@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -13,19 +14,23 @@ import android.view.View;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.adapter.NewsAdapter;
+import de.tudarmstadt.informatik.tk.android.assistance.event.ShowGoogleMapEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenterImpl;
@@ -216,8 +221,23 @@ public class MainActivity extends
 
     @Override
     protected void onResume() {
+
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+
         presenter.requestNewNews();
         super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+
+        super.onPause();
     }
 
     @Override
@@ -317,5 +337,19 @@ public class MainActivity extends
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         presenter.presentRequestPermissionResult(requestCode, permissions, grantResults);
+    }
+
+    public void onEvent(ShowGoogleMapEvent event) {
+
+        Log.d(TAG, "ShowGoogleMapEvent has arrived.");
+
+        LatLng point = event.getLatLng();
+
+        Log.d(TAG, "Latitude: " + point.latitude);
+        Log.d(TAG, "Longitude: " + point.longitude);
+
+        String uri = String.format(Locale.getDefault(), "geo:%f,%f", point.latitude, point.longitude);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        startActivity(intent);
     }
 }
