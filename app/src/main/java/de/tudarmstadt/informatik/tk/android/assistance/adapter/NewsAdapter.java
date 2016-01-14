@@ -75,6 +75,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     private GoogleMap googleMap;
     private MapView mapView;
     private LatLng[] mapPoints;
+    private boolean showUserMapLocation;
 
     public NewsAdapter(List<ClientFeedbackDto> data, Context context) {
 
@@ -149,6 +150,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 //            cardContent.setPoints(tmp.toArray(new Double[tmp.size()][]));
             // !!!!!!!!!!!!
 
+            showUserMapLocation = false;
+
             viewHolder.title.setText(moduleProvider.getModuleTitle(newsCard.getModuleId()));
 
             int size = (int) Math.ceil(Math.sqrt(ICON_SETTINGS_MAX_WIDTH * ICON_SETTINGS_MAX_HEIGHT));
@@ -176,7 +179,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     TextDto textDto = ContentFactory.getText(cardContent);
                     viewHolder.mContainer.addView(uiUtils.getText(textDto));
                     break;
-                
+
                 case BUTTON:
                     ButtonDto buttonDto = ContentFactory.getButton(cardContent);
                     viewHolder.mContainer.addView(uiUtils.getButton(buttonDto));
@@ -189,6 +192,12 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
                 case MAP:
                     MapDto mapDto = ContentFactory.getMap(cardContent);
+
+                    // show user location om map
+                    if (mapDto.getShowUserLocation() != null && mapDto.getShowUserLocation()) {
+                        showUserMapLocation = true;
+                    }
+
                     setMapPoints(mapDto.getPoints());
                     mapView = uiUtils.getMap(mapDto, this);
                     viewHolder.mContainer.addView(mapView);
@@ -254,10 +263,18 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
         this.googleMap = googleMap;
 
-        googleMap.setOnMapClickListener(this);
+        if (showUserMapLocation) {
+            try {
+                this.googleMap.setMyLocationEnabled(true);
+            } catch (SecurityException sx) {
+                Log.d(TAG, "SecurityException: user disabled location permission!");
+            }
+        }
+
+        this.googleMap.setOnMapClickListener(this);
 
         MapsInitializer.initialize(mapView.getContext());
-        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        this.googleMap.getUiSettings().setMapToolbarEnabled(false);
 
         if (mapPoints != null) {
             updateMapPoint();
