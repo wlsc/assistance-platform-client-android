@@ -12,12 +12,12 @@ android {
         applicationId "de.tudarmstadt.informatik.tk.android.assistance"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 20
-        versionName "1.1.0"
+        versionCode 21
+        versionName "1.2.0"
 
         multiDexEnabled true
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
     }
     buildTypes {
         release {
