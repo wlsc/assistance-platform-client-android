@@ -311,6 +311,9 @@ public class MainPresenterImpl extends
                     controller.insertActiveModules(modulesToInstall);
 
                     HarvesterServiceProvider.getInstance(getContext()).startSensingService();
+
+                    // request new feedback
+                    requestNewNews();
                 }
 
                 break;

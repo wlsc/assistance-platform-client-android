@@ -155,7 +155,7 @@ public class MainActivity extends
             @Override
             public void onError(Throwable e) {
                 if (e instanceof RetrofitError) {
-                    presenter.onActivatedModulesFailed((RetrofitError) e);
+                    presenter.doDefaultErrorProcessing((RetrofitError) e);
                 }
             }
 
@@ -258,7 +258,10 @@ public class MainActivity extends
             EventBus.getDefault().register(this);
         }
 
-        presenter.requestNewNews();
+        if(ServiceUtils.isHarvesterAbleToRun(getApplicationContext())) {
+            presenter.requestNewNews();
+        }
+
         super.onResume();
     }
 
@@ -343,10 +346,6 @@ public class MainActivity extends
 
     @Override
     public void askPermissions(Set<String> permsToAsk) {
-
-        if (permsToAsk.isEmpty()) {
-            return;
-        }
 
         ActivityCompat.requestPermissions(this,
                 permsToAsk.toArray(new String[permsToAsk.size()]),

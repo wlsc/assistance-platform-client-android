@@ -38,6 +38,7 @@ android {
         }
     }
     dexOptions {
+        javaMaxHeapSize '4g'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -56,7 +57,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    // multidex
+    // multidex support
     compile 'com.android.support:multidex:1.0.1'
     // sensor information gathering
     compile project(':AssistanceSDK')
