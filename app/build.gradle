@@ -56,6 +56,8 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    // multidex
+    compile 'com.android.support:multidex:1.0.1'
     // sensor information gathering
     compile project(':AssistanceSDK')
     // support libraries

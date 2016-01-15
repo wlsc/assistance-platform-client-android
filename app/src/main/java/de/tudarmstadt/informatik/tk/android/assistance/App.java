@@ -1,6 +1,8 @@
 package de.tudarmstadt.informatik.tk.android.assistance;
 
-import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -15,7 +17,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.LogWrappe
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 24.08.2015
  */
-public class App extends Application {
+public class App extends MultiDexApplication {
 
     private static final String TAG = App.class.getSimpleName();
 
@@ -83,5 +85,11 @@ public class App extends Application {
         // load config from xml file
         tracker = analytics.newTracker(R.xml.analytics_global_config);
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 }
