@@ -1,6 +1,5 @@
 package de.tudarmstadt.informatik.tk.android.assistance.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,11 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.kayvannj.permission_utils.Func;
 import com.github.kayvannj.permission_utils.PermissionUtil;
-import com.pkmmte.view.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
@@ -44,6 +43,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninst
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModulesListRefreshEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleCapabilityHasChangedEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.settings.ModuleStateChangeEvent;
+import de.tudarmstadt.informatik.tk.android.assistance.model.image.CircleTransformation;
 import de.tudarmstadt.informatik.tk.android.assistance.model.item.PermissionListItem;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenter;
@@ -692,12 +692,14 @@ public class ModulesActivity extends
         TextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
         title.setText(selectedModule.getTitle());
 
-        CircularImageView circularImageView = ButterKnife.findById(dialogView, R.id.module_permission_icon);
+        ImageView imageView = ButterKnife.findById(dialogView, R.id.module_permission_icon);
 
         Picasso.with(this)
                 .load(selectedModule.getLogo())
                 .placeholder(R.drawable.no_image)
-                .into(circularImageView);
+                .transform(new CircleTransformation())
+                .centerCrop()
+                .into(imageView);
 
         permissionsEmptyRequired = ButterKnife.findById(
                 dialogView,
