@@ -19,7 +19,6 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.jakewharton.rxbinding.widget.RxTextView;
 
 import java.util.Collections;
 import java.util.Set;
@@ -40,8 +39,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.LoginView;
 import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
-import rx.Observable;
-import rx.Subscription;
 
 /**
  * A login screen that offers login via email/password
@@ -94,8 +91,6 @@ public class LoginActivity extends
     private LoginPresenter presenter;
 
     private CallbackManager callbackManager;
-
-    private Subscription subLoginButtonEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,12 +218,6 @@ public class LoginActivity extends
         setTitle(R.string.login_activity_title);
 
         ButterKnife.bind(this);
-
-        subLoginButtonEnabled = Observable.combineLatest(
-                RxTextView.textChanges(mEmailTextView),
-                RxTextView.textChanges(mPasswordView),
-                (login, password) -> login.length() > 0 && password.length() > 0
-        ).subscribe(mLoginButton::setEnabled);
     }
 
     @Override
@@ -338,10 +327,6 @@ public class LoginActivity extends
         ButterKnife.unbind(this);
         mSplashView = null;
         uiThreadHandler = null;
-
-        if (subLoginButtonEnabled != null) {
-            subLoginButtonEnabled.unsubscribe();
-        }
         super.onDestroy();
     }
 
