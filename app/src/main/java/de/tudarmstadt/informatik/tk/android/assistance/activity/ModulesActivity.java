@@ -698,7 +698,6 @@ public class ModulesActivity extends
                 .load(selectedModule.getLogo())
                 .placeholder(R.drawable.no_image)
                 .transform(new CircleTransformation())
-                .centerCrop()
                 .into(imageView);
 
         permissionsEmptyRequired = ButterKnife.findById(
