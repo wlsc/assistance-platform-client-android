@@ -149,26 +149,7 @@ public class MainActivity extends
 
     @Override
     public void subscribeActiveAvailableModules(Observable<ActivatedModulesResponse> observable) {
-
-        subActivatedModules = observable.subscribe(new Subscriber<ActivatedModulesResponse>() {
-
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (e instanceof RetrofitError) {
-                    presenter.doDefaultErrorProcessing((RetrofitError) e);
-                }
-            }
-
-            @Override
-            public void onNext(ActivatedModulesResponse activatedModulesResponse) {
-                presenter.onActivatedModulesReceived(activatedModulesResponse);
-            }
-        });
+        subActivatedModules = observable.subscribe(new ActivatedModulesSubscriber());
     }
 
     @Override
@@ -198,33 +179,7 @@ public class MainActivity extends
 
     @Override
     public void subscribeModuleFeedback(Observable<List<ClientFeedbackDto>> observable) {
-
-        subModulesFeedback = observable.subscribe(new Subscriber<List<ClientFeedbackDto>>() {
-
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-                if (e instanceof RetrofitError) {
-                    presenter.doDefaultErrorProcessing((RetrofitError) e);
-                }
-            }
-
-            @Override
-            public void onNext(List<ClientFeedbackDto> clientFeedbackDtos) {
-
-                if (clientFeedbackDtos == null) {
-                    showUnknownErrorOccurred();
-                    return;
-                }
-
-                presenter.presentModuleCardNews(clientFeedbackDtos);
-            }
-        });
+        subModulesFeedback = observable.subscribe(new ModulesFeedbackSubscriber());
     }
 
     @Override
@@ -409,5 +364,52 @@ public class MainActivity extends
         String uri = String.format(Locale.getDefault(), "geo:%f,%f", point.latitude, point.longitude);
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         startActivity(intent);
+    }
+
+    private class ActivatedModulesSubscriber extends Subscriber<ActivatedModulesResponse> {
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (e instanceof RetrofitError) {
+                presenter.doDefaultErrorProcessing((RetrofitError) e);
+            }
+        }
+
+        @Override
+        public void onNext(ActivatedModulesResponse activatedModulesResponse) {
+            presenter.onActivatedModulesReceived(activatedModulesResponse);
+        }
+    }
+
+    private class ModulesFeedbackSubscriber extends Subscriber<List<ClientFeedbackDto>> {
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+            if (e instanceof RetrofitError) {
+                presenter.doDefaultErrorProcessing((RetrofitError) e);
+            }
+        }
+
+        @Override
+        public void onNext(List<ClientFeedbackDto> clientFeedbackDtos) {
+
+            if (clientFeedbackDtos == null) {
+                showUnknownErrorOccurred();
+                return;
+            }
+
+            presenter.presentModuleCardNews(clientFeedbackDtos);
+        }
     }
 }

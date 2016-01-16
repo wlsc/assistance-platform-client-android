@@ -409,13 +409,11 @@ public class ModulesActivity extends
 
     @Override
     public void subscribeActivatedModules(Observable<ActivatedModulesResponse> observable) {
-
         subActivatedModules = observable.subscribe(new ActivatedModulesSubscriber());
     }
 
     @Override
     public void subscribeModuleDeactivation(Observable<Void> observable) {
-
         subModuleDeactivation = observable.subscribe(new ModuleDeactivationSubscriber());
     }
 

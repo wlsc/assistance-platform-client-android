@@ -36,6 +36,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.sensing.Sen
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.ApiProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.SensorProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.api.ModuleApiProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
@@ -380,30 +381,14 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
         List<DbModule> activeModules = daoProvider.getModuleDao().getAllActive(user.getId());
 
+        ModuleApiProvider moduleApiProvider = apiProvider.getModuleApiProvider();
+
         for (DbModule dbModule : activeModules) {
 
             // deactivate module
-            subModuleDeactivation = apiProvider
-                    .getModuleApiProvider()
+            subModuleDeactivation = moduleApiProvider
                     .deactivateModule(userToken, request)
-                    .subscribe(new Subscriber<Void>() {
-
-                        @Override
-                        public void onCompleted() {
-
-                            Log.d(TAG, "subModuleDeactivation has been completed");
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Toaster.showLong(getApplicationContext(), R.string.error_unknown);
-                        }
-
-                        @Override
-                        public void onNext(Void aVoid) {
-                            Log.d(TAG, "subModuleDeactivation successfully called");
-                        }
-                    });
+                    .subscribe(new ModuleDeactivationSubscriber());
 
             List<DbModuleCapability> caps = dbModule.getDbModuleCapabilityList();
 
@@ -462,5 +447,24 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
         }
 
         mRequestObject.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private class ModuleDeactivationSubscriber extends Subscriber<Void> {
+
+        @Override
+        public void onCompleted() {
+
+            Log.d(TAG, "subModuleDeactivation has been completed");
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+        }
+
+        @Override
+        public void onNext(Void aVoid) {
+            Log.d(TAG, "subModuleDeactivation successfully called");
+        }
     }
 }
