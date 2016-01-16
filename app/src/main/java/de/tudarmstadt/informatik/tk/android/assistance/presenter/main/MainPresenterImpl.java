@@ -73,6 +73,7 @@ public class MainPresenterImpl extends
 
         view.initView();
 
+        // only for developer compilation
         if (AppUtils.isDebug(getContext())) {
             PreferenceUtils.setDeveloperStatus(getContext(), true);
         }

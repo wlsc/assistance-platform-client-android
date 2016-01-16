@@ -34,6 +34,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.ShowGoogleMapEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.main.MainPresenterImpl;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.event.ShowAccessibilityServiceTutorialEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.RxUtils;
@@ -91,13 +92,17 @@ public class MainActivity extends
         ButterKnife.bind(this);
 
         try {
+
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         } catch (Exception e) {
             // fix for Samsung Android 4.2.2 AppCompat ClassNotFoundException
         }
 
         setTitle(R.string.main_activity_title);
+
+        showNoNews();
     }
 
     @Override
@@ -131,7 +136,7 @@ public class MainActivity extends
     @Override
     public void showGooglePlayServicesImportantView() {
 
-        Intent intent = new Intent(getApplicationContext(), NoPlayServicesActivity.class);
+        Intent intent = new Intent(this, NoPlayServicesActivity.class);
         startActivity(intent);
     }
 
@@ -258,7 +263,7 @@ public class MainActivity extends
             EventBus.getDefault().register(this);
         }
 
-        if(ServiceUtils.isHarvesterAbleToRun(getApplicationContext())) {
+        if (ServiceUtils.isHarvesterAbleToRun(getApplicationContext())) {
             presenter.requestNewNews();
         }
 
@@ -273,6 +278,21 @@ public class MainActivity extends
         }
 
         super.onPause();
+    }
+
+    @Override
+    protected void subscribeRequests() {
+
+    }
+
+    @Override
+    protected void unsubscribeRequests() {
+
+    }
+
+    @Override
+    protected void recreateRequests() {
+
     }
 
     @Override
@@ -369,6 +389,12 @@ public class MainActivity extends
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         presenter.presentRequestPermissionResult(requestCode, permissions, grantResults);
+    }
+
+    public void onEvent(ShowAccessibilityServiceTutorialEvent event) {
+        Log.d(TAG, "ShowAccessibilityServiceTutorialEvent has arrived.");
+
+        showAccessibilityServiceTutorial();
     }
 
     public void onEvent(ShowGoogleMapEvent event) {

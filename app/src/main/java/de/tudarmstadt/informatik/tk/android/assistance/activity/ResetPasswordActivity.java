@@ -48,6 +48,21 @@ public class ResetPasswordActivity extends
         super.onDestroy();
     }
 
+    @Override
+    protected void subscribeRequests() {
+
+    }
+
+    @Override
+    protected void unsubscribeRequests() {
+
+    }
+
+    @Override
+    protected void recreateRequests() {
+
+    }
+
     @OnClick(R.id.reset_button)
     void onResetPasswordButtonClicked() {
         presenter.doResetPassword(mUserEmailEditText.getText().toString().trim());

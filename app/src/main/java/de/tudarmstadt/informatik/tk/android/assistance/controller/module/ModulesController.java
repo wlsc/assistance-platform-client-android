@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonController;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
@@ -49,15 +47,10 @@ public interface ModulesController extends CommonController {
      */
     boolean uninstallModuleFromDb(String userToken, String modulePackageName);
 
-    void requestModuleActivation(ToggleModuleRequestDto toggleModuleRequest,
-                                 String userToken,
-                                 OnModuleActivatedResponseHandler handler);
+    Observable<Void> requestModuleActivation(String userToken, ToggleModuleRequestDto toggleModuleRequest);
 
-    void requestModuleDeactivation(ToggleModuleRequestDto toggleModuleRequest,
-                                   String userToken,
-                                   OnModuleDeactivatedResponseHandler handler);
-
-    void updateSensorTimingsFromDb();
+    Observable<Void> requestModuleDeactivation(String userToken,
+                                               ToggleModuleRequestDto toggleModuleRequest);
 
     List<ModuleResponseDto> filterAvailableModulesList(List<ModuleResponseDto> apiResponse);
 

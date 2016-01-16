@@ -84,4 +84,12 @@ public interface ModulesPresenter extends CommonPresenter {
     void onActivatedModulesFailed(RetrofitError error);
 
     void refreshModuleList();
+
+    void onModuleActivateSuccess();
+
+    void onModuleActivateFailed(RetrofitError error);
+
+    void onModuleDeactivateSuccess();
+
+    void onModuleDeactivateFailed(RetrofitError error);
 }

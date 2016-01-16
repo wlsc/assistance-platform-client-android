@@ -2,37 +2,26 @@ package de.tudarmstadt.informatik.tk.android.assistance.controller.module;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.android.assistance.controller.CommonControllerImpl;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbUser;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.event.UpdateSensorIntervalEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.ApiGenerator;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.sensing.SensorApiType;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleApi;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.api.ModuleApiProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.SensorProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.api.ModuleApiProvider;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observable;
 
 /**
@@ -169,101 +158,13 @@ public class ModulesControllerImpl extends
     }
 
     @Override
-    public void requestModuleActivation(ToggleModuleRequestDto toggleModuleRequest,
-                                        String userToken,
-                                        final OnModuleActivatedResponseHandler handler) {
-
-        ModuleApi moduleEndpoint = ApiGenerator.getInstance(
-                presenter.getContext())
-                .create(ModuleApi.class);
-
-        moduleEndpoint.activateModule(userToken, toggleModuleRequest,
-                new Callback<Void>() {
-
-                    @Override
-                    public void success(Void aVoid, Response response) {
-                        handler.onModuleActivateSuccess(response);
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        handler.onModuleActivateFailed(error);
-                    }
-                });
+    public Observable<Void> requestModuleActivation(String userToken, ToggleModuleRequestDto toggleModuleRequest) {
+        return moduleApiProvider.activateModule(userToken, toggleModuleRequest);
     }
 
     @Override
-    public void requestModuleDeactivation(ToggleModuleRequestDto toggleModuleRequest,
-                                          String userToken,
-                                          final OnModuleDeactivatedResponseHandler handler) {
-
-        ModuleApi moduleEndpoint = ApiGenerator.getInstance(
-                presenter.getContext())
-                .create(ModuleApi.class);
-
-        moduleEndpoint.deactivateModule(userToken, toggleModuleRequest,
-                new Callback<Void>() {
-
-                    @Override
-                    public void success(Void aVoid, Response response) {
-                        handler.onModuleDeactivateSuccess(response);
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        handler.onModuleDeactivateFailed(error);
-                    }
-                });
-    }
-
-    @Override
-    public void updateSensorTimingsFromDb() {
-
-        String userToken = PreferenceUtils.getUserToken(presenter.getContext());
-
-        DbUser user = daoProvider.getUserDao().getByToken(userToken);
-
-        if (user == null) {
-            Log.d(TAG, "updateSensorTimingsFromDb: User is NULL");
-            return;
-        }
-
-        List<DbModule> activeModules = daoProvider.getModuleDao().getAllActive(user.getId());
-
-        if (activeModules == null || activeModules.isEmpty()) {
-            Log.d(TAG, "updateSensorTimingsFromDb: active modules is NULL or EMPTY");
-            return;
-        }
-
-        Map<String, DbModuleCapability> activeCapabilities = new HashMap<>();
-
-        for (DbModule module : activeModules) {
-
-            List<DbModuleCapability> moduleActiveCaps = daoProvider
-                    .getModuleCapabilityDao()
-                    .getAllActive(module.getId());
-
-            if (moduleActiveCaps == null) {
-                continue;
-            }
-
-            for (DbModuleCapability cap : moduleActiveCaps) {
-
-                if (cap == null) {
-                    continue;
-                }
-
-                // insert when only new capability type is present
-                if (activeCapabilities.get(cap.getType()) == null) {
-
-                    // firing up an event to change sensors collection frequencies
-                    EventBus.getDefault().post(
-                            new UpdateSensorIntervalEvent(
-                                    SensorApiType.getDtoType(cap.getType()),
-                                    cap.getCollectionInterval()));
-                }
-            }
-        }
+    public Observable<Void> requestModuleDeactivation(String userToken, ToggleModuleRequestDto toggleModuleRequest) {
+        return moduleApiProvider.deactivateModule(userToken, toggleModuleRequest);
     }
 
     @Override

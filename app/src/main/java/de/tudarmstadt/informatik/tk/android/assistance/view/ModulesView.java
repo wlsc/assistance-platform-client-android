@@ -70,6 +70,8 @@ public interface ModulesView extends CommonView {
      */
     void changeModuleLayout(String moduleId, boolean isModuleInstalled);
 
+    void showAccessibilityServiceTutorial();
+
     List<DbModuleCapability> getAllEnabledOptionalPermissions();
 
     void showModuleInstallationFailed();
@@ -81,4 +83,8 @@ public interface ModulesView extends CommonView {
     void showModuleUninstallSuccessful();
 
     void subscribeActivatedModules(Observable<ActivatedModulesResponse> observable);
+
+    void subscribeModuleDeactivation(Observable<Void> voidObservable);
+
+    void subscribeModuleActivation(Observable<Void> voidObservable);
 }

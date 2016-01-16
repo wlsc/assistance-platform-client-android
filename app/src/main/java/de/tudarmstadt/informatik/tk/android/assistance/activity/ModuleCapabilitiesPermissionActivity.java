@@ -91,6 +91,21 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void subscribeRequests() {
+
+    }
+
+    @Override
+    protected void unsubscribeRequests() {
+
+    }
+
+    @Override
+    protected void recreateRequests() {
+
+    }
+
     /**
      * Paints the view
      */
@@ -348,6 +363,8 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
      * @param capType
      */
     private void disableActiveModulesForType(int capType) {
+
+        Log.d(TAG, "disableActiveModulesForType: " + capType);
 
         String userToken = PreferenceUtils.getUserToken(getApplicationContext());
         DbUser user = daoProvider.getUserDao().getByToken(userToken);

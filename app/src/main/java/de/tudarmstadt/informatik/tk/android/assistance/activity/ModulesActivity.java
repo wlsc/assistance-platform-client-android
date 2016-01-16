@@ -51,6 +51,7 @@ import de.tudarmstadt.informatik.tk.android.assistance.presenter.module.ModulesP
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.event.ShowAccessibilityServiceTutorialEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.model.api.module.ModuleResponseDto;
@@ -95,12 +96,18 @@ public class ModulesActivity extends
     private TextView noData;
 
     private Subscription subActivatedModules;
+    private Subscription subModuleActivation;
+    private Subscription subModuleDeactivation;
 
     private PermissionUtil.PermissionRequestObject mRequestObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
 
         setPresenter(new ModulesPresenterImpl(this));
         presenter.initView();
@@ -126,6 +133,21 @@ public class ModulesActivity extends
         }
 
         super.onPause();
+    }
+
+    @Override
+    protected void subscribeRequests() {
+
+    }
+
+    @Override
+    protected void unsubscribeRequests() {
+
+    }
+
+    @Override
+    protected void recreateRequests() {
+
     }
 
     /**
@@ -306,6 +328,19 @@ public class ModulesActivity extends
         }
     }
 
+    public void onEvent(ShowAccessibilityServiceTutorialEvent event) {
+        Log.d(TAG, "ShowAccessibilityServiceTutorialEvent has arrived.");
+
+        showAccessibilityServiceTutorial();
+    }
+
+    @Override
+    public void showAccessibilityServiceTutorial() {
+
+        Intent intent = new Intent(this, AccessibilityTutorialActivity.class);
+        startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
+    }
+
     /**
      * Returns list of permissions which were optional enabled by user
      *
@@ -375,25 +410,19 @@ public class ModulesActivity extends
     @Override
     public void subscribeActivatedModules(Observable<ActivatedModulesResponse> observable) {
 
-        subActivatedModules = observable.subscribe(new Subscriber<ActivatedModulesResponse>() {
+        subActivatedModules = observable.subscribe(new ActivatedModulesSubscriber());
+    }
 
-            @Override
-            public void onCompleted() {
-                // empty
-            }
+    @Override
+    public void subscribeModuleDeactivation(Observable<Void> observable) {
 
-            @Override
-            public void onError(Throwable e) {
-                if (e instanceof RetrofitError) {
-                    presenter.onActivatedModulesFailed((RetrofitError) e);
-                }
-            }
+        subModuleDeactivation = observable.subscribe(new ModuleDeactivationSubscriber());
+    }
 
-            @Override
-            public void onNext(ActivatedModulesResponse activatedModulesResponse) {
-                presenter.onActivatedModulesReceived(activatedModulesResponse);
-            }
-        });
+    @Override
+    public void subscribeModuleActivation(Observable<Void> observable) {
+
+        subModuleActivation = observable.subscribe(new ModuleActivationSubscriber());
     }
 
     @Override
@@ -405,6 +434,8 @@ public class ModulesActivity extends
         }
 
         RxUtils.unsubscribe(subActivatedModules);
+        RxUtils.unsubscribe(subModuleDeactivation);
+        RxUtils.unsubscribe(subModuleActivation);
 
         super.onDestroy();
     }
@@ -736,7 +767,6 @@ public class ModulesActivity extends
             toggleShowOptionalPermissions(true);
         }
 
-
         permissionRequiredRecyclerView.setAdapter(new PermissionAdapter(
                 requiredModuleSensors,
                 PermissionAdapter.REQUIRED));
@@ -898,6 +928,70 @@ public class ModulesActivity extends
 
             module.setActive(isModuleInstalled);
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    private class ActivatedModulesSubscriber extends Subscriber<ActivatedModulesResponse> {
+
+        @Override
+        public void onCompleted() {
+            // empty
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (e instanceof RetrofitError) {
+                presenter.onActivatedModulesFailed((RetrofitError) e);
+            }
+        }
+
+        @Override
+        public void onNext(ActivatedModulesResponse activatedModulesResponse) {
+            presenter.onActivatedModulesReceived(activatedModulesResponse);
+        }
+    }
+
+    private class ModuleActivationSubscriber extends Subscriber<Void> {
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+            if (e instanceof RetrofitError) {
+                presenter.onModuleActivateFailed((RetrofitError) e);
+            }
+        }
+
+        @Override
+        public void onNext(Void aVoid) {
+            presenter.onModuleActivateSuccess();
+        }
+    }
+
+    private class ModuleDeactivationSubscriber extends Subscriber<Void> {
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+            if (e instanceof RetrofitError) {
+
+                RetrofitError error = (RetrofitError) e;
+                presenter.onModuleDeactivateFailed(error);
+            }
+        }
+
+        @Override
+        public void onNext(Void aVoid) {
+            presenter.onModuleDeactivateSuccess();
         }
     }
 }

@@ -16,8 +16,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstal
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleInstallationErrorEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModuleUninstallSuccessfulEvent;
 import de.tudarmstadt.informatik.tk.android.assistance.event.module.ModulesListRefreshEvent;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleActivatedResponseHandler;
-import de.tudarmstadt.informatik.tk.android.assistance.handler.OnModuleDeactivatedResponseHandler;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.db.DbModuleCapability;
@@ -35,7 +33,6 @@ import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.ModulesView;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -43,9 +40,7 @@ import retrofit.client.Response;
  */
 public class ModulesPresenterImpl extends
         CommonPresenterImpl implements
-        ModulesPresenter,
-        OnModuleActivatedResponseHandler,
-        OnModuleDeactivatedResponseHandler {
+        ModulesPresenter {
 
     private static final String TAG = ModulesPresenterImpl.class.getSimpleName();
 
@@ -263,7 +258,7 @@ public class ModulesPresenterImpl extends
         ToggleModuleRequestDto toggleModuleRequest = new ToggleModuleRequestDto();
         toggleModuleRequest.setModulePackageName(moduleResponse.getPackageName());
 
-        controller.requestModuleActivation(toggleModuleRequest, userToken, this);
+        view.subscribeModuleActivation(controller.requestModuleActivation(userToken, toggleModuleRequest));
     }
 
     @Override
@@ -302,7 +297,9 @@ public class ModulesPresenterImpl extends
         final ToggleModuleRequestDto toggleModuleRequest = new ToggleModuleRequestDto();
         toggleModuleRequest.setModulePackageName(module.getPackageName());
 
-        controller.requestModuleDeactivation(toggleModuleRequest, userToken, this);
+        view.subscribeModuleDeactivation(controller.requestModuleDeactivation(
+                userToken,
+                toggleModuleRequest));
     }
 
     @Override
@@ -353,8 +350,7 @@ public class ModulesPresenterImpl extends
     @Override
     public void presentSuccessfulInstallation() {
 
-        controller.updateSensorTimingsFromDb();
-
+        SensorProvider.getInstance(getContext()).synchronizeRunningSensorsWithDb();
         view.changeModuleLayout(selectedModuleId, true);
         startHarvester();
         view.showModuleInstallationSuccessful();
@@ -478,6 +474,9 @@ public class ModulesPresenterImpl extends
     @Override
     public void onActivatedModulesReceived(ActivatedModulesResponse activatedModulesResponse) {
 
+        Log.d(TAG, "onActivatedModulesReceived");
+        Log.d(TAG, activatedModulesResponse.toString());
+
         view.setSwipeRefreshing(false);
 
         if (activatedModulesResponse == null) {
@@ -539,45 +538,39 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onModuleActivateSuccess(Response response) {
+    public void onModuleActivateSuccess() {
 
-        if (response.getStatus() == 200 || response.getStatus() == 204) {
+        Log.d(TAG, "Module is successfully activated!");
 
-            Log.d(TAG, "Module is successfully activated!");
+        ModuleResponseDto moduleResponse = getSelectedModuleResponse();
 
-            ModuleResponseDto moduleResponse = getSelectedModuleResponse();
+        boolean isResultOk = controller.insertModuleResponseWithCapabilities(moduleResponse);
 
-            boolean isResultOk = controller.insertModuleResponseWithCapabilities(moduleResponse);
+        if (!isResultOk) {
+            view.showModuleInstallationFailed();
+            return;
+        }
 
-            if (!isResultOk) {
-                view.showModuleInstallationFailed();
-                return;
-            }
+        // check if service not running -> start it
+        if (!HarvesterServiceProvider.getInstance(getContext()).isServiceRunning()) {
+            HarvesterServiceProvider.getInstance(getContext()).startSensingService();
+        }
 
-            // check if service not running -> start it
-            if (!HarvesterServiceProvider.getInstance(getContext()).isServiceRunning()) {
-                HarvesterServiceProvider.getInstance(getContext()).startSensingService();
-            }
+        // update timing for sensors/events
+        SensorProvider.getInstance(getContext()).synchronizeRunningSensorsWithDb();
 
-            // update timing for sensors/events
-            controller.updateSensorTimingsFromDb();
+        view.showModuleInstallationSuccessful();
 
-            view.showModuleInstallationSuccessful();
+        Log.d(TAG, "Installation has finished!");
 
-            Log.d(TAG, "Installation has finished!");
+        Set<String> permsToAsk = controller.getGrantedPermissions();
 
-            Set<String> permsToAsk = controller.getGrantedPermissions();
-
-            if (!permsToAsk.isEmpty()) {
-                view.askPermissions(permsToAsk);
-            } else {
-                EventBus.getDefault().post(new ModuleInstallSuccessfulEvent(
-                        moduleResponse.getPackageName()));
-                EventBus.getDefault().post(new ModulesListRefreshEvent());
-            }
-
+        if (!permsToAsk.isEmpty()) {
+            view.askPermissions(permsToAsk);
         } else {
-            Log.d(TAG, "FAIL: service responded with code: " + response.getStatus());
+            EventBus.getDefault().post(new ModuleInstallSuccessfulEvent(
+                    moduleResponse.getPackageName()));
+            EventBus.getDefault().post(new ModulesListRefreshEvent());
         }
     }
 
@@ -589,36 +582,32 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onModuleDeactivateSuccess(Response response) {
+    public void onModuleDeactivateSuccess() {
 
-        // deactivation successful
-        if (response.getStatus() == 200 || response.getStatus() == 204) {
+        String userToken = PreferenceUtils.getUserToken(getContext());
 
-            String userToken = PreferenceUtils.getUserToken(getContext());
+        if (userToken.isEmpty()) {
+            view.startLoginActivity();
+            return;
+        }
 
-            if (userToken.isEmpty()) {
-                view.startLoginActivity();
-                return;
+        if (controller.uninstallModuleFromDb(userToken, selectedModuleId)) {
+
+            SensorProvider.getInstance(getContext()).synchronizeRunningSensorsWithDb();
+
+            int numberOfModules = controller.getAllUserModules(userToken).size();
+
+            // we have no entries in db, stop the sensing
+            if (numberOfModules == 0) {
+                stopHarvester();
             }
 
-            if (controller.uninstallModuleFromDb(userToken, selectedModuleId)) {
+            view.changeModuleLayout(selectedModuleId, false);
 
-                controller.updateSensorTimingsFromDb();
-
-                int numberOfModules = controller.getAllUserModules(userToken).size();
-
-                // we have no entries in db, stop the sensing
-                if (numberOfModules == 0) {
-                    stopHarvester();
-                }
-
-                view.changeModuleLayout(selectedModuleId, false);
-
-                EventBus.getDefault().post(new ModuleUninstallSuccessfulEvent(selectedModuleId));
-                EventBus.getDefault().post(new ModulesListRefreshEvent());
+            EventBus.getDefault().post(new ModuleUninstallSuccessfulEvent(selectedModuleId));
+            EventBus.getDefault().post(new ModulesListRefreshEvent());
 
 //            view.showUndoAction(module);
-            }
         }
     }
 
@@ -646,7 +635,7 @@ public class ModulesPresenterImpl extends
                     stopHarvester();
                 }
 
-                controller.updateSensorTimingsFromDb();
+                SensorProvider.getInstance(getContext()).synchronizeRunningSensorsWithDb();
 
                 view.changeModuleLayout(selectedModuleId, false);
 

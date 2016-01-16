@@ -5,12 +5,11 @@ import android.os.Bundle;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
 import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.PreferenceProvider;
-import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AccessibilityUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
-import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 
 /**
  * A tutorial for accessibility service to enable
@@ -26,13 +25,22 @@ public class AccessibilityTutorialActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_accessibility_tutorial);
 
-        ButterKnife.bind(this);
+        boolean wasIgnoredByUser = PreferenceProvider
+                .getInstance(getApplicationContext())
+                .getAccessibilityServiceIgnoredByUser();
 
-        if (AccessibilityUtils.isAccessibilityEnabled(getApplicationContext())) {
+        if (wasIgnoredByUser) {
+
             setResult(Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLED_RESULT);
             finish();
+            return;
+
+        } else {
+
+            setContentView(R.layout.activity_accessibility_tutorial);
+
+            ButterKnife.bind(this);
         }
     }
 
@@ -42,9 +50,27 @@ public class AccessibilityTutorialActivity extends BaseActivity {
         super.onDestroy();
     }
 
+    @Override
+    protected void subscribeRequests() {
+
+    }
+
+    @Override
+    protected void unsubscribeRequests() {
+
+    }
+
+    @Override
+    protected void recreateRequests() {
+
+    }
+
     @OnClick(R.id.ignore_button)
     protected void onIgnoreButton() {
         Log.d(TAG, "User has chosen to ignore accessibility service!");
+
+        PreferenceProvider.getInstance(getApplicationContext()).setAccessibilityServiceIgnoredByUser(true);
+
         setResult(Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
         finish();
     }
