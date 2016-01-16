@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,8 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.Collections;
 import java.util.Set;
@@ -29,12 +32,13 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.tudarmstadt.informatik.tk.android.assistance.Constants;
 import de.tudarmstadt.informatik.tk.android.assistance.R;
-import de.tudarmstadt.informatik.tk.android.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.android.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPresenter;
 import de.tudarmstadt.informatik.tk.android.assistance.presenter.login.LoginPresenterImpl;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.provider.HarvesterServiceProvider;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.Log;
+import de.tudarmstadt.informatik.tk.android.assistance.sdk.util.logger.LogWrapper;
 import de.tudarmstadt.informatik.tk.android.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.android.assistance.view.LoginView;
@@ -47,10 +51,42 @@ import de.tudarmstadt.informatik.tk.android.assistance.view.SplashView;
  * @date 28.06.2015
  */
 public class LoginActivity extends
-        BaseActivity implements
+        AppCompatActivity implements
         LoginView {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
+
+    private static boolean wasInitialized = false;
+
+    /**
+     * The Analytics singleton. The field is set in onCreate method override when the application
+     * class is initially created.
+     */
+    private static GoogleAnalytics analytics;
+
+    /**
+     * The default app tracker. The field is from onCreate callback when the application is
+     * initially created.
+     */
+    private static Tracker tracker;
+
+    /**
+     * Access to the global Analytics singleton. If this method returns null you forgot to either
+     * set android:name="&lt;this.class.name&gt;" attribute on your application element in
+     * AndroidManifest.xml or you are not setting this.analytics field in onCreate method override.
+     */
+    public static GoogleAnalytics getAnalytics() {
+        return analytics;
+    }
+
+    /**
+     * The default app tracker. If this method returns null you forgot to either set
+     * android:name="&lt;this.class.name&gt;" attribute on your application element in
+     * AndroidManifest.xml or you are not setting this.tracker field in onCreate method override.
+     */
+    public static Tracker getTracker() {
+        return tracker;
+    }
 
     @Bind(R.id.email)
     protected EditText mEmailTextView;
@@ -95,6 +131,13 @@ public class LoginActivity extends
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!wasInitialized) {
+            android.util.Log.d(TAG, "Initializing...");
+            initGoogleAnalytics();
+            initLogging();
+            wasInitialized = true;
+        }
 
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
@@ -389,5 +432,32 @@ public class LoginActivity extends
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * Initializes logging
+     */
+    public void initLogging() {
+
+        boolean isDebugEnabled = AppUtils.isDebug(getApplicationContext());
+
+        LogWrapper logWrapper = new LogWrapper();
+        Log.setDebug(isDebugEnabled);
+        Log.setLogNode(logWrapper);
+
+        Log.i(TAG, "Ready");
+    }
+
+    /**
+     * Initialize Google Analytics
+     */
+    private void initGoogleAnalytics() {
+
+        // initialize Google Analytics
+        analytics = GoogleAnalytics.getInstance(this);
+
+        // load config from xml file
+        tracker = analytics.newTracker(R.xml.analytics_global_config);
+
     }
 }
