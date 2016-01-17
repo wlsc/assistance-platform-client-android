@@ -36,6 +36,7 @@ public class Constants {
     public static final String PREF_GCM_TOKEN_SENT = "gcm_token_sent";
     public static final String PREF_DEVELOPER_STATUS = "developer_status";
     public static final String PREF_CUSTOM_ENDPOINT = "custom_endpoint";
+    public static final String PREF_MODULES_TUTORIAL = "modules_tutorial";
 
     /**
      * INTENT CONSTANTS

@@ -349,6 +349,26 @@ public class PreferenceUtils {
     }
 
     /**
+     * Returns ModulesTutorialShown flag
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isModulesTutorialShown(Context context) {
+        return getPreference(context, Constants.PREF_MODULES_TUTORIAL, false);
+    }
+
+    /**
+     * Saves ModulesTutorialShown flag into SharedPreferences
+     *
+     * @param context
+     * @param value
+     */
+    public static void setModulesTutorialShown(Context context, boolean value) {
+        setPreference(context, Constants.PREF_MODULES_TUTORIAL, value);
+    }
+
+    /**
      * Returns user picture filename
      *
      * @param context

@@ -31,6 +31,7 @@ import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.assistance.adapter.NewsAdapter;
 import de.tudarmstadt.informatik.tk.assistance.event.ShowGoogleMapEvent;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.assistance.presenter.main.MainPresenterImpl;
@@ -42,7 +43,6 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.MainView;
-import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import retrofit.RetrofitError;
 import rx.Observable;
 import rx.Subscriber;
@@ -165,6 +165,10 @@ public class MainActivity extends
             showCaseTutorial.hide();
         }
 
+        if (PreferenceUtils.isModulesTutorialShown(getApplicationContext())) {
+            return;
+        }
+
         ShowcaseView.Builder showCaseBuilder = new ShowcaseView.Builder(this);
 
         showCaseBuilder.setTarget(new ViewTarget(showAvailableModules));
@@ -175,6 +179,8 @@ public class MainActivity extends
         showCaseBuilder.singleShot(10);
 
         showCaseTutorial = showCaseBuilder.build();
+
+        PreferenceUtils.setModulesTutorialShown(getApplicationContext(), true);
     }
 
     @Override
