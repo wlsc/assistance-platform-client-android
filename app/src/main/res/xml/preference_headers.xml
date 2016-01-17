@@ -4,7 +4,7 @@
     <!-- Application -->
     <header
         android:id="@+id/application_settings"
-        android:fragment="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.AppSettingsFragment"
+        android:fragment="de.tudarmstadt.informatik.tk.assistance.fragment.settings.AppSettingsFragment"
         android:icon="@drawable/ic_settings_applications_black_48dp"
         android:summary="@string/settings_header_application_summary"
         android:title="@string/settings_header_application_title" />
@@ -12,7 +12,7 @@
     <!-- User Profile -->
     <header
         android:id="@+id/user_settings"
-        android:fragment="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.UserProfileSettingsFragment"
+        android:fragment="de.tudarmstadt.informatik.tk.assistance.fragment.settings.UserProfileSettingsFragment"
         android:icon="@drawable/ic_account_box_black_48dp"
         android:summary="@string/settings_header_user_profile_summary"
         android:title="@string/settings_header_user_profile_title" />
@@ -20,7 +20,7 @@
     <!-- Device Information -->
     <header
         android:id="@+id/about_settings"
-        android:fragment="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DeviceSettingsFragment"
+        android:fragment="de.tudarmstadt.informatik.tk.assistance.fragment.settings.DeviceSettingsFragment"
         android:icon="@drawable/ic_perm_device_information_black_48dp"
         android:summary="@string/settings_header_user_device_summary"
         android:title="@string/settings_header_user_device_title" />
@@ -28,7 +28,7 @@
     <!-- Development -->
     <header
         android:id="@+id/development_settings"
-        android:fragment="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.DevSettingsFragment"
+        android:fragment="de.tudarmstadt.informatik.tk.assistance.fragment.settings.DevSettingsFragment"
         android:icon="@drawable/ic_developer_mode_black_48dp"
         android:summary="@string/settings_header_development_summary"
         android:title="@string/settings_header_development_title" />
@@ -36,7 +36,7 @@
     <!-- About Application and Licenses -->
     <header
         android:id="@+id/about_settings"
-        android:fragment="de.tudarmstadt.informatik.tk.android.assistance.fragment.settings.AboutSettingsFragment"
+        android:fragment="de.tudarmstadt.informatik.tk.assistance.fragment.settings.AboutSettingsFragment"
         android:icon="@drawable/ic_info_outline_black_48dp"
         android:summary="@string/settings_header_help_and_about_title"
         android:title="@string/settings_header_help_and_about_summary" />

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0099cc"
-    tools:context="de.tudarmstadt.informatik.tk.android.assistance.activity.AccessibilityTutorialActivity">
+    tools:context="de.tudarmstadt.informatik.tk.assistance.activity.AccessibilityTutorialActivity">
 
     <LinearLayout
         android:layout_width="wrap_content"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="de.tudarmstadt.informatik.tk.android.assistance">
+    package="de.tudarmstadt.informatik.tk.assistance">
 
     <!-- Permissions -->
     <!-- none -->
@@ -21,16 +21,16 @@
             android:value="AIzaSyBJXoqhi1cxeKe2sODVYMFLk6LCzmLVPBQ" />
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name="de.tudarmstadt.informatik.tk.assistance.activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/main_activity_title"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.LoginActivity" />
+                android:value="de.tudarmstadt.informatik.tk.assistance.activity.LoginActivity" />
         </activity>
         <activity
-            android:name=".activity.LoginActivity"
+            android:name="de.tudarmstadt.informatik.tk.assistance.activity.LoginActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,43 +39,43 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ModulesActivity"
+            android:name="de.tudarmstadt.informatik.tk.assistance.activity.ModulesActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".activity.RegisterActivity"
+            android:name="de.tudarmstadt.informatik.tk.assistance.activity.RegisterActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".activity.LoginActivity">
+            android:parentActivityName="de.tudarmstadt.informatik.tk.assistance.activity.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.LoginActivity" />
+                android:value="de.tudarmstadt.informatik.tk.assistance.activity.LoginActivity" />
         </activity>
         <activity
-            android:name=".activity.ResetPasswordActivity"
+            android:name="de.tudarmstadt.informatik.tk.assistance.activity.ResetPasswordActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".activity.LoginActivity">
+            android:parentActivityName="de.tudarmstadt.informatik.tk.assistance.activity.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.LoginActivity" />
+                android:value="de.tudarmstadt.informatik.tk.assistance.activity.LoginActivity" />
         </activity>
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name="de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".activity.AccessibilityTutorialActivity"
+            android:name="de.tudarmstadt.informatik.tk.assistance.activity.AccessibilityTutorialActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_accessibility_tutorial"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName="de.tudarmstadt.informatik.tk.assistance.activity.MainActivity"
             android:theme="@style/FullscreenTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.tudarmstadt.informatik.tk.android.assistance.activity.MainActivity" />
+                android:value="de.tudarmstadt.informatik.tk.assistance.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.NoPlayServicesActivity"
+            android:name="de.tudarmstadt.informatik.tk.assistance.activity.NoPlayServicesActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/activity_no_play_services_title"
             android:theme="@style/FullscreenTheme" />
-        <activity android:name=".activity.ModuleCapabilitiesPermissionActivity"></activity>
+        <activity android:name="de.tudarmstadt.informatik.tk.assistance.activity.ModuleCapabilitiesPermissionActivity"></activity>
     </application>
 
 </manifest>
