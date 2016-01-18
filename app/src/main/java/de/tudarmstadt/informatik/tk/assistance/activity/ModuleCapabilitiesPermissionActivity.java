@@ -426,23 +426,24 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
         // we have here entry already -> update it
         if (sensorEntry != null) {
 
-            sensorEntry.setWasChanged(Boolean.TRUE);
             sensorEntry.setUsername(username);
             sensorEntry.setPassword(password);
+            sensorEntry.setWasChanged(Boolean.TRUE);
 
             daoProvider.getTucanSensorDao().update(sensorEntry);
 
         } else {
 
             // create new entry
-            DbTucanSensor tucanSensor = new DbTucanSensor();
+            DbTucanSensor sensor = new DbTucanSensor();
 
-            tucanSensor.setUsername(username);
-            tucanSensor.setPassword(password);
-            tucanSensor.setUserId(user.getId());
-            tucanSensor.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+            sensor.setUsername(username);
+            sensor.setPassword(password);
+            sensor.setWasChanged(Boolean.TRUE);
+            sensor.setUserId(user.getId());
+            sensor.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
 
-            daoProvider.getTucanSensorDao().insert(tucanSensor);
+            daoProvider.getTucanSensorDao().insert(sensor);
         }
 
         Log.d(TAG, "storeTucanCredentials: Stored.");
@@ -585,9 +586,9 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
         // we have here entry already -> update it
         if (sensorEntry != null) {
 
-            sensorEntry.setWasChanged(Boolean.TRUE);
             sensorEntry.setOauthToken(oauthToken);
             sensorEntry.setPermissions((new Gson().toJson(permissions)));
+            sensorEntry.setWasChanged(Boolean.TRUE);
 
             daoProvider.getFacebookSensorDao().update(sensorEntry);
 
@@ -600,6 +601,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
             sensor.setPermissions((new Gson().toJson(permissions)));
             sensor.setUserId(user.getId());
             sensor.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+            sensor.setWasChanged(Boolean.TRUE);
 
             daoProvider.getFacebookSensorDao().insert(sensor);
         }
