@@ -255,6 +255,12 @@ public class LoginControllerImpl extends
                     isAllowedByDefault = permissionUtils.isGranted(perms[0]) ? true : false;
                 }
 
+                // special social types
+                if (typeStr.equals(SensorApiType.getApiName(SensorApiType.SOCIAL_FACEBOOK)) ||
+                        typeStr.equals(SensorApiType.getApiName(SensorApiType.UNI_TUCAN))) {
+                    isAllowedByDefault = false;
+                }
+
                 DbModuleAllowedCapabilities newModuleCapPerm = new DbModuleAllowedCapabilities();
 
                 newModuleCapPerm.setDbUser(user);

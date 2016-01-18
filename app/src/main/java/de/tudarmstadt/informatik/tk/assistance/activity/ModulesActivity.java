@@ -710,7 +710,7 @@ public class ModulesActivity extends
             presenter.handleModulePermissions();
         });
 
-        builder.setNegativeButton(R.string.button_cancel_text, (dialog, which) -> {
+        builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
 
             Log.d(TAG, "User canceled module install");
             dialog.cancel();
@@ -796,13 +796,13 @@ public class ModulesActivity extends
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setPositiveButton(R.string.button_ok_text, (dialog, which) -> {
+        builder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
 
             Log.d(TAG, "User tapped UNINSTALL " + selectedModule.getTitle() + " module");
             presenter.presentModuleUninstall(ConverterUtils.convertModule(selectedModule));
         });
 
-        builder.setNegativeButton(R.string.button_cancel_text, (dialog, which) -> {
+        builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
 
             Log.d(TAG, "User tapped cancel uninstall procedure");
             presenter.setSelectedModuleId("");
@@ -890,7 +890,7 @@ public class ModulesActivity extends
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setView(dialogView);
 
-        dialogBuilder.setPositiveButton(R.string.button_ok_text, (dialog, which) -> {
+        dialogBuilder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
             Log.d(TAG, "User tapped more information about the " + selectedModule.getTitle() + " module");
         });
 

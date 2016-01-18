@@ -8,10 +8,10 @@
     <string name="user_feedback_subject">Assistance App Feedback</string>
     <string name="user_feedback_body">Hi,\n\n</string>
     <string name="button_accept_text">ACCEPT</string>
-    <string name="button_ok_text">OK</string>
-    <string name="button_cancel_text">cancel</string>
+    <string name="button_ok">OK</string>
+    <string name="button_cancel">cancel</string>
     <string name="button_back_text">back</string>
-    <string name="button_disable_text">Disable</string>
+    <string name="button_disable">Disable</string>
     <string name="button_ignore_text">ignore</string>
     <string name="button_next_text">next</string>
     <string name="background">Background</string>
@@ -19,11 +19,13 @@
     <string name="feature_is_under_construction">This feature is under construction!</string>
     <string name="no_data">no data</string>
     <string name="permission_is_crucial">These permissions are crucial for this module</string>
+    <string name="changes_were_saved">Changes were saved.</string>
 
     <!-- ACCESSIBILITY SERVICE TUTORIAL -->
     <string name="title_activity_accessibility_tutorial">Extended Accessibility Service Tutorial</string>
 
     <!-- SETTINGS: APP SETTINGS -->
+    <!-- SETTINGS: APP SETTINGS: ALLOWED CAPABILITIES -->
     <string name="settings_module_allowed_capability_title">Module capability permissions</string>
     <string name="settings_module_allowed_capability_summary">Globally turn on/off module capability permissions</string>
     <plurals name="settings_module_allowed_capability_required_by_modules">
@@ -180,6 +182,12 @@
     <string name="activity_no_play_services_title">No Google Play Services</string>
     <string name="activity_no_play_services_login_button">Check again</string>
     <string name="activity_no_play_services_content">The Google Play Services is really important for this application to use. Without it, its impossible to use the application</string>
+
+    <!-- Social Dialogs -->
+    <string name="dialog_social_tucan_header">TUCaN Sensor</string>
+    <string name="dialog_social_tucan_message">This sensor needs your account data to functional normal</string>
+    <string name="dialog_social_tucan_username">TUCaN-ID</string>
+    <string name="dialog_social_tucan_password">Password</string>
 
     <!-- ERROR MESSAGES -->
     <string name="error_invalid_email">This email address is invalid</string>

@@ -174,7 +174,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
             builder.setTitle(getString(R.string.app_name) + " v" + BuildConfig.VERSION_NAME);
             builder.setView(dialogView);
-            builder.setPositiveButton(R.string.button_ok_text, null);
+            builder.setPositiveButton(R.string.button_ok, null);
 
             // DEVELOPERS
             TextView devEmail1 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_developer_email_1);

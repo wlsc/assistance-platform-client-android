@@ -1,12 +1,16 @@
 package de.tudarmstadt.informatik.tk.assistance.activity;
 
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseIntArray;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 import com.github.kayvannj.permission_utils.Func;
 import com.github.kayvannj.permission_utils.PermissionUtil;
@@ -14,7 +18,9 @@ import com.github.kayvannj.permission_utils.PermissionUtil;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -30,6 +36,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleAllowedCapabilities;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbTucanSensor;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.sensing.SensorApiType;
@@ -37,8 +44,10 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.ModuleApiProvider;
+import de.tudarmstadt.informatik.tk.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.RxUtils;
+import de.tudarmstadt.informatik.tk.assistance.sdk.util.StringUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import rx.Subscriber;
@@ -143,7 +152,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                 .getAll();
 
         // calculate numbers
-        SparseIntArray counters = new SparseIntArray();
+        SparseIntArray usageCounters = new SparseIntArray();
 
         for (DbModule dbModule : activeModules) {
 
@@ -164,12 +173,12 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
                         int intType = SensorApiType.getDtoType(type);
 
-                        if (counters.get(intType) == 0) {
-                            counters.put(intType, 1);
+                        if (usageCounters.get(intType) == 0) {
+                            usageCounters.put(intType, 1);
                         } else {
-                            int oldNumber = counters.get(intType);
+                            int oldNumber = usageCounters.get(intType);
                             oldNumber++;
-                            counters.put(intType, oldNumber);
+                            usageCounters.put(intType, oldNumber);
                         }
                     }
                 }
@@ -198,7 +207,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                             type,
                             SensorApiType.getName(type, resources),
                             isAllowed,
-                            counters.get(type)));
+                            usageCounters.get(type)));
         }
 
         mPermissionsRecyclerView.setHasFixedSize(true);
@@ -254,6 +263,12 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
             String type = SensorApiType.getApiName(event.getCapType());
 
+            if (event.isChecked() && isSpecialCapability(event.getCapType())) {
+                Log.d(TAG, "Handling special capability type: " + type);
+                handleSpecialCapType(event.getCapType());
+                return;
+            }
+
             Map<String, String[]> dangerousGroup = PermissionUtils
                     .getInstance(getApplicationContext())
                     .getDangerousPermissionsToDtoMapping();
@@ -287,6 +302,174 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                     .ask(Config.PERM_MODULE_ALLOWED_CAPABILITY);
 
         }
+    }
+
+    /**
+     * Handles types like social logins and another one time sensors
+     *
+     * @param type
+     */
+    private void handleSpecialCapType(int type) {
+
+        switch (type) {
+            case SensorApiType.UNI_TUCAN:
+                showTucanDialog();
+                break;
+            case SensorApiType.SOCIAL_FACEBOOK:
+                break;
+        }
+    }
+
+    /**
+     * Shows dialog with credential information
+     */
+    private void showTucanDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_creds_tucan, null);
+
+        builder.setView(dialogView);
+
+        builder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
+            // dummy
+        });
+
+        builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
+            updateModuleAllowedCapabilitySwitcher(SensorApiType.UNI_TUCAN, false);
+            dialog.cancel();
+        });
+
+        builder.setCancelable(false);
+
+        builder.setTitle(R.string.sensor_uni_tucan);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        /*
+         * Modifying behavior of buttons
+         */
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                .setOnClickListener(v -> {
+
+                    boolean dialogShouldClose = false;
+
+                    Log.d(TAG, "User confirmed TUCAN credentials");
+
+                    EditText usernameET = ButterKnife.findById(dialogView, R.id.tucan_username);
+                    EditText passwordET = ButterKnife.findById(dialogView, R.id.tucan_password);
+                    String username = usernameET.getText().toString().trim();
+                    String password = passwordET.getText().toString().trim();
+
+                    if (isInputOk(usernameET, passwordET)) {
+
+                        showLoading();
+                        storeCredentials(username, password);
+                        updateModuleAllowedCapabilityDbEntry(SensorApiType.UNI_TUCAN, true);
+                        updateModuleAllowedCapabilitySwitcher(SensorApiType.UNI_TUCAN, true);
+                        hideLoading();
+
+                        dialogShouldClose = true;
+
+                    } else {
+                        updateModuleAllowedCapabilitySwitcher(SensorApiType.UNI_TUCAN, false);
+                    }
+
+                    if (dialogShouldClose) {
+                        Toaster.showLong(getApplicationContext(), R.string.changes_were_saved);
+                        alertDialog.dismiss();
+                    }
+                });
+    }
+
+    private void storeCredentials(String username, String password) {
+
+        String userToken = PreferenceUtils.getUserToken(getApplicationContext());
+        DbUser user = daoProvider.getUserDao().getByToken(userToken);
+
+        if (user == null) {
+            Log.d(TAG, "storeCredentials: User is NULL");
+            return;
+        }
+
+        Log.d(TAG, "storeCredentials: Storing...");
+
+        DbTucanSensor sensorEntry = daoProvider.getTucanSensorDao().getForUserId(user.getId());
+
+        // we have here entry already -> update it
+        if (sensorEntry != null) {
+
+            sensorEntry.setWasChanged(Boolean.TRUE);
+            sensorEntry.setUsername(username);
+            sensorEntry.setPassword(password);
+
+            daoProvider.getTucanSensorDao().update(sensorEntry);
+
+        } else {
+
+            // create new entry
+            DbTucanSensor tucanSensor = new DbTucanSensor();
+
+            tucanSensor.setUsername(username);
+            tucanSensor.setPassword(password);
+            tucanSensor.setUserId(user.getId());
+            tucanSensor.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+
+            daoProvider.getTucanSensorDao().insert(tucanSensor);
+        }
+
+        Log.d(TAG, "storeCredentials: Stored.");
+    }
+
+    private boolean isInputOk(EditText usernameET, EditText passwordET) {
+
+        Log.d(TAG, "Checking user data...");
+
+        String username = usernameET.getText().toString().trim();
+        String password = passwordET.getText().toString().trim();
+
+        usernameET.setError(null);
+        passwordET.setError(null);
+
+        if (StringUtils.isNullOrEmpty(username)) {
+            usernameET.setError(getString(R.string.error_field_required));
+            usernameET.requestFocus();
+            return false;
+        }
+
+        if (StringUtils.isNullOrEmpty(password)) {
+            passwordET.setError(getString(R.string.error_field_required));
+            passwordET.requestFocus();
+            return false;
+        }
+
+        Log.d(TAG, "User data OK!");
+
+        return true;
+    }
+
+    /**
+     * Handles types like social login and another one time sensors
+     *
+     * @param type
+     * @return
+     */
+    private boolean isSpecialCapability(int type) {
+
+        boolean result = true;
+
+        switch (type) {
+            case SensorApiType.UNI_TUCAN:
+            case SensorApiType.SOCIAL_FACEBOOK:
+                break;
+            default:
+                result = false;
+                break;
+        }
+
+        return result;
     }
 
     private void updateModuleAllowedCapabilityDbEntry(int capType, boolean isChecked) {
@@ -328,12 +511,12 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setPositiveButton(R.string.button_disable_text, (dialog, which) -> {
+        builder.setPositiveButton(R.string.button_disable, (dialog, which) -> {
             Log.d(TAG, "User tapped positive button");
             disableActiveModulesForType(capType);
         });
 
-        builder.setNegativeButton(R.string.button_cancel_text, (dialog, which) -> {
+        builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
 
             Log.d(TAG, "User tapped negative button");
             updateModuleAllowedCapabilitySwitcher(capType, true);
@@ -384,6 +567,8 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
         ModuleApiProvider moduleApiProvider = apiProvider.getModuleApiProvider();
 
         for (DbModule dbModule : activeModules) {
+
+            request.setModulePackageName(dbModule.getPackageName());
 
             // deactivate module
             subModuleDeactivation = moduleApiProvider

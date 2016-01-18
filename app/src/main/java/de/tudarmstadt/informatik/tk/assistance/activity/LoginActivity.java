@@ -139,7 +139,7 @@ public class LoginActivity extends
             wasInitialized = true;
         }
 
-        FacebookSdk.sdkInitialize(this.getApplicationContext());
+        FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
         //callback registration
