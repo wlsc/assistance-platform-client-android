@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 
@@ -62,7 +63,10 @@ public abstract class BaseActivity extends AppCompatActivity {
      * Shows loading ProgressDialog
      */
     protected void showLoading() {
-        progressDialog = ProgressDialog.show(this, "Loading wtf", "...", true);
+        progressDialog = ProgressDialog.show(this,
+                getString(R.string.loading_header),
+                getString(R.string.loading_message),
+                true);
     }
 
     /**

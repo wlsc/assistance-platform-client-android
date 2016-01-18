@@ -189,6 +189,10 @@
     <string name="dialog_social_tucan_username">TUCaN-ID</string>
     <string name="dialog_social_facebook_username">E-Mail</string>
 
+    <!-- PROGRESS DIALOG -->
+    <string name="loading_header">Requesting…</string>
+    <string name="loading_message">Please wait</string>
+
     <!-- ERROR MESSAGES -->
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
