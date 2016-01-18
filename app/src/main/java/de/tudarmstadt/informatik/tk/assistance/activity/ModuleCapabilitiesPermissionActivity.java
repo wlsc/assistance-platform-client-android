@@ -1,6 +1,7 @@
 package de.tudarmstadt.informatik.tk.assistance.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -12,6 +13,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.github.kayvannj.permission_utils.Func;
 import com.github.kayvannj.permission_utils.PermissionUtil;
 import com.google.gson.Gson;
@@ -23,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,6 +53,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.sensing.SensorApiTy
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SensorProvider;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SocialProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.ModuleApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils;
@@ -66,6 +75,11 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
     private DaoProvider daoProvider;
 
     private ApiProvider apiProvider;
+
+    private SocialProvider socialProvider;
+
+    // facebook stuff
+    private CallbackManager callbackManager;
 
     private PermissionUtil.PermissionRequestObject mRequestObject;
 
@@ -125,6 +139,10 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
         apiProvider = ApiProvider.getInstance(getApplicationContext());
         daoProvider = DaoProvider.getInstance(getApplicationContext());
+        socialProvider = SocialProvider.getInstance(getApplicationContext());
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
 
         ButterKnife.bind(this);
 
@@ -507,11 +525,35 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                     if (isInputOk(usernameET, passwordET)) {
 
                         showLoading();
-                        // TODO: get FB perm
-//                        storeFacebookCredentials(username, permissions);
-                        updateModuleAllowedCapabilityDbEntry(SensorApiType.SOCIAL_FACEBOOK, true);
-                        updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, true);
-                        hideLoading();
+                        LoginManager.getInstance().registerCallback(callbackManager,
+                                new FacebookCallback<LoginResult>() {
+
+                                    @Override
+                                    public void onSuccess(LoginResult loginResult) {
+
+                                        Log.d(TAG, "Facebook Access Token: " + loginResult.getAccessToken().getToken());
+
+                                        storeFacebookCredentials(
+                                                loginResult.getAccessToken().getToken(),
+                                                loginResult.getRecentlyGrantedPermissions());
+                                        updateModuleAllowedCapabilityDbEntry(SensorApiType.SOCIAL_FACEBOOK, true);
+                                        updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, true);
+
+                                        hideLoading();
+                                    }
+
+                                    @Override
+                                    public void onCancel() {
+                                        Toaster.showShort(getApplicationContext(), "fail");
+                                        hideLoading();
+                                    }
+
+                                    @Override
+                                    public void onError(FacebookException error) {
+                                        Toaster.showShort(getApplicationContext(), "error");
+                                        hideLoading();
+                                    }
+                                });
 
                         dialogShouldClose = true;
 
@@ -526,7 +568,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                 });
     }
 
-    private void storeFacebookCredentials(String oauthToken, List<String> permissions) {
+    private void storeFacebookCredentials(String oauthToken, Set<String> permissions) {
 
         String userToken = PreferenceUtils.getUserToken(getApplicationContext());
         DbUser user = daoProvider.getUserDao().getByToken(userToken);
@@ -737,6 +779,12 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
         }
 
         adapter.swapData(allowedPermItems);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
