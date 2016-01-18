@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import com.github.kayvannj.permission_utils.Func;
 import com.github.kayvannj.permission_utils.PermissionUtil;
+import com.google.gson.Gson;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
@@ -33,6 +34,7 @@ import de.tudarmstadt.informatik.tk.assistance.event.module.ModuleAllowedPermiss
 import de.tudarmstadt.informatik.tk.assistance.model.item.ModuleAllowedTypeItem;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.sdk.Config;
+import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbFacebookSensor;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleAllowedCapabilities;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleCapability;
@@ -316,6 +318,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                 showTucanDialog();
                 break;
             case SensorApiType.SOCIAL_FACEBOOK:
+                showFacebookDialog();
                 break;
         }
     }
@@ -328,9 +331,15 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_creds_tucan, null);
+        View dialogView = inflater.inflate(R.layout.dialog_enter_credentials, null);
 
         builder.setView(dialogView);
+
+        EditText usernameET = ButterKnife.findById(dialogView, R.id.username);
+        EditText passwordET = ButterKnife.findById(dialogView, R.id.password);
+
+        usernameET.setHint(R.string.dialog_social_tucan_username);
+        passwordET.setHint(R.string.password);
 
         builder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
             // dummy
@@ -358,15 +367,13 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
                     Log.d(TAG, "User confirmed TUCAN credentials");
 
-                    EditText usernameET = ButterKnife.findById(dialogView, R.id.tucan_username);
-                    EditText passwordET = ButterKnife.findById(dialogView, R.id.tucan_password);
                     String username = usernameET.getText().toString().trim();
                     String password = passwordET.getText().toString().trim();
 
                     if (isInputOk(usernameET, passwordET)) {
 
                         showLoading();
-                        storeCredentials(username, password);
+                        storeTucanCredentials(username, password);
                         updateModuleAllowedCapabilityDbEntry(SensorApiType.UNI_TUCAN, true);
                         updateModuleAllowedCapabilitySwitcher(SensorApiType.UNI_TUCAN, true);
                         hideLoading();
@@ -384,17 +391,17 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                 });
     }
 
-    private void storeCredentials(String username, String password) {
+    private void storeTucanCredentials(String username, String password) {
 
         String userToken = PreferenceUtils.getUserToken(getApplicationContext());
         DbUser user = daoProvider.getUserDao().getByToken(userToken);
 
         if (user == null) {
-            Log.d(TAG, "storeCredentials: User is NULL");
+            Log.d(TAG, "storeTucanCredentials: User is NULL");
             return;
         }
 
-        Log.d(TAG, "storeCredentials: Storing...");
+        Log.d(TAG, "storeTucanCredentials: Storing...");
 
         DbTucanSensor sensorEntry = daoProvider.getTucanSensorDao().getForUserId(user.getId());
 
@@ -420,7 +427,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
             daoProvider.getTucanSensorDao().insert(tucanSensor);
         }
 
-        Log.d(TAG, "storeCredentials: Stored.");
+        Log.d(TAG, "storeTucanCredentials: Stored.");
     }
 
     private boolean isInputOk(EditText usernameET, EditText passwordET) {
@@ -448,6 +455,114 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
         Log.d(TAG, "User data OK!");
 
         return true;
+    }
+
+    /**
+     * Shows dialog with credential information
+     */
+    private void showFacebookDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_enter_credentials, null);
+
+        builder.setView(dialogView);
+
+        EditText usernameET = ButterKnife.findById(dialogView, R.id.username);
+        EditText passwordET = ButterKnife.findById(dialogView, R.id.password);
+
+        usernameET.setHint(R.string.dialog_social_facebook_username);
+        passwordET.setHint(R.string.password);
+
+        builder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
+            // dummy
+        });
+
+        builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
+            updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
+            dialog.cancel();
+        });
+
+        builder.setCancelable(false);
+
+        builder.setTitle(R.string.sensor_social_facebook);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        /*
+         * Modifying behavior of buttons
+         */
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                .setOnClickListener(v -> {
+
+                    boolean dialogShouldClose = false;
+
+                    Log.d(TAG, "User confirmed FACEBOOK credentials");
+
+                    String username = usernameET.getText().toString().trim();
+                    String password = passwordET.getText().toString().trim();
+
+                    if (isInputOk(usernameET, passwordET)) {
+
+                        showLoading();
+                        // TODO: get FB perm
+//                        storeFacebookCredentials(username, permissions);
+                        updateModuleAllowedCapabilityDbEntry(SensorApiType.SOCIAL_FACEBOOK, true);
+                        updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, true);
+                        hideLoading();
+
+                        dialogShouldClose = true;
+
+                    } else {
+                        updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
+                    }
+
+                    if (dialogShouldClose) {
+                        Toaster.showLong(getApplicationContext(), R.string.changes_were_saved);
+                        alertDialog.dismiss();
+                    }
+                });
+    }
+
+    private void storeFacebookCredentials(String oauthToken, List<String> permissions) {
+
+        String userToken = PreferenceUtils.getUserToken(getApplicationContext());
+        DbUser user = daoProvider.getUserDao().getByToken(userToken);
+
+        if (user == null) {
+            Log.d(TAG, "storeFacebookCredentials: User is NULL");
+            return;
+        }
+
+        Log.d(TAG, "storeFacebookCredentials: Storing...");
+
+        DbFacebookSensor sensorEntry = daoProvider.getFacebookSensorDao().getForUserId(user.getId());
+
+        // we have here entry already -> update it
+        if (sensorEntry != null) {
+
+            sensorEntry.setWasChanged(Boolean.TRUE);
+            sensorEntry.setOauthToken(oauthToken);
+            sensorEntry.setPermissions((new Gson().toJson(permissions)));
+
+            daoProvider.getFacebookSensorDao().update(sensorEntry);
+
+        } else {
+
+            // create new entry
+            DbFacebookSensor sensor = new DbFacebookSensor();
+
+            sensor.setOauthToken(oauthToken);
+            sensor.setPermissions((new Gson().toJson(permissions)));
+            sensor.setUserId(user.getId());
+            sensor.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
+
+            daoProvider.getFacebookSensorDao().insert(sensor);
+        }
+
+        Log.d(TAG, "storeFacebookCredentials: Stored.");
     }
 
     /**

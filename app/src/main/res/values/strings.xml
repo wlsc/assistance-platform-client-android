@@ -20,6 +20,7 @@
     <string name="no_data">no data</string>
     <string name="permission_is_crucial">These permissions are crucial for this module</string>
     <string name="changes_were_saved">Changes were saved.</string>
+    <string name="password">Password</string>
 
     <!-- ACCESSIBILITY SERVICE TUTORIAL -->
     <string name="title_activity_accessibility_tutorial">Extended Accessibility Service Tutorial</string>
@@ -184,10 +185,9 @@
     <string name="activity_no_play_services_content">The Google Play Services is really important for this application to use. Without it, its impossible to use the application</string>
 
     <!-- Social Dialogs -->
-    <string name="dialog_social_tucan_header">TUCaN Sensor</string>
-    <string name="dialog_social_tucan_message">This sensor needs your account data to functional normal</string>
+    <string name="dialog_social_message">This sensor needs your account data to functional normal</string>
     <string name="dialog_social_tucan_username">TUCaN-ID</string>
-    <string name="dialog_social_tucan_password">Password</string>
+    <string name="dialog_social_facebook_username">E-Mail</string>
 
     <!-- ERROR MESSAGES -->
     <string name="error_invalid_email">This email address is invalid</string>
