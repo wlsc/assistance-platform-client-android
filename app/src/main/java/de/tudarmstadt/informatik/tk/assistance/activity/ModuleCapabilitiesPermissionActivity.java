@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -481,92 +482,45 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
      */
     private void showFacebookDialog() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        Log.d(TAG, "User wants FACEBOOK credentials");
 
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_enter_credentials, null);
+        showLoading();
 
-        builder.setView(dialogView);
+        // register callback
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
 
-        EditText usernameET = ButterKnife.findById(dialogView, R.id.username);
-        EditText passwordET = ButterKnife.findById(dialogView, R.id.password);
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
 
-        usernameET.setHint(R.string.dialog_social_facebook_username);
-        passwordET.setHint(R.string.password);
+                        Log.d(TAG, "Facebook Access Token: " + loginResult.getAccessToken().getToken());
 
-        builder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
-            // dummy
-        });
+                        storeFacebookCredentials(
+                                loginResult.getAccessToken().getToken(),
+                                loginResult.getRecentlyGrantedPermissions());
+                        updateModuleAllowedCapabilityDbEntry(SensorApiType.SOCIAL_FACEBOOK, true);
+                        updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, true);
 
-        builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
-            updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
-            dialog.cancel();
-        });
-
-        builder.setCancelable(false);
-
-        builder.setTitle(R.string.sensor_social_facebook);
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-
-        /*
-         * Modifying behavior of buttons
-         */
-        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
-                .setOnClickListener(v -> {
-
-                    boolean dialogShouldClose = false;
-
-                    Log.d(TAG, "User confirmed FACEBOOK credentials");
-
-                    String username = usernameET.getText().toString().trim();
-                    String password = passwordET.getText().toString().trim();
-
-                    if (isInputOk(usernameET, passwordET)) {
-
-                        showLoading();
-                        LoginManager.getInstance().registerCallback(callbackManager,
-                                new FacebookCallback<LoginResult>() {
-
-                                    @Override
-                                    public void onSuccess(LoginResult loginResult) {
-
-                                        Log.d(TAG, "Facebook Access Token: " + loginResult.getAccessToken().getToken());
-
-                                        storeFacebookCredentials(
-                                                loginResult.getAccessToken().getToken(),
-                                                loginResult.getRecentlyGrantedPermissions());
-                                        updateModuleAllowedCapabilityDbEntry(SensorApiType.SOCIAL_FACEBOOK, true);
-                                        updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, true);
-
-                                        hideLoading();
-                                    }
-
-                                    @Override
-                                    public void onCancel() {
-                                        Toaster.showShort(getApplicationContext(), "fail");
-                                        hideLoading();
-                                    }
-
-                                    @Override
-                                    public void onError(FacebookException error) {
-                                        Toaster.showShort(getApplicationContext(), "error");
-                                        hideLoading();
-                                    }
-                                });
-
-                        dialogShouldClose = true;
-
-                    } else {
-                        updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
+                        hideLoading();
                     }
 
-                    if (dialogShouldClose) {
-                        Toaster.showLong(getApplicationContext(), R.string.changes_were_saved);
-                        alertDialog.dismiss();
+                    @Override
+                    public void onCancel() {
+                        Toaster.showShort(getApplicationContext(), R.string.error_unknown);
+                        hideLoading();
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        Toaster.showShort(getApplicationContext(), R.string.error_unknown);
+                        hideLoading();
                     }
                 });
+
+        // do a call
+        LoginManager.getInstance()
+                .logInWithReadPermissions(this, Arrays.asList("email", "public_profile"));
+
     }
 
     private void storeFacebookCredentials(String oauthToken, Set<String> permissions) {

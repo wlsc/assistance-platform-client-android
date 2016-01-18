@@ -282,10 +282,7 @@ public class LoginActivity extends
 
     @OnClick(R.id.ibFacebookLogo)
     protected void onFacebookLogoPressed() {
-
-        Log.d(TAG, "Facebook logo was pressed");
-
-        LoginManager.getInstance().logInWithReadPermissions(this, Collections.singletonList("email"));
+        Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.ibGooglePlusLogo)

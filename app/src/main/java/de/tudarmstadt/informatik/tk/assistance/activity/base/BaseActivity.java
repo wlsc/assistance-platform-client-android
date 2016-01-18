@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
+import de.tudarmstadt.informatik.tk.assistance.util.CommonUtils;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -67,6 +68,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                 getString(R.string.loading_header),
                 getString(R.string.loading_message),
                 true);
+        
+        CommonUtils.hideKeyboard(this, progressDialog.getCurrentFocus());
     }
 
     /**
