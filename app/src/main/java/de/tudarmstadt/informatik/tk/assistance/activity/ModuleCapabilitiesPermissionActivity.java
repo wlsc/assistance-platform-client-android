@@ -497,7 +497,8 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
                         storeFacebookCredentials(
                                 loginResult.getAccessToken().getToken(),
-                                loginResult.getRecentlyGrantedPermissions());
+                                loginResult.getRecentlyGrantedPermissions(),
+                                loginResult.getRecentlyDeniedPermissions());
                         updateModuleAllowedCapabilityDbEntry(SensorApiType.SOCIAL_FACEBOOK, true);
                         updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, true);
 
@@ -523,7 +524,9 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
     }
 
-    private void storeFacebookCredentials(String oauthToken, Set<String> permissions) {
+    private void storeFacebookCredentials(String oauthToken,
+                                          Set<String> permissions,
+                                          Set<String> deniedPermissions) {
 
         String userToken = PreferenceUtils.getUserToken(getApplicationContext());
         DbUser user = daoProvider.getUserDao().getByToken(userToken);
@@ -542,6 +545,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
             sensorEntry.setOauthToken(oauthToken);
             sensorEntry.setPermissions((new Gson().toJson(permissions)));
+            sensorEntry.setPermissionsDeclined((new Gson().toJson(deniedPermissions)));
             sensorEntry.setWasChanged(Boolean.TRUE);
 
             daoProvider.getFacebookSensorDao().update(sensorEntry);
@@ -553,6 +557,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
             sensor.setOauthToken(oauthToken);
             sensor.setPermissions((new Gson().toJson(permissions)));
+            sensor.setPermissionsDeclined((new Gson().toJson(deniedPermissions)));
             sensor.setUserId(user.getId());
             sensor.setCreated(DateUtils.dateToISO8601String(new Date(), Locale.getDefault()));
             sensor.setWasChanged(Boolean.TRUE);
