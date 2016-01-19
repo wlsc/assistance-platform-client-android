@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import de.tudarmstadt.informatik.tk.assistance.controller.password.ResetPasswordController;
 import de.tudarmstadt.informatik.tk.assistance.controller.password.ResetPasswordControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnEmptyResponseHandler;
-import de.tudarmstadt.informatik.tk.assistance.model.api.user.resetpassword.ResetPasswordRequestDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.resetpassword.ResetPasswordRequestDto;
 import de.tudarmstadt.informatik.tk.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.ValidationUtils;

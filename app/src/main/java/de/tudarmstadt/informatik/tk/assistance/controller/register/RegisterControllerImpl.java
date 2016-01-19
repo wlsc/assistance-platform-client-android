@@ -2,9 +2,9 @@ package de.tudarmstadt.informatik.tk.assistance.controller.register;
 
 import de.tudarmstadt.informatik.tk.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
-import de.tudarmstadt.informatik.tk.assistance.model.api.user.registration.RegistrationRequestDto;
-import de.tudarmstadt.informatik.tk.assistance.model.api.user.registration.RegistrationResponseDto;
-import de.tudarmstadt.informatik.tk.assistance.model.api.user.UserApi;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.registration.RegistrationRequestDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.registration.RegistrationResponseDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.UserApi;
 import de.tudarmstadt.informatik.tk.assistance.presenter.register.RegisterPresenter;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.ApiGenerator;
 import retrofit.Callback;

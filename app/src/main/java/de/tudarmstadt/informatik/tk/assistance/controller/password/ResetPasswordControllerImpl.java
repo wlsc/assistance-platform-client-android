@@ -2,8 +2,8 @@ package de.tudarmstadt.informatik.tk.assistance.controller.password;
 
 import de.tudarmstadt.informatik.tk.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnEmptyResponseHandler;
-import de.tudarmstadt.informatik.tk.assistance.model.api.user.resetpassword.ResetPasswordRequestDto;
-import de.tudarmstadt.informatik.tk.assistance.model.api.user.UserApi;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.resetpassword.ResetPasswordRequestDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.UserApi;
 import de.tudarmstadt.informatik.tk.assistance.presenter.password.ResetPasswordPresenter;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.ApiGenerator;
 import retrofit.Callback;

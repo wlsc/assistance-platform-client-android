@@ -2,8 +2,8 @@ package de.tudarmstadt.informatik.tk.assistance.controller.register;
 
 import de.tudarmstadt.informatik.tk.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
-import de.tudarmstadt.informatik.tk.assistance.model.api.user.registration.RegistrationRequestDto;
-import de.tudarmstadt.informatik.tk.assistance.model.api.user.registration.RegistrationResponseDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.registration.RegistrationRequestDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.registration.RegistrationResponseDto;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)

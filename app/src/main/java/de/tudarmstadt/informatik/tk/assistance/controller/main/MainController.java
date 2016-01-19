@@ -8,7 +8,7 @@ import java.util.Set;
 import de.tudarmstadt.informatik.tk.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnGooglePlayServicesAvailable;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
-import de.tudarmstadt.informatik.tk.assistance.model.api.user.profile.ProfileResponseDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbNews;

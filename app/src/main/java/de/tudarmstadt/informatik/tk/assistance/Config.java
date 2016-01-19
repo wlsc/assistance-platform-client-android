@@ -12,20 +12,6 @@ public class Config {
     }
 
     /**
-     * API ENDPOINTS
-     */
-
-    public static final String ASSISTANCE_USER_REGISTER_ENDPOINT = "/users/register";
-
-    public static final String ASSISTANCE_USER_PASSWORD_ENDPOINT = "/users/password";
-
-    public static final String ASSISTANCE_USER_PROFILE_SHORT_ENDPOINT = "/users/profile/short";
-
-    public static final String ASSISTANCE_USER_PROFILE_FULL_ENDPOINT = "/users/profile/long";
-
-    public static final String ASSISTANCE_USER_PROFILE_UPDATE_ENDPOINT = "/users/profile";
-
-    /**
      * Min password length
      */
     public static final int PASSWORD_MIN_LENGTH = 4;

@@ -15,7 +15,7 @@ import de.tudarmstadt.informatik.tk.assistance.controller.main.MainController;
 import de.tudarmstadt.informatik.tk.assistance.controller.main.MainControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnGooglePlayServicesAvailable;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
-import de.tudarmstadt.informatik.tk.assistance.model.api.user.profile.ProfileResponseDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import de.tudarmstadt.informatik.tk.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;

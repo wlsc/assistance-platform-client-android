@@ -2,7 +2,7 @@ package de.tudarmstadt.informatik.tk.assistance.controller.password;
 
 import de.tudarmstadt.informatik.tk.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnEmptyResponseHandler;
-import de.tudarmstadt.informatik.tk.assistance.model.api.user.resetpassword.ResetPasswordRequestDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.resetpassword.ResetPasswordRequestDto;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
