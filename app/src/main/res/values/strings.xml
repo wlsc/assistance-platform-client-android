@@ -185,8 +185,8 @@
     <string name="activity_no_play_services_content">The Google Play Services is really important for this application to use. Without it, its impossible to use the application</string>
 
     <!-- Social Dialogs -->
-    <string name="dialog_social_message">This sensor needs your account data to functional normal</string>
-    <string name="dialog_social_tucan_username">TUCaN-ID</string>
+    <string name="dialog_social_message">This sensor needs your account data to function normal</string>
+    <string name="dialog_social_tucan_username" translatable="false">TUCaN-ID</string>
 
     <!-- PROGRESS DIALOG -->
     <string name="loading_header">Requesting…</string>

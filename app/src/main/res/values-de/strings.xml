@@ -162,4 +162,9 @@
   <string name="error_select_new_user_photo">Fehler beim User Foto auswählen!</string>
   <string name="error_module_not_installed">Fehler: sorry, nicht in der Lage zu aktivieren/deaktivieren-Modul!</string>
   <string name="error_modules_were_disabled">Einige Module wurden deaktiviert.</string>
+  <string name="changes_were_saved">Änderungen wurden gespeichert.</string>
+  <string name="loading_message">Bitte warten</string>
+  <string name="password">Passwort</string>
+  <string name="loading_header">Anfordern…</string>
+  <string name="dialog_social_message">Dieser Sensor braucht Ihre Kontodaten um normal zu funktionieren</string>
 </resources>
