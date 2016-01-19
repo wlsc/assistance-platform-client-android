@@ -162,6 +162,7 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
         @Override
         public void onNext(Void aVoid) {
             updateDevice(currentDeviceId, deviceName);
+            Toaster.showLong(getContext(), R.string.changes_were_saved);
         }
     }
 }
