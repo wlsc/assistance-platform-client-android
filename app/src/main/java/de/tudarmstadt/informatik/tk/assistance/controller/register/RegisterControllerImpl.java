@@ -2,14 +2,12 @@ package de.tudarmstadt.informatik.tk.assistance.controller.register;
 
 import de.tudarmstadt.informatik.tk.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
+import de.tudarmstadt.informatik.tk.assistance.presenter.register.RegisterPresenter;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.registration.RegistrationRequestDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.registration.RegistrationResponseDto;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.UserApi;
-import de.tudarmstadt.informatik.tk.assistance.presenter.register.RegisterPresenter;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.ApiGenerator;
-import retrofit.Callback;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.UserApiProvider;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscriber;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -30,21 +28,27 @@ public class RegisterControllerImpl extends
     public void doRegisterUser(RegistrationRequestDto request, final OnResponseHandler handler) {
 
         // calling api service
-        UserApi service = ApiGenerator
-                .getInstance(presenter.getContext())
-                .create(UserApi.class);
+        UserApiProvider service = apiProvider.getUserApiProvider();
 
-        service.registerUser(request, new Callback<RegistrationResponseDto>() {
+        service.registerUser(request)
+                .subscribe(new Subscriber<RegistrationResponseDto>() {
 
-            @Override
-            public void success(RegistrationResponseDto apiResponse, Response response) {
-                handler.onSuccess(apiResponse, response);
-            }
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void failure(RetrofitError error) {
-                handler.onError(error);
-            }
-        });
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof RetrofitError) {
+                            handler.onError((RetrofitError) e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(RegistrationResponseDto registrationResponseDto) {
+                        handler.onSuccess(registrationResponseDto);
+                    }
+                });
     }
 }

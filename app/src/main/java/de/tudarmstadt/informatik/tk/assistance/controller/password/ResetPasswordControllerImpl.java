@@ -2,13 +2,12 @@ package de.tudarmstadt.informatik.tk.assistance.controller.password;
 
 import de.tudarmstadt.informatik.tk.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnEmptyResponseHandler;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.resetpassword.ResetPasswordRequestDto;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.UserApi;
 import de.tudarmstadt.informatik.tk.assistance.presenter.password.ResetPasswordPresenter;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.ApiGenerator;
-import retrofit.Callback;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.resetpassword.ResetPasswordRequestDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ApiProvider;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.UserApiProvider;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscriber;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -28,21 +27,27 @@ public class ResetPasswordControllerImpl extends
     @Override
     public void resetUserPassword(ResetPasswordRequestDto resetRequest, final OnEmptyResponseHandler handler) {
 
-        UserApi service = ApiGenerator
-                .getInstance(presenter.getContext())
-                .create(UserApi.class);
+        UserApiProvider service = ApiProvider.getInstance(presenter.getContext()).getUserApiProvider();
 
-        service.resetUserPassword(resetRequest, new Callback<Void>() {
+        service.resetUserPassword(resetRequest)
+                .subscribe(new Subscriber<Void>() {
 
-            @Override
-            public void success(Void aVoid, Response response) {
-                handler.onSuccess(response);
-            }
+                    @Override
+                    public void onCompleted() {
+                        // empty
+                    }
 
-            @Override
-            public void failure(RetrofitError error) {
-                handler.onError(error);
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof RetrofitError) {
+                            handler.onError((RetrofitError) e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+                        handler.onSuccess();
+                    }
+                });
     }
 }

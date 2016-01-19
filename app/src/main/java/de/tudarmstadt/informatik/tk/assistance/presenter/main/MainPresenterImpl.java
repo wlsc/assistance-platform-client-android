@@ -15,7 +15,6 @@ import de.tudarmstadt.informatik.tk.assistance.controller.main.MainController;
 import de.tudarmstadt.informatik.tk.assistance.controller.main.MainControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnGooglePlayServicesAvailable;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import de.tudarmstadt.informatik.tk.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
@@ -24,6 +23,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.AppUtils;
@@ -33,7 +33,6 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.MainView;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -334,7 +333,7 @@ public class MainPresenterImpl extends
     }
 
     @Override
-    public void onSuccess(ProfileResponseDto apiResponse, Response response) {
+    public void onSuccess(ProfileResponseDto apiResponse) {
 
         if (apiResponse == null) {
             return;

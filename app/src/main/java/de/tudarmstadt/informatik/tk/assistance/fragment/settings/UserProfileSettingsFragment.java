@@ -18,17 +18,16 @@ import butterknife.ButterKnife;
 import butterknife.OnTextChanged;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
+import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.profile.UpdateProfileRequestDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.profile.UserSocialServiceDto;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.UserApi;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.ApiGenerator;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ApiProvider;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.UserApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.util.ValidationUtils;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscriber;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -128,21 +127,31 @@ public class UserProfileSettingsFragment extends Fragment {
 //                userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_image));
 //            }
 
-            UserApi userApi = ApiGenerator.getInstance(getActivity().getApplicationContext()).create(UserApi.class);
-            userApi.getUserProfileFull(userToken, new Callback<ProfileResponseDto>() {
+            UserApiProvider userApi = ApiProvider.getInstance(getContext()).getUserApiProvider();
 
-                @Override
-                public void success(ProfileResponseDto profileResponse, Response response) {
-                    Log.d(TAG, "Successfully received the user profile!");
+            userApi.getUserProfileFull(userToken)
+                    .subscribe(new Subscriber<ProfileResponseDto>() {
 
-                    fillupFullUserProfile(profileResponse);
-                }
+                        @Override
+                        public void onCompleted() {
 
-                @Override
-                public void failure(RetrofitError error) {
-                    Log.d(TAG, "Failed while getting full user profile");
-                }
-            });
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.d(TAG, "Failed while getting full user profile");
+                            Toaster.showLong(getActivity().getApplicationContext(),
+                                    R.string.error_service_not_available);
+                        }
+
+                        @Override
+                        public void onNext(ProfileResponseDto profileResponseDto) {
+
+                            Log.d(TAG, "Successfully received the user profile!");
+
+                            fillupFullUserProfile(profileResponseDto);
+                        }
+                    });
         }
 
         return view;
@@ -345,19 +354,28 @@ public class UserProfileSettingsFragment extends Fragment {
         /**
          * SEND UPDATED USER PROFILE TO SERVER
          */
-        UserApi userApi = ApiGenerator.getInstance(getActivity().getApplicationContext()).create(UserApi.class);
-        userApi.updateUserProfile(userToken, request, new Callback<Void>() {
+        UserApiProvider userApi = ApiProvider.getInstance(
+                getActivity().getApplicationContext())
+                .getUserApiProvider();
 
-            @Override
-            public void success(Void aVoid, Response response) {
-                Log.d(TAG, "Successfully updated user profile!");
-            }
+        userApi.updateUserProfile(userToken, request)
+                .subscribe(new Subscriber<Void>() {
 
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d(TAG, "Failed while updating user profile");
-            }
-        });
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "Failed while updating user profile");
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+                        Log.d(TAG, "Successfully updated user profile!");
+                    }
+                });
     }
 
     @Override

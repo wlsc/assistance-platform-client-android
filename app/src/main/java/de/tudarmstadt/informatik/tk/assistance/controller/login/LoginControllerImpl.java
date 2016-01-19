@@ -110,7 +110,7 @@ public class LoginControllerImpl extends
 
                     @Override
                     public void onNext(LoginResponseDto response) {
-                        handler.onSuccess(response, null);
+                        handler.onSuccess(response);
                     }
                 });
     }

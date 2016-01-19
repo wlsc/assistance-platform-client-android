@@ -6,14 +6,13 @@ import android.text.TextUtils;
 import de.tudarmstadt.informatik.tk.assistance.controller.register.RegisterController;
 import de.tudarmstadt.informatik.tk.assistance.controller.register.RegisterControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
+import de.tudarmstadt.informatik.tk.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.registration.RegistrationRequestDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.registration.RegistrationResponseDto;
-import de.tudarmstadt.informatik.tk.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.RegisterView;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -110,16 +109,13 @@ public class RegisterPresenterImpl extends
     }
 
     @Override
-    public void onSuccess(RegistrationResponseDto apiResponse, Response response) {
+    public void onSuccess(RegistrationResponseDto apiResponse) {
 
-        if (response.getStatus() == 200 || response.getStatus() == 204) {
+        // save for autologin feature
+        view.saveUserCredentials();
+        view.startLoginActivity();
 
-            // save for autologin feature
-            view.saveUserCredentials();
-            view.startLoginActivity();
-
-            Log.d(TAG, "success! userId: " + apiResponse.getUserId());
-        }
+        Log.d(TAG, "success! userId: " + apiResponse.getUserId());
     }
 
     @Override

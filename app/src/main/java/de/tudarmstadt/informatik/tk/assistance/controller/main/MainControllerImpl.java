@@ -14,8 +14,6 @@ import java.util.Set;
 import de.tudarmstadt.informatik.tk.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnGooglePlayServicesAvailable;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.UserApi;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.profile.ProfileResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import de.tudarmstadt.informatik.tk.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
@@ -23,12 +21,14 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleAllowedCapabilitie
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbUser;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.ApiGenerator;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.profile.ProfileResponseDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.ModuleApiProvider;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.UserApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.dao.module.ModuleAllowedCapsDao;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.dao.news.NewsDao;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.AppUtils;
@@ -38,10 +38,9 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.GcmUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
-import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observable;
+import rx.Subscriber;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -139,22 +138,28 @@ public class MainControllerImpl extends
     @Override
     public void requestUserProfile(String userToken, final OnResponseHandler<ProfileResponseDto> handler) {
 
-        UserApi userService = ApiGenerator
-                .getInstance(presenter.getContext())
-                .create(UserApi.class);
+        UserApiProvider userService = ApiProvider.getInstance(presenter.getContext()).getUserApiProvider();
 
-        userService.getUserProfileShort(userToken, new Callback<ProfileResponseDto>() {
+        userService.getUserProfileShort(userToken)
+                .subscribe(new Subscriber<ProfileResponseDto>() {
 
-            @Override
-            public void success(ProfileResponseDto profileResponse, Response response) {
-                handler.onSuccess(profileResponse, response);
-            }
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void failure(RetrofitError error) {
-                handler.onError(error);
-            }
-        });
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof RetrofitError) {
+                            handler.onError((RetrofitError) e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(ProfileResponseDto profileResponseDto) {
+                        handler.onSuccess(profileResponseDto);
+                    }
+                });
     }
 
     @Override

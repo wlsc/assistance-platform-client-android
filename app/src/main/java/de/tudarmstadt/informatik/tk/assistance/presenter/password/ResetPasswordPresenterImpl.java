@@ -6,13 +6,12 @@ import android.text.TextUtils;
 import de.tudarmstadt.informatik.tk.assistance.controller.password.ResetPasswordController;
 import de.tudarmstadt.informatik.tk.assistance.controller.password.ResetPasswordControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnEmptyResponseHandler;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.resetpassword.ResetPasswordRequestDto;
 import de.tudarmstadt.informatik.tk.assistance.presenter.CommonPresenterImpl;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.resetpassword.ResetPasswordRequestDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.ResetPasswordView;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -67,11 +66,8 @@ public class ResetPasswordPresenterImpl extends
     }
 
     @Override
-    public void onSuccess(Response response) {
-
-        if (response.getStatus() == 200 || response.getStatus() == 204) {
-            view.showRequestSuccessful();
-        }
+    public void onSuccess() {
+        view.showRequestSuccessful();
     }
 
     @Override

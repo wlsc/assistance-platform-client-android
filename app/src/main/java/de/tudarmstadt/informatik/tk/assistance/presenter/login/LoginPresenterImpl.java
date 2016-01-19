@@ -16,7 +16,6 @@ import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.LoginView;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -142,7 +141,7 @@ public class LoginPresenterImpl extends
     }
 
     @Override
-    public void onSuccess(LoginResponseDto apiResponse, Response response) {
+    public void onSuccess(LoginResponseDto apiResponse) {
 
         controller.saveLoginGoNext(apiResponse, this);
 
