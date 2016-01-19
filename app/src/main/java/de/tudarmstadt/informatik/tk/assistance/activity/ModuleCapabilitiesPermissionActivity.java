@@ -508,12 +508,14 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                     @Override
                     public void onCancel() {
                         Toaster.showShort(getApplicationContext(), R.string.error_unknown);
+                        updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
                         hideLoading();
                     }
 
                     @Override
                     public void onError(FacebookException error) {
-                        Toaster.showShort(getApplicationContext(), R.string.error_unknown);
+                        Toaster.showShort(getApplicationContext(), R.string.error_service_not_available);
+                        updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
                         hideLoading();
                     }
                 });
