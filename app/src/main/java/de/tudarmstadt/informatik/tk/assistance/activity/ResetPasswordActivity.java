@@ -146,7 +146,7 @@ public class ResetPasswordActivity extends
     }
 
     @Override
-    public void askPermissions(Set<String> permsToAsk) {
+    public void askPermissions(Set<String> permsRequired, Set<String> permsOptional) {
         // empty
     }
 }

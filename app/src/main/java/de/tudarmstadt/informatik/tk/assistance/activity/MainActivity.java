@@ -352,10 +352,10 @@ public class MainActivity extends
     }
 
     @Override
-    public void askPermissions(Set<String> permsToAsk) {
+    public void askPermissions(Set<String> permsRequired, Set<String> permsOptional) {
 
         ActivityCompat.requestPermissions(this,
-                permsToAsk.toArray(new String[permsToAsk.size()]),
+                permsRequired.toArray(new String[permsRequired.size()]),
                 Constants.PERM_MODULE_ACTIVATED_REQUEST
         );
     }

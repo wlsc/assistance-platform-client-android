@@ -14,11 +14,9 @@ import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import com.facebook.login.LoginManager;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
-import java.util.Collections;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -389,7 +387,7 @@ public class LoginActivity extends
     }
 
     @Override
-    public void askPermissions(Set<String> permsToAsk) {
+    public void askPermissions(Set<String> permsRequired, Set<String> permsOptional) {
         // empty
     }
 

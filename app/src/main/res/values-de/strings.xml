@@ -7,7 +7,7 @@
   <string name="user_feedback_url">mailto:developer@tk.informatik.tu-darmstadt.de</string>
   <string name="user_feedback_subject">Assistance App Feedback</string>
   <string name="user_feedback_body">Hallo, \n\n</string>
-  <string name="button_accept_text">AKZEPTIEREN</string>
+  <string name="button_accept">AKZEPTIEREN</string>
   <string name="button_ok">OK</string>
   <string name="button_cancel">Abbrechen</string>
   <string name="button_back_text">Zurück</string>

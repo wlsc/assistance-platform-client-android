@@ -32,6 +32,8 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
 
     private static final String TAG = PermissionAdapter.class.getSimpleName();
 
+    private final EventBus eventBus;
+
     private List<PermissionListItem> mData;
 
     private final int requiredState;
@@ -49,6 +51,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
         }
 
         this.requiredState = requiredState;
+        this.eventBus = EventBus.getDefault();
     }
 
     @Override
@@ -94,16 +97,17 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
                 }
 
                 if (isChecked) {
-                    EventBus.getDefault().post(
-                            new CheckIfModuleCapabilityPermissionWasGrantedEvent(capability, position));
+                    if (eventBus.hasSubscriberForEvent(CheckIfModuleCapabilityPermissionWasGrantedEvent.class)) {
+                        eventBus.post(
+                                new CheckIfModuleCapabilityPermissionWasGrantedEvent(capability, position));
+                    }
                 }
 
-                // change capability state
-//                capability.setActive(isChecked);
-
                 if (ServiceUtils.isHarvesterAbleToRun(holder.mEnablerSwitch.getContext())) {
-                    // fire state changed
-                    EventBus.getDefault().post(new ModuleCapabilityHasChangedEvent(capability));
+                    if (eventBus.hasSubscriberForEvent(ModuleCapabilityHasChangedEvent.class)) {
+                        // fire state changed
+                        eventBus.post(new ModuleCapabilityHasChangedEvent(capability));
+                    }
                 }
             });
         }

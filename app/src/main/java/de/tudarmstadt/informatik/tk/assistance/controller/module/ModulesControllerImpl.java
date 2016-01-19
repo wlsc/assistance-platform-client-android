@@ -278,18 +278,23 @@ public class ModulesControllerImpl extends
                 dbRequiredCaps.add(cap);
             }
 
-//        for (ModuleCapabilityResponseDto response : optionalCaps) {
-//
-//            final DbModuleCapability cap = ConverterUtils.convertModuleCapability(response);
-//
-//            cap.setModulePackageName(installId);
-//            cap.setActive(true);
-//
-//            dbOptionalCaps.add(cap);
-//        }
+            for (ModuleCapabilityResponseDto response : optionalCaps) {
+
+                final DbModuleCapability cap = ConverterUtils.convertModuleCapability(response);
+
+                if (cap == null) {
+                    continue;
+                }
+
+                cap.setModuleId(installId);
+                cap.setRequired(false);
+                cap.setActive(true);
+
+                dbOptionalCaps.add(cap);
+            }
 
             insertModuleCapabilitiesToDb(dbRequiredCaps);
-//        insertModuleCapabilitiesToDb(dbOptionalCaps);
+            insertModuleCapabilitiesToDb(dbOptionalCaps);
         }
 
         return true;

@@ -26,5 +26,5 @@ public interface CommonView {
 
     void showRetryLaterNotification();
 
-    void askPermissions(Set<String> permsToAsk);
+    void askPermissions(Set<String> permsRequired, Set<String> permsOptional);
 }

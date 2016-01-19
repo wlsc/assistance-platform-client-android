@@ -227,7 +227,7 @@ public class ModulesPresenterImpl extends
             }
         }
 
-        view.askPermissions(permsToAsk);
+        view.askPermissions(permsToAsk, null);
     }
 
     @Override
@@ -359,8 +359,9 @@ public class ModulesPresenterImpl extends
     @Override
     public void handleModulePermissions() {
 
-        // accumulate all permissions
+        // accumulate all required permissions
         Set<String> permsRequiredAccumulator = new HashSet<>();
+        Set<String> permsOptionalAccumulator = new HashSet<>();
 
         ModuleResponseDto moduleResponse = getSelectedModuleResponse();
 
@@ -406,38 +407,33 @@ public class ModulesPresenterImpl extends
 
         // handle optional perms
         // get all checked optional sensors/events permissions
-//        List<DbModuleCapability> optionalSensors = view.getAllEnabledOptionalPermissions();
-//
-//        if (optionalSensors != null) {
-//
-//            for (DbModuleCapability response : optionalSensors) {
-//
-//                if (response == null) {
-//                    continue;
-//                }
-//
-//                String apiType = response.getType();
-//                String[] perms = PermissionUtils.getInstance(getContext())
-//                        .getDangerousPermissionsToDtoMapping()
-//                        .get(apiType);
-//
-//                if (perms == null) {
-//                    continue;
-//                }
-//
-//                for (String perm : perms) {
-//
-//                    // check permission was already granted
-//                    if (ContextCompat.checkSelfPermission(getContext(), perm) !=
-//                            PackageManager.PERMISSION_GRANTED) {
-//
-//                        permsRequiredAccumulator.add(perm);
-//                    }
-//                }
-//            }
-//        }
+        List<DbModuleCapability> optionalSensors = view.getAllEnabledOptionalPermissions();
 
-        if (permsRequiredAccumulator.isEmpty()) {
+        for (DbModuleCapability response : optionalSensors) {
+
+            if (response == null) {
+                continue;
+            }
+
+            String apiType = response.getType();
+            String[] perms = PermissionUtils.getInstance(getContext())
+                    .getDangerousPermissionsToDtoMapping()
+                    .get(apiType);
+
+            if (perms == null) {
+                continue;
+            }
+
+            for (String perm : perms) {
+
+                // check permission was already granted
+                if (!permissionUtils.isGranted(perm)) {
+                    permsOptionalAccumulator.add(perm);
+                }
+            }
+        }
+
+        if (permsRequiredAccumulator.isEmpty() && permsOptionalAccumulator.isEmpty()) {
             Log.d(TAG, "permsRequiredAccumulator is empty. its ok. all perms granted");
 
             handleModuleActivationRequest(moduleResponse);
@@ -445,7 +441,7 @@ public class ModulesPresenterImpl extends
         } else {
             Log.d(TAG, "Asking permissions...");
 
-            view.askPermissions(permsRequiredAccumulator);
+            view.askPermissions(permsRequiredAccumulator, permsOptionalAccumulator);
         }
     }
 
@@ -566,7 +562,7 @@ public class ModulesPresenterImpl extends
         Set<String> permsToAsk = controller.getGrantedPermissions();
 
         if (!permsToAsk.isEmpty()) {
-            view.askPermissions(permsToAsk);
+            view.askPermissions(permsToAsk, null);
         } else {
             EventBus.getDefault().post(new ModuleInstallSuccessfulEvent(
                     moduleResponse.getPackageName()));

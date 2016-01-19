@@ -265,7 +265,7 @@ public class MainPresenterImpl extends
             }
         }
 
-        view.askPermissions(permissionsToAsk);
+        view.askPermissions(permissionsToAsk, null);
     }
 
     @Override

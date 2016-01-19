@@ -259,29 +259,34 @@ public class ModulesActivity extends
      */
     public void onEvent(CheckIfModuleCapabilityPermissionWasGrantedEvent event) {
         Log.d(TAG, "CheckIfModuleCapabilityPermissionWasGrantedEvent was invoked");
-        Log.d(TAG, "Capability: " + event.getCapability().toString());
+        Log.d(TAG, "Capability: " + event.getCapability().getType());
 
         String[] notGrantedPerms = ModuleProvider.getInstance(getApplicationContext())
                 .getNotGrantedModuleCapabilityPermission(this, event.getCapability());
 
-        mRequestObject = PermissionUtil.with(this)
-                .request(notGrantedPerms)
-                .onAnyDenied(new Func() {
+        if (notGrantedPerms != null && notGrantedPerms.length > 0) {
 
-                    @Override
-                    protected void call() {
-                        EventBus.getDefault().post(
-                                new ModuleOptionalPermissionEvent(false, event.getPosition()));
-                    }
-                })
-                .onAllGranted(new Func() {
+            mRequestObject = PermissionUtil.with(this)
+                    .request(notGrantedPerms)
+                    .onAnyDenied(new Func() {
 
-                    @Override
-                    protected void call() {
-                        EventBus.getDefault().post(new ModuleOptionalPermissionEvent(true, event.getPosition()));
-                    }
-                })
-                .ask(Config.PERM_MODULE_OPTIONAL_CAPABILITY);
+                        @Override
+                        protected void call() {
+                            EventBus.getDefault().post(
+                                    new ModuleOptionalPermissionEvent(false, event.getPosition()));
+                        }
+                    })
+                    .onAllGranted(new Func() {
+
+                        @Override
+                        protected void call() {
+                            EventBus.getDefault().post(new ModuleOptionalPermissionEvent(true, event.getPosition()));
+                        }
+                    })
+                    .ask(Config.PERM_MODULE_OPTIONAL_CAPABILITY);
+        } else {
+            // special capabilities that do not request Android permissions
+        }
     }
 
     /**
@@ -580,29 +585,53 @@ public class ModulesActivity extends
     }
 
     @Override
-    public void askPermissions(Set<String> permsToAsk) {
+    public void askPermissions(Set<String> permsRequired, Set<String> permsOptional) {
 
-        if (permsToAsk != null && !permsToAsk.isEmpty()) {
+        if (permsRequired != null && !permsRequired.isEmpty()) {
 
             mRequestObject = PermissionUtil.with(this)
-                    .request(permsToAsk.toArray(new String[permsToAsk.size()]))
+                    .request(permsRequired.toArray(new String[permsRequired.size()]))
                     .onAllGranted(
                             new Func() {
                                 @Override
                                 protected void call() {
-                                    // TODO: take a look at handleModuleActivationRequest function -> its sometimes buggy
-                                    presenter.handleModuleActivationRequest(presenter.getSelectedModuleResponse());
-                                    HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
-                                    EventBus.getDefault().post(new ModulesListRefreshEvent());
+
+                                    if (permsOptional != null && !permsOptional.isEmpty()) {
+
+                                        mRequestObject = PermissionUtil.with(ModulesActivity.this)
+                                                .request(permsOptional.toArray(new String[permsOptional.size()]))
+                                                .onAllGranted(
+                                                        new Func() {
+                                                            @Override
+                                                            protected void call() {
+                                                                // TODO: take a look at handleModuleActivationRequest function -> its sometimes buggy
+                                                                presenter.handleModuleActivationRequest(presenter.getSelectedModuleResponse());
+                                                                HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
+                                                                EventBus.getDefault().post(new ModulesListRefreshEvent());
+                                                            }
+                                                        }).onAnyDenied(
+                                                        new Func() {
+                                                            @Override
+                                                            protected void call() {
+                                                                EventBus.getDefault().post(new ModulesListRefreshEvent());
+                                                            }
+                                                        }).ask(Constants.PERM_MODULE_INSTALL_OPT_PERMS);
+
+                                    } else {
+                                        // TODO: take a look at handleModuleActivationRequest function -> its sometimes buggy
+                                        presenter.handleModuleActivationRequest(presenter.getSelectedModuleResponse());
+                                        HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
+                                        EventBus.getDefault().post(new ModulesListRefreshEvent());
+                                    }
                                 }
                             }).onAnyDenied(
                             new Func() {
                                 @Override
                                 protected void call() {
-                                    showPermissionsAreCrucialDialog(permsToAsk);
+                                    showPermissionsAreCrucialDialog(permsRequired);
                                     EventBus.getDefault().post(new ModulesListRefreshEvent());
                                 }
-                            }).ask(Constants.PERM_MODULE_INSTALL);
+                            }).ask(Constants.PERM_MODULE_INSTALL_REQ_PERMS);
 
         } else {
             EventBus.getDefault().post(new ModulesListRefreshEvent());
@@ -704,7 +733,7 @@ public class ModulesActivity extends
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
 
-        builder.setPositiveButton(R.string.button_accept_text, (dialog, which) -> {
+        builder.setPositiveButton(R.string.button_accept, (dialog, which) -> {
 
             Log.d(TAG, "User tapped accept button");
             presenter.handleModulePermissions();

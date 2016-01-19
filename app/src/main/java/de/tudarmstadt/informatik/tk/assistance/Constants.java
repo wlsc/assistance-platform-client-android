@@ -55,5 +55,7 @@ public class Constants {
      * REQUEST PERMISSIONS
      */
     public static final int PERM_MODULE_INSTALL = 250;
+    public static final int PERM_MODULE_INSTALL_REQ_PERMS = 251;
+    public static final int PERM_MODULE_INSTALL_OPT_PERMS = 252;
     public static final int PERM_MODULE_ACTIVATED_REQUEST = 88;
 }
