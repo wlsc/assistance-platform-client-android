@@ -39,6 +39,7 @@ import de.tudarmstadt.informatik.tk.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.assistance.presenter.main.MainPresenterImpl;
 import de.tudarmstadt.informatik.tk.assistance.sdk.event.ShowAccessibilityServiceTutorialEvent;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ActivatedModulesResponse;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.ServiceUtils;
@@ -201,7 +202,7 @@ public class MainActivity extends
         executor = new ScheduledThreadPoolExecutor(1);
         executor.scheduleAtFixedRate(() -> {
 
-            if(modulesFeedbackSubscription != null){
+            if (modulesFeedbackSubscription != null) {
                 RxUtils.unsubscribe(modulesFeedbackSubscription);
             }
 
@@ -248,6 +249,7 @@ public class MainActivity extends
 
         if (ServiceUtils.isHarvesterAbleToRun(getApplicationContext())) {
             presenter.requestNewNews();
+            SensorProvider.getInstance(this).synchronizeRunningSensorsWithDb();
         }
 
         super.onResume();
