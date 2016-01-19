@@ -14,12 +14,11 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbDevice;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleAllowedCapabilities;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbUser;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.ApiGenerator;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.login.LoginApi;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.login.LoginRequestDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.login.LoginResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.login.UserDeviceDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.sensing.SensorApiType;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.LoginApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.HardwareUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils;
@@ -28,8 +27,6 @@ import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.util.ValidationUtils;
 import retrofit.RetrofitError;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -94,13 +91,9 @@ public class LoginControllerImpl extends
         /**
          * Logging in the user
          */
-        LoginApi userEndpoint = ApiGenerator
-                .getInstance(presenter.getContext())
-                .create(LoginApi.class);
+        LoginApiProvider loginApiProvider = apiProvider.getLoginApiProvider();
 
-        userEndpoint.loginUser(loginRequest)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+        loginApiProvider.loginUser(loginRequest)
                 .subscribe(new Subscriber<LoginResponseDto>() {
 
                     @Override
