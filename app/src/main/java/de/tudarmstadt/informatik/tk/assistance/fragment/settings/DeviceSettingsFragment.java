@@ -8,17 +8,16 @@ import android.support.v7.widget.Toolbar;
 
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
+import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbDevice;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.device.DeviceUserDefinedNameRequestDto;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.device.DeviceApi;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.ApiGenerator;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.DaoProvider;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.DeviceApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscriber;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -81,7 +80,7 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
     /**
      * Called when a shared preference is changed, added, or removed. This
      * may be called even if a preference is set to its existing value.
-     * <p/>
+     * <p>
      * <p>This callback will be run on your main thread.
      *
      * @param sharedPreferences The {@link SharedPreferences} that received
@@ -103,22 +102,10 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
             deviceUserDefinedNameRequest.setDeviceId(currentDeviceId);
             deviceUserDefinedNameRequest.setUserDefinedName(deviceName);
 
-            DeviceApi deviceApi = ApiGenerator.getInstance(getActivity().getApplicationContext()).create(DeviceApi.class);
-            deviceApi.setUserDefinedName(userToken, deviceUserDefinedNameRequest, new Callback<Void>() {
+            DeviceApiProvider deviceApi = ApiProvider.getInstance(getContext()).getDeviceApiProvider();
 
-                @Override
-                public void success(Void aVoid, Response response) {
-
-                    if (response != null && (response.getStatus() == 200 || response.getStatus() == 204)) {
-                        updateDevice(currentDeviceId, deviceName);
-                    }
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    // TODO: show here errors to user or not
-                }
-            });
+            deviceApi.setUserDefinedName(userToken, deviceUserDefinedNameRequest)
+                    .subscribe(new UserDefinedNameSubscriber(currentDeviceId, deviceName));
         }
     }
 
@@ -147,5 +134,34 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
 
         Log.d(TAG, "Successful finished updating device's user defined name!");
 
+    }
+
+    /**
+     * User defined device subscriber
+     */
+    private class UserDefinedNameSubscriber extends Subscriber<Void> {
+
+        private final long currentDeviceId;
+        private final String deviceName;
+
+        public UserDefinedNameSubscriber(long currentDeviceId, String deviceName) {
+            this.currentDeviceId = currentDeviceId;
+            this.deviceName = deviceName;
+        }
+
+        @Override
+        public void onCompleted() {
+            // empty
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Toaster.showLong(getContext(), R.string.error_service_not_available);
+        }
+
+        @Override
+        public void onNext(Void aVoid) {
+            updateDevice(currentDeviceId, deviceName);
+        }
     }
 }
