@@ -71,7 +71,7 @@ public class MainActivity extends
     @Bind(R.id.show_available_modules)
     protected FloatingActionButton showAvailableModules;
 
-    private Subscription subActivatedModules;
+    private Subscription activatedModulesSubscription;
     private Subscription modulesFeedbackSubscription;
 
     private ShowcaseView showCaseTutorial;
@@ -149,7 +149,7 @@ public class MainActivity extends
 
     @Override
     public void subscribeActiveAvailableModules(Observable<ActivatedModulesResponse> observable) {
-        subActivatedModules = observable.subscribe(new ActivatedModulesSubscriber());
+        activatedModulesSubscription = observable.subscribe(new ActivatedModulesSubscriber());
     }
 
     @Override
@@ -242,6 +242,8 @@ public class MainActivity extends
             EventBus.getDefault().unregister(this);
         }
 
+        RxUtils.unsubscribe(modulesFeedbackSubscription);
+
         super.onPause();
     }
 
@@ -263,7 +265,7 @@ public class MainActivity extends
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
-        RxUtils.unsubscribe(subActivatedModules);
+        RxUtils.unsubscribe(activatedModulesSubscription);
         RxUtils.unsubscribe(modulesFeedbackSubscription);
         super.onDestroy();
     }
