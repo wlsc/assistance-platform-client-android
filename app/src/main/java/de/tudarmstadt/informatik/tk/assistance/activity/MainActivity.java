@@ -21,6 +21,8 @@ import org.solovyev.android.views.llm.LinearLayoutManager;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -62,6 +64,9 @@ public class MainActivity extends
 
     private MainPresenter presenter;
 
+    private static final long FEEDBACK_POLLING_RATE = 10;
+    private static final TimeUnit FEEDBACK_TIME_UNIT = TimeUnit.SECONDS;
+
     @Bind(R.id.toolbar)
     protected Toolbar mToolbar;
 
@@ -71,6 +76,8 @@ public class MainActivity extends
     @Bind(R.id.show_available_modules)
     protected FloatingActionButton showAvailableModules;
 
+    private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+
     private Subscription activatedModulesSubscription;
     private Subscription modulesFeedbackSubscription;
 
@@ -79,6 +86,7 @@ public class MainActivity extends
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         setPresenter(new MainPresenterImpl(this));
         presenter.initView();
@@ -185,11 +193,21 @@ public class MainActivity extends
 
     @Override
     public void subscribeModuleFeedback(Observable<List<ClientFeedbackDto>> observable) {
-//        modulesFeedbackSubscription = observable.subscribe(new ModulesFeedbackSubscriber());
 
-        if (modulesFeedbackSubscription == null) {
-            modulesFeedbackSubscription = observable.subscribe(new ModulesFeedbackSubscriber());
+        if (executor != null) {
+            executor.shutdown();
         }
+
+        executor = new ScheduledThreadPoolExecutor(1);
+        executor.scheduleAtFixedRate(() -> {
+
+            if(modulesFeedbackSubscription != null){
+                RxUtils.unsubscribe(modulesFeedbackSubscription);
+            }
+
+            modulesFeedbackSubscription = observable.subscribe(new ModulesFeedbackSubscriber());
+
+        }, 0, FEEDBACK_POLLING_RATE, FEEDBACK_TIME_UNIT);
     }
 
     @Override
@@ -242,7 +260,7 @@ public class MainActivity extends
             EventBus.getDefault().unregister(this);
         }
 
-        RxUtils.unsubscribe(modulesFeedbackSubscription);
+        executor.shutdown();
 
         super.onPause();
     }

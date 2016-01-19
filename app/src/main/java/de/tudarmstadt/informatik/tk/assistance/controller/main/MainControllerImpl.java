@@ -165,8 +165,8 @@ public class MainControllerImpl extends
     @Override
     public Observable<List<ClientFeedbackDto>> requestModuleFeedback(String userToken,
                                                                      Long deviceId) {
-//        return moduleApiProvider.moduleFeedback(userToken, deviceId);
-        return moduleApiProvider.moduleFeedbackPeriodic(userToken, deviceId);
+        return moduleApiProvider.moduleFeedback(userToken, deviceId);
+//        return moduleApiProvider.moduleFeedbackPeriodic(userToken, deviceId);
     }
 
     @Override
