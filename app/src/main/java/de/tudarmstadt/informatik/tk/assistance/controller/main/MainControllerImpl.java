@@ -16,6 +16,7 @@ import de.tudarmstadt.informatik.tk.assistance.handler.OnGooglePlayServicesAvail
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.assistance.model.api.user.UserApi;
 import de.tudarmstadt.informatik.tk.assistance.model.api.user.profile.ProfileResponseDto;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import de.tudarmstadt.informatik.tk.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleAllowedCapabilities;
@@ -37,7 +38,6 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.GcmUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
-import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -160,7 +160,8 @@ public class MainControllerImpl extends
     @Override
     public Observable<List<ClientFeedbackDto>> requestModuleFeedback(String userToken,
                                                                      Long deviceId) {
-        return moduleApiProvider.moduleFeedback(userToken, deviceId);
+//        return moduleApiProvider.moduleFeedback(userToken, deviceId);
+        return moduleApiProvider.moduleFeedbackPeriodic(userToken, deviceId);
     }
 
     @Override

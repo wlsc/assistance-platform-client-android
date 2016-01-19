@@ -72,7 +72,7 @@ public class MainActivity extends
     protected FloatingActionButton showAvailableModules;
 
     private Subscription subActivatedModules;
-    private Subscription subModulesFeedback;
+    private Subscription modulesFeedbackSubscription;
 
     private ShowcaseView showCaseTutorial;
 
@@ -185,7 +185,11 @@ public class MainActivity extends
 
     @Override
     public void subscribeModuleFeedback(Observable<List<ClientFeedbackDto>> observable) {
-        subModulesFeedback = observable.subscribe(new ModulesFeedbackSubscriber());
+//        modulesFeedbackSubscription = observable.subscribe(new ModulesFeedbackSubscriber());
+
+        if (modulesFeedbackSubscription == null) {
+            modulesFeedbackSubscription = observable.subscribe(new ModulesFeedbackSubscriber());
+        }
     }
 
     @Override
@@ -260,7 +264,7 @@ public class MainActivity extends
     protected void onDestroy() {
         ButterKnife.unbind(this);
         RxUtils.unsubscribe(subActivatedModules);
-        RxUtils.unsubscribe(subModulesFeedback);
+        RxUtils.unsubscribe(modulesFeedbackSubscription);
         super.onDestroy();
     }
 

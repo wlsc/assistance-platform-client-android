@@ -16,6 +16,7 @@ import de.tudarmstadt.informatik.tk.assistance.controller.main.MainControllerImp
 import de.tudarmstadt.informatik.tk.assistance.handler.OnGooglePlayServicesAvailable;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.assistance.model.api.user.profile.ProfileResponseDto;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import de.tudarmstadt.informatik.tk.assistance.presenter.CommonPresenterImpl;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbNews;
@@ -31,7 +32,6 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.MainView;
-import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
