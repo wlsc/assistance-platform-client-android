@@ -37,12 +37,14 @@ import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.Cli
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.presenter.main.MainPresenter;
 import de.tudarmstadt.informatik.tk.assistance.presenter.main.MainPresenterImpl;
+import de.tudarmstadt.informatik.tk.assistance.sdk.event.OpenBrowserUrlEvent;
 import de.tudarmstadt.informatik.tk.assistance.sdk.event.ShowAccessibilityServiceTutorialEvent;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.ServiceUtils;
+import de.tudarmstadt.informatik.tk.assistance.sdk.util.UrlUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.MainView;
@@ -396,6 +398,14 @@ public class MainActivity extends
         String uri = String.format(Locale.getDefault(), "geo:%f,%f", point.latitude, point.longitude);
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         startActivity(intent);
+    }
+
+    public void onEvent(OpenBrowserUrlEvent event) {
+
+        Log.d(TAG, "OpenBrowserUrlEvent just arrived");
+
+        String target = event.getUrl();
+        UrlUtils.openUrl(this, target);
     }
 
     private class ActivatedModulesSubscriber extends Subscriber<ActivatedModulesResponse> {

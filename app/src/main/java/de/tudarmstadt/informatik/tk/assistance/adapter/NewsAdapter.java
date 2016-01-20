@@ -7,6 +7,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,11 +32,6 @@ import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.event.ShowGoogleMapEvent;
-import de.tudarmstadt.informatik.tk.assistance.model.image.ScaledDownTransformation;
-import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
-import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ModuleProvider;
-import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
-import de.tudarmstadt.informatik.tk.assistance.util.UiUtils;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.ContentFactory;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ContentDto;
@@ -45,6 +41,14 @@ import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ite
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.ImageDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.MapDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.TextDto;
+import de.tudarmstadt.informatik.tk.assistance.model.image.ScaledDownTransformation;
+import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
+import de.tudarmstadt.informatik.tk.assistance.sdk.event.OpenBrowserUrlEvent;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ModuleProvider;
+import de.tudarmstadt.informatik.tk.assistance.sdk.util.AppUtils;
+import de.tudarmstadt.informatik.tk.assistance.sdk.util.UrlUtils;
+import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
+import de.tudarmstadt.informatik.tk.assistance.util.UiUtils;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -148,6 +152,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 //            List<Double[]> tmp = new ArrayList<>();
 //            tmp.add(new Double[]{49.8752582, 8.6693696});
 //            cardContent.setPoints(tmp.toArray(new Double[tmp.size()][]));
+//            cardContent.setTarget("https://www.google.com/");
             // !!!!!!!!!!!!
 
             showUserMapLocation = false;
@@ -182,7 +187,35 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
                 case BUTTON:
                     ButtonDto buttonDto = ContentFactory.getButton(cardContent);
-                    viewHolder.mContainer.addView(uiUtils.getButton(buttonDto));
+
+                    Button button = uiUtils.getButton(buttonDto);
+
+                    if (button == null) {
+                        break;
+                    }
+
+                    String target = buttonDto.getTarget();
+
+                    // only when we have a target
+                    if (target != null) {
+
+                        boolean isValidUrl = UrlUtils.isValidUrl(target);
+
+                        button.setOnClickListener(v -> {
+
+                            if (isValidUrl) {
+                                // we have valid URL -> fire open url event
+                                if (EventBus.getDefault().hasSubscriberForEvent(OpenBrowserUrlEvent.class)) {
+                                    EventBus.getDefault().post(new OpenBrowserUrlEvent(target));
+                                }
+                            } else {
+                                // we have app package name
+                                AppUtils.openApp(context, target);
+                            }
+                        });
+                    }
+
+                    viewHolder.mContainer.addView(button);
                     break;
 
                 case IMAGE:
