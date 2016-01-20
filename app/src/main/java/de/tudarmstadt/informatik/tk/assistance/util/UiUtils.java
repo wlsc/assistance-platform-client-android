@@ -14,7 +14,13 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
+import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.ContentFactory;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ContentDto;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.FeedbackItemType;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.GroupAlignment;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.TextAlignment;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.ButtonDto;
@@ -22,6 +28,8 @@ import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ite
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.ImageDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.MapDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.TextDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.event.OpenBrowserUrlEvent;
+import de.tudarmstadt.informatik.tk.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.StringUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.UrlUtils;
 
@@ -52,10 +60,11 @@ public class UiUtils {
      * Returns TextView with according settings from feedback text DTO type
      *
      * @param textDto
+     * @param onClickListener
      * @return
      */
     @Nullable
-    public TextView getText(TextDto textDto) {
+    public TextView getText(TextDto textDto, View.OnClickListener onClickListener) {
 
         if (textDto == null) {
             return null;
@@ -65,6 +74,7 @@ public class UiUtils {
         String alignment = textDto.getAlignment();
         Boolean isHighlighted = textDto.getHighlighted();
         String[] style = textDto.getStyle();
+        String target = textDto.getTarget();
 
         TextView textView = new TextView(context);
 
@@ -121,6 +131,13 @@ public class UiUtils {
 
         textView.setLayoutParams(params);
 
+        /**
+         * TARGET
+         */
+        if (onClickListener != null && target != null) {
+            textView.setOnClickListener(onClickListener);
+        }
+
         return textView;
     }
 
@@ -153,7 +170,7 @@ public class UiUtils {
         String target = imageDto.getTarget();
 
         // only when we have a target
-        if (target != null) {
+        if (target != null && onClickListener != null) {
 
             boolean isValidUrl = UrlUtils.isValidUrl(target);
 
@@ -192,7 +209,7 @@ public class UiUtils {
          */
         String target = buttonDto.getTarget();
 
-        if (target != null) {
+        if (target != null && onClickListener != null) {
             button.setOnClickListener(onClickListener);
         }
 
@@ -247,6 +264,140 @@ public class UiUtils {
         /**
          * CONTENT PROCESSING
          */
+        List<ContentDto> moreContent = groupDto.getContent();
+
+        if (moreContent != null && !moreContent.isEmpty()) {
+            View contentLayout = generateMoreContent(moreContent, alignment);
+
+            if (contentLayout != null) {
+                linearLayout.addView(contentLayout);
+            }
+        }
+
+        return linearLayout;
+    }
+
+    /**
+     * Generates more content for a group
+     *
+     * @param moreContent
+     * @param alignment
+     * @return
+     */
+    private View generateMoreContent(List<ContentDto> moreContent, String alignment) {
+
+
+        LinearLayout linearLayout = new LinearLayout(context);
+
+        if (StringUtils.isNotNullAndEmpty(alignment)) {
+
+            if (GroupAlignment.HORIZONTAL.getValue().equalsIgnoreCase(alignment)) {
+                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            }
+
+            if (GroupAlignment.VERTICAL.getValue().equalsIgnoreCase(alignment)) {
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+            }
+        } else {
+            // DEFAULT VALUES
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        }
+
+        for (ContentDto content : moreContent) {
+
+            FeedbackItemType feedbackType = FeedbackItemType.getEnum(content.getType());
+
+            switch (feedbackType) {
+                case TEXT:
+                    TextDto textDto = ContentFactory.getText(content);
+                    TextView textView = getText(textDto, textDto.getTarget() == null ? null : v -> {
+
+                        boolean isValidUrl = UrlUtils.isValidUrl(textDto.getTarget());
+
+                        if (isValidUrl) {
+                            // we have valid URL -> fire open url event
+                            if (EventBus.getDefault().hasSubscriberForEvent(OpenBrowserUrlEvent.class)) {
+                                EventBus.getDefault().post(new OpenBrowserUrlEvent(textDto.getTarget()));
+                            }
+                        }
+                    });
+
+                    if (textView == null) {
+                        break;
+                    }
+
+                    linearLayout.addView(textView);
+
+                    break;
+
+                case BUTTON:
+                    ButtonDto buttonDto = ContentFactory.getButton(content);
+
+                    Button button = getButton(buttonDto, v -> {
+
+                        boolean isValidUrl = UrlUtils.isValidUrl(buttonDto.getTarget());
+
+                        if (isValidUrl) {
+                            // we have valid URL -> fire open url event
+                            if (EventBus.getDefault().hasSubscriberForEvent(OpenBrowserUrlEvent.class)) {
+                                EventBus.getDefault().post(new OpenBrowserUrlEvent(buttonDto.getTarget()));
+                            }
+                        } else {
+                            // we have app package name
+                            AppUtils.openApp(context, buttonDto.getTarget());
+                        }
+                    });
+
+                    if (button == null) {
+                        break;
+                    }
+
+                    linearLayout.addView(button);
+
+                    break;
+
+                case IMAGE:
+                    ImageDto imageDto = ContentFactory.getImage(content);
+
+                    ImageView imageView = getImage(imageDto, v -> {
+
+                        if (EventBus.getDefault().hasSubscriberForEvent(OpenBrowserUrlEvent.class)) {
+                            EventBus.getDefault().post(new OpenBrowserUrlEvent(imageDto.getTarget()));
+                        }
+                    });
+
+                    if (imageView == null) {
+                        break;
+                    }
+
+                    linearLayout.addView(imageView);
+
+                    break;
+
+                case MAP:
+                    MapDto mapDto = ContentFactory.getMap(content);
+
+                    // show user location om map
+                    if (mapDto.getShowUserLocation() != null && mapDto.getShowUserLocation()) {
+//                        showUserMapLocation = true;
+                    }
+
+//                    setMapPoints(mapDto.getPoints());
+                    MapView mapView = getMap(mapDto, null);
+
+                    if (mapView == null) {
+                        break;
+                    }
+
+                    linearLayout.addView(mapView);
+
+                    break;
+
+                case GROUP:
+                    linearLayout.addView(generateMoreContent(content.getContent(), content.getAlignment()));
+                    break;
+            }
+        }
 
         return linearLayout;
     }

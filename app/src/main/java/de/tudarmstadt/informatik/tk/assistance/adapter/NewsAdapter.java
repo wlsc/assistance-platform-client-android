@@ -154,6 +154,45 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 //            cardContent.setPoints(tmp.toArray(new Double[tmp.size()][]));
 //            cardContent.setTarget("https://www.google.com/");
 //            cardContent.setSource("http://www.cooleparts-garage.de/wp-content/uploads/2014/05/imagee.jpeg");
+
+            // GROUP
+//            cardContent.setAlignment(GroupAlignment.VERTICAL.getValue());
+//            List<ContentDto> content = new ArrayList<>();
+//
+//            TextDto textDto1 = new TextDto();
+//            textDto1.setHighlighted(true);
+//            textDto1.setCaption("test str");
+//            textDto1.setAlignment(TextAlignment.LEFT.getValue());
+//            TextDto textDto2 = new TextDto();
+//            textDto2.setHighlighted(true);
+//            textDto2.setCaption("test str2");
+//            textDto2.setAlignment(TextAlignment.RIGHT.getValue());
+//            content.add(textDto1);
+//            content.add(textDto2);
+//            ImageDto imageDto1 = new ImageDto();
+//            imageDto1.setSource("http://www.cooleparts-garage.de/wp-content/uploads/2014/05/imagee.jpeg");
+//            imageDto1.setTarget("https://www.google.com/");
+//            content.add(imageDto1);
+//            ButtonDto buttonDto1 = new ButtonDto();
+//            buttonDto1.setCaption("Example button");
+//            buttonDto1.setTarget("com.google.android.deskclock");
+//            content.add(buttonDto1);
+//
+//            GroupDto groupDto1 = new GroupDto();
+//            groupDto1.setAlignment(GroupAlignment.HORIZONTAL.getValue());
+//            List<ContentDto> group1Content = new ArrayList<>();
+//            TextDto group1TextDto1 = new TextDto();
+//            group1TextDto1.setCaption("Text1");
+//            group1TextDto1.setAlignment(TextAlignment.LEFT.getValue());
+//            group1Content.add(group1TextDto1);
+//            ImageDto group1imageDto1 = new ImageDto();
+//            group1imageDto1.setSource("http://www.cooleparts-garage.de/wp-content/uploads/2014/05/imagee.jpeg");
+//            group1imageDto1.setTarget("https://www.google.com/");
+//            group1Content.add(group1imageDto1);
+//            groupDto1.setContent(group1Content);
+//            content.add(groupDto1);
+//
+//            cardContent.setContent(content);
             // !!!!!!!!!!!!
 
             showUserMapLocation = false;
@@ -178,6 +217,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 Toaster.showShort(v.getContext(), R.string.feature_is_under_construction);
             });
 
+            ViewGroup.LayoutParams currentLayoutParams = viewHolder.itemView.getLayoutParams();
+
             FeedbackItemType feedbackType = FeedbackItemType.getEnum(cardContent.getType());
 
             // TEST
@@ -187,7 +228,21 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             switch (feedbackType) {
                 case TEXT:
                     TextDto textDto = ContentFactory.getText(cardContent);
-                    TextView textView = uiUtils.getText(textDto);
+
+                    TextView textView = uiUtils.getText(textDto, textDto.getTarget() == null ? null : v -> {
+
+                        boolean isValidUrl = UrlUtils.isValidUrl(textDto.getTarget());
+
+                        if (isValidUrl) {
+                            // we have valid URL -> fire open url event
+                            if (EventBus.getDefault().hasSubscriberForEvent(OpenBrowserUrlEvent.class)) {
+                                EventBus.getDefault().post(new OpenBrowserUrlEvent(textDto.getTarget()));
+                            }
+                        } else {
+                            // we have app package name
+                            AppUtils.openApp(context, textDto.getTarget());
+                        }
+                    });
 
                     if (textView == null) {
                         break;
@@ -236,6 +291,11 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     }
 
                     viewHolder.mContainer.addView(imageView);
+
+                    currentLayoutParams.height = (int) TypedValue
+                            .applyDimension(TypedValue.COMPLEX_UNIT_DIP, CARD_MAX_HEIGHT_IN_DP, context.getResources().getDisplayMetrics());
+                    viewHolder.itemView.setLayoutParams(currentLayoutParams);
+
                     break;
 
                 case MAP:
@@ -255,7 +315,6 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
                     viewHolder.mContainer.addView(mapView);
 
-                    ViewGroup.LayoutParams currentLayoutParams = viewHolder.itemView.getLayoutParams();
                     currentLayoutParams.height = (int) TypedValue
                             .applyDimension(TypedValue.COMPLEX_UNIT_DIP, CARD_MAX_HEIGHT_IN_DP, context.getResources().getDisplayMetrics());
                     viewHolder.itemView.setLayoutParams(currentLayoutParams);
