@@ -303,6 +303,9 @@ public class UiUtils {
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         }
 
+        float scale = context.getResources().getDisplayMetrics().density;
+        int dpAsPixels = (int) (3 * scale + 0.5f);
+
         for (ContentDto content : moreContent) {
 
             FeedbackItemType feedbackType = FeedbackItemType.getEnum(content.getType());
@@ -325,6 +328,8 @@ public class UiUtils {
                     if (textView == null) {
                         break;
                     }
+
+                    textView.setPadding(0, dpAsPixels, 0, dpAsPixels);
 
                     linearLayout.addView(textView);
 
@@ -352,6 +357,8 @@ public class UiUtils {
                         break;
                     }
 
+                    button.setPadding(0, dpAsPixels, 0, dpAsPixels);
+
                     linearLayout.addView(button);
 
                     break;
@@ -369,6 +376,8 @@ public class UiUtils {
                     if (imageView == null) {
                         break;
                     }
+
+                    imageView.setPadding(0, dpAsPixels, 0, dpAsPixels);
 
                     linearLayout.addView(imageView);
 
@@ -388,6 +397,8 @@ public class UiUtils {
                     if (mapView == null) {
                         break;
                     }
+
+                    mapView.setPadding(0, dpAsPixels, 0, dpAsPixels);
 
                     linearLayout.addView(mapView);
 
