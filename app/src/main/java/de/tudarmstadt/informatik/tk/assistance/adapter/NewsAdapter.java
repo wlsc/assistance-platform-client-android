@@ -37,8 +37,6 @@ import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.ContentFact
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ContentDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.FeedbackItemType;
-import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.GroupAlignment;
-import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.TextAlignment;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.ButtonDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.GroupDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.ImageDto;
@@ -159,43 +157,43 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 //            cardContent.setSource("http://www.cooleparts-garage.de/wp-content/uploads/2014/05/imagee.jpeg");
 
             // GROUP
-            cardContent.setAlignment(GroupAlignment.VERTICAL.getValue());
-            List<ContentDto> content = new ArrayList<>();
-
-            TextDto textDto1 = new TextDto();
-            textDto1.setHighlighted(true);
-            textDto1.setCaption("test str");
-            textDto1.setAlignment(TextAlignment.LEFT.getValue());
-            TextDto textDto2 = new TextDto();
-            textDto2.setHighlighted(true);
-            textDto2.setCaption("test str2");
-            textDto2.setAlignment(TextAlignment.RIGHT.getValue());
-            content.add(textDto1);
-            content.add(textDto2);
-            ImageDto imageDto1 = new ImageDto();
-            imageDto1.setSource("http://www.cooleparts-garage.de/wp-content/uploads/2014/05/imagee.jpeg");
-            imageDto1.setTarget("https://www.google.com/");
-            content.add(imageDto1);
-            ButtonDto buttonDto1 = new ButtonDto();
-            buttonDto1.setCaption("Example button");
-            buttonDto1.setTarget("com.google.android.deskclock");
-            content.add(buttonDto1);
-
-            GroupDto groupDto1 = new GroupDto();
-            groupDto1.setAlignment(GroupAlignment.HORIZONTAL.getValue());
-            List<ContentDto> group1Content = new ArrayList<>();
-            TextDto group1TextDto1 = new TextDto();
-            group1TextDto1.setCaption("Text1");
-            group1TextDto1.setAlignment(TextAlignment.LEFT.getValue());
-            group1Content.add(group1TextDto1);
-            ImageDto group1imageDto1 = new ImageDto();
-            group1imageDto1.setSource("http://www.cooleparts-garage.de/wp-content/uploads/2014/05/imagee.jpeg");
-            group1imageDto1.setTarget("https://www.google.com/");
-            group1Content.add(group1imageDto1);
-            groupDto1.setContent(group1Content);
-            content.add(groupDto1);
-
-            cardContent.setContent(content);
+//            cardContent.setAlignment(GroupAlignment.VERTICAL.getValue());
+//            List<ContentDto> content = new ArrayList<>();
+//
+//            TextDto textDto1 = new TextDto();
+//            textDto1.setHighlighted(true);
+//            textDto1.setCaption("test str");
+//            textDto1.setAlignment(TextAlignment.LEFT.getValue());
+//            TextDto textDto2 = new TextDto();
+//            textDto2.setHighlighted(true);
+//            textDto2.setCaption("test str2");
+//            textDto2.setAlignment(TextAlignment.RIGHT.getValue());
+//            content.add(textDto1);
+//            content.add(textDto2);
+//            ImageDto imageDto1 = new ImageDto();
+//            imageDto1.setSource("http://www.cooleparts-garage.de/wp-content/uploads/2014/05/imagee.jpeg");
+//            imageDto1.setTarget("https://www.google.com/");
+//            content.add(imageDto1);
+//            ButtonDto buttonDto1 = new ButtonDto();
+//            buttonDto1.setCaption("Example button");
+//            buttonDto1.setTarget("com.google.android.deskclock");
+//            content.add(buttonDto1);
+//
+//            GroupDto groupDto1 = new GroupDto();
+//            groupDto1.setAlignment(GroupAlignment.HORIZONTAL.getValue());
+//            List<ContentDto> group1Content = new ArrayList<>();
+//            TextDto group1TextDto1 = new TextDto();
+//            group1TextDto1.setCaption("Text1");
+//            group1TextDto1.setAlignment(TextAlignment.LEFT.getValue());
+//            group1Content.add(group1TextDto1);
+//            ImageDto group1imageDto1 = new ImageDto();
+//            group1imageDto1.setSource("http://www.cooleparts-garage.de/wp-content/uploads/2014/05/imagee.jpeg");
+//            group1imageDto1.setTarget("https://www.google.com/");
+//            group1Content.add(group1imageDto1);
+//            groupDto1.setContent(group1Content);
+//            content.add(groupDto1);
+//
+//            cardContent.setContent(content);
             // !!!!!!!!!!!!
 
             showUserMapLocation = false;
@@ -225,7 +223,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             FeedbackItemType feedbackType = FeedbackItemType.getEnum(cardContent.getType());
 
             // TEST
-            feedbackType = FeedbackItemType.GROUP;
+//            feedbackType = FeedbackItemType.GROUP;
             // ------------------------------
 
             switch (feedbackType) {
