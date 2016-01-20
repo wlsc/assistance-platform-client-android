@@ -19,6 +19,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.common.collect.Lists;
 import com.squareup.picasso.Picasso;
@@ -410,11 +411,20 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         // first clear it
         googleMap.clear();
 
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
         for (LatLng point : mapPoints) {
-            googleMap.addMarker(new MarkerOptions().position(point));
+            MarkerOptions marker = new MarkerOptions().position(point);
+            googleMap.addMarker(marker);
+            builder.include(marker.getPosition());
         }
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mapPoints[0], GOOGLE_MAPS_ZOOM);
+        // calc boundaries of all points
+        LatLngBounds bounds = builder.build();
+        int padding = 0;
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+
+//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mapPoints[0], GOOGLE_MAPS_ZOOM);
         googleMap.moveCamera(cameraUpdate);
     }
 
