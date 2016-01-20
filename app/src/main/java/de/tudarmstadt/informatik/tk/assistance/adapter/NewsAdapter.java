@@ -181,7 +181,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             FeedbackItemType feedbackType = FeedbackItemType.getEnum(cardContent.getType());
 
             // TEST
-            feedbackType = FeedbackItemType.GROUP;
+//            feedbackType = FeedbackItemType.GROUP;
             // ------------------------------
 
             switch (feedbackType) {
@@ -266,6 +266,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     GroupDto groupDto = ContentFactory.getGroup(cardContent);
 
                     LinearLayout groupView = uiUtils.getGroup(groupDto);
+
+                    if (groupView == null) {
+                        break;
+                    }
 
                     viewHolder.mContainer.addView(groupView);
                     break;
