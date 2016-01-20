@@ -27,4 +27,7 @@ public class Config {
      * Current: 5 MIN
      */
     public static final int UPDATE_REQUEST_INTERVAL = 5 * 60 * 1000;
+
+    // in DP
+    public static final int FEEDBACK_CARD_PADDING = 4;
 }

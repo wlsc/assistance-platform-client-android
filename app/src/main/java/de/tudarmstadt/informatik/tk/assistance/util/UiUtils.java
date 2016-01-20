@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import de.tudarmstadt.informatik.tk.assistance.Config;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.ContentFactory;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ContentDto;
@@ -303,9 +304,6 @@ public class UiUtils {
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         }
 
-        float scale = context.getResources().getDisplayMetrics().density;
-        int dpAsPixels = (int) (3 * scale + 0.5f);
-
         for (ContentDto content : moreContent) {
 
             FeedbackItemType feedbackType = FeedbackItemType.getEnum(content.getType());
@@ -329,7 +327,10 @@ public class UiUtils {
                         break;
                     }
 
-                    textView.setPadding(0, dpAsPixels, 0, dpAsPixels);
+                    textView.setPadding(0,
+                            getDpAsPixels(Config.FEEDBACK_CARD_PADDING),
+                            0,
+                            getDpAsPixels(Config.FEEDBACK_CARD_PADDING));
 
                     linearLayout.addView(textView);
 
@@ -357,7 +358,10 @@ public class UiUtils {
                         break;
                     }
 
-                    button.setPadding(0, dpAsPixels, 0, dpAsPixels);
+                    button.setPadding(0,
+                            getDpAsPixels(Config.FEEDBACK_CARD_PADDING),
+                            0,
+                            getDpAsPixels(Config.FEEDBACK_CARD_PADDING));
 
                     linearLayout.addView(button);
 
@@ -377,7 +381,10 @@ public class UiUtils {
                         break;
                     }
 
-                    imageView.setPadding(0, dpAsPixels, 0, dpAsPixels);
+                    imageView.setPadding(0,
+                            getDpAsPixels(Config.FEEDBACK_CARD_PADDING),
+                            0,
+                            getDpAsPixels(Config.FEEDBACK_CARD_PADDING));
 
                     linearLayout.addView(imageView);
 
@@ -398,7 +405,10 @@ public class UiUtils {
                         break;
                     }
 
-                    mapView.setPadding(0, dpAsPixels, 0, dpAsPixels);
+                    mapView.setPadding(0,
+                            getDpAsPixels(Config.FEEDBACK_CARD_PADDING),
+                            0,
+                            getDpAsPixels(Config.FEEDBACK_CARD_PADDING));
 
                     linearLayout.addView(mapView);
 
@@ -411,5 +421,17 @@ public class UiUtils {
         }
 
         return linearLayout;
+    }
+
+    /**
+     * Converts dp value to pixel value
+     *
+     * @param dpValue
+     * @return
+     */
+    public int getDpAsPixels(int dpValue) {
+
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 }
