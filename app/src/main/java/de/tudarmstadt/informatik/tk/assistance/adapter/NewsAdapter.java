@@ -153,6 +153,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 //            tmp.add(new Double[]{49.8752582, 8.6693696});
 //            cardContent.setPoints(tmp.toArray(new Double[tmp.size()][]));
 //            cardContent.setTarget("https://www.google.com/");
+//            cardContent.setSource("http://www.cooleparts-garage.de/wp-content/uploads/2014/05/imagee.jpeg");
             // !!!!!!!!!!!!
 
             showUserMapLocation = false;
@@ -180,13 +181,18 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             FeedbackItemType feedbackType = FeedbackItemType.getEnum(cardContent.getType());
 
             // TEST
-//            feedbackType = FeedbackItemType.BUTTON;
+//            feedbackType = FeedbackItemType.GROUP;
             // ------------------------------
 
             switch (feedbackType) {
                 case TEXT:
                     TextDto textDto = ContentFactory.getText(cardContent);
                     TextView textView = uiUtils.getText(textDto);
+
+                    if (textView == null) {
+                        break;
+                    }
+
                     viewHolder.mContainer.addView(textView);
                     break;
 
@@ -225,7 +231,33 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
                 case IMAGE:
                     ImageDto imageDto = ContentFactory.getImage(cardContent);
-                    viewHolder.mContainer.addView(uiUtils.getImage(imageDto));
+
+                    ImageView imageView = uiUtils.getImage(imageDto);
+
+                    if (imageView == null) {
+                        break;
+                    }
+
+                    target = imageDto.getTarget();
+
+                    // only when we have a target
+                    if (target != null) {
+
+                        boolean isValidUrl = UrlUtils.isValidUrl(target);
+
+                        if (isValidUrl) {
+
+                            // bind only when valid URL
+                            imageView.setOnClickListener(v -> {
+                                // we have valid URL -> fire open url event
+                                if (EventBus.getDefault().hasSubscriberForEvent(OpenBrowserUrlEvent.class)) {
+                                    EventBus.getDefault().post(new OpenBrowserUrlEvent(target));
+                                }
+                            });
+                        }
+                    }
+
+                    viewHolder.mContainer.addView(imageView);
                     break;
 
                 case MAP:
@@ -238,6 +270,11 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
                     setMapPoints(mapDto.getPoints());
                     mapView = uiUtils.getMap(mapDto, this);
+
+                    if (mapView == null) {
+                        break;
+                    }
+
                     viewHolder.mContainer.addView(mapView);
 
                     ViewGroup.LayoutParams currentLayoutParams = viewHolder.itemView.getLayoutParams();
@@ -249,7 +286,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
                 case GROUP:
                     GroupDto groupDto = ContentFactory.getGroup(cardContent);
-                    viewHolder.mContainer.addView(uiUtils.getGroup(groupDto));
+
+                    LinearLayout groupView = uiUtils.getGroup(groupDto);
+
+                    viewHolder.mContainer.addView(groupView);
                     break;
             }
         }
