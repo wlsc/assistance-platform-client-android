@@ -179,10 +179,15 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
             FeedbackItemType feedbackType = FeedbackItemType.getEnum(cardContent.getType());
 
+            // TEST
+//            feedbackType = FeedbackItemType.BUTTON;
+            // ------------------------------
+
             switch (feedbackType) {
                 case TEXT:
                     TextDto textDto = ContentFactory.getText(cardContent);
-                    viewHolder.mContainer.addView(uiUtils.getText(textDto));
+                    TextView textView = uiUtils.getText(textDto);
+                    viewHolder.mContainer.addView(textView);
                     break;
 
                 case BUTTON:

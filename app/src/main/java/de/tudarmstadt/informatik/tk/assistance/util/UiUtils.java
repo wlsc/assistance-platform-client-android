@@ -14,7 +14,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.squareup.picasso.Picasso;
 
 import de.tudarmstadt.informatik.tk.assistance.R;
-import de.tudarmstadt.informatik.tk.assistance.sdk.util.StringUtils;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.GroupAlignment;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.TextAlignment;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.ButtonDto;
@@ -22,6 +21,7 @@ import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ite
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.ImageDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.MapDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.TextDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.util.StringUtils;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -163,7 +163,7 @@ public class UiUtils {
             return null;
         }
 
-        Button button = new Button(context);
+        Button button = new Button(context, null, 0, R.style.BtnDefault);
 
         String caption = buttonDto.getCaption();
 
