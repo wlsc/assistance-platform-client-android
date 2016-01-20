@@ -12,7 +12,7 @@ android {
         applicationId 'de.tudarmstadt.informatik.tk.assistance'
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 24
+        versionCode 25
         versionName "1.2.3"
 
         multiDexEnabled true
