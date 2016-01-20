@@ -38,11 +38,17 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
 
     private final int requiredState;
 
+    private final boolean isModuleActive;
+    private final boolean isInstallView;
+
     public static final int OPTIONAL = 0;
     public static final int REQUIRED = 1;
     public static final int HIDDEN = 2;
 
-    public PermissionAdapter(List<PermissionListItem> mData, int requiredState) {
+    public PermissionAdapter(List<PermissionListItem> mData,
+                             int requiredState,
+                             boolean isModuleActive,
+                             boolean isInstallView) {
 
         if (mData == null) {
             this.mData = Collections.emptyList();
@@ -50,6 +56,8 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
             this.mData = mData;
         }
 
+        this.isModuleActive = isModuleActive;
+        this.isInstallView = isInstallView;
         this.requiredState = requiredState;
         this.eventBus = EventBus.getDefault();
     }
@@ -112,9 +120,13 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
             });
         }
 
-        if (requiredState == HIDDEN) {
+        if ((requiredState == HIDDEN || !isModuleActive) && !isInstallView) {
             holder.mEnablerSwitch.setVisibility(View.GONE);
         }
+    }
+
+    public boolean isModuleActive() {
+        return this.isModuleActive;
     }
 
     /**

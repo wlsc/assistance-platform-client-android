@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.kayvannj.permission_utils.Func;
@@ -51,12 +52,15 @@ import de.tudarmstadt.informatik.tk.assistance.presenter.module.ModulesPresenter
 import de.tudarmstadt.informatik.tk.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleCapability;
+import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.assistance.sdk.event.ShowAccessibilityServiceTutorialEvent;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ModuleResponseDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ModuleProvider;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
@@ -329,7 +333,12 @@ public class ModulesActivity extends
             permissionListItem.setCapability(oldCap);
             items.set(position, permissionListItem);
 
-            permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(items, PermissionAdapter.OPTIONAL));
+            permissionOptionalRecyclerView.setAdapter(
+                    new PermissionAdapter(
+                            items,
+                            PermissionAdapter.OPTIONAL,
+                            adapter.isModuleActive(),
+                            false));
         }
     }
 
@@ -717,7 +726,7 @@ public class ModulesActivity extends
     @Override
     public void showPermissionDialog(ModuleResponseDto selectedModule) {
 
-        LayoutInflater inflater = this.getLayoutInflater();
+        LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_permissions, null);
 
         permissionRequiredRecyclerView = ButterKnife.findById(
@@ -796,11 +805,15 @@ public class ModulesActivity extends
 
         permissionRequiredRecyclerView.setAdapter(new PermissionAdapter(
                 requiredModuleSensors,
-                PermissionAdapter.REQUIRED));
+                PermissionAdapter.REQUIRED,
+                false,
+                true));
 
         permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(
                 optionalModuleSensors,
-                PermissionAdapter.OPTIONAL));
+                PermissionAdapter.OPTIONAL,
+                false,
+                true));
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
@@ -880,6 +893,25 @@ public class ModulesActivity extends
                 dialogView,
                 R.id.module_permissions_optional_list_empty);
 
+        // check if module active
+        String userToken = PreferenceProvider.getInstance(this).getUserToken();
+        DbUser user = DaoProvider.getInstance(this).getUserDao().getByToken(userToken);
+        DbModule activeModule = DaoProvider.getInstance(this)
+                .getModuleDao()
+                .getByPackageIdUserId(selectedModule.getPackageName(), user.getId());
+        boolean isModulesActive = activeModule != null ? activeModule.getActive() : false;
+
+        LinearLayout modulePermReq = ButterKnife.findById(dialogView, R.id.module_perm_req_view);
+        LinearLayout modulePermOpt = ButterKnife.findById(dialogView, R.id.module_perm_opt_view);
+
+        if (!isModulesActive) {
+            modulePermReq.setVisibility(View.GONE);
+            modulePermOpt.setVisibility(View.GONE);
+        } else {
+            modulePermReq.setVisibility(View.VISIBLE);
+            modulePermOpt.setVisibility(View.VISIBLE);
+        }
+
         List<ModuleCapabilityResponseDto> requiredSensors = selectedModule.getSensorsRequired();
         List<ModuleCapabilityResponseDto> optionalSensors = selectedModule.getSensorsOptional();
 
@@ -888,10 +920,22 @@ public class ModulesActivity extends
 
         if (requiredSensors != null && !requiredSensors.isEmpty()) {
 
-            for (ModuleCapabilityResponseDto capability : requiredSensors) {
-                requiredModuleSensors.add(new PermissionListItem(
-                        ConverterUtils.convertModuleCapability(capability)
-                ));
+            if (isModulesActive && activeModule != null) {
+
+                List<DbModuleCapability> caps = activeModule.getDbModuleCapabilityList();
+
+                for (DbModuleCapability cap : caps) {
+                    if (cap.getRequired()) {
+                        requiredModuleSensors.add(new PermissionListItem(cap));
+                    }
+                }
+
+            } else {
+                for (ModuleCapabilityResponseDto capability : requiredSensors) {
+                    requiredModuleSensors.add(new PermissionListItem(
+                            ConverterUtils.convertModuleCapability(capability)
+                    ));
+                }
             }
         } else {
             toggleShowRequiredPermissions(true);
@@ -899,10 +943,22 @@ public class ModulesActivity extends
 
         if (optionalSensors != null && !optionalSensors.isEmpty()) {
 
-            for (ModuleCapabilityResponseDto capability : optionalSensors) {
-                optionalModuleSensors.add(new PermissionListItem(
-                        ConverterUtils.convertModuleCapability(capability)
-                ));
+            if (isModulesActive && activeModule != null) {
+
+                List<DbModuleCapability> caps = activeModule.getDbModuleCapabilityList();
+
+                for (DbModuleCapability cap : caps) {
+                    if (!cap.getRequired()) {
+                        optionalModuleSensors.add(new PermissionListItem(cap));
+                    }
+                }
+
+            } else {
+                for (ModuleCapabilityResponseDto capability : optionalSensors) {
+                    optionalModuleSensors.add(new PermissionListItem(
+                            ConverterUtils.convertModuleCapability(capability)
+                    ));
+                }
             }
         } else {
             toggleShowOptionalPermissions(true);
@@ -910,11 +966,15 @@ public class ModulesActivity extends
 
         permissionRequiredRecyclerView.setAdapter(new PermissionAdapter(
                 requiredModuleSensors,
-                PermissionAdapter.REQUIRED));
+                PermissionAdapter.REQUIRED,
+                isModulesActive,
+                false));
 
         permissionOptionalRecyclerView.setAdapter(new PermissionAdapter(
                 optionalModuleSensors,
-                PermissionAdapter.HIDDEN));
+                PermissionAdapter.HIDDEN,
+                isModulesActive,
+                false));
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setView(dialogView);
