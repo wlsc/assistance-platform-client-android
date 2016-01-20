@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +23,7 @@ import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ite
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.MapDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.item.TextDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.StringUtils;
+import de.tudarmstadt.informatik.tk.assistance.sdk.util.UrlUtils;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -126,10 +128,11 @@ public class UiUtils {
      * Returns ImageView with according settings from feedback image DTO type
      *
      * @param imageDto
+     * @param onClickListener
      * @return
      */
     @Nullable
-    public ImageView getImage(ImageDto imageDto) {
+    public ImageView getImage(ImageDto imageDto, View.OnClickListener onClickListener) {
 
         if (imageDto == null) {
             return null;
@@ -147,6 +150,20 @@ public class UiUtils {
                     .into(imageView);
         }
 
+        String target = imageDto.getTarget();
+
+        // only when we have a target
+        if (target != null) {
+
+            boolean isValidUrl = UrlUtils.isValidUrl(target);
+
+            if (isValidUrl) {
+
+                // bind only when valid URL
+                imageView.setOnClickListener(onClickListener);
+            }
+        }
+
         return imageView;
     }
 
@@ -154,10 +171,11 @@ public class UiUtils {
      * Returns Button with according settings from feedback button DTO type
      *
      * @param buttonDto
+     * @param onClickListener
      * @return
      */
     @Nullable
-    public Button getButton(ButtonDto buttonDto) {
+    public Button getButton(ButtonDto buttonDto, View.OnClickListener onClickListener) {
 
         if (buttonDto == null) {
             return null;
@@ -168,6 +186,15 @@ public class UiUtils {
         String caption = buttonDto.getCaption();
 
         button.setText(StringUtils.isNullOrEmpty(caption) ? "" : caption);
+
+        /**
+         * TARGET
+         */
+        String target = buttonDto.getTarget();
+
+        if (target != null) {
+            button.setOnClickListener(onClickListener);
+        }
 
         return button;
     }
@@ -198,6 +225,9 @@ public class UiUtils {
 
         LinearLayout linearLayout = new LinearLayout(context);
 
+        /**
+         * ALIGNMENT
+         */
         if (StringUtils.isNotNullAndEmpty(alignment)) {
 
             if (GroupAlignment.HORIZONTAL.getValue().equalsIgnoreCase(alignment)) {
@@ -213,6 +243,10 @@ public class UiUtils {
 
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         }
+
+        /**
+         * CONTENT PROCESSING
+         */
 
         return linearLayout;
     }

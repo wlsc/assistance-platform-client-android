@@ -181,7 +181,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             FeedbackItemType feedbackType = FeedbackItemType.getEnum(cardContent.getType());
 
             // TEST
-//            feedbackType = FeedbackItemType.GROUP;
+            feedbackType = FeedbackItemType.GROUP;
             // ------------------------------
 
             switch (feedbackType) {
@@ -199,31 +199,23 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 case BUTTON:
                     ButtonDto buttonDto = ContentFactory.getButton(cardContent);
 
-                    Button button = uiUtils.getButton(buttonDto);
+                    Button button = uiUtils.getButton(buttonDto, v -> {
+
+                        boolean isValidUrl = UrlUtils.isValidUrl(buttonDto.getTarget());
+
+                        if (isValidUrl) {
+                            // we have valid URL -> fire open url event
+                            if (EventBus.getDefault().hasSubscriberForEvent(OpenBrowserUrlEvent.class)) {
+                                EventBus.getDefault().post(new OpenBrowserUrlEvent(buttonDto.getTarget()));
+                            }
+                        } else {
+                            // we have app package name
+                            AppUtils.openApp(context, buttonDto.getTarget());
+                        }
+                    });
 
                     if (button == null) {
                         break;
-                    }
-
-                    String target = buttonDto.getTarget();
-
-                    // only when we have a target
-                    if (target != null) {
-
-                        boolean isValidUrl = UrlUtils.isValidUrl(target);
-
-                        button.setOnClickListener(v -> {
-
-                            if (isValidUrl) {
-                                // we have valid URL -> fire open url event
-                                if (EventBus.getDefault().hasSubscriberForEvent(OpenBrowserUrlEvent.class)) {
-                                    EventBus.getDefault().post(new OpenBrowserUrlEvent(target));
-                                }
-                            } else {
-                                // we have app package name
-                                AppUtils.openApp(context, target);
-                            }
-                        });
                     }
 
                     viewHolder.mContainer.addView(button);
@@ -232,29 +224,15 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 case IMAGE:
                     ImageDto imageDto = ContentFactory.getImage(cardContent);
 
-                    ImageView imageView = uiUtils.getImage(imageDto);
+                    ImageView imageView = uiUtils.getImage(imageDto, (View.OnClickListener) v -> {
+
+                        if (EventBus.getDefault().hasSubscriberForEvent(OpenBrowserUrlEvent.class)) {
+                            EventBus.getDefault().post(new OpenBrowserUrlEvent(imageDto.getTarget()));
+                        }
+                    });
 
                     if (imageView == null) {
                         break;
-                    }
-
-                    target = imageDto.getTarget();
-
-                    // only when we have a target
-                    if (target != null) {
-
-                        boolean isValidUrl = UrlUtils.isValidUrl(target);
-
-                        if (isValidUrl) {
-
-                            // bind only when valid URL
-                            imageView.setOnClickListener(v -> {
-                                // we have valid URL -> fire open url event
-                                if (EventBus.getDefault().hasSubscriberForEvent(OpenBrowserUrlEvent.class)) {
-                                    EventBus.getDefault().post(new OpenBrowserUrlEvent(target));
-                                }
-                            });
-                        }
                     }
 
                     viewHolder.mContainer.addView(imageView);
