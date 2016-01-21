@@ -127,7 +127,7 @@ public class MainActivity extends
     public void setNewsItems(List<ClientFeedbackDto> assistanceNews) {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(new NewsAdapter(assistanceNews, getApplicationContext()));
+        mRecyclerView.setAdapter(new NewsAdapter(assistanceNews, this));
         mRecyclerView.setVisibility(View.VISIBLE);
         ButterKnife.findById(this, R.id.noData).setVisibility(View.GONE);
     }
