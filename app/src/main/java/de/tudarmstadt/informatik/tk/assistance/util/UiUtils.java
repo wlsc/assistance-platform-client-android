@@ -287,7 +287,6 @@ public class UiUtils {
      */
     private View generateMoreContent(List<ContentDto> moreContent, String alignment) {
 
-
         LinearLayout linearLayout = new LinearLayout(context);
 
         if (StringUtils.isNotNullAndEmpty(alignment)) {
