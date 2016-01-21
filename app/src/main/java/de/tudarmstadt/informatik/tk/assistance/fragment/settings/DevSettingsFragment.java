@@ -9,7 +9,6 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
@@ -60,7 +59,7 @@ public class DevSettingsFragment extends
 
         boolean isUserDeveloper = PreferenceUtils.isUserDeveloper(getActivity().getApplicationContext());
 
-        SwitchPreference beDevPref = (SwitchPreference) findPreference("pref_be_developer");
+        com.cgollner.unclouded.preferences.SwitchPreferenceCompat beDevPref = (com.cgollner.unclouded.preferences.SwitchPreferenceCompat) findPreference("pref_be_developer");
         beDevPref.setChecked(isUserDeveloper);
 
         exportDbPref = findPreference("pref_export_database");
