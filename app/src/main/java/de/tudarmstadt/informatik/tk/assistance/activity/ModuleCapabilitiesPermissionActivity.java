@@ -298,6 +298,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
             if (perms == null) {
                 Log.d(TAG, "Do not need perm for the type: " + type);
+                updateModuleAllowedCapabilityDbEntry(event.getCapType(), event.isChecked());
                 return;
             }
 
@@ -317,6 +318,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                         @Override
                         protected void call() {
                             Log.d(TAG, "Permission was granted");
+                            updateModuleAllowedCapabilityDbEntry(event.getCapType(), event.isChecked());
                             updateModuleAllowedCapabilitySwitcher(event.getCapType(), event.isChecked());
                         }
                     })
