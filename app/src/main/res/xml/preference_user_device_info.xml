@@ -2,11 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="pref_screen_user_device_info">
 
-    <Preference
-        android:fragment="de.tudarmstadt.informatik.tk.assistance.fragment.settings.SensorListSettingsFragment"
-        android:key="pref_list_of_sensors"
-        android:summary="@string/settings_list_of_sensors_summary"
-        android:title="@string/settings_list_of_sensors_title" />
+    <!--<Preference-->
+    <!--android:fragment="de.tudarmstadt.informatik.tk.assistance.fragment.settings.SensorListSettingsFragment"-->
+    <!--android:key="pref_list_of_sensors"-->
+    <!--android:summary="@string/settings_list_of_sensors_summary"-->
+    <!--android:title="@string/settings_list_of_sensors_title" />-->
 
     <EditTextPreference
         android:key="pref_device_set_title"
