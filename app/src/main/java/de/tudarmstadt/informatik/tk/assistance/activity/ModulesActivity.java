@@ -739,7 +739,7 @@ public class ModulesActivity extends
                 R.id.module_permission_optional_list);
         permissionOptionalRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAppCompatAlertDialog);
         builder.setView(dialogView);
 
         builder.setPositiveButton(R.string.button_accept, (dialog, which) -> {
@@ -836,7 +836,7 @@ public class ModulesActivity extends
     @Override
     public void showUninstallDialog(final ModuleResponseDto selectedModule) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAppCompatAlertDialog);
 
         builder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
 
@@ -976,7 +976,7 @@ public class ModulesActivity extends
                 isModulesActive,
                 false));
 
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this, R.style.MyAppCompatAlertDialog);
         dialogBuilder.setView(dialogView);
 
         dialogBuilder.setPositiveButton(R.string.button_ok, (dialog, which) -> {

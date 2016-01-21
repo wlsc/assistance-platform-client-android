@@ -88,4 +88,7 @@
         <item name="android:orientation">vertical</item>
     </style>
 
+    <style name="MyAppCompatAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    </style>
+
 </resources>

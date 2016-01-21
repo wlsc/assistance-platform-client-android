@@ -14,11 +14,11 @@ import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.assistance.BuildConfig;
+import de.tudarmstadt.informatik.tk.assistance.Constants;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
-import de.tudarmstadt.informatik.tk.assistance.Constants;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 
 /**
@@ -170,7 +170,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.dialog_about_app, null);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.MyAppCompatAlertDialog);
 
             builder.setTitle(getString(R.string.app_name) + " v" + BuildConfig.VERSION_NAME);
             builder.setView(dialogView);

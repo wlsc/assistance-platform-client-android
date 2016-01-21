@@ -349,7 +349,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
      */
     private void showTucanDialog() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAppCompatAlertDialog);
 
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_enter_credentials, null);
@@ -631,7 +631,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
      */
     private void handleDisablingCapabilityWithRestriction(int capType, boolean isChecked, int numReqModules) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAppCompatAlertDialog);
 
         builder.setPositiveButton(R.string.button_disable, (dialog, which) -> {
             Log.d(TAG, "User tapped positive button");
