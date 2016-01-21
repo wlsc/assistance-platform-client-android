@@ -274,33 +274,35 @@ public class LoginActivity extends
 
     @OnClick(R.id.tvPasswordReset)
     protected void onPasswordResetPressed() {
-        Intent intent = new Intent(this, ResetPasswordActivity.class);
-        startActivity(intent);
+
+        Toaster.showLong(this, R.string.feature_is_under_construction);
+//        Intent intent = new Intent(this, ResetPasswordActivity.class);
+//        startActivity(intent);
     }
 
     @OnClick(R.id.ibFacebookLogo)
     protected void onFacebookLogoPressed() {
-        Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.ibGooglePlusLogo)
     protected void onGooglePlusLogoPressed() {
-        Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.ibLiveLogo)
     protected void onLiveLogoPressed() {
-        Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.ibTwitterLogo)
     protected void onTwitterLogoPressed() {
-        Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.ibGithubLogo)
     protected void onGithubLogoPressed() {
-        Toast.makeText(this, "oauth tbd", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
     }
 
     @OnEditorAction(R.id.email)
