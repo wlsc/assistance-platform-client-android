@@ -11,7 +11,7 @@
     tools:mContext="de.tudarmstadt.informatik.tk.assistance.activity.LoginActivity">
 
     <!-- Login progress -->
-    <ProgressBar
+    <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
@@ -81,7 +81,7 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/sign_in_button"
                 style="@style/BtnSuccess"
                 android:layout_width="fill_parent"

@@ -62,7 +62,7 @@
             android:orientation="horizontal"
             tools:ignore="UselessParent">
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/ignore_button"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="0dp"
@@ -70,7 +70,7 @@
                 android:layout_weight="1"
                 android:text="@string/button_ignore_text" />
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/activate_now_button"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="0dp"

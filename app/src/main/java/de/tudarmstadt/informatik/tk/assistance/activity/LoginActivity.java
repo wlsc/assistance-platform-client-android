@@ -5,10 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
@@ -88,13 +89,13 @@ public class LoginActivity extends
     protected EditText mPasswordView;
 
     @Bind(R.id.login_progress)
-    protected View mProgressView;
+    protected ContentLoadingProgressBar mProgressView;
 
     @Bind(R.id.login_form)
     protected ScrollView mLoginFormView;
 
     @Bind(R.id.sign_in_button)
-    protected Button mLoginButton;
+    protected AppCompatButton mLoginButton;
 
     // SOCIAL BUTTONS
     @Bind(R.id.ibFacebookLogo)

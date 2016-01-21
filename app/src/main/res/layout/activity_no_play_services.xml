@@ -27,7 +27,7 @@
         android:fitsSystemWindows="true"
         android:orientation="horizontal">
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/check_button"
             style="?metaButtonBarButtonStyle"
             android:layout_width="0dp"

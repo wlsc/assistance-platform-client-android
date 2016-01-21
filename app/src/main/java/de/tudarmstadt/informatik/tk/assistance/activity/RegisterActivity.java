@@ -2,7 +2,7 @@ package de.tudarmstadt.informatik.tk.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.EditText;
+import android.support.v7.widget.AppCompatEditText;
 
 import java.util.Set;
 
@@ -31,13 +31,13 @@ public class RegisterActivity extends
     private static final String TAG = RegisterActivity.class.getSimpleName();
 
     @Bind(R.id.register_email)
-    protected EditText mUserEmail;
+    protected AppCompatEditText mUserEmail;
 
     @Bind(R.id.register_password1)
-    protected EditText mUserPassword1;
+    protected AppCompatEditText mUserPassword1;
 
     @Bind(R.id.register_password2)
-    protected EditText mUserPassword2;
+    protected AppCompatEditText mUserPassword2;
 
     private RegisterPresenter presenter;
 

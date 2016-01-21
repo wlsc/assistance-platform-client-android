@@ -1,10 +1,10 @@
 package de.tudarmstadt.informatik.tk.assistance.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.common.collect.Lists;
@@ -173,7 +173,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
         protected TextView mTitle;
 
         @Bind(R.id.permission_item_switcher)
-        protected Switch mEnablerSwitch;
+        protected SwitchCompat mEnablerSwitch;
 
         public ViewHolder(View view) {
             super(view);

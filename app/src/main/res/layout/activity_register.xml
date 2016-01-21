@@ -7,8 +7,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-    <LinearLayout
-        android:id="@+id/register_form_container"
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -29,7 +28,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/register_email"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -44,7 +43,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/register_password1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -59,7 +58,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/register_password2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,7 +69,7 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/sign_up_button"
             style="@style/BtnSuccess"
             android:layout_width="fill_parent"
@@ -81,5 +80,5 @@
             android:textAllCaps="true"
             android:textStyle="bold" />
 
-    </LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
 </ScrollView>
