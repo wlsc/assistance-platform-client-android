@@ -317,7 +317,7 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                         @Override
                         protected void call() {
                             Log.d(TAG, "Permission was granted");
-                            updateModuleAllowedCapabilitySwitcher(event.getCapType(), true);
+                            updateModuleAllowedCapabilitySwitcher(event.getCapType(), event.isChecked());
                         }
                     })
                     .ask(Config.PERM_MODULE_ALLOWED_CAPABILITY);
