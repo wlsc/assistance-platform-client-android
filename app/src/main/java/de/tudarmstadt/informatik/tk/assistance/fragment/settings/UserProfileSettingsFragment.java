@@ -127,7 +127,7 @@ public class UserProfileSettingsFragment extends Fragment {
 //                userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_image));
 //            }
 
-            UserApiProvider userApi = ApiProvider.getInstance(getContext()).getUserApiProvider();
+            UserApiProvider userApi = ApiProvider.getInstance(getActivity()).getUserApiProvider();
 
             userApi.getUserProfileFull(userToken)
                     .subscribe(new Subscriber<ProfileResponseDto>() {
