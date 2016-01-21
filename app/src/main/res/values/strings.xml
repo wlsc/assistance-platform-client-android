@@ -98,8 +98,6 @@
     <string name="settings_about_dialog_supervisor_name_2">Christian Meurisch</string>
     <string name="settings_about_dialog_supervisor_email_2">- <a href="mailto:meurisch@tk.tu-darmstadt.de">Email</a></string>
     <string name="settings_about_dialog_supervisor_website_2">- <a href="https://www.tk.informatik.tu-darmstadt.de/de/people/christian-meurisch/">Website</a></string>
-    <string name="settings_about_dialog_supervisor_name_3">Benedikt Schmidt</string>
-    <string name="settings_about_dialog_supervisor_email_3">- <a href="mailto:benedikt.schmidt@tk.informatik.tu-darmstadt.de">Email</a></string>
     <string name="settings_about_dialog_tk_lab_footer">2015 © <a href="http://www.tk.informatik.tu-darmstadt.de">Telecooperation Lab</a></string>
 
     <!-- SPLASH SCREEN -->

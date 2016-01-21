@@ -32,6 +32,7 @@
             android:layout_gravity="start"
             android:gravity="start"
             android:text="@string/none"
+            android:textColor="@color/textBase"
             android:visibility="gone" />
 
     </LinearLayout>
@@ -64,6 +65,7 @@
             android:layout_gravity="start"
             android:gravity="start"
             android:text="@string/none"
+            android:textColor="@color/textBase"
             android:visibility="gone" />
 
     </LinearLayout>

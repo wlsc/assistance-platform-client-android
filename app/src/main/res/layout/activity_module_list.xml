@@ -48,6 +48,7 @@
                 android:layout_gravity="center|center_vertical"
                 android:gravity="center|center_vertical"
                 android:text="@string/module_list_no_data"
+                android:textColor="@color/textBase"
                 android:textStyle="bold"
                 android:visibility="gone" />
 

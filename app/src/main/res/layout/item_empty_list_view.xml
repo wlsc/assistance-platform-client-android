@@ -9,6 +9,7 @@
         android:layout_height="fill_parent"
         android:layout_gravity="center"
         android:text="@string/no_data"
-        android:textAllCaps="true" />
+        android:textAllCaps="true"
+        android:textColor="@color/textBase" />
 
 </LinearLayout>

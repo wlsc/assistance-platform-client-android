@@ -67,13 +67,14 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:scrollbars="vertical" />
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/noData"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:layout_gravity="center|center_vertical"
                 android:gravity="center|center_vertical"
                 android:text="@string/main_activity_no_module_data_available"
+                android:textColor="@color/textBase"
                 android:textStyle="bold"
                 android:visibility="gone" />
 

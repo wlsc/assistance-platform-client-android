@@ -11,6 +11,7 @@
     <EditTextPreference
         android:key="pref_device_set_title"
         android:summary="@string/settings_device_name_summary"
+        android:textColor="@color/textBase"
         android:title="@string/settings_device_name_title" />
 
 </PreferenceScreen>

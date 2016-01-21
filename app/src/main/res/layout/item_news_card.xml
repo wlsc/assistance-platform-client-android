@@ -25,7 +25,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
                 android:paddingLeft="10dp"
-                android:paddingStart="10dp" />
+                android:paddingStart="10dp"
+                android:textColor="@color/textBase" />
 
             <ImageView
                 android:id="@+id/cardSettings"

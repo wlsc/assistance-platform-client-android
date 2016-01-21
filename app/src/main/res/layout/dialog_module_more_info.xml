@@ -11,7 +11,8 @@
     <TextView
         android:id="@+id/module_more_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/textBase" />
 
     <include
         layout="@layout/module_permissions_list"

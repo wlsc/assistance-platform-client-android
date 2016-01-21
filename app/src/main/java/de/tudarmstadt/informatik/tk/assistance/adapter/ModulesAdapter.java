@@ -1,11 +1,11 @@
 package de.tudarmstadt.informatik.tk.assistance.adapter;
 
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.common.collect.Lists;
@@ -196,11 +196,11 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
         @Bind(R.id.main_short_description)
         protected TextView mShortDescription;
         @Bind(R.id.more_info_module)
-        protected Button mMoreInfoModule;
+        protected AppCompatButton mMoreInfoModule;
         @Bind(R.id.install_module)
-        protected Button mInstallModule;
+        protected AppCompatButton mInstallModule;
         @Bind(R.id.uninstall_module)
-        protected Button mUninstallModule;
+        protected AppCompatButton mUninstallModule;
 
         public ViewHolder(View view) {
             super(view);

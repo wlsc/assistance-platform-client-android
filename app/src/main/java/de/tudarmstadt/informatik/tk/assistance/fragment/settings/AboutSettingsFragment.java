@@ -196,9 +196,6 @@ public class AboutSettingsFragment extends PreferenceFragment {
             TextView supervisorWebsite2 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_supervisor_website_2);
             supervisorWebsite2.setMovementMethod(LinkMovementMethod.getInstance());
 
-            TextView supervisorEmail3 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_supervisor_email_3);
-            supervisorEmail3.setMovementMethod(LinkMovementMethod.getInstance());
-
             // FOOTER
             TextView footer = ButterKnife.findById(dialogView, R.id.settings_about_dialog_tk_lab_footer);
             footer.setMovementMethod(LinkMovementMethod.getInstance());

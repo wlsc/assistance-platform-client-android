@@ -1,6 +1,7 @@
 <resources>
 
     <!-- Base colors -->
+    <color name="textBase">#6f6f6f</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
