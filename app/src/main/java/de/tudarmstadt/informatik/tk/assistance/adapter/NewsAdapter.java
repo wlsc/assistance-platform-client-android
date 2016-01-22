@@ -147,7 +147,18 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             viewHolder.itemView.setHapticFeedbackEnabled(true);
 
             final ClientFeedbackDto newsCard = getItem(position);
+
+            if (newsCard == null) {
+                Log.d(TAG, "newsCard is NULL!");
+                return;
+            }
+
             final ContentDto cardContent = newsCard.getContent();
+
+            if (cardContent == null) {
+                Log.d(TAG, "cardContent is NULL!");
+                return;
+            }
 
             // TEST !!!!!!!
 //            List<Double[]> tmp = new ArrayList<>();
