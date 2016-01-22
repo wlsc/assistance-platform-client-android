@@ -328,8 +328,10 @@ public class ModulesActivity extends
 
             PermissionListItem permissionListItem = items.get(position);
             permissionListItem.setChecked(false);
+
             DbModuleCapability oldCap = permissionListItem.getCapability();
             oldCap.setActive(false);
+
             permissionListItem.setCapability(oldCap);
             items.set(position, permissionListItem);
 
@@ -338,7 +340,7 @@ public class ModulesActivity extends
                             items,
                             PermissionAdapter.OPTIONAL,
                             adapter.isModuleActive(),
-                            false));
+                            true));
         }
     }
 
