@@ -45,10 +45,6 @@ public class RegisterPresenterImpl extends
             request.setPassword(password1);
 
             controller.doRegisterUser(request, this);
-        } else {
-            if (!checked) {
-                view.setErrorAcceptDisclaimer();
-            }
         }
     }
 
