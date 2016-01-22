@@ -88,11 +88,6 @@ public class RegisterActivity extends
     }
 
     @Override
-    public void setErrorAcceptDisclaimer() {
-        disclaimerSwitch.setError(getString(R.string.error_field_required));
-    }
-
-    @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
         super.onDestroy();
