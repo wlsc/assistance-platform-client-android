@@ -59,7 +59,8 @@
         </activity>
         <activity
             android:name="de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/SettingsTheme" />
         <activity
             android:name="de.tudarmstadt.informatik.tk.assistance.activity.AccessibilityTutorialActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
