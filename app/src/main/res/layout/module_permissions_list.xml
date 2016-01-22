@@ -1,72 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <LinearLayout
         android:id="@+id/module_perm_req_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/module_required_title"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/alertDialogBackground"
-            android:text="@string/module_permission_dialog_required_title"
-            android:textColor="@color/alertDialogTitle" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/module_permission_required_list"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
-            android:paddingTop="@dimen/dialog_list_padding_vertical_material" />
-
-        <TextView
-            android:id="@+id/module_permissions_required_list_empty"
+        <LinearLayout
+            android:id="@+id/module_perm_req_view"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="start"
-            android:gravity="start"
-            android:text="@string/none"
-            android:textColor="@color/textBase"
-            android:visibility="gone" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/module_perm_opt_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/module_optional_title"
-            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@color/alertDialogBackground"
-            android:text="@string/module_permission_dialog_optional_title"
-            android:textColor="@color/alertDialogTitle" />
+            android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/module_permission_optional_list"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
-            android:paddingTop="@dimen/dialog_list_padding_vertical_material" />
+            <TextView
+                android:id="@+id/module_required_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/alertDialogBackground"
+                android:text="@string/module_permission_dialog_required_title"
+                android:textColor="@color/alertDialogTitle" />
 
-        <TextView
-            android:id="@+id/module_permissions_optional_list_empty"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/module_permission_required_list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
+                android:paddingTop="@dimen/dialog_list_padding_vertical_material" />
+
+            <TextView
+                android:id="@+id/module_permissions_required_list_empty"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="start"
+                android:gravity="start"
+                android:text="@string/none"
+                android:textColor="@color/textBase"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/module_perm_opt_view"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="start"
-            android:gravity="start"
-            android:text="@string/none"
-            android:textColor="@color/textBase"
-            android:visibility="gone" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/module_optional_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/alertDialogBackground"
+                android:text="@string/module_permission_dialog_optional_title"
+                android:textColor="@color/alertDialogTitle" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/module_permission_optional_list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
+                android:paddingTop="@dimen/dialog_list_padding_vertical_material" />
+
+            <TextView
+                android:id="@+id/module_permissions_optional_list_empty"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="start"
+                android:gravity="start"
+                android:text="@string/none"
+                android:textColor="@color/textBase"
+                android:visibility="gone" />
+
+        </LinearLayout>
     </LinearLayout>
-</merge>
+</ScrollView>
