@@ -14,5 +14,5 @@ public interface RegisterPresenter extends CommonPresenter {
 
     void setView(RegisterView view);
 
-    void registerUser(String email, String password1, String password2);
+    void registerUser(String email, String password1, String password2, boolean checked);
 }

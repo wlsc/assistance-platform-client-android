@@ -2,7 +2,9 @@ package de.tudarmstadt.informatik.tk.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.SwitchCompat;
 
 import java.util.Set;
 
@@ -14,6 +16,7 @@ import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.presenter.register.RegisterPresenter;
 import de.tudarmstadt.informatik.tk.assistance.presenter.register.RegisterPresenterImpl;
+import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.RegisterView;
@@ -39,6 +42,12 @@ public class RegisterActivity extends
     @Bind(R.id.register_password2)
     protected AppCompatEditText mUserPassword2;
 
+    @Bind(R.id.disclaimer)
+    protected SwitchCompat disclaimerSwitch;
+
+    @Bind(R.id.sign_up_button)
+    protected AppCompatButton signUpButton;
+
     private RegisterPresenter presenter;
 
     @Override
@@ -55,10 +64,13 @@ public class RegisterActivity extends
     @OnClick(R.id.sign_up_button)
     protected void onUserSignUp() {
 
+        Log.d(TAG, "Signup button pressed");
+
         presenter.registerUser(
                 mUserEmail.getText().toString().trim(),
                 mUserPassword1.getText().toString().trim(),
-                mUserPassword2.getText().toString().trim());
+                mUserPassword2.getText().toString().trim(),
+                disclaimerSwitch.isChecked());
     }
 
     @Override
@@ -73,6 +85,11 @@ public class RegisterActivity extends
     @Override
     public void showErrorEmailAreadyExists() {
         Toaster.showLong(getApplicationContext(), R.string.error_email_exists);
+    }
+
+    @Override
+    public void setErrorAcceptDisclaimer() {
+        disclaimerSwitch.setError(getString(R.string.error_field_required));
     }
 
     @Override

@@ -33,9 +33,9 @@ public class RegisterPresenterImpl extends
     }
 
     @Override
-    public void registerUser(String email, String password1, String password2) {
+    public void registerUser(String email, String password1, String password2, boolean checked) {
 
-        if (isInputOK(email, password1, password2)) {
+        if (isInputOK(email, password1, password2) && checked) {
 
             //        String passwordHashed = CommonUtils.generateSHA256(password);
 
@@ -45,6 +45,10 @@ public class RegisterPresenterImpl extends
             request.setPassword(password1);
 
             controller.doRegisterUser(request, this);
+        } else {
+            if (!checked) {
+                view.setErrorAcceptDisclaimer();
+            }
         }
     }
 

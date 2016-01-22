@@ -136,6 +136,7 @@
     <string name="register_password1">Password</string>
     <string name="register_password2">Repeat password</string>
     <string name="register_successful">Use now your login and password to log in!</string>
+    <string name="register_disclaimer_text">I agree to Terms of Use</string>
 
     <!-- RESET PASSWORD SCREEN -->
     <string name="reset_password_activity_title">Reset your password here!</string>

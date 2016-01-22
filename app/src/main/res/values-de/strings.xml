@@ -109,6 +109,7 @@
   <string name="register_password1">Passwort</string>
   <string name="register_password2">Passwort wiederholen</string>
   <string name="register_successful">Nutzen Sie Ihren Benutzernamen und Passwort anmelden jetzt!</string>
+  <string name="register_disclaimer_text">Ich akzeptiere Nutzungsbedingungen</string>
   <string name="reset_password_activity_title">Hier Ihr Passwort zurücksetzen!</string>
   <string name="reset_header">Zurücksetzen des Kennworts</string>
   <string name="reset_email">E-Mail</string>
