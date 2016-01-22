@@ -14,7 +14,6 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.device.DeviceUserDe
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.DeviceApiProvider;
-import de.tudarmstadt.informatik.tk.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import rx.Subscriber;
@@ -41,10 +40,11 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
         mParentToolbar.setTitle(R.string.settings_header_user_device_title);
 
-        if (!AppUtils.isDebug(getActivity().getApplicationContext())) {
-            Preference sensorsList = findPreference("pref_list_of_sensors");
-            sensorsList.setEnabled(false);
-        }
+//        if (!AppUtils.isDebug(getActivity().getApplicationContext())) {
+//
+//            Preference sensorsList = findPreference("pref_list_of_sensors");
+//            sensorsList.setEnabled(false);
+//        }
 
         long currentDeviceId = PreferenceUtils.getCurrentDeviceId(getActivity().getApplicationContext());
 
