@@ -113,11 +113,11 @@
     <string name="main_activity_module_menu_uninstall">Deactivate module</string>
     <string name="main_activity_undo_uninstall">Cancel deactivation?</string>
     <string name="main_activity_undo_uninstall_button_title">UNDO</string>
-    <string name="main_activity_no_module_data_available">No information yet…</string>
+    <string name="main_activity_no_module_data_available">Waiting for cards…</string>
 
     <!-- MAIN SCREEN: TUTORIAL -->
     <string name="main_activity_tutorial_title">TUTORIAL</string>
-    <string name="main_activity_tutorial_text">You have no modules. Please, tap on highlighted button to see available modules for you</string>
+    <string name="main_activity_tutorial_text">Welcome! You have no active modules. In order to see what is available for you, please tap on that highlighted button!</string>
 
     <!-- LOGIN SCREEN -->
     <string name="login_header">Welcome!</string>
