@@ -2,9 +2,12 @@ package de.tudarmstadt.informatik.tk.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.SwitchCompat;
+import android.text.method.LinkMovementMethod;
+import android.widget.TextView;
 
 import java.util.Set;
 
@@ -48,7 +51,12 @@ public class RegisterActivity extends
     @Bind(R.id.sign_up_button)
     protected AppCompatButton signUpButton;
 
+    @Bind(R.id.disclaimerText)
+    protected TextView disclaimerText;
+
     private RegisterPresenter presenter;
+
+    private AlertDialog legalDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +79,27 @@ public class RegisterActivity extends
                 mUserPassword1.getText().toString().trim(),
                 mUserPassword2.getText().toString().trim(),
                 disclaimerSwitch.isChecked());
+    }
+
+    @OnClick(R.id.disclaimerText)
+    protected void onDisclaimerClick() {
+
+        Log.d(TAG, "Terms of Service link pressed");
+
+        if (legalDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAppCompatAlertDialog);
+
+            builder.setTitle(getString(R.string.settings_legal_title));
+            builder.setMessage(getString(R.string.settings_legal_dialog_message));
+            builder.setPositiveButton(R.string.button_ok, null);
+
+            legalDialog = builder.create();
+        }
+
+        if (!isFinishing()) {
+            legalDialog.show();
+        }
     }
 
     @Override
@@ -162,6 +191,8 @@ public class RegisterActivity extends
         setTitle(R.string.register_activity_title);
 
         ButterKnife.bind(this);
+
+        disclaimerText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override

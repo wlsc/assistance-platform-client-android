@@ -70,6 +70,62 @@
   <string name="settings_build_press_some_more">Sie haben %1$d gedrückt</string>
   <string name="settings_build_press_now_you_developer">Jetzt sind Sie ein Entwickler!</string>
   <string name="settings_build_press_already_developer">Sie sind bereits ein Entwickler.</string>
+    <!-- SETTINGS: ABOUT THE APP -->
+    <string name="settings_legal_dialog_message">## Terms of Service ##
+\n\n
+Technische Universität Darmstadt (Telecooperation Lab) provides this application or service to you, subject to these terms of use ("Terms"). By accessing, browsing, or using this service or linked site from this application, you acknowledge that you have read, understood, and agree to be bound by these Terms. If you do not agree to these terms, please do not use this application.
+\n\n
+*** THE USE OF THIS RESEARCH APPLICATION OR SERVICES IS ON A VOLUNTARY BASIS ***
+\n\n
+# Privacy
+Your privacy is important to us, and we go to great lengths to protect it. This Privacy Statement applies to the collection of personal information via our mobile applications operated by Technische Universität Darmstadt (Telecooperation Lab).
+\n\n\n
+
+> What personal information is collected about you?
+\n\n
+The application collects personal data about you and safely persists by the connected backend system to provide you assistance services. These collected information will only be used internally for scientific purposes and for the delivery of assistance services within our system. We never use your data for commercial purposes. We do not share or publish any personal data.
+\n\n
+The application provides you an overview of available services, so-called "Modules". By default, the application does not collect any personal data of you. By activating modules, the application requests sensor permissions required to provide you the service and starts collecting these personal data that are listed in the specific module. You can influence which information is collected about you by activating/deactivating modules or configuring fine-grained sensor permissions at anytime.
+\n\n\n
+
+> How is your personal information protected?
+\n\n
+We have implemented certain appropriate security measures to help protect your personal information from accidental loss and from unauthorized access, use, or disclosure. We store the information about you on our own server hosted in Telecooperation Lab, Technische Universität Darmstadt (Germany) with restricted access and appropriate monitoring. Despite these measures, we cannot guarantee that unauthorized persons will always be unable to defeat our security measures.
+\n\n\n
+
+> What do we do with your data?
+\n\n
+We use your data for two core purposes. First, your data is used for research at the Technische Universität Darmstadt, Telecooperation Lab in the domain of work processes, goals, intentions and usage behavior. Second, we want to offer interesting services and analytic capabilities to you, which help you understand and improve your personal work processes.
+\n\n
+To address those purposes we perform information fusion and information processing, resulting in new information. This new information is again stored attached to your personal data. Additionally, techniques of information aggregation will be used, which result in new information that cannot be related to individuals anymore.
+\n\n
+Your permission to use your information not only allows us to offer services in its current state but especially to develop new and innovative services for this application based on the information you have provided.
+Although, you give your permission for the usage of the collected data, the data remains your property. Your trust is very important to us. Therefore, we do not share your information with others, unless:
+- We have removed your name and personal information from the data
+- We save your data until you explicitly request the deletion of your data. Information is only shared with third parties if the data contains no personal information anymore, i.e., has been anonymized.
+\n\n\n
+
+> Deactivating services or deleting your account
+\n\n
+Once, you do not want to use our services anymore, you can deactivate the services or delete the whole account including all collected data.
+\n\n
+Deactivating the services in our applications results in stopping the collection of personal data and the providing of assistance services. No new data is stored at this. However, the collected information is not deleted and you can re-activate the services anytime. Your information is still used for aggregation and analysis.
+\n\n
+Deleting your account and applications result in the deletion of all your collected data. To delete your account, send an email to developer@tk.informatik.tu-darmstadt.de.
+\n\n
+---
+\n\n
+Official operator of this app is the Technische Universität Darmstadt (Telecooperation Lab).
+\n\n
+Contact:
+TU Darmstadt - FB20
+Telecooperation Lab
+Office S2|02 A112
+Hochschulstr. 10
+D-64289 Darmstadt
+\n\n
+Phone: +49 (6151) 16 - 23190
+Email: developer@tk.informatik.tu-darmstadt.de</string>
   <string name="settings_about_dialog_intro">Assistance App ist ein Multi-Gerät, Multi-Sensor-Tracking-Suite. Es sammelt Daten von physischen und logischen Sensoren für Desktops, mobile und soziale. Das letztendliche Ziel ist unauffällig Unterstützung für den Benutzer. Zur Unterstützung und Beratung zur Verfügung stellen, wir wollen so viel wie möglich über das menschliche Verhalten und die menschliche Absicht zu lernen.</string>
   <string name="settings_about_dialog_header_developers">ENTWICKLER</string>
   <string name="settings_about_dialog_developer_name_1">Wladimir Schmidt</string>
