@@ -34,7 +34,7 @@
         <item quantity="other">Required by %1$d modules</item>
     </plurals>
     <string name="settings_module_allowed_capability_disable_header">Are you sure?</string>
-    <string name="settings_module_allowed_capability_disable_message2">This capability os required by another module!</string>
+    <string name="settings_module_allowed_capability_disable_message2">This capability is required by another module!</string>
     <plurals name="settings_module_allowed_capability_disable_message">
         <item quantity="one">This capability is required for %1$d module</item>
         <item quantity="other">This capability is required for %1$d modules</item>
