@@ -58,11 +58,16 @@ public class ModulesControllerImpl extends
 
         Set<String> permissionsToAsk = new HashSet<>();
 
-        long userId = PreferenceUtils.getCurrentUserId(presenter.getContext());
+        String userToken = PreferenceUtils.getUserToken(presenter.getContext());
+        DbUser user = daoProvider.getUserDao().getByToken(userToken);
+
+        if (user == null) {
+            return Collections.emptySet();
+        }
 
         List<DbModule> allActiveModules = daoProvider
                 .getModuleDao()
-                .getAllActive(userId);
+                .getAllActive(user.getId());
 
         if (allActiveModules == null || allActiveModules.isEmpty()) {
             return Collections.emptySet();

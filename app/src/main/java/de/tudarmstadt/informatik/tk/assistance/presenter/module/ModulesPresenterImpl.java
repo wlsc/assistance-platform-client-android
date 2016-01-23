@@ -146,7 +146,12 @@ public class ModulesPresenterImpl extends
 
             Log.d(TAG, "Active modules: " + activeModules.toString());
 
-            long userId = PreferenceUtils.getCurrentUserId(getContext());
+            String userToken = PreferenceUtils.getUserToken(getContext());
+            DbUser user = controller.getUserByToken(userToken);
+
+            if (user == null) {
+                return;
+            }
 
             for (int i = 0, convertedModulesSize = convertedModules.size(); i < convertedModulesSize; i++) {
 
@@ -155,7 +160,7 @@ public class ModulesPresenterImpl extends
                 if (activeModules.contains(module.getPackageName())) {
 
                     module.setActive(true);
-                    module.setUserId(userId);
+                    module.setUserId(user.getId());
 //                    List<ModuleCapabilityResponseDto> reqPerms = availableModulesResponse.get(i).getSensorsRequired();
                 }
             }
@@ -190,9 +195,9 @@ public class ModulesPresenterImpl extends
     @Override
     public void requestModulesPermissions() {
 
-        long userId = PreferenceUtils.getCurrentUserId(getContext());
+        String userToken = PreferenceUtils.getUserToken(getContext());
 
-        List<DbModule> activeModulesList = controller.getAllActiveModules(userId);
+        List<DbModule> activeModulesList = controller.getAllActiveModules(userToken);
 
         // there are NO active modules
         if (activeModulesList.isEmpty()) {

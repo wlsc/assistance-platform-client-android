@@ -77,7 +77,9 @@
     <string name="settings_faq_title">FAQ</string>
     <string name="settings_faq_summary">Collection of helpful hints</string>
     <string name="settings_feedback_title">Send us a feedback</string>
-    <string name="settings_feedback_summary">Please tell us about your experience</string>
+    <string name="settings_feedback_summary">Please tell us about your experience with the app</string>
+    <string name="settings_legal_title">Terms of Service</string>
+    <string name="settings_legal_summary">You accepting these by using this app</string>
     <string name="settings_app_version">Version</string>
     <string name="settings_app_version_summary">1.0</string>
     <string name="settings_build_version">Build</string>

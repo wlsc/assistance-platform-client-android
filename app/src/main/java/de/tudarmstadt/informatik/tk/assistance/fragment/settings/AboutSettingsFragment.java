@@ -104,7 +104,6 @@ public class AboutSettingsFragment extends PreferenceFragment {
         }
 
         if (buildNumberClickHandler == null) {
-
             buildNumberClickHandler = preference -> processBuildButton();
         }
 

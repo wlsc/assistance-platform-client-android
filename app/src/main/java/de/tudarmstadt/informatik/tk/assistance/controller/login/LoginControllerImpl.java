@@ -54,7 +54,6 @@ public class LoginControllerImpl extends
 
         if (user != null) {
 
-            PreferenceUtils.setCurrentUserId(presenter.getContext(), user.getId());
             PreferenceUtils.setUserEmail(presenter.getContext(), user.getPrimaryEmail());
             PreferenceUtils.setUserFirstname(presenter.getContext(), user.getFirstname());
             PreferenceUtils.setUserLastname(presenter.getContext(), user.getLastname());
@@ -153,8 +152,6 @@ public class LoginControllerImpl extends
 
             long newUserId = daoProvider.getUserDao().insert(newUser);
 
-            PreferenceUtils.setCurrentUserId(presenter.getContext(), newUserId);
-
             // saving device info into db
 
             DbDevice device = new DbDevice();
@@ -210,8 +207,6 @@ public class LoginControllerImpl extends
                 PreferenceUtils.setCurrentDeviceId(presenter.getContext(), currentDeviceId);
                 PreferenceUtils.setServerDeviceId(presenter.getContext(), response.getDeviceId());
             }
-
-            PreferenceUtils.setCurrentUserId(presenter.getContext(), user.getId());
         }
     }
 

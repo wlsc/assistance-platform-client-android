@@ -152,26 +152,6 @@ public class PreferenceUtils {
     }
 
     /**
-     * Returns current user id saved in SharedPreferences
-     *
-     * @param context
-     * @return
-     */
-    public static long getCurrentUserId(Context context) {
-        return getPreference(context, Constants.PREF_USER_ID, -1);
-    }
-
-    /**
-     * Saves current user id into SharedPreferences
-     *
-     * @param context
-     * @param value
-     */
-    public static void setCurrentUserId(Context context, long value) {
-        setPreference(context, Constants.PREF_USER_ID, value);
-    }
-
-    /**
      * Returns current device id saved in SharedPreferences
      *
      * @param context
