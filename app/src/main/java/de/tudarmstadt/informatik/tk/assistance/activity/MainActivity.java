@@ -40,6 +40,7 @@ import de.tudarmstadt.informatik.tk.assistance.presenter.main.MainPresenterImpl;
 import de.tudarmstadt.informatik.tk.assistance.sdk.event.OpenBrowserUrlEvent;
 import de.tudarmstadt.informatik.tk.assistance.sdk.event.ShowAccessibilityServiceTutorialEvent;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ActivatedModulesResponse;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.service.GcmRegistrationIntentService;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.RxUtils;
@@ -371,8 +372,14 @@ public class MainActivity extends
     @Override
     public void showAccessibilityServiceTutorial() {
 
-        Intent intent = new Intent(this, AccessibilityTutorialActivity.class);
-        startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
+        boolean isActivated = PreferenceProvider
+                .getInstance(getApplicationContext())
+                .getActivated();
+
+        if (!isActivated) {
+            Intent intent = new Intent(this, AccessibilityTutorialActivity.class);
+            startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
+        }
     }
 
     @Override

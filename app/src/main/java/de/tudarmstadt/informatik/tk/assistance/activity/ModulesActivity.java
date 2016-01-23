@@ -353,8 +353,14 @@ public class ModulesActivity extends
     @Override
     public void showAccessibilityServiceTutorial() {
 
-        Intent intent = new Intent(this, AccessibilityTutorialActivity.class);
-        startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
+        boolean isActivated = PreferenceProvider
+                .getInstance(getApplicationContext())
+                .getActivated();
+
+        if (!isActivated) {
+            Intent intent = new Intent(this, AccessibilityTutorialActivity.class);
+            startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
+        }
     }
 
     /**
@@ -365,20 +371,27 @@ public class ModulesActivity extends
     @Override
     public List<DbModuleCapability> getAllEnabledOptionalPermissions() {
 
-        List<DbModuleCapability> result = new ArrayList<>();
-
         List<PermissionListItem> allAdapterPerms = ((PermissionAdapter) permissionOptionalRecyclerView
                 .getAdapter())
                 .getData();
 
-        if (allAdapterPerms != null && !allAdapterPerms.isEmpty()) {
+        if (allAdapterPerms == null || allAdapterPerms.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-            for (PermissionListItem permItem : allAdapterPerms) {
-                if (permItem.isChecked()) {
-                    DbModuleCapability cap = permItem.getCapability();
-                    if (cap != null) {
-                        result.add(cap);
-                    }
+        List<DbModuleCapability> result = new ArrayList<>();
+
+        for (PermissionListItem permItem : allAdapterPerms) {
+
+            if (permItem == null) {
+                continue;
+            }
+
+            if (permItem.isChecked()) {
+
+                DbModuleCapability cap = permItem.getCapability();
+                if (cap != null) {
+                    result.add(cap);
                 }
             }
         }
