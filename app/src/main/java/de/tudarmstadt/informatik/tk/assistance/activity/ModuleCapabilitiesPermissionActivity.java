@@ -215,13 +215,13 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
             boolean isAllowed = dbAllowedCap.getIsAllowed();
             int type = SensorApiType.getDtoType(dbAllowedCap.getType());
 
-            if (dangerousPerms.get(dbAllowedCap.getType()) != null) {
-                String[] perms = dangerousPerms.get(dbAllowedCap.getType());
-
-                if (permUtils.isGranted(perms)) {
-                    isAllowed = true;
-                }
-            }
+//            if (dangerousPerms.get(dbAllowedCap.getType()) != null) {
+//                String[] perms = dangerousPerms.get(dbAllowedCap.getType());
+//
+//                if (permUtils.isGranted(perms)) {
+//                    isAllowed = true;
+//                }
+//            }
 
             allAllowedModuleCaps.add(
                     new ModuleAllowedTypeItem(
