@@ -158,16 +158,6 @@ public class LoginPresenterImpl extends
     }
 
     @Override
-    public void onSaveUserCredentialsToPreference(String token) {
-        view.saveUserCredentialsToPreference(token);
-    }
-
-    @Override
-    public void onUserTokenInvalid() {
-        view.showUserTokenInvalid();
-    }
-
-    @Override
     public void showMainActivity() {
         initAllowedModuleCaps();
         view.loadMainActivity();

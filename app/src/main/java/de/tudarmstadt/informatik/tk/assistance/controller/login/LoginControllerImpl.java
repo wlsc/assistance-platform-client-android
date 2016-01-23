@@ -24,7 +24,6 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.HardwareUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
-import de.tudarmstadt.informatik.tk.assistance.util.ValidationUtils;
 import retrofit.RetrofitError;
 import rx.Subscriber;
 
@@ -87,6 +86,8 @@ public class LoginControllerImpl extends
 
         LoginRequestDto loginRequest = new LoginRequestDto(email, password, userDevice);
 
+        PreferenceUtils.setUserEmail(presenter.getContext(), email);
+
         /**
          * Logging in the user
          */
@@ -117,37 +118,27 @@ public class LoginControllerImpl extends
     @Override
     public void saveLoginGoNext(LoginResponseDto loginApiResponse, OnUserValidHandler handler) {
 
-        String token = loginApiResponse.getUserToken();
-
-        if (ValidationUtils.isUserTokenValid(token)) {
-            Log.d(TAG, "Token is valid. Proceeding with login...");
-
-            handler.onSaveUserCredentialsToPreference(token);
-            saveLoginIntoDb(loginApiResponse);
-            handler.showMainActivity();
-
-        } else {
-            handler.onUserTokenInvalid();
-        }
+        saveLoginIntoDb(loginApiResponse);
+        handler.showMainActivity();
     }
 
     @Override
     public void saveLoginIntoDb(LoginResponseDto response) {
 
+        String userToken = response.getUserToken();
+        String userEmail = PreferenceUtils.getUserEmail(presenter.getContext());
         String createdDate = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
 
-        DbUser user = daoProvider.getUserDao().getByToken(response.getUserToken());
+        DbUser user = daoProvider.getUserDao().getByEmail(userEmail);
 
         // check if that user was already saved in the system
         if (user == null) {
             // no such user found -> insert new user into db
 
-            String email = PreferenceUtils.getUserEmail(presenter.getContext());
-
             DbUser newUser = new DbUser();
 
-            newUser.setToken(response.getUserToken());
-            newUser.setPrimaryEmail(email);
+            newUser.setToken(userToken);
+            newUser.setPrimaryEmail(userEmail);
             newUser.setCreated(createdDate);
 
             long newUserId = daoProvider.getUserDao().insert(newUser);
@@ -172,12 +163,18 @@ public class LoginControllerImpl extends
 
         } else {
 
+            // renewing token
+            user.setToken(userToken);
+
+            daoProvider.getUserDao().update(user);
+
             List<DbDevice> userDevices = user.getDbDeviceList();
 
             String currentAndroidId = HardwareUtils.getAndroidId(presenter.getContext());
             boolean isDeviceAlreadyCreated = false;
 
             for (DbDevice device : userDevices) {
+
                 if (device.getDeviceIdentifier().equals(currentAndroidId)) {
                     isDeviceAlreadyCreated = true;
 
@@ -208,6 +205,8 @@ public class LoginControllerImpl extends
                 PreferenceUtils.setServerDeviceId(presenter.getContext(), response.getDeviceId());
             }
         }
+
+        PreferenceUtils.setUserToken(presenter.getContext(), userToken);
     }
 
     @Override

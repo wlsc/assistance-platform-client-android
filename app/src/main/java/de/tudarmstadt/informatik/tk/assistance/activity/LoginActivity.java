@@ -206,17 +206,6 @@ public class LoginActivity extends
     }
 
     @Override
-    public void saveUserCredentialsToPreference(String token) {
-        PreferenceUtils.setUserToken(getApplicationContext(), token);
-    }
-
-    @Override
-    public void showUserTokenInvalid() {
-        Toaster.showLong(this, R.string.error_user_token_not_valid);
-        Log.d(TAG, "User token is INVALID!");
-    }
-
-    @Override
     public void showSystemUI() {
         CommonUtils.showSystemUI(getWindow());
     }

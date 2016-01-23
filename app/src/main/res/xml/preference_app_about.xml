@@ -39,6 +39,11 @@
     </Preference>
 
     <Preference
+        android:key="pref_legal_information"
+        android:summary="@string/settings_legal_summary"
+        android:title="@string/settings_legal_title" />
+
+    <Preference
         android:key="pref_app_version"
         android:summary="@string/settings_app_version_summary"
         android:title="@string/settings_app_version" />

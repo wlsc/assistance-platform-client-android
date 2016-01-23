@@ -29,10 +29,6 @@ public interface LoginView extends CommonView {
 
     void loadSplashView();
 
-    void saveUserCredentialsToPreference(String token);
-
-    void showUserTokenInvalid();
-
     void showSystemUI();
 
     void setContent();
