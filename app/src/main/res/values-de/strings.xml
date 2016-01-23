@@ -70,6 +70,7 @@
   <string name="settings_build_press_some_more">Sie haben %1$d gedrückt</string>
   <string name="settings_build_press_now_you_developer">Jetzt sind Sie ein Entwickler!</string>
   <string name="settings_build_press_already_developer">Sie sind bereits ein Entwickler.</string>
+  <string name="settings_about_dialog_intro">Assistance App ist ein Multi-Gerät, Multi-Sensor-Tracking-Suite. Es sammelt Daten von physischen und logischen Sensoren für Desktops, mobile und soziale. Das letztendliche Ziel ist unauffällig Unterstützung für den Benutzer. Zur Unterstützung und Beratung zur Verfügung stellen, wir wollen so viel wie möglich über das menschliche Verhalten und die menschliche Absicht zu lernen.</string>
   <string name="settings_about_dialog_header_developers">ENTWICKLER</string>
   <string name="settings_about_dialog_developer_name_1">Wladimir Schmidt</string>
   <string name="settings_about_dialog_developer_email_1">- <a href="mailto:wlsc.dev@gmail.com">Email</a></string>

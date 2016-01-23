@@ -32,15 +32,18 @@ public class AboutSettingsFragment extends PreferenceFragment {
     private Toolbar mParentToolbar;
 
     private static Preference.OnPreferenceClickListener aboutClickHandler;
+    private static Preference.OnPreferenceClickListener legalClickHandler;
     private static Preference.OnPreferenceClickListener buildNumberClickHandler;
 
-    private AlertDialog dialog;
+    private AlertDialog aboutAppDialog;
+    private AlertDialog legalDialog;
 
     private int beDeveloperCounter;
 
     private Toast toast;
 
     private Preference aboutPref;
+    private Preference legalPref;
     private Preference appVersionPref;
     private Preference buildNumberPref;
 
@@ -58,6 +61,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
         mParentToolbar.setTitle(R.string.settings_about_title);
 
         aboutPref = findPreference("pref_about_app");
+        legalPref = findPreference("pref_legal_information");
         appVersionPref = findPreference("pref_app_version");
         buildNumberPref = findPreference("pref_build_number");
 
@@ -103,12 +107,44 @@ public class AboutSettingsFragment extends PreferenceFragment {
             };
         }
 
+        if (legalClickHandler == null) {
+
+            legalClickHandler = preference -> {
+                showLegalInfo();
+                return false;
+            };
+        }
+
         if (buildNumberClickHandler == null) {
             buildNumberClickHandler = preference -> processBuildButton();
         }
 
         aboutPref.setOnPreferenceClickListener(aboutClickHandler);
+        legalPref.setOnPreferenceClickListener(legalClickHandler);
         buildNumberPref.setOnPreferenceClickListener(buildNumberClickHandler);
+    }
+
+    /**
+     * Show legal info dialog
+     */
+    private void showLegalInfo() {
+
+        Log.d(TAG, "User clicked on legal info");
+
+        if (legalDialog == null) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.MyAppCompatAlertDialog);
+
+            builder.setTitle(getString(R.string.settings_legal_title));
+            builder.setMessage(getString(R.string.settings_legal_dialog_message));
+            builder.setPositiveButton(R.string.button_ok, null);
+
+            legalDialog = builder.create();
+        }
+
+        if (!getActivity().isFinishing()) {
+            legalDialog.show();
+        }
     }
 
     /**
@@ -156,7 +192,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
         aboutClickHandler = null;
         buildNumberClickHandler = null;
-        dialog = null;
+        aboutAppDialog = null;
     }
 
     /**
@@ -164,7 +200,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
      */
     private void showAboutInformation() {
 
-        if (dialog == null) {
+        if (aboutAppDialog == null) {
 
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.dialog_about_app, null);
@@ -199,11 +235,11 @@ public class AboutSettingsFragment extends PreferenceFragment {
             TextView footer = ButterKnife.findById(dialogView, R.id.settings_about_dialog_tk_lab_footer);
             footer.setMovementMethod(LinkMovementMethod.getInstance());
 
-            dialog = builder.create();
+            aboutAppDialog = builder.create();
         }
 
         if (!getActivity().isFinishing()) {
-            dialog.show();
+            aboutAppDialog.show();
         }
     }
 }
