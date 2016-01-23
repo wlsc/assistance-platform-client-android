@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ContentDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.FeedbackItemType;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.TextAlignment;
+import de.tudarmstadt.informatik.tk.assistance.sdk.util.JsonUtils;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
