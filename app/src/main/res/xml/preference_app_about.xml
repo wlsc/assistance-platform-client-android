@@ -21,22 +21,7 @@
     <Preference
         android:key="pref_feedback"
         android:summary="@string/settings_feedback_summary"
-        android:title="@string/settings_feedback_title">
-
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="@string/user_feedback_url">
-
-            <extra
-                android:name="android.intent.extra.SUBJECT"
-                android:value="@string/user_feedback_subject" />
-
-            <extra
-                android:name="android.intent.extra.TEXT"
-                android:value="@string/user_feedback_body" />
-        </intent>
-
-    </Preference>
+        android:title="@string/settings_feedback_title" />
 
     <Preference
         android:key="pref_legal_information"

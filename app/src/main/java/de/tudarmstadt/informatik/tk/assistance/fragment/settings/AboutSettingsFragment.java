@@ -4,13 +4,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.assistance.BuildConfig;
@@ -20,6 +20,7 @@ import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
+import de.tudarmstadt.informatik.tk.assistance.util.UserUtils;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -33,6 +34,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
     private static Preference.OnPreferenceClickListener aboutClickHandler;
     private static Preference.OnPreferenceClickListener legalClickHandler;
+    private static Preference.OnPreferenceClickListener feedbackClickHandler;
     private static Preference.OnPreferenceClickListener buildNumberClickHandler;
 
     private AlertDialog aboutAppDialog;
@@ -40,10 +42,9 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
     private int beDeveloperCounter;
 
-    private Toast toast;
-
     private Preference aboutPref;
     private Preference legalPref;
+    private Preference feedbackPref;
     private Preference appVersionPref;
     private Preference buildNumberPref;
 
@@ -62,6 +63,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
         aboutPref = findPreference("pref_about_app");
         legalPref = findPreference("pref_legal_information");
+        feedbackPref = findPreference("pref_feedback");
         appVersionPref = findPreference("pref_app_version");
         buildNumberPref = findPreference("pref_build_number");
 
@@ -119,9 +121,38 @@ public class AboutSettingsFragment extends PreferenceFragment {
             buildNumberClickHandler = preference -> processBuildButton();
         }
 
+        if (feedbackClickHandler == null) {
+            feedbackClickHandler = preference -> {
+                sendEmail();
+                return false;
+            };
+        }
+
         aboutPref.setOnPreferenceClickListener(aboutClickHandler);
         legalPref.setOnPreferenceClickListener(legalClickHandler);
+        feedbackPref.setOnPreferenceClickListener(feedbackClickHandler);
         buildNumberPref.setOnPreferenceClickListener(buildNumberClickHandler);
+    }
+
+    /**
+     * Shows default
+     */
+    private void sendEmail() {
+
+        if (UserUtils.isEMailClientExists(getActivity())) {
+
+            ShareCompat.IntentBuilder.from(getActivity())
+                    .setType("message/rfc822")
+                    .addEmailTo(getString(R.string.user_feedback_url))
+                    .setSubject(getString(R.string.user_feedback_subject))
+                    .setText(getString(R.string.user_feedback_body))
+                            //.setHtmlText(getString(R.string.user_feedback_body));
+                    .setChooserTitle("Select an email app")
+                    .startChooser();
+
+        } else {
+            Toaster.showLong(getActivity().getApplicationContext(), R.string.error_you_have_no_email_app);
+        }
     }
 
     /**
@@ -163,13 +194,6 @@ public class AboutSettingsFragment extends PreferenceFragment {
         }
 
         beDeveloperCounter++;
-
-        if (toast != null) {
-            toast.cancel();
-        }
-
-        toast = Toast.makeText(getActivity(), getString(R.string.settings_build_press_some_more, beDeveloperCounter), Toast.LENGTH_SHORT);
-        toast.show();
 
         if (beDeveloperCounter > 9) {
 

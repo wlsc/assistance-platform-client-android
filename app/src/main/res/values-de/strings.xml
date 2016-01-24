@@ -217,4 +217,5 @@ Email: developer@tk.informatik.tu-darmstadt.de</string>
     <string name="password">Passwort</string>
     <string name="loading_header">Anfordern…</string>
     <string name="dialog_social_message">Dieser Sensor braucht Ihre Kontodaten um normal zu funktionieren</string>
+    <string name="error_you_have_no_email_app">You have no email app</string>
 </resources>

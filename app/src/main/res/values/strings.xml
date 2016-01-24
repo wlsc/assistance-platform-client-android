@@ -4,7 +4,7 @@
     <string name="app_name">Assistance</string>
     <string name="action_back_button_pressed_once">Please press back button again to exit</string>
     <string name="user_faq_url">https://kraken.me/#/idee</string>
-    <string name="user_feedback_url">mailto:developer@tk.informatik.tu-darmstadt.de</string>
+    <string name="user_feedback_url">developer@tk.informatik.tu-darmstadt.de</string>
     <string name="user_feedback_subject">Assistance App Feedback</string>
     <string name="user_feedback_body">Hi,\n\n</string>
     <string name="button_accept">ACCEPT</string>
@@ -265,5 +265,6 @@ Email: developer@tk.informatik.tu-darmstadt.de</string>
     <string name="error_select_new_user_photo">Error occurred while selecting user photo!</string>
     <string name="error_module_not_installed">Error: sorry, unable to enable/disable module!</string>
     <string name="error_modules_were_disabled">Some modules were disabled</string>
+    <string name="error_you_have_no_email_app">You have no email app</string>
 
 </resources>
