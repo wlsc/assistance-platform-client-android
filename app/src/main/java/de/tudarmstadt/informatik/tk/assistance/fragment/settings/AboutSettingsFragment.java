@@ -133,7 +133,9 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
         if (legalDialog == null) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.MyAppCompatAlertDialog);
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    getActivity().getApplicationContext(),
+                    R.style.MyAppCompatAlertDialog);
 
             builder.setTitle(getString(R.string.settings_legal_title));
             builder.setMessage(getString(R.string.settings_legal_dialog_message));
