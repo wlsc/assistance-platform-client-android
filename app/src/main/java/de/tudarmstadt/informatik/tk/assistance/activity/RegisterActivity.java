@@ -6,7 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.SwitchCompat;
-import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.widget.TextView;
 
 import java.util.Set;
@@ -192,7 +192,7 @@ public class RegisterActivity extends
 
         ButterKnife.bind(this);
 
-        disclaimerText.setMovementMethod(LinkMovementMethod.getInstance());
+        Linkify.addLinks(disclaimerText, Linkify.ALL);
     }
 
     @Override
