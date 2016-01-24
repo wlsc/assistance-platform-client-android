@@ -56,7 +56,7 @@ public class SensorListSettingsFragment extends Fragment {
 
         recyclerView.setHasFixedSize(true);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -76,7 +76,7 @@ public class SensorListSettingsFragment extends Fragment {
      */
     private List<SensorsListItem> getSensorsList() {
 
-        boolean isDeveloperEnabled = PreferenceUtils.getPreference(getActivity().getApplicationContext(), "pref_be_developer", false);
+        boolean isDeveloperEnabled = PreferenceUtils.getPreference(getActivity(), "pref_be_developer", false);
 
         List<SensorsListItem> sensorsListItems = new ArrayList<>();
         SensorManager manager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);

@@ -99,7 +99,7 @@ public class UserProfileSettingsFragment extends Fragment {
         View view = null;
 
         // request user profile from server
-        userToken = PreferenceUtils.getUserToken(getActivity().getApplicationContext());
+        userToken = PreferenceUtils.getUserToken(getActivity());
 
         if (!userToken.isEmpty()) {
 
@@ -107,7 +107,7 @@ public class UserProfileSettingsFragment extends Fragment {
 
             ButterKnife.bind(this, view);
 
-//            String filename = UserUtils.getUserPicFilename(getActivity().getApplicationContext());
+//            String filename = UserUtils.getUserPicFilename(getActivity());
 //
 //            if (!filename.isEmpty()) {
 //                File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + Config.USER_PIC_PATH + "/" + filename + ".jpg");
@@ -115,7 +115,7 @@ public class UserProfileSettingsFragment extends Fragment {
 //                if (file.exists()) {
 //                    Log.d(TAG, "File exists");
 //
-//                    Picasso.with(getActivity().getApplicationContext())
+//                    Picasso.with(getActivity())
 //                            .load(file)
 //                            .placeholder(R.drawable.no_image)
 //                            .into(userPicView);
@@ -124,7 +124,7 @@ public class UserProfileSettingsFragment extends Fragment {
 //                }
 //            } else {
 //                Log.d(TAG, "user pic filename NOT exists");
-//                userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.no_image));
+//                userPicView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.no_image));
 //            }
 
             UserApiProvider userApi = ApiProvider.getInstance(getActivity()).getUserApiProvider();
@@ -140,7 +140,7 @@ public class UserProfileSettingsFragment extends Fragment {
                         @Override
                         public void onError(Throwable e) {
                             Log.d(TAG, "Failed while getting full user profile");
-                            Toaster.showLong(getActivity().getApplicationContext(),
+                            Toaster.showLong(getActivity(),
                                     R.string.error_service_not_available);
                         }
 
@@ -308,8 +308,8 @@ public class UserProfileSettingsFragment extends Fragment {
         request.setFirstname(firstname);
         request.setLastname(lastname);
 
-        PreferenceUtils.setUserFirstname(getActivity().getApplicationContext(), firstname);
-        PreferenceUtils.setUserLastname(getActivity().getApplicationContext(), lastname);
+        PreferenceUtils.setUserFirstname(getActivity(), firstname);
+        PreferenceUtils.setUserLastname(getActivity(), lastname);
 
         List<UserSocialServiceDto> socialServices = new ArrayList<>();
 
@@ -355,7 +355,7 @@ public class UserProfileSettingsFragment extends Fragment {
          * SEND UPDATED USER PROFILE TO SERVER
          */
         UserApiProvider userApi = ApiProvider.getInstance(
-                getActivity().getApplicationContext())
+                getActivity())
                 .getUserApiProvider();
 
         userApi.updateUserProfile(userToken, request)
@@ -388,16 +388,16 @@ public class UserProfileSettingsFragment extends Fragment {
 //                return;
 //            }
 //
-//            String oldFilename = UserUtils.getUserPicFilename(getActivity().getApplicationContext());
+//            String oldFilename = UserUtils.getUserPicFilename(getActivity());
 //            Log.d(TAG, "old user pic filename: " + (oldFilename.isEmpty() ? "empty" : oldFilename));
 //
 //            // process selected image and show it to user
 //            try {
 //                Uri uri = data.getData();
 //
-//                InputStream inputStream = getActivity().getApplicationContext().getContentResolver().openInputStream(uri);
+//                InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
 //
-//                CommonUtils.saveFile(getActivity().getApplicationContext(), uri, oldFilename);
+//                CommonUtils.saveFile(getActivity(), uri, oldFilename);
 //
 //                CircularImageView image = ButterKnife.findById(getActivity(), R.id.userPicVIew);
 //                image.setImageDrawable(Drawable.createFromStream(inputStream, USER_PIC_NAME));

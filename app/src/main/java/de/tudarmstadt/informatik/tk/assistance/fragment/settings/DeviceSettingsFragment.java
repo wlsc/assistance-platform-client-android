@@ -40,15 +40,15 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
         mParentToolbar.setTitle(R.string.settings_header_user_device_title);
 
-//        if (!AppUtils.isDebug(getActivity().getApplicationContext())) {
+//        if (!AppUtils.isDebug(getActivity())) {
 //
 //            Preference sensorsList = findPreference("pref_list_of_sensors");
 //            sensorsList.setEnabled(false);
 //        }
 
-        long currentDeviceId = PreferenceUtils.getCurrentDeviceId(getActivity().getApplicationContext());
+        long currentDeviceId = PreferenceUtils.getCurrentDeviceId(getActivity());
 
-        DbDevice dbDevice = DaoProvider.getInstance(getActivity().getApplicationContext())
+        DbDevice dbDevice = DaoProvider.getInstance(getActivity())
                 .getDeviceDao().getById(currentDeviceId);
 
         if (dbDevice != null) {
@@ -93,8 +93,8 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
         // update user defined device title
         if (key.equalsIgnoreCase("pref_device_set_title")) {
 
-            final String userToken = PreferenceUtils.getUserToken(getActivity().getApplicationContext());
-            final long currentDeviceId = PreferenceUtils.getCurrentDeviceId(getActivity().getApplicationContext());
+            final String userToken = PreferenceUtils.getUserToken(getActivity());
+            final long currentDeviceId = PreferenceUtils.getCurrentDeviceId(getActivity());
             final String deviceName = sharedPreferences.getString("pref_device_set_title", "");
 
             DeviceUserDefinedNameRequestDto deviceUserDefinedNameRequest = new DeviceUserDefinedNameRequestDto();
@@ -102,7 +102,7 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
             deviceUserDefinedNameRequest.setDeviceId(currentDeviceId);
             deviceUserDefinedNameRequest.setUserDefinedName(deviceName);
 
-            DeviceApiProvider deviceApi = ApiProvider.getInstance(getActivity().getApplicationContext()).getDeviceApiProvider();
+            DeviceApiProvider deviceApi = ApiProvider.getInstance(getActivity()).getDeviceApiProvider();
 
             deviceApi.setUserDefinedName(userToken, deviceUserDefinedNameRequest)
                     .subscribe(new UserDefinedNameSubscriber(currentDeviceId, deviceName));
@@ -119,7 +119,7 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
 
         Log.d(TAG, "Updating device's user defined name...");
 
-        DbDevice dbDevice = DaoProvider.getInstance(getActivity().getApplicationContext())
+        DbDevice dbDevice = DaoProvider.getInstance(getActivity())
                 .getDeviceDao().getById(currentDeviceId);
 
         if (dbDevice == null) {
@@ -129,7 +129,7 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
 
         dbDevice.setUserDefinedName(deviceName);
 
-        DaoProvider.getInstance(getActivity().getApplicationContext())
+        DaoProvider.getInstance(getActivity())
                 .getDeviceDao().update(dbDevice);
 
         Log.d(TAG, "Successful finished updating device's user defined name!");
@@ -156,13 +156,13 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
 
         @Override
         public void onError(Throwable e) {
-            Toaster.showLong(getActivity().getApplicationContext(), R.string.error_service_not_available);
+            Toaster.showLong(getActivity(), R.string.error_service_not_available);
         }
 
         @Override
         public void onNext(Void aVoid) {
             updateDevice(currentDeviceId, deviceName);
-            Toaster.showLong(getActivity().getApplicationContext(), R.string.changes_were_saved);
+            Toaster.showLong(getActivity(), R.string.changes_were_saved);
         }
     }
 }

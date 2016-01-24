@@ -134,7 +134,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
         if (legalDialog == null) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(
-                    getActivity().getApplicationContext(),
+                    getActivity(),
                     R.style.MyAppCompatAlertDialog);
 
             builder.setTitle(getString(R.string.settings_legal_title));
@@ -144,9 +144,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
             legalDialog = builder.create();
         }
 
-        if (!getActivity().isFinishing()) {
-            legalDialog.show();
-        }
+        legalDialog.show();
     }
 
     /**
@@ -157,10 +155,10 @@ public class AboutSettingsFragment extends PreferenceFragment {
     private boolean processBuildButton() {
 
         // check that user already a developer
-        boolean isDeveloper = PreferenceUtils.isUserDeveloper(getActivity().getApplicationContext());
+        boolean isDeveloper = PreferenceUtils.isUserDeveloper(getActivity());
 
         if (isDeveloper) {
-            Toaster.showShort(getActivity().getApplicationContext(), R.string.settings_build_press_already_developer);
+            Toaster.showShort(getActivity(), R.string.settings_build_press_already_developer);
             return true;
         }
 
@@ -178,7 +176,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
             Log.d(TAG, "You are now a developer.");
 
             Toaster.showLong(getActivity(), R.string.settings_build_press_now_you_developer);
-            PreferenceUtils.setDeveloperStatus(getActivity().getApplicationContext(), true);
+            PreferenceUtils.setDeveloperStatus(getActivity(), true);
 
             return true;
         }

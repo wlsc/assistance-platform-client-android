@@ -57,18 +57,18 @@ public class DevSettingsFragment extends
             mParentToolbar.setTitle(R.string.settings_header_development_title);
         }
 
-        boolean isUserDeveloper = PreferenceUtils.isUserDeveloper(getActivity().getApplicationContext());
+        boolean isUserDeveloper = PreferenceUtils.isUserDeveloper(getActivity());
 
         com.cgollner.unclouded.preferences.SwitchPreferenceCompat beDevPref = (com.cgollner.unclouded.preferences.SwitchPreferenceCompat) findPreference("pref_be_developer");
         beDevPref.setChecked(isUserDeveloper);
 
         exportDbPref = findPreference("pref_export_database");
 
-        String customEndpoint = PreferenceUtils.getCustomEndpoint(getActivity().getApplicationContext());
+        String customEndpoint = PreferenceUtils.getCustomEndpoint(getActivity());
 
         editEndpointUrlPref = (EditTextPreference) findPreference("pref_edit_endpoint_url");
 
-        if (!AppUtils.isDebug(getActivity().getApplicationContext())) {
+        if (!AppUtils.isDebug(getActivity())) {
             editEndpointUrlPref.setEnabled(false);
         }
 
@@ -103,11 +103,11 @@ public class DevSettingsFragment extends
 
             exportDbPref.setEnabled(isDeveloperSwitchEnabled);
 
-            if (AppUtils.isDebug(getActivity().getApplicationContext())) {
+            if (AppUtils.isDebug(getActivity())) {
                 editEndpointUrlPref.setEnabled(isDeveloperSwitchEnabled);
             }
 
-            PreferenceUtils.setDeveloperStatus(getActivity().getApplicationContext(), isDeveloperSwitchEnabled);
+            PreferenceUtils.setDeveloperStatus(getActivity(), isDeveloperSwitchEnabled);
         }
 
         if (key.equals("pref_edit_endpoint_url")) {
@@ -128,7 +128,7 @@ public class DevSettingsFragment extends
                 editEndpointUrlPref.setText(customEndpoint);
             }
 
-            PreferenceUtils.setCustomEndpoint(getActivity().getApplicationContext(), customEndpoint);
+            PreferenceUtils.setCustomEndpoint(getActivity(), customEndpoint);
         }
     }
 
@@ -177,7 +177,7 @@ public class DevSettingsFragment extends
     private void checkWriteExternalStoragePermissionGranted() {
 
         boolean isGranted = PermissionUtils
-                .getInstance(getActivity().getApplicationContext())
+                .getInstance(getActivity())
                 .isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (isGranted) {
@@ -194,7 +194,7 @@ public class DevSettingsFragment extends
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
-                Toaster.showLong(getActivity().getApplicationContext(), R.string.permission_is_mandatory);
+                Toaster.showLong(getActivity(), R.string.permission_is_mandatory);
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -211,18 +211,18 @@ public class DevSettingsFragment extends
 
         try {
             StorageUtils.exportDatabase(
-                    getActivity().getApplicationContext(),
+                    getActivity(),
                     Environment
                             .getExternalStoragePublicDirectory(
                                     Environment.DIRECTORY_DOWNLOADS).getPath() +
                             '/' +
                             Config.DATABASE_NAME);
 
-            Toaster.showLong(getActivity().getApplicationContext(), R.string.settings_export_database_successful);
+            Toaster.showLong(getActivity(), R.string.settings_export_database_successful);
 
         } catch (IOException e) {
             Log.e(TAG, "Cannot export database to public folder. Error: ", e);
-            Toaster.showLong(getActivity().getApplicationContext(), R.string.settings_export_database_failed);
+            Toaster.showLong(getActivity(), R.string.settings_export_database_failed);
         }
     }
 
@@ -254,13 +254,13 @@ public class DevSettingsFragment extends
 
                 Log.d(TAG, "Back from PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE request");
 
-                boolean result = PermissionUtils.getInstance(getActivity().getApplicationContext())
+                boolean result = PermissionUtils.getInstance(getActivity())
                         .handlePermissionResult(grantResults);
 
                 if (result) {
                     exportDatabase();
                 } else {
-                    Toaster.showLong(getActivity().getApplicationContext(),
+                    Toaster.showLong(getActivity(),
                             R.string.permission_is_mandatory);
                 }
 
