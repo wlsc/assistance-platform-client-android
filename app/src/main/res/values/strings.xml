@@ -146,18 +146,11 @@ Phone: +49 (6151) 16 - 23190
 Email: developer@tk.informatik.tu-darmstadt.de</string>
 
     <!-- SETTINGS: ABOUT THE APP -->
-    <string name="settings_about_dialog_intro">Assitance App is a multi-device, multi-sensor tracking suite. It collects data from physical and logical sensors across desktop, mobile, and social. The ultimate goal is unobtrusive assistance to the user. To provide assistance and guidance, we want to learn as much as possible about human behavior and human intention.</string>
-    <string name="settings_about_dialog_header_developers">DEVELOPERS</string>
+    <string name="settings_about_dialog_intro">Assistance App is a multi-device, multi-sensor tracking suite. It collects data from physical and logical sensors across desktop, mobile, and social. The ultimate goal is unobtrusive assistance to the user. To provide assistance and guidance, we want to learn as much as possible about human behavior and human intention.</string>
+    <string name="settings_about_dialog_header_developers">DEVELOPER</string>
     <string name="settings_about_dialog_developer_name_1">Wladimir Schmidt</string>
     <string name="settings_about_dialog_developer_email_1">- <a href="mailto:wlsc.dev@gmail.com">Email</a></string>
     <string name="settings_about_dialog_developer_website_1">- <a href="http://blog.wlsc.de/">Website</a></string>
-    <string name="settings_about_dialog_supervisor_text">SUPERVISORS</string>
-    <string name="settings_about_dialog_supervisor_name_1">Prof. Dr. Max Mühlhäuser</string>
-    <string name="settings_about_dialog_supervisor_email_1">- <a href="mailto:max@tk.tu-darmstadt.de">Email</a></string>
-    <string name="settings_about_dialog_supervisor_website_1">- <a href="https://www.tk.informatik.tu-darmstadt.de/de/people/max/">Website</a></string>
-    <string name="settings_about_dialog_supervisor_name_2">Christian Meurisch</string>
-    <string name="settings_about_dialog_supervisor_email_2">- <a href="mailto:meurisch@tk.tu-darmstadt.de">Email</a></string>
-    <string name="settings_about_dialog_supervisor_website_2">- <a href="https://www.tk.informatik.tu-darmstadt.de/de/people/christian-meurisch/">Website</a></string>
     <string name="settings_about_dialog_tk_lab_footer">2015 © <a href="http://www.tk.informatik.tu-darmstadt.de">Telecooperation Lab</a></string>
 
     <!-- SPLASH SCREEN -->
