@@ -538,16 +538,12 @@ public class ModulesActivity extends
         if (onRefreshHandler == null) {
             Log.d(TAG, "Setting swipe handler...");
 
-            onRefreshHandler = new SwipeRefreshLayout.OnRefreshListener() {
+            onRefreshHandler = () -> {
 
-                @Override
-                public void onRefresh() {
+                setSwipeRefreshing(true);
 
-                    setSwipeRefreshing(true);
-
-                    // request new modules information
-                    presenter.requestAvailableModules();
-                }
+                // request new modules information
+                presenter.requestAvailableModules();
             };
         }
 

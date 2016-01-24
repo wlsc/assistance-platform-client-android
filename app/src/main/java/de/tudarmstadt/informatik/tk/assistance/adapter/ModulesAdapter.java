@@ -40,6 +40,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
             this.modules = Collections.emptyList();
         } else {
             this.modules = modules;
+            sort();
         }
     }
 
@@ -151,6 +152,14 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
         return null;
     }
 
+    /**
+     * Sorts module list
+     */
+    private void sort() {
+        // sort modules by title ASC
+        Collections.sort(this.modules, (lhs, rhs) -> lhs.getTitle().compareToIgnoreCase(rhs.getTitle()));
+    }
+
     @Override
     public int getItemViewType(int position) {
 
@@ -169,9 +178,10 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
     public void swapData(List<DbModule> newList) {
 
         if (newList == null) {
-            modules = Collections.emptyList();
+            this.modules = Collections.emptyList();
         } else {
-            modules = Lists.newArrayList(newList);
+            this.modules = Lists.newArrayList(newList);
+            sort();
         }
 
         notifyDataSetChanged();
