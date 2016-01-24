@@ -102,7 +102,7 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
             deviceUserDefinedNameRequest.setDeviceId(currentDeviceId);
             deviceUserDefinedNameRequest.setUserDefinedName(deviceName);
 
-            DeviceApiProvider deviceApi = ApiProvider.getInstance(getContext()).getDeviceApiProvider();
+            DeviceApiProvider deviceApi = ApiProvider.getInstance(getActivity().getApplicationContext()).getDeviceApiProvider();
 
             deviceApi.setUserDefinedName(userToken, deviceUserDefinedNameRequest)
                     .subscribe(new UserDefinedNameSubscriber(currentDeviceId, deviceName));
@@ -156,13 +156,13 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
 
         @Override
         public void onError(Throwable e) {
-            Toaster.showLong(getContext(), R.string.error_service_not_available);
+            Toaster.showLong(getActivity().getApplicationContext(), R.string.error_service_not_available);
         }
 
         @Override
         public void onNext(Void aVoid) {
             updateDevice(currentDeviceId, deviceName);
-            Toaster.showLong(getContext(), R.string.changes_were_saved);
+            Toaster.showLong(getActivity().getApplicationContext(), R.string.changes_were_saved);
         }
     }
 }
