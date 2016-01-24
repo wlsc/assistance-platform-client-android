@@ -10,20 +10,20 @@
         android:title="@string/settings_header_application_title" />
 
     <!-- User Profile -->
-    <header
-        android:id="@+id/user_settings"
-        android:fragment="de.tudarmstadt.informatik.tk.assistance.fragment.settings.UserProfileSettingsFragment"
-        android:icon="@drawable/ic_account_box_black_48dp"
-        android:summary="@string/settings_header_user_profile_summary"
-        android:title="@string/settings_header_user_profile_title" />
+    <!--<header-->
+    <!--android:id="@+id/user_settings"-->
+    <!--android:fragment="de.tudarmstadt.informatik.tk.assistance.fragment.settings.UserProfileSettingsFragment"-->
+    <!--android:icon="@drawable/ic_account_box_black_48dp"-->
+    <!--android:summary="@string/settings_header_user_profile_summary"-->
+    <!--android:title="@string/settings_header_user_profile_title" />-->
 
     <!-- Device Information -->
-    <header
-        android:id="@+id/about_settings"
-        android:fragment="de.tudarmstadt.informatik.tk.assistance.fragment.settings.DeviceSettingsFragment"
-        android:icon="@drawable/ic_perm_device_information_black_48dp"
-        android:summary="@string/settings_header_user_device_summary"
-        android:title="@string/settings_header_user_device_title" />
+    <!--<header-->
+    <!--android:id="@+id/about_settings"-->
+    <!--android:fragment="de.tudarmstadt.informatik.tk.assistance.fragment.settings.DeviceSettingsFragment"-->
+    <!--android:icon="@drawable/ic_perm_device_information_black_48dp"-->
+    <!--android:summary="@string/settings_header_user_device_summary"-->
+    <!--android:title="@string/settings_header_user_device_title" />-->
 
     <!-- Development -->
     <header
