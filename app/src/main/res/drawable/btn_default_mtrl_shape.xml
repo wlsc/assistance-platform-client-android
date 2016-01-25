@@ -6,7 +6,7 @@
     android:insetTop="@dimen/button_inset_vertical_material">
     <shape
         android:shape="rectangle"
-        android:tint="@color/teal300">
+        android:tint="@color/myAccentColor">
         <corners android:radius="@dimen/control_corner_material" />
         <solid android:color="@color/white" />
         <padding
