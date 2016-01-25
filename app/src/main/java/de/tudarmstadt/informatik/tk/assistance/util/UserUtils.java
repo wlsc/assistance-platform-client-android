@@ -35,6 +35,10 @@ public class UserUtils {
      */
     public static boolean isEMailClientExists(Context context) {
 
+        if (context == null) {
+            return false;
+        }
+
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/html");
         PackageManager packageManager = context.getPackageManager();
