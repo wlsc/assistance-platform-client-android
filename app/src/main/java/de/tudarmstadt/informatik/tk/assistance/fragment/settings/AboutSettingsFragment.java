@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v4.app.ShareCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
@@ -176,6 +177,9 @@ public class AboutSettingsFragment extends PreferenceFragment {
         }
 
         legalDialog.show();
+
+        legalDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(getActivity(), R.color.myAccentColor));
     }
 
     /**
@@ -251,6 +255,9 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
         if (!getActivity().isFinishing()) {
             aboutAppDialog.show();
+
+            aboutAppDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(getActivity(), R.color.myAccentColor));
         }
     }
 }

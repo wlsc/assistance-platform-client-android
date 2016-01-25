@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.tk.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -99,6 +100,9 @@ public class RegisterActivity extends
 
         if (!isFinishing()) {
             legalDialog.show();
+
+            legalDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
         }
     }
 
