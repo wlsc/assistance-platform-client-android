@@ -13,6 +13,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.tudarmstadt.informatik.tk.assistance.Constants;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.fragment.settings.AboutSettingsFragment;
 import de.tudarmstadt.informatik.tk.assistance.fragment.settings.AppSettingsFragment;
@@ -21,7 +22,6 @@ import de.tudarmstadt.informatik.tk.assistance.fragment.settings.DeviceSettingsF
 import de.tudarmstadt.informatik.tk.assistance.fragment.settings.SensorListSettingsFragment;
 import de.tudarmstadt.informatik.tk.assistance.fragment.settings.UserProfileSettingsFragment;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
-import de.tudarmstadt.informatik.tk.assistance.Constants;
 import de.tudarmstadt.informatik.tk.assistance.util.LoginUtils;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 
@@ -68,19 +68,6 @@ public class SettingsActivity extends PreferenceActivity {
 
         mToolBar.setTitle(getTitle());
         mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-
-
-//        FragmentManager fm = getFragmentManager();
-//        fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-//
-//            @Override
-//            public void onBackStackChanged() {
-//                if (getFragmentManager().getBackStackEntryCount() == 0) {
-//                    setResult(R.id.settings);
-//                    finish();
-//                }
-//            }
-//        });
     }
 
     @OnClick(R.id.toolbar)
