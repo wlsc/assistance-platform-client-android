@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp"
-                android:background="@drawable/kraki_transparent_l"
+                android:background="@drawable/login_icon"
                 android:contentDescription="@string/splash_logo_description" />
 
             <TextView
