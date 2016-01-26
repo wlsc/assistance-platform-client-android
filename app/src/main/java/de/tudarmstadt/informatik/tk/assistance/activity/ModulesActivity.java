@@ -828,12 +828,16 @@ public class ModulesActivity extends
                 true));
 
         AlertDialog alertDialog = builder.create();
-        alertDialog.show();
 
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
-        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+        if (!isFinishing()) {
+
+            alertDialog.show();
+
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+            alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+        }
     }
 
     @Override
@@ -873,12 +877,16 @@ public class ModulesActivity extends
         builder.setMessage(R.string.module_uninstall_message);
 
         AlertDialog alertDialog = builder.create();
-        alertDialog.show();
 
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
-        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+        if (!isFinishing()) {
+
+            alertDialog.show();
+
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+            alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+        }
     }
 
     @Override
@@ -1011,12 +1019,16 @@ public class ModulesActivity extends
         moreInfoFull.setText(selectedModule.getDescriptionFull());
 
         AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.show();
 
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
-        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+        if (!isFinishing()) {
+
+            alertDialog.show();
+
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+            alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+        }
     }
 
     @Override

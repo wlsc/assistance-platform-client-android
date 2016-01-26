@@ -141,14 +141,20 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
 //        if (UserUtils.isEMailClientExists(getActivity())) {
 
-        ShareCompat.IntentBuilder.from(getActivity())
-                .setType("message/rfc822")
-                .addEmailTo(getString(R.string.user_feedback_url))
-                .setSubject(getString(R.string.user_feedback_subject))
-                .setText(getString(R.string.user_feedback_body))
-                        //.setHtmlText(getString(R.string.user_feedback_body));
-                .setChooserTitle("Select an email app")
-                .startChooser();
+        if (getActivity() != null && !getActivity().isFinishing()) {
+            try {
+                ShareCompat.IntentBuilder.from(getActivity())
+                        .setType("message/rfc822")
+                        .addEmailTo(getString(R.string.user_feedback_url))
+                        .setSubject(getString(R.string.user_feedback_subject))
+                        .setText(getString(R.string.user_feedback_body))
+                                //.setHtmlText(getString(R.string.user_feedback_body));
+                        .setChooserTitle("Select an email app")
+                        .startChooser();
+            } catch (Exception ignore) {
+                // ignore
+            }
+        }
 
 //        } else {
 //            Toaster.showLong(getActivity().getApplicationContext(), R.string.error_you_have_no_email_app);
@@ -175,10 +181,12 @@ public class AboutSettingsFragment extends PreferenceFragment {
             legalDialog = builder.create();
         }
 
-        legalDialog.show();
+        if (!getActivity().isFinishing()) {
+            legalDialog.show();
 
-        legalDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(ContextCompat.getColor(getActivity(), R.color.myAccentColor));
+            legalDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(getActivity(), R.color.myAccentColor));
+        }
     }
 
     /**

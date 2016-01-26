@@ -376,40 +376,43 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
         builder.setTitle(R.string.sensor_uni_tucan);
 
         AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+
+        if (!isFinishing()) {
+            alertDialog.show();
 
         /*
          * Modifying behavior of buttons
          */
-        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
-                .setOnClickListener(v -> {
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                    .setOnClickListener(v -> {
 
-                    boolean dialogShouldClose = false;
+                        boolean dialogShouldClose = false;
 
-                    Log.d(TAG, "User confirmed TUCAN credentials");
+                        Log.d(TAG, "User confirmed TUCAN credentials");
 
-                    String username = usernameET.getText().toString().trim();
-                    String password = passwordET.getText().toString().trim();
+                        String username = usernameET.getText().toString().trim();
+                        String password = passwordET.getText().toString().trim();
 
-                    if (isInputOk(usernameET, passwordET)) {
+                        if (isInputOk(usernameET, passwordET)) {
 
-                        showLoading();
-                        storeTucanCredentials(username, password);
-                        updateModuleAllowedCapabilityDbEntry(SensorApiType.UNI_TUCAN, true);
-                        updateModuleAllowedCapabilitySwitcher(SensorApiType.UNI_TUCAN, true);
-                        hideLoading();
+                            showLoading();
+                            storeTucanCredentials(username, password);
+                            updateModuleAllowedCapabilityDbEntry(SensorApiType.UNI_TUCAN, true);
+                            updateModuleAllowedCapabilitySwitcher(SensorApiType.UNI_TUCAN, true);
+                            hideLoading();
 
-                        dialogShouldClose = true;
+                            dialogShouldClose = true;
 
-                    } else {
-                        updateModuleAllowedCapabilitySwitcher(SensorApiType.UNI_TUCAN, false);
-                    }
+                        } else {
+                            updateModuleAllowedCapabilitySwitcher(SensorApiType.UNI_TUCAN, false);
+                        }
 
-                    if (dialogShouldClose) {
-                        Toaster.showLong(getApplicationContext(), R.string.changes_were_saved);
-                        alertDialog.dismiss();
-                    }
-                });
+                        if (dialogShouldClose) {
+                            Toaster.showLong(getApplicationContext(), R.string.changes_were_saved);
+                            alertDialog.dismiss();
+                        }
+                    });
+        }
     }
 
     private void storeTucanCredentials(String username, String password) {
@@ -660,7 +663,10 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 //                        numReqModules));
 
         AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+
+        if (!isFinishing()) {
+            alertDialog.show();
+        }
     }
 
     /**
