@@ -209,15 +209,15 @@ public class ModulesControllerImpl extends
                 /**
                  * Check global banned permission
                  */
-                for (DbModuleAllowedCapabilities allowedCap : globalAllowedCaps) {
-                    if (allowedCap.getType().equals(capDto.getType())) {
-                        if (!allowedCap.getIsAllowed()) {
-                            isModuleUsable = false;
-                        }
-
-                        break;
-                    }
-                }
+//                for (DbModuleAllowedCapabilities allowedCap : globalAllowedCaps) {
+//                    if (allowedCap.getType().equals(capDto.getType())) {
+//                        if (!allowedCap.getIsAllowed()) {
+//                            isModuleUsable = false;
+//                        }
+//
+//                        break;
+//                    }
+//                }
             }
 
             // user can use this module -> add to list

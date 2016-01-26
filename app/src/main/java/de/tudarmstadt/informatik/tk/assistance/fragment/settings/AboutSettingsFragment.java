@@ -21,7 +21,6 @@ import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
-import de.tudarmstadt.informatik.tk.assistance.util.UserUtils;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -140,20 +139,20 @@ public class AboutSettingsFragment extends PreferenceFragment {
      */
     private void sendEmail() {
 
-        if (UserUtils.isEMailClientExists(getActivity())) {
+//        if (UserUtils.isEMailClientExists(getActivity())) {
 
-            ShareCompat.IntentBuilder.from(getActivity())
-                    .setType("message/rfc822")
-                    .addEmailTo(getString(R.string.user_feedback_url))
-                    .setSubject(getString(R.string.user_feedback_subject))
-                    .setText(getString(R.string.user_feedback_body))
-                            //.setHtmlText(getString(R.string.user_feedback_body));
-                    .setChooserTitle("Select an email app")
-                    .startChooser();
+        ShareCompat.IntentBuilder.from(getActivity())
+                .setType("message/rfc822")
+                .addEmailTo(getString(R.string.user_feedback_url))
+                .setSubject(getString(R.string.user_feedback_subject))
+                .setText(getString(R.string.user_feedback_body))
+                        //.setHtmlText(getString(R.string.user_feedback_body));
+                .setChooserTitle("Select an email app")
+                .startChooser();
 
-        } else {
-            Toaster.showLong(getActivity().getApplicationContext(), R.string.error_you_have_no_email_app);
-        }
+//        } else {
+//            Toaster.showLong(getActivity().getApplicationContext(), R.string.error_you_have_no_email_app);
+//        }
     }
 
     /**
