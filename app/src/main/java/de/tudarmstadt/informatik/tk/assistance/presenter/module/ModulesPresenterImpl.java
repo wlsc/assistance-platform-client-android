@@ -3,8 +3,6 @@ package de.tudarmstadt.informatik.tk.assistance.presenter.module;
 import android.content.Context;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -482,7 +480,9 @@ public class ModulesPresenterImpl extends
 
         view.setSwipeRefreshing(false);
 
-        if (activatedModulesResponse == null) {
+        if (activatedModulesResponse == null ||
+                activatedModulesResponse.getAvailableModules() == null ||
+                activatedModulesResponse.getAvailableModules().isEmpty()) {
             view.setNoModulesView();
         } else {
 
