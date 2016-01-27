@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseIntArray;
@@ -37,7 +38,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.R;
-import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.assistance.adapter.ModuleGlobalCapsAdapter;
 import de.tudarmstadt.informatik.tk.assistance.event.module.ModuleAllowedPermissionStateChangedEvent;
 import de.tudarmstadt.informatik.tk.assistance.model.item.ModuleAllowedTypeItem;
@@ -69,7 +69,7 @@ import rx.Subscription;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 09.01.2016
  */
-public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
+public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
 
     private static final String TAG = ModuleCapabilitiesPermissionActivity.class.getSimpleName();
 
@@ -116,21 +116,6 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
-    }
-
-    @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
     }
 
     /**
@@ -395,11 +380,9 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
                         if (isInputOk(usernameET, passwordET)) {
 
-                            showLoading();
                             storeTucanCredentials(username, password);
                             updateModuleAllowedCapabilityDbEntry(SensorApiType.UNI_TUCAN, true);
                             updateModuleAllowedCapabilitySwitcher(SensorApiType.UNI_TUCAN, true);
-                            hideLoading();
 
                             dialogShouldClose = true;
 
@@ -489,8 +472,6 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
 
         Log.d(TAG, "User wants FACEBOOK credentials");
 
-        showLoading();
-
         // register callback
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -506,22 +487,18 @@ public class ModuleCapabilitiesPermissionActivity extends BaseActivity {
                                 loginResult.getRecentlyDeniedPermissions());
                         updateModuleAllowedCapabilityDbEntry(SensorApiType.SOCIAL_FACEBOOK, true);
                         updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, true);
-
-                        hideLoading();
                     }
 
                     @Override
                     public void onCancel() {
                         Toaster.showShort(getApplicationContext(), R.string.error_unknown);
                         updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
-                        hideLoading();
                     }
 
                     @Override
                     public void onError(FacebookException error) {
                         Toaster.showShort(getApplicationContext(), R.string.error_service_not_available);
                         updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
-                        hideLoading();
                     }
                 });
 

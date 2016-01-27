@@ -73,11 +73,15 @@ public class ModuleGlobalCapsAdapter extends RecyclerView.Adapter<RecyclerView.V
                     Log.d(TAG, "Permission DISABLED");
                 }
 
+                item.setAllowed(isChecked);
+
                 EventBus.getDefault().post(
                         new ModuleAllowedPermissionStateChangedEvent(
                                 item.getType(),
                                 isChecked,
                                 item.getRequiredByModules()));
+
+                notifyDataSetChanged();
             });
 
             if (item.getRequiredByModules() == 0) {
