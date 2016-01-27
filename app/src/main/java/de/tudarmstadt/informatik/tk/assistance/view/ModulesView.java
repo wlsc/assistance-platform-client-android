@@ -32,6 +32,8 @@ public interface ModulesView extends CommonView {
 
     void swapModuleData(List<DbModule> newModules);
 
+    DbModule getModuleFromList(String packageName);
+
     /**
      * Shows a permission dialog to user
      * Each permission is used actually by a module

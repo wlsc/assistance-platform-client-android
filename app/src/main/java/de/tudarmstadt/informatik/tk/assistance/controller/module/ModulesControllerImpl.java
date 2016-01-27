@@ -19,7 +19,6 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ModuleRespon
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ToggleModuleRequestDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.ModuleApiProvider;
-import de.tudarmstadt.informatik.tk.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
@@ -59,8 +58,8 @@ public class ModulesControllerImpl extends
 
         Set<String> permissionsToAsk = new HashSet<>();
 
-        String userToken = PreferenceUtils.getUserToken(presenter.getContext());
-        DbUser user = daoProvider.getUserDao().getByToken(userToken);
+        String userEmail = PreferenceUtils.getUserEmail(presenter.getContext());
+        DbUser user = daoProvider.getUserDao().getByEmail(userEmail);
 
         if (user == null) {
             return Collections.emptySet();
@@ -84,7 +83,7 @@ public class ModulesControllerImpl extends
 
             for (DbModuleCapability cap : capabilities) {
 
-                if (cap == null) {
+                if (cap == null || !cap.getActive()) {
                     continue;
                 }
 
@@ -118,8 +117,8 @@ public class ModulesControllerImpl extends
     }
 
     @Override
-    public void insertModuleCapabilitiesToDb(List<DbModuleCapability> dbRequiredCaps) {
-        daoProvider.getModuleCapabilityDao().insert(dbRequiredCaps);
+    public void insertModuleCapabilitiesToDb(List<DbModuleCapability> capabilities) {
+        daoProvider.getModuleCapabilityDao().insert(capabilities);
     }
 
     @Override
@@ -209,6 +208,7 @@ public class ModulesControllerImpl extends
                 /**
                  * Check global banned permission
                  */
+                // TODO: uncomment this code for real production
 //                for (DbModuleAllowedCapabilities allowedCap : globalAllowedCaps) {
 //                    if (allowedCap.getType().equals(capDto.getType())) {
 //                        if (!allowedCap.getIsAllowed()) {
@@ -237,86 +237,5 @@ public class ModulesControllerImpl extends
         }
 
         daoProvider.getModuleCapabilityDao().update(moduleCapability);
-    }
-
-    @Override
-    public void updateAvailabilityOfModuleCapability(Set<String> grantedPermissions) {
-
-    }
-
-    @Override
-    public boolean insertModuleResponseWithCapabilities(ModuleResponseDto moduleResponse) {
-
-        DbUser user = getUserByEmail(PreferenceUtils.getUserEmail(presenter.getContext()));
-
-        if (user == null) {
-            Log.d(TAG, "User is null");
-            return false;
-        }
-
-        DbModule module = ConverterUtils.convertModule(moduleResponse);
-
-        if (module == null) {
-            Log.d(TAG, "Module is null");
-            return false;
-        }
-
-        module.setActive(true);
-        module.setUserId(user.getId());
-
-        DbModule existingModule = daoProvider.getModuleDao()
-                .getByPackageIdUserId(module.getPackageName(), module.getUserId());
-
-        long installId;
-
-        if (existingModule == null) {
-
-            installId = insertModuleToDb(module);
-
-            if (installId == -1) {
-                return false;
-            }
-
-            List<ModuleCapabilityResponseDto> requiredCaps = moduleResponse.getSensorsRequired();
-            List<ModuleCapabilityResponseDto> optionalCaps = moduleResponse.getSensorsOptional();
-
-            List<DbModuleCapability> dbRequiredCaps = new ArrayList<>(requiredCaps.size());
-            List<DbModuleCapability> dbOptionalCaps = new ArrayList<>(optionalCaps.size());
-
-            for (ModuleCapabilityResponseDto response : requiredCaps) {
-
-                final DbModuleCapability cap = ConverterUtils.convertModuleCapability(response);
-
-                if (cap == null) {
-                    continue;
-                }
-
-                cap.setModuleId(installId);
-                cap.setRequired(true);
-                cap.setActive(true);
-
-                dbRequiredCaps.add(cap);
-            }
-
-            for (ModuleCapabilityResponseDto response : optionalCaps) {
-
-                final DbModuleCapability cap = ConverterUtils.convertModuleCapability(response);
-
-                if (cap == null) {
-                    continue;
-                }
-
-                cap.setModuleId(installId);
-                cap.setRequired(false);
-                cap.setActive(true);
-
-                dbOptionalCaps.add(cap);
-            }
-
-            insertModuleCapabilitiesToDb(dbRequiredCaps);
-            insertModuleCapabilitiesToDb(dbOptionalCaps);
-        }
-
-        return true;
     }
 }

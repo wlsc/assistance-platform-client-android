@@ -736,6 +736,18 @@ public class ModulesActivity extends
     }
 
     @Override
+    public DbModule getModuleFromList(String packageName) {
+
+        if (packageName == null || packageName.isEmpty()) {
+            return null;
+        }
+
+        ModulesAdapter adapter = (ModulesAdapter) mAvailableModulesRecyclerView.getAdapter();
+
+        return adapter.getItem(packageName);
+    }
+
+    @Override
     public void showPermissionDialog(ModuleResponseDto selectedModule) {
 
         LayoutInflater inflater = getLayoutInflater();

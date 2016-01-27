@@ -34,8 +34,6 @@ public interface ModulesController extends CommonController {
 
     void insertModuleCapabilitiesToDb(List<DbModuleCapability> dbRequiredCaps);
 
-    boolean insertModuleResponseWithCapabilities(ModuleResponseDto moduleResponseDto);
-
     DbModule getModuleByPackageIdUserId(String packageName, Long userId);
 
     /**
@@ -55,6 +53,4 @@ public interface ModulesController extends CommonController {
     List<ModuleResponseDto> filterAvailableModulesList(List<ModuleResponseDto> apiResponse);
 
     void updateModuleCapability(DbModuleCapability moduleCapability);
-
-    void updateAvailabilityOfModuleCapability(Set<String> grantedPermissions);
 }

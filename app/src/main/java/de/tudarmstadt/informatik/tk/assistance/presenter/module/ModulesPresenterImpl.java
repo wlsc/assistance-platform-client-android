@@ -134,24 +134,19 @@ public class ModulesPresenterImpl extends
             convertedModules.add(ConverterUtils.convertModule(response));
         }
 
-        if (view.getDisplayedModulesCount() > 0) {
-            // list has items -> just swap them with new ones
-            view.swapModuleData(convertedModules);
-        } else {
-            // create new recycler view adapter
-            view.setModuleList(convertedModules);
-        }
-
         if (activeModules != null && !activeModules.isEmpty()) {
 
             Log.d(TAG, "Active modules: " + activeModules.toString());
 
-            String userToken = PreferenceUtils.getUserToken(getContext());
-            DbUser user = controller.getUserByToken(userToken);
+            String userEmail = PreferenceUtils.getUserEmail(getContext());
+            DbUser user = controller.getUserByEmail(userEmail);
 
             if (user == null) {
+                Log.d(TAG, "User is null");
                 return;
             }
+
+            List<List<DbModuleCapability>> modulesCaps = new ArrayList<>();
 
             for (int i = 0, convertedModulesSize = convertedModules.size(); i < convertedModulesSize; i++) {
 
@@ -159,19 +154,52 @@ public class ModulesPresenterImpl extends
 
                 if (activeModules.contains(module.getPackageName())) {
 
+                    ModuleResponseDto moduleDto = availableModulesResponse.get(i);
+
                     module.setActive(true);
                     module.setUserId(user.getId());
-//                    List<ModuleCapabilityResponseDto> reqPerms = availableModulesResponse.get(i).getSensorsRequired();
+
+                    List<DbModuleCapability> caps = ConverterUtils
+                            .convertModuleCapability(moduleDto.getSensorsRequired(),
+                                    moduleDto.getSensorsOptional());
+
+                    for (DbModuleCapability cap : caps) {
+                        if (cap == null) {
+                            continue;
+                        }
+
+                        if (cap.getRequired()) {
+                            cap.setActive(true);
+                        }
+                    }
+
+                    modulesCaps.add(caps);
                 }
             }
 
             // insert only active modules into db
-            insertActiveModulesIntoDb(convertedModules);
+            insertActiveModulesIntoDb(convertedModules, modulesCaps);
+
+            if (view.getDisplayedModulesCount() > 0) {
+                // list has items -> just swap them with new ones
+                view.swapModuleData(convertedModules);
+            } else {
+                // create new recycler view adapter
+                view.setModuleList(convertedModules);
+            }
 
             EventBus.getDefault().post(new ModulesListRefreshEvent());
 
         } else {
             Log.d(TAG, "No active modules");
+
+            if (view.getDisplayedModulesCount() > 0) {
+                // list has items -> just swap them with new ones
+                view.swapModuleData(convertedModules);
+            } else {
+                // create new recycler view adapter
+                view.setModuleList(convertedModules);
+            }
         }
 
         // request permissions to inserted modules
@@ -179,16 +207,33 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void insertActiveModulesIntoDb(List<DbModule> convertedModules) {
+    public void insertActiveModulesIntoDb(List<DbModule> modules, List<List<DbModuleCapability>> modulesCaps) {
 
-        for (DbModule module : convertedModules) {
+        try {
+            for (int i = 0; i < modules.size(); i++) {
 
-            if (module.getActive()) {
+                DbModule module = modules.get(i);
 
                 // insert active module into db
-                controller.insertModuleResponseWithCapabilities(availableModuleResponseMapping
-                        .get(module.getPackageName()));
+                if (module.getActive()) {
+
+                    List<DbModuleCapability> caps = modulesCaps.get(i);
+
+                    long moduleId = controller.insertModuleToDb(module);
+
+                    if (caps == null) {
+                        continue;
+                    }
+
+                    for (DbModuleCapability modCap : caps) {
+                        modCap.setModuleId(moduleId);
+                    }
+
+                    controller.insertModuleCapabilitiesToDb(caps);
+                }
             }
+        } catch (Exception ignore) {
+
         }
     }
 
@@ -243,14 +288,14 @@ public class ModulesPresenterImpl extends
             return;
         }
 
-        String userToken = PreferenceUtils.getUserToken(getContext());
+        String userEmail = PreferenceUtils.getUserEmail(getContext());
 
-        if (userToken.isEmpty()) {
+        if (userEmail.isEmpty()) {
             view.startLoginActivity();
             return;
         }
 
-        final DbUser user = controller.getUserByToken(userToken);
+        final DbUser user = controller.getUserByEmail(userEmail);
 
         if (user == null) {
             view.startLoginActivity();
@@ -259,6 +304,8 @@ public class ModulesPresenterImpl extends
 
         Log.d(TAG, "Installation of a module " + moduleResponse.getPackageName() + " has started...");
         Log.d(TAG, "Requesting service...");
+
+        String userToken = PreferenceUtils.getUserToken(getContext());
 
         ToggleModuleRequestDto toggleModuleRequest = new ToggleModuleRequestDto();
         toggleModuleRequest.setModulePackageName(moduleResponse.getPackageName());
@@ -484,6 +531,7 @@ public class ModulesPresenterImpl extends
                 activatedModulesResponse.getAvailableModules() == null ||
                 activatedModulesResponse.getAvailableModules().isEmpty()) {
             view.setNoModulesView();
+            return;
         } else {
 
             List<ModuleResponseDto> modulesResponse = activatedModulesResponse.getAvailableModules();
@@ -545,26 +593,68 @@ public class ModulesPresenterImpl extends
 
         Log.d(TAG, "Module is successfully activated!");
 
-        ModuleResponseDto moduleResponse = getSelectedModuleResponse();
+        DbModule module = view.getModuleFromList(selectedModuleId);
 
-        boolean isResultOk = controller.insertModuleResponseWithCapabilities(moduleResponse);
+        if (module == null) {
+            return;
+        }
 
-        if (!isResultOk) {
+        String userEmail = PreferenceUtils.getUserEmail(getContext());
+        DbUser user = controller.getUserByEmail(userEmail);
+
+        List<DbModuleCapability> enabledOptionalPerms = view.getAllEnabledOptionalPermissions();
+
+        module.setActive(true);
+        module.setUserId(user.getId());
+
+        long moduleId = controller.insertModuleToDb(module);
+
+        if (moduleId < 0) {
             view.showModuleInstallationFailed();
             return;
         }
 
-        // check if service not running -> start it
-        if (!HarvesterServiceProvider.getInstance(getContext()).isServiceRunning()) {
-            HarvesterServiceProvider.getInstance(getContext()).startSensingService();
+        // insert module capabilities
+        ModuleResponseDto modDto = availableModuleResponseMapping.get(module.getPackageName());
+        List<DbModuleCapability> reqCap = ConverterUtils.convertModuleCapability(modDto.getSensorsRequired());
+        List<DbModuleCapability> optCap = ConverterUtils.convertModuleCapability(modDto.getSensorsOptional());
+
+        for (DbModuleCapability cap : reqCap) {
+            cap.setRequired(true);
         }
 
+        List<DbModuleCapability> moduleCaps = new ArrayList<>();
+        moduleCaps.addAll(reqCap);
+        moduleCaps.addAll(optCap);
+
+        if (moduleCaps != null) {
+            if (enabledOptionalPerms != null) {
+                for (DbModuleCapability cap : moduleCaps) {
+                    if (!cap.getRequired()) {
+                        for (DbModuleCapability enabledCap : enabledOptionalPerms) {
+                            if (cap.getType().equals(enabledCap.getType())) {
+                                cap.setActive(true);
+                            }
+                        }
+                    } else {
+                        // set all required caps to active
+                        cap.setActive(true);
+                    }
+
+                    cap.setModuleId(moduleId);
+                }
+            }
+
+            controller.insertModuleCapabilitiesToDb(moduleCaps);
+        }
+
+        // check if service not running -> start it
+//        if (!HarvesterServiceProvider.getInstance(getContext()).isServiceRunning()) {
+//            HarvesterServiceProvider.getInstance(getContext()).startSensingService();
+//        }
+
         // update timing for sensors/events
-        SensorProvider.getInstance(getContext()).synchronizeRunningSensorsWithDb();
-
-        view.showModuleInstallationSuccessful();
-
-        Log.d(TAG, "Installation has finished!");
+//        SensorProvider.getInstance(getContext()).synchronizeRunningSensorsWithDb();
 
         Set<String> permsToAsk = controller.getGrantedPermissions();
 
@@ -572,9 +662,11 @@ public class ModulesPresenterImpl extends
             view.askPermissions(permsToAsk, null);
         } else {
             EventBus.getDefault().post(new ModuleInstallSuccessfulEvent(
-                    moduleResponse.getPackageName()));
+                    module.getPackageName()));
             EventBus.getDefault().post(new ModulesListRefreshEvent());
         }
+
+        Log.d(TAG, "Installation has finished!");
     }
 
     @Override

@@ -35,9 +35,10 @@ public interface ModulesPresenter extends CommonPresenter {
     /**
      * Insert already activated modules earlier
      *
-     * @param convertedModules
+     * @param modules
+     * @param modulesCaps
      */
-    void insertActiveModulesIntoDb(List<DbModule> convertedModules);
+    void insertActiveModulesIntoDb(List<DbModule> modules, List<List<DbModuleCapability>> modulesCaps);
 
     /**
      * Request permissions for installed active modules
