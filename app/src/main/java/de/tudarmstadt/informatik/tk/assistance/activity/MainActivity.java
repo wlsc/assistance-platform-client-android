@@ -149,14 +149,14 @@ public class MainActivity extends
     public void showGooglePlayServicesImportantView() {
 
         Intent intent = new Intent(this, NoPlayServicesActivity.class);
-        startActivity(intent);
+        ActivityCompat.startActivity(this, intent, null);
     }
 
     @Override
     public void showModulesList() {
 
         Intent intent = new Intent(this, ModulesActivity.class);
-        startActivity(intent);
+        ActivityCompat.startActivity(this, intent, null);
     }
 
     @Override
@@ -236,7 +236,7 @@ public class MainActivity extends
         switch (item.getItemId()) {
             case R.id.menu_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
-                startActivityForResult(intent, Constants.INTENT_SETTINGS_LOGOUT_RESULT);
+                ActivityCompat.startActivityForResult(this, intent, Constants.INTENT_SETTINGS_LOGOUT_RESULT, null);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -271,21 +271,6 @@ public class MainActivity extends
     }
 
     @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
-    }
-
-    @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
         RxUtils.unsubscribe(activatedModulesSubscription);
@@ -306,7 +291,7 @@ public class MainActivity extends
     protected void onShowAvailableModules() {
 
         Intent intent = new Intent(this, ModulesActivity.class);
-        startActivityForResult(intent, Constants.INTENT_AVAILABLE_MODULES_RESULT);
+        ActivityCompat.startActivityForResult(this, intent, Constants.INTENT_AVAILABLE_MODULES_RESULT, null);
     }
 
     @Override
@@ -315,7 +300,7 @@ public class MainActivity extends
         PreferenceUtils.clearUserCredentials(getApplicationContext());
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        ActivityCompat.startActivity(this, intent, null);
         finish();
     }
 
@@ -378,7 +363,7 @@ public class MainActivity extends
 
         if (!isActivated) {
             Intent intent = new Intent(this, AccessibilityTutorialActivity.class);
-            startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT);
+            ActivityCompat.startActivityForResult(this, intent, Constants.INTENT_ACCESSIBILITY_SERVICE_IGNORED_RESULT, null);
         }
     }
 
@@ -404,7 +389,7 @@ public class MainActivity extends
 
         String uri = String.format(Locale.getDefault(), "geo:%f,%f", point.latitude, point.longitude);
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        startActivity(intent);
+        ActivityCompat.startActivity(this, intent, null);
     }
 
     public void onEvent(OpenBrowserUrlEvent event) {

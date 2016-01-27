@@ -72,21 +72,6 @@ public class NoPlayServicesActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
-    }
-
     @OnClick(R.id.fullscreen_content)
     void onContentView() {
         toggleView();

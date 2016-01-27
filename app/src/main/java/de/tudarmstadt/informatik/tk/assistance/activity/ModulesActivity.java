@@ -143,21 +143,6 @@ public class ModulesActivity extends
         super.onPause();
     }
 
-    @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
-    }
-
     /**
      * When some1 needs to refresh the modules list
      *

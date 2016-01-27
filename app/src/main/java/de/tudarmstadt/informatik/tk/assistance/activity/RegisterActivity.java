@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.tk.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
@@ -127,21 +128,6 @@ public class RegisterActivity extends
     }
 
     @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
-    }
-
-    @Override
     public void setPresenter(RegisterPresenter presenter) {
         this.presenter = presenter;
         this.presenter.setView(this);
@@ -204,7 +190,7 @@ public class RegisterActivity extends
 
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        ActivityCompat.startActivity(this, intent, null);
         finish();
     }
 

@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.tk.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -50,21 +51,6 @@ public class AccessibilityTutorialActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
-    }
-
     @OnClick(R.id.ignore_button)
     protected void onIgnoreButton() {
         Log.d(TAG, "User has chosen to ignore accessibility service!");
@@ -81,7 +67,7 @@ public class AccessibilityTutorialActivity extends BaseActivity {
 
         // request user to switch permission for the service
         Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        startActivityForResult(intent, Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLED_RESULT);
+        ActivityCompat.startActivityForResult(this, intent, Constants.INTENT_ACCESSIBILITY_SERVICE_ENABLED_RESULT, null);
     }
 
     @Override

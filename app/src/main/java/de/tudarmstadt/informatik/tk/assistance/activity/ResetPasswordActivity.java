@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.tk.assistance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.widget.EditText;
 
 import java.util.Set;
@@ -46,21 +47,6 @@ public class ResetPasswordActivity extends
     protected void onDestroy() {
         ButterKnife.unbind(this);
         super.onDestroy();
-    }
-
-    @Override
-    protected void subscribeRequests() {
-
-    }
-
-    @Override
-    protected void unsubscribeRequests() {
-
-    }
-
-    @Override
-    protected void recreateRequests() {
-
     }
 
     @OnClick(R.id.reset_button)
@@ -111,7 +97,7 @@ public class ResetPasswordActivity extends
         PreferenceUtils.clearUserCredentials(getApplicationContext());
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        ActivityCompat.startActivity(this, intent, null);
         finish();
     }
 

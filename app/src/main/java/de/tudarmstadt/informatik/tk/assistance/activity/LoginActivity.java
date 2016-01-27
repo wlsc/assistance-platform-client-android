@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -140,7 +141,7 @@ public class LoginActivity extends
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        ActivityCompat.startActivity(this, intent, null);
         finish();
     }
 
@@ -259,7 +260,7 @@ public class LoginActivity extends
     @OnClick(R.id.tvRegister)
     protected void onRegisterPressed() {
         Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
+        ActivityCompat.startActivity(this, intent, null);
     }
 
     @OnClick(R.id.tvPasswordReset)
@@ -267,7 +268,7 @@ public class LoginActivity extends
 
         Toaster.showLong(this, R.string.feature_is_under_construction);
 //        Intent intent = new Intent(this, ResetPasswordActivity.class);
-//        startActivity(intent);
+//        ActivityCompat.startActivity(this, intent, null);
     }
 
     @OnClick(R.id.ibFacebookLogo)

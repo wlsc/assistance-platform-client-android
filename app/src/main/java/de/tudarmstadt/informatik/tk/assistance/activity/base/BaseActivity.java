@@ -35,30 +35,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        subscribeRequests();
         SensorProvider.getInstance(getApplicationContext()).synchronizeRunningSensorsWithDb();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unsubscribeRequests();
     }
-
-    /**
-     * Subscribes to reactive network requests
-     */
-    protected abstract void subscribeRequests();
-
-    /**
-     * Unsubscribes from reactive network requests
-     */
-    protected abstract void unsubscribeRequests();
-
-    /**
-     * Recreates to reactive network requests
-     */
-    protected abstract void recreateRequests();
 
     /**
      * Shows loading ProgressDialog
@@ -68,7 +51,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 getString(R.string.loading_header),
                 getString(R.string.loading_message),
                 true);
-        
+
         CommonUtils.hideKeyboard(this, progressDialog.getCurrentFocus());
     }
 
