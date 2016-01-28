@@ -104,10 +104,6 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
                     Log.d(TAG, "Optional permission was DISABLED");
                 }
 
-                permItem.setChecked(isChecked);
-                capability.setActive(isChecked);
-                permItem.setCapability(capability);
-
                 if (isChecked) {
                     if (eventBus.hasSubscriberForEvent(CheckIfModuleCapabilityPermissionWasGrantedEvent.class)) {
                         eventBus.post(
@@ -122,7 +118,10 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
                     }
                 }
 
-                notifyDataSetChanged();
+                permItem.setChecked(isChecked);
+                capability.setActive(isChecked);
+                permItem.setCapability(capability);
+
             });
         }
 
