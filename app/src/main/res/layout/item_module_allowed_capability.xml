@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,13 +26,13 @@
             android:paddingEnd="16dp"
             android:paddingRight="16dp" />
 
-    </LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/requiredBy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/pink"
         android:visibility="invisible" />
 
-</LinearLayout>
+</android.support.v7.widget.LinearLayoutCompat>

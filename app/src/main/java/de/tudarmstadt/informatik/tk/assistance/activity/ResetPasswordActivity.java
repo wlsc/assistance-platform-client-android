@@ -3,7 +3,7 @@ package de.tudarmstadt.informatik.tk.assistance.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.widget.EditText;
+import android.support.v7.widget.AppCompatEditText;
 
 import java.util.Set;
 
@@ -31,7 +31,7 @@ public class ResetPasswordActivity extends
     private static final String TAG = ResetPasswordActivity.class.getSimpleName();
 
     @Bind(R.id.reset_email)
-    EditText mUserEmailEditText;
+    protected AppCompatEditText mUserEmailEditText;
 
     private ResetPasswordPresenter presenter;
 

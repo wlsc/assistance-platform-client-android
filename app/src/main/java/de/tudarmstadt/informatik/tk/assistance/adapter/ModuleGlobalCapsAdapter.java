@@ -1,11 +1,11 @@
 package de.tudarmstadt.informatik.tk.assistance.adapter;
 
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.common.collect.Lists;
 
@@ -137,13 +137,13 @@ public class ModuleGlobalCapsAdapter extends RecyclerView.Adapter<RecyclerView.V
     protected static class ModuleTypesViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.title)
-        protected TextView title;
+        protected AppCompatTextView title;
 
         @Bind(R.id.switcher)
         protected SwitchCompat switcher;
 
         @Bind(R.id.requiredBy)
-        protected TextView requiredByModules;
+        protected AppCompatTextView requiredByModules;
 
         public ModuleTypesViewHolder(View view) {
             super(view);

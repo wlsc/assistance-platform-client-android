@@ -8,18 +8,18 @@
     android:minHeight="60dp"
     app:cardCornerRadius="4dp">
 
-    <LinearLayout
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
         android:padding="5dp">
 
-        <LinearLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
                 android:paddingStart="10dp"
                 android:textColor="@color/textBase" />
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/cardSettings"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -38,15 +38,15 @@
                 android:clickable="true"
                 android:focusable="true" />
 
-        </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
 
-        <LinearLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/newsContainer"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical"
             android:paddingBottom="8dp" />
 
-    </LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
 
 </android.support.v7.widget.CardView>

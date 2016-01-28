@@ -2,10 +2,10 @@ package de.tudarmstadt.informatik.tk.assistance.activity;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         ViewGroup root = ButterKnife.findById(this, android.R.id.content);
         View content = root.getChildAt(0);
-        LinearLayout toolbarContainer = (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
+        LinearLayoutCompat toolbarContainer = (LinearLayoutCompat) View.inflate(this, R.layout.activity_settings, null);
 
         root.removeAllViews();
         toolbarContainer.addView(content);

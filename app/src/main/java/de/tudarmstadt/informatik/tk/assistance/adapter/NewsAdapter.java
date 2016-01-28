@@ -2,6 +2,9 @@ package de.tudarmstadt.informatik.tk.assistance.adapter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -459,13 +462,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     protected static class NewsViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.title)
-        protected TextView title;
+        protected AppCompatTextView title;
 
         @Bind(R.id.cardSettings)
-        protected ImageView cardSettings;
+        protected AppCompatImageView cardSettings;
 
         @Bind(R.id.newsContainer)
-        protected LinearLayout mContainer;
+        protected LinearLayoutCompat mContainer;
 
         public NewsViewHolder(View view) {
             super(view);

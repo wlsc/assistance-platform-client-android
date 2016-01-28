@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:gravity="center_horizontal"
@@ -15,7 +15,7 @@
         android:layout_marginTop="5dp"
         android:fillViewport="true">
 
-        <LinearLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -24,7 +24,7 @@
             android:paddingRight="8dip"
             android:paddingStart="8dip">
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -50,7 +50,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/firstname"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/lastname"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/social_account_google"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/social_account_facebook"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -128,7 +128,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/social_account_live"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/social_account_twitter"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -166,7 +166,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/social_account_github"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -181,8 +181,8 @@
                     android:textSize="16sp" />
             </android.support.design.widget.TextInputLayout>
 
-        </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
 
     </android.support.v4.widget.NestedScrollView>
 
-</LinearLayout>
+</android.support.v7.widget.LinearLayoutCompat>

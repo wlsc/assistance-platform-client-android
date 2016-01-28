@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.tk.assistance.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.view.View;
 
 import butterknife.Bind;
@@ -31,7 +32,7 @@ public class NoPlayServicesActivity extends BaseActivity {
     private final Runnable mHidePart2Runnable = () -> CommonUtils.hideSystemUI(getWindow());
 
     @Bind(R.id.fullscreen_content_controls)
-    protected View mControlsView;
+    protected LinearLayoutCompat mControlsView;
 
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override

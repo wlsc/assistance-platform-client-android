@@ -1,11 +1,11 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.app.NoSaveStateFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0099cc"
     tools:context="de.tudarmstadt.informatik.tk.assistance.activity.AccessibilityTutorialActivity">
 
-    <LinearLayout
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -14,8 +14,7 @@
         android:keepScreenOn="true"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tutorial_text1"
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:gravity="center"
@@ -24,8 +23,7 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tutorial_text2"
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:gravity="center"
@@ -34,8 +32,7 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tutorial_text3"
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:gravity="center"
@@ -44,16 +41,15 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-    </LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
 
-    <FrameLayout
+    <android.support.v4.app.NoSaveStateFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|bottom"
         android:fitsSystemWindows="true">
 
-        <LinearLayout
-            android:id="@+id/tutorial_content_controls"
+        <android.support.v7.widget.LinearLayoutCompat
             style="?metaButtonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -78,7 +74,7 @@
                 android:layout_weight="1"
                 android:text="@string/tutorial_accessibility_activate" />
 
-        </LinearLayout>
-    </FrameLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
+    </android.support.v4.app.NoSaveStateFrameLayout>
 
-</FrameLayout>
+</android.support.v4.app.NoSaveStateFrameLayout>

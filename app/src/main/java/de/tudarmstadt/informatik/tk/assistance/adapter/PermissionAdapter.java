@@ -1,11 +1,11 @@
 package de.tudarmstadt.informatik.tk.assistance.adapter;
 
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.common.collect.Lists;
 
@@ -175,7 +175,7 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.permission_item_title)
-        protected TextView mTitle;
+        protected AppCompatTextView mTitle;
 
         @Bind(R.id.permission_item_switcher)
         protected SwitchCompat mEnablerSwitch;

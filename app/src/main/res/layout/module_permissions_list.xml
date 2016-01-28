@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <LinearLayout
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/module_perm_req_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/module_required_title"
+            <android.support.v7.widget.AppCompatTextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/alertDialogBackground"
@@ -29,7 +28,7 @@
                 android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
                 android:paddingTop="@dimen/dialog_list_padding_vertical_material" />
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/module_permissions_required_list_empty"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
@@ -39,16 +38,15 @@
                 android:textColor="@color/textBase"
                 android:visibility="gone" />
 
-        </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
 
-        <LinearLayout
+        <android.support.v7.widget.LinearLayoutCompat
             android:id="@+id/module_perm_opt_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/module_optional_title"
+            <android.support.v7.widget.AppCompatTextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/alertDialogBackground"
@@ -62,7 +60,7 @@
                 android:paddingBottom="@dimen/dialog_list_padding_vertical_material"
                 android:paddingTop="@dimen/dialog_list_padding_vertical_material" />
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/module_permissions_optional_list_empty"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
@@ -72,6 +70,6 @@
                 android:textColor="@color/textBase"
                 android:visibility="gone" />
 
-        </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+        </android.support.v7.widget.LinearLayoutCompat>
+    </android.support.v7.widget.LinearLayoutCompat>
+</android.support.v4.widget.NestedScrollView>

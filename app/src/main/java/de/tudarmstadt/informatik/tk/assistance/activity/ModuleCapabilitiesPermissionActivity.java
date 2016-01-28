@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseIntArray;
@@ -341,8 +342,8 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
 
         builder.setView(dialogView);
 
-        EditText usernameET = ButterKnife.findById(dialogView, R.id.username);
-        EditText passwordET = ButterKnife.findById(dialogView, R.id.password);
+        AppCompatEditText usernameET = ButterKnife.findById(dialogView, R.id.username);
+        AppCompatEditText passwordET = ButterKnife.findById(dialogView, R.id.password);
 
         usernameET.setHint(R.string.dialog_social_tucan_username);
         passwordET.setHint(R.string.password);

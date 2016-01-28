@@ -8,14 +8,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.github.kayvannj.permission_utils.Func;
 import com.github.kayvannj.permission_utils.PermissionUtil;
@@ -99,9 +99,9 @@ public class ModulesActivity extends
     private RecyclerView permissionRequiredRecyclerView;
     private RecyclerView permissionOptionalRecyclerView;
 
-    private TextView permissionsEmptyRequired;
-    private TextView permissionsEmptyOptional;
-    private TextView noData;
+    private AppCompatTextView permissionsEmptyRequired;
+    private AppCompatTextView permissionsEmptyOptional;
+    private AppCompatTextView noData;
 
     private Subscription subActivatedModules;
     private Subscription subModuleActivation;
@@ -823,10 +823,10 @@ public class ModulesActivity extends
 
         builder.setOnCancelListener(dialog -> presenter.setSelectedModuleId(""));
 
-        TextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
+        AppCompatTextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
         title.setText(selectedModule.getTitle());
 
-        ImageView imageView = ButterKnife.findById(dialogView, R.id.module_permission_icon);
+        AppCompatImageView imageView = ButterKnife.findById(dialogView, R.id.module_permission_icon);
 
         Picasso.with(this)
                 .load(selectedModule.getLogo())
@@ -986,8 +986,8 @@ public class ModulesActivity extends
                 .getByPackageIdUserId(selectedModule.getPackageName(), user.getId());
         boolean isModulesActive = activeModule != null ? activeModule.getActive() : false;
 
-        LinearLayout modulePermReq = ButterKnife.findById(dialogView, R.id.module_perm_req_view);
-        LinearLayout modulePermOpt = ButterKnife.findById(dialogView, R.id.module_perm_opt_view);
+        LinearLayoutCompat modulePermReq = ButterKnife.findById(dialogView, R.id.module_perm_req_view);
+        LinearLayoutCompat modulePermOpt = ButterKnife.findById(dialogView, R.id.module_perm_opt_view);
 
         if (!isModulesActive) {
             modulePermReq.setVisibility(View.GONE);
@@ -1070,7 +1070,7 @@ public class ModulesActivity extends
 
         dialogBuilder.setTitle(selectedModule.getTitle());
 
-        TextView moreInfoFull = ButterKnife.findById(dialogView, R.id.module_more_info);
+        AppCompatTextView moreInfoFull = ButterKnife.findById(dialogView, R.id.module_more_info);
         moreInfoFull.setText(selectedModule.getDescriptionFull());
 
         AlertDialog alertDialog = dialogBuilder.create();

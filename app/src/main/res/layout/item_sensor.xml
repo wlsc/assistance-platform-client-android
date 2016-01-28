@@ -1,10 +1,10 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:background="?android:attr/selectableItemBackground"
     android:orientation="vertical">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/sensor_list_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,4 +16,4 @@
         android:textColor="@color/myTextPrimaryColor"
         android:textSize="14sp" />
 
-</LinearLayout>
+</android.support.v7.widget.LinearLayoutCompat>
