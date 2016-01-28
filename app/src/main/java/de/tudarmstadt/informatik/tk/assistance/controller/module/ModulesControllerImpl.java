@@ -236,6 +236,12 @@ public class ModulesControllerImpl extends
             return;
         }
 
+        DbModule module = moduleCapability.getDbModule();
+
+        if (module == null) {
+            return;
+        }
+
         daoProvider.getModuleCapabilityDao().update(moduleCapability);
     }
 }
