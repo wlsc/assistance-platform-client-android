@@ -1,4 +1,4 @@
-<android.support.v4.app.NoSaveStateFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -43,7 +43,7 @@
 
     </android.support.v7.widget.LinearLayoutCompat>
 
-    <android.support.v4.app.NoSaveStateFrameLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|bottom"
@@ -75,6 +75,6 @@
                 android:text="@string/tutorial_accessibility_activate" />
 
         </android.support.v7.widget.LinearLayoutCompat>
-    </android.support.v4.app.NoSaveStateFrameLayout>
+    </FrameLayout>
 
-</android.support.v4.app.NoSaveStateFrameLayout>
+</FrameLayout>
