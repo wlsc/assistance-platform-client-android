@@ -7,13 +7,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatImageButton;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -93,26 +93,26 @@ public class LoginActivity extends
     protected ContentLoadingProgressBar mProgressView;
 
     @Bind(R.id.login_form)
-    protected ScrollView mLoginFormView;
+    protected NestedScrollView mLoginFormView;
 
     @Bind(R.id.sign_in_button)
     protected AppCompatButton mLoginButton;
 
     // SOCIAL BUTTONS
     @Bind(R.id.ibFacebookLogo)
-    protected ImageButton mFacebookLogo;
+    protected AppCompatImageButton mFacebookLogo;
 
     @Bind(R.id.ibGooglePlusLogo)
-    protected ImageButton mGooglePlusLogo;
+    protected AppCompatImageButton mGooglePlusLogo;
 
     @Bind(R.id.ibLiveLogo)
-    protected ImageButton mLiveLogo;
+    protected AppCompatImageButton mLiveLogo;
 
     @Bind(R.id.ibTwitterLogo)
-    protected ImageButton mTwitterLogo;
+    protected AppCompatImageButton mTwitterLogo;
 
     @Bind(R.id.ibGithubLogo)
-    protected ImageButton mGithubLogo;
+    protected AppCompatImageButton mGithubLogo;
 
     private boolean mBackButtonPressedOnce;
 

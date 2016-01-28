@@ -4,12 +4,12 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
@@ -20,16 +20,14 @@
             android:textStyle="bold"
             android:visibility="invisible" />
 
-        <ImageView
-            android:id="@+id/imageView"
+        <android.support.v7.widget.AppCompatImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/login_icon"
             android:contentDescription="@string/splash_logo_description" />
 
-        <TextView
-            android:id="@+id/tvHeading"
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/splashScreenBackground"
@@ -42,7 +40,7 @@
             android:textSize="26sp"
             android:textStyle="bold" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center|bottom"
@@ -50,6 +48,6 @@
             android:text="@string/splash_copyright_year"
             android:textSize="16sp" />
 
-    </LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
 
 </merge>

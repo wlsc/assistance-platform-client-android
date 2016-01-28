@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -20,18 +20,17 @@
         android:visibility="gone" />
 
     <!-- Login form -->
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/email_login_form"
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,7 +39,7 @@
                 android:background="@drawable/login_icon"
                 android:contentDescription="@string/splash_logo_description" />
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -91,7 +90,7 @@
                 android:textAllCaps="true"
                 android:textStyle="bold" />
 
-            <LinearLayout
+            <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -99,7 +98,7 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/ibFacebookLogo"
                     style="@style/SocialButtonsMargin"
                     android:layout_width="wrap_content"
@@ -108,7 +107,7 @@
                     android:focusableInTouchMode="true"
                     android:src="@drawable/social_logo_facebook_round" />
 
-                <ImageButton
+                <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/ibGooglePlusLogo"
                     style="@style/SocialButtonsMargin"
                     android:layout_width="wrap_content"
@@ -117,7 +116,7 @@
                     android:focusableInTouchMode="true"
                     android:src="@drawable/social_logo_google_plus_round" />
 
-                <ImageButton
+                <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/ibLiveLogo"
                     style="@style/SocialButtonsMargin"
                     android:layout_width="wrap_content"
@@ -126,7 +125,7 @@
                     android:focusableInTouchMode="true"
                     android:src="@drawable/social_logo_live_round" />
 
-                <ImageButton
+                <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/ibTwitterLogo"
                     style="@style/SocialButtonsMargin"
                     android:layout_width="wrap_content"
@@ -135,7 +134,7 @@
                     android:focusableInTouchMode="true"
                     android:src="@drawable/social_logo_twitter_round" />
 
-                <ImageButton
+                <android.support.v7.widget.AppCompatImageButton
                     android:id="@+id/ibGithubLogo"
                     style="@style/SocialButtonsMargin"
                     android:layout_width="wrap_content"
@@ -144,15 +143,15 @@
                     android:focusableInTouchMode="true"
                     android:src="@drawable/social_logo_github_round" />
 
-            </LinearLayout>
+            </android.support.v7.widget.LinearLayoutCompat>
 
-            <LinearLayout
+            <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:orientation="vertical">
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tvRegister"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -160,7 +159,7 @@
                     android:text="@string/login_register_here"
                     android:textSize="20sp" />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tvPasswordReset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -170,10 +169,9 @@
                     android:text="@string/login_forgot_password"
                     android:textSize="20sp" />
 
-            </LinearLayout>
+            </android.support.v7.widget.LinearLayoutCompat>
 
-        </LinearLayout>
-    </ScrollView>
+        </android.support.v7.widget.LinearLayoutCompat>
+    </android.support.v4.widget.NestedScrollView>
 
-</LinearLayout>
-
+</android.support.v7.widget.LinearLayoutCompat>
