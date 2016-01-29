@@ -1115,8 +1115,15 @@ public class ModulesActivity extends
     private class ActivatedModulesSubscriber extends Subscriber<ActivatedModulesResponse> {
 
         @Override
+        public void onStart() {
+            super.onStart();
+            showLoading();
+        }
+
+        @Override
         public void onCompleted() {
             // empty
+            hideLoading();
         }
 
         @Override
@@ -1135,8 +1142,14 @@ public class ModulesActivity extends
     private class ModuleActivationSubscriber extends Subscriber<Void> {
 
         @Override
-        public void onCompleted() {
+        public void onStart() {
+            super.onStart();
+            showLoading();
+        }
 
+        @Override
+        public void onCompleted() {
+            hideLoading();
         }
 
         @Override
@@ -1156,8 +1169,14 @@ public class ModulesActivity extends
     private class ModuleDeactivationSubscriber extends Subscriber<Void> {
 
         @Override
-        public void onCompleted() {
+        public void onStart() {
+            super.onStart();
+            showLoading();
+        }
 
+        @Override
+        public void onCompleted() {
+            hideLoading();
         }
 
         @Override
