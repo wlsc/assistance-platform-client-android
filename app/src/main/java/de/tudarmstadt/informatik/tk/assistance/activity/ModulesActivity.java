@@ -1128,6 +1128,9 @@ public class ModulesActivity extends
 
         @Override
         public void onError(Throwable e) {
+
+            hideLoading();
+
             if (e instanceof RetrofitError) {
                 presenter.onActivatedModulesFailed((RetrofitError) e);
             }
@@ -1155,6 +1158,8 @@ public class ModulesActivity extends
         @Override
         public void onError(Throwable e) {
 
+            hideLoading();
+
             if (e instanceof RetrofitError) {
                 presenter.onModuleActivateFailed((RetrofitError) e);
             }
@@ -1181,6 +1186,8 @@ public class ModulesActivity extends
 
         @Override
         public void onError(Throwable e) {
+
+            hideLoading();
 
             if (e instanceof RetrofitError) {
 
