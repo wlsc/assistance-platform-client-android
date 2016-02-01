@@ -166,7 +166,7 @@ Email: developer@tk.informatik.tu-darmstadt.de</string>
     <string name="main_activity_module_menu_uninstall">Deactivate module</string>
     <string name="main_activity_undo_uninstall">Cancel deactivation?</string>
     <string name="main_activity_undo_uninstall_button_title">UNDO</string>
-    <string name="main_activity_no_module_data_available">Waiting for cards…</string>
+    <string name="main_activity_no_module_data_available">No assistance cards available</string>
 
     <!-- MAIN SCREEN: TUTORIAL -->
     <string name="main_activity_tutorial_title">TUTORIAL</string>

@@ -143,7 +143,7 @@ Email: developer@tk.informatik.tu-darmstadt.de</string>
     <string name="main_activity_module_menu_uninstall">Modul deaktivieren</string>
     <string name="main_activity_undo_uninstall">Deaktivierung abrechen?</string>
     <string name="main_activity_undo_uninstall_button_title">RÜCKGÄNGIG</string>
-    <string name="main_activity_no_module_data_available">Noch keine Informationen...</string>
+    <string name="main_activity_no_module_data_available">Keine Assistanz Karten verfügbar</string>
     <string name="main_activity_tutorial_title">TUTORIAL</string>
     <string name="main_activity_tutorial_text">Sie müssen keine Module. Bitte tippen Sie auf hervorgehobene Schaltfläche verfügbaren Module für Sie zu sehen</string>
     <string name="login_header">Herzlich Willkommen!</string>
