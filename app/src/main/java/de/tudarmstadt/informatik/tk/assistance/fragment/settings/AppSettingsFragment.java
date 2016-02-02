@@ -8,7 +8,7 @@ import android.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 
 import de.tudarmstadt.informatik.tk.assistance.R;
-import de.tudarmstadt.informatik.tk.assistance.activity.ModuleCapabilitiesPermissionActivity;
+import de.tudarmstadt.informatik.tk.assistance.activity.ModuleRunningSensorsActivity;
 import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 
@@ -45,7 +45,7 @@ public class AppSettingsFragment extends PreferenceFragment {
 
             Log.d(TAG, "User clicked launch module types permission list view");
 
-            Intent intent = new Intent(getActivity(), ModuleCapabilitiesPermissionActivity.class);
+            Intent intent = new Intent(getActivity(), ModuleRunningSensorsActivity.class);
             getActivity().startActivity(intent);
         }
 

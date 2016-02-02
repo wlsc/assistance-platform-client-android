@@ -4,7 +4,7 @@ package de.tudarmstadt.informatik.tk.assistance.model.item;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 09.01.2016
  */
-public class ModuleAllowedTypeItem {
+public class ModuleRunningSensorTypeItem {
 
     private int type;
 
@@ -14,7 +14,7 @@ public class ModuleAllowedTypeItem {
 
     private int requiredByModules;
 
-    public ModuleAllowedTypeItem(int type, String title, boolean allowed, int requiredByModules) {
+    public ModuleRunningSensorTypeItem(int type, String title, boolean allowed, int requiredByModules) {
         this.type = type;
         this.title = title;
         this.allowed = allowed;
@@ -55,7 +55,7 @@ public class ModuleAllowedTypeItem {
 
     @Override
     public String toString() {
-        return "ModuleAllowedTypeItem{" +
+        return "ModuleRunningSensorTypeItem{" +
                 "type=" + type +
                 ", title='" + title + '\'' +
                 ", allowed=" + allowed +

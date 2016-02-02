@@ -9,7 +9,6 @@ import de.tudarmstadt.informatik.tk.assistance.controller.login.LoginControllerI
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnUserValidHandler;
 import de.tudarmstadt.informatik.tk.assistance.presenter.CommonPresenterImpl;
-import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.login.LoginResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
@@ -102,7 +101,6 @@ public class LoginPresenterImpl extends
             }
         } else {
             Log.d(TAG, "User token found. Launching main activity!");
-            initAllowedModuleCaps();
             view.loadMainActivity();
             return;
         }
@@ -119,25 +117,6 @@ public class LoginPresenterImpl extends
         if (BuildConfig.DEBUG) {
             view.setDebugViewInformation();
         }
-    }
-
-    @Override
-    public void initAllowedModuleCaps() {
-
-        String userToken = PreferenceUtils.getUserToken(getContext());
-
-        if (userToken.isEmpty()) {
-            return;
-        }
-
-        DbUser user = controller.getUserByToken(userToken);
-
-        if (user == null) {
-            Log.d(TAG, "User is NULL");
-            return;
-        }
-
-        controller.initAllowedModuleCaps(user);
     }
 
     @Override
@@ -159,7 +138,6 @@ public class LoginPresenterImpl extends
 
     @Override
     public void showMainActivity() {
-        initAllowedModuleCaps();
         view.loadMainActivity();
     }
 

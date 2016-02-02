@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,7 +26,7 @@ import com.github.kayvannj.permission_utils.Func;
 import com.github.kayvannj.permission_utils.PermissionUtil;
 import com.google.gson.Gson;
 
-import org.solovyev.android.views.llm.LinearLayoutManager;
+import org.solovyev.android.views.llm.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,14 +40,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.R;
-import de.tudarmstadt.informatik.tk.assistance.adapter.ModuleGlobalCapsAdapter;
+import de.tudarmstadt.informatik.tk.assistance.adapter.ModuleRunningSensorsAdapter;
 import de.tudarmstadt.informatik.tk.assistance.event.module.ModuleAllowedPermissionStateChangedEvent;
-import de.tudarmstadt.informatik.tk.assistance.model.item.ModuleAllowedTypeItem;
+import de.tudarmstadt.informatik.tk.assistance.model.item.ModuleRunningSensorTypeItem;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbFacebookSensor;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
-import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleAllowedCapabilities;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbTucanSensor;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbUser;
@@ -57,6 +57,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.provider.DaoProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SocialProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.ModuleApiProvider;
+import de.tudarmstadt.informatik.tk.assistance.sdk.sensing.ISensor;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.RxUtils;
@@ -70,9 +71,9 @@ import rx.Subscription;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 09.01.2016
  */
-public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
+public class ModuleRunningSensorsActivity extends AppCompatActivity {
 
-    private static final String TAG = ModuleCapabilitiesPermissionActivity.class.getSimpleName();
+    private static final String TAG = ModuleRunningSensorsActivity.class.getSimpleName();
 
     private DaoProvider daoProvider;
 
@@ -153,17 +154,14 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
         }
 
         List<DbModule> activeModules = daoProvider.getModuleDao().getAllActive(user.getId());
-
-        List<DbModuleAllowedCapabilities> allAllowedModuleCapsDb = daoProvider
-                .getModuleAllowedCapsDao()
-                .getAll();
+        SparseArray<ISensor> runningSensors = SensorProvider.getInstance(this).getRunningSensors();
 
         // calculate numbers
         SparseIntArray usageCounters = new SparseIntArray();
 
-        for (DbModule dbModule : activeModules) {
+        for (DbModule activeModule : activeModules) {
 
-            List<DbModuleCapability> caps = dbModule.getDbModuleCapabilityList();
+            List<DbModuleCapability> caps = activeModule.getDbModuleCapabilityList();
 
             for (DbModuleCapability cap : caps) {
 
@@ -174,11 +172,12 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
 
                 String type = cap.getType();
 
-                for (DbModuleAllowedCapabilities dbAllowedCap : allAllowedModuleCapsDb) {
+                for (int i = 0, size = runningSensors.size(); i < size; i++) {
 
-                    if (dbAllowedCap.getType().equals(type)) {
+                    ISensor runningSensor = runningSensors.valueAt(i);
+                    int intType = SensorApiType.getDtoType(type);
 
-                        int intType = SensorApiType.getDtoType(type);
+                    if (runningSensor.getType() == intType) {
 
                         if (usageCounters.get(intType) == 0) {
                             usageCounters.put(intType, 1);
@@ -192,34 +191,29 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
             }
         }
 
-        PermissionUtils permUtils = PermissionUtils.getInstance(getApplicationContext());
-        Map<String, String[]> dangerousPerms = permUtils.getDangerousPermissionsToDtoMapping();
-        List<ModuleAllowedTypeItem> allAllowedModuleCaps = new ArrayList<>(allAllowedModuleCapsDb.size());
+        List<ModuleRunningSensorTypeItem> runningSensorToBeDisplayed = new ArrayList<>();
 
-        for (DbModuleAllowedCapabilities dbAllowedCap : allAllowedModuleCapsDb) {
+        for (DbModule activeModule : activeModules) {
 
-            boolean isAllowed = dbAllowedCap.getIsAllowed();
-            int type = SensorApiType.getDtoType(dbAllowedCap.getType());
+            List<DbModuleCapability> caps = activeModule.getDbModuleCapabilityList();
 
-//            if (dangerousPerms.get(dbAllowedCap.getType()) != null) {
-//                String[] perms = dangerousPerms.get(dbAllowedCap.getType());
-//
-//                if (permUtils.isGranted(perms)) {
-//                    isAllowed = true;
-//                }
-//            }
+            for (DbModuleCapability cap : caps) {
 
-            allAllowedModuleCaps.add(
-                    new ModuleAllowedTypeItem(
-                            type,
-                            SensorApiType.getName(type, resources),
-                            isAllowed,
-                            usageCounters.get(type)));
+                int capType = SensorApiType.getDtoType(cap.getType());
+
+                runningSensorToBeDisplayed.add(
+                        new ModuleRunningSensorTypeItem(
+                                capType,
+                                SensorApiType.getName(capType, resources),
+                                cap.getActive(),
+                                usageCounters.get(capType)));
+            }
         }
 
         mPermissionsRecyclerView.setHasFixedSize(true);
-        mPermissionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mPermissionsRecyclerView.setAdapter(new ModuleGlobalCapsAdapter(allAllowedModuleCaps));
+        mPermissionsRecyclerView.setLayoutManager(new android.support.v7.widget.LinearLayoutManager(this));
+        mPermissionsRecyclerView.setAdapter(new ModuleRunningSensorsAdapter(runningSensorToBeDisplayed));
+        mPermissionsRecyclerView.addItemDecoration(new DividerItemDecoration(this, null));
     }
 
     @Override
@@ -284,7 +278,8 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
 
             if (perms == null) {
                 Log.d(TAG, "Do not need perm for the type: " + type);
-                updateModuleAllowedCapabilityDbEntry(event.getCapType(), event.isChecked());
+                updateModuleSensorState(type, event.isChecked());
+                SensorProvider.getInstance(this).synchronizeRunningSensorsWithDb();
                 return;
             }
 
@@ -295,8 +290,9 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
                         @Override
                         protected void call() {
                             Log.d(TAG, "Permission was denied");
-                            updateModuleAllowedCapabilityDbEntry(event.getCapType(), false);
-                            updateModuleAllowedCapabilitySwitcher(event.getCapType(), false);
+                            updateModuleSensorState(SensorApiType.getApiName(event.getCapType()), false);
+                            updateModuleSensorSwitcher(event.getCapType(), false);
+                            SensorProvider.getInstance(ModuleRunningSensorsActivity.this).synchronizeRunningSensorsWithDb();
                         }
                     })
                     .onAllGranted(new Func() {
@@ -304,13 +300,51 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
                         @Override
                         protected void call() {
                             Log.d(TAG, "Permission was granted");
-                            updateModuleAllowedCapabilityDbEntry(event.getCapType(), event.isChecked());
-                            updateModuleAllowedCapabilitySwitcher(event.getCapType(), event.isChecked());
+                            updateModuleSensorState(SensorApiType.getApiName(event.getCapType()), event.isChecked());
+                            updateModuleSensorSwitcher(event.getCapType(), event.isChecked());
+                            SensorProvider.getInstance(ModuleRunningSensorsActivity.this).synchronizeRunningSensorsWithDb();
+
                         }
                     })
                     .ask(Config.PERM_MODULE_ALLOWED_CAPABILITY);
 
         }
+    }
+
+    /**
+     * Without restriction (no other module uses perms of that module)
+     *
+     * @param type
+     * @param isActive
+     */
+    private void updateModuleSensorState(String type, boolean isActive) {
+
+        if (type == null) {
+            return;
+        }
+
+        Log.d(TAG, "Updating module cap state...");
+
+        String userEmail = PreferenceUtils.getUserEmail(this);
+        DbUser user = daoProvider.getUserDao().getByEmail(userEmail);
+
+        List<DbModule> activeModules = daoProvider.getModuleDao().getAllActive(user.getId());
+
+        for (DbModule module : activeModules) {
+
+            List<DbModuleCapability> caps = module.getDbModuleCapabilityList();
+
+            for (DbModuleCapability cap : caps) {
+
+                if (!cap.getRequired() && type.equals(cap.getType())) {
+                    cap.setActive(isActive);
+                }
+            }
+        }
+
+        daoProvider.getModuleDao().update(activeModules);
+
+        Log.d(TAG, "Updated!");
     }
 
     /**
@@ -353,7 +387,7 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
         });
 
         builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
-            updateModuleAllowedCapabilitySwitcher(SensorApiType.UNI_TUCAN, false);
+            updateModuleSensorSwitcher(SensorApiType.UNI_TUCAN, false);
             dialog.cancel();
         });
 
@@ -382,13 +416,14 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
                         if (isInputOk(usernameET, passwordET)) {
 
                             storeTucanCredentials(username, password);
-                            updateModuleAllowedCapabilityDbEntry(SensorApiType.UNI_TUCAN, true);
-                            updateModuleAllowedCapabilitySwitcher(SensorApiType.UNI_TUCAN, true);
+                            updateModuleSensorState(SensorApiType.getApiName(SensorApiType.UNI_TUCAN), true);
+                            updateModuleSensorSwitcher(SensorApiType.UNI_TUCAN, true);
+                            SensorProvider.getInstance(ModuleRunningSensorsActivity.this).synchronizeRunningSensorsWithDb();
 
                             dialogShouldClose = true;
 
                         } else {
-                            updateModuleAllowedCapabilitySwitcher(SensorApiType.UNI_TUCAN, false);
+                            updateModuleSensorSwitcher(SensorApiType.UNI_TUCAN, false);
                         }
 
                         if (dialogShouldClose) {
@@ -486,20 +521,22 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
                                 loginResult.getAccessToken().getToken(),
                                 loginResult.getRecentlyGrantedPermissions(),
                                 loginResult.getRecentlyDeniedPermissions());
-                        updateModuleAllowedCapabilityDbEntry(SensorApiType.SOCIAL_FACEBOOK, true);
-                        updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, true);
+
+                        updateModuleSensorState(SensorApiType.getApiName(SensorApiType.SOCIAL_FACEBOOK), true);
+                        updateModuleSensorSwitcher(SensorApiType.SOCIAL_FACEBOOK, true);
+                        SensorProvider.getInstance(ModuleRunningSensorsActivity.this).synchronizeRunningSensorsWithDb();
                     }
 
                     @Override
                     public void onCancel() {
                         Toaster.showShort(getApplicationContext(), R.string.error_unknown);
-                        updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
+                        updateModuleSensorSwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
                     }
 
                     @Override
                     public void onError(FacebookException error) {
                         Toaster.showShort(getApplicationContext(), R.string.error_service_not_available);
-                        updateModuleAllowedCapabilitySwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
+                        updateModuleSensorSwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
                     }
                 });
 
@@ -575,34 +612,6 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
         return result;
     }
 
-    private void updateModuleAllowedCapabilityDbEntry(int capType, boolean isChecked) {
-
-        Log.d(TAG, "UpdateModuleAllowedCapabilityStateEvent invoked");
-
-        String userToken = PreferenceUtils.getUserToken(getApplicationContext());
-        DbUser user = daoProvider.getUserDao().getByToken(userToken);
-
-        if (user == null) {
-            Log.d(TAG, "User is NULL");
-            return;
-        }
-
-        String type = SensorApiType.getApiName(capType);
-        DbModuleAllowedCapabilities allowedCapability = daoProvider.getModuleAllowedCapsDao()
-                .get(type, user.getId());
-
-        if (allowedCapability == null) {
-            Log.d(TAG, "allowedCapability is NULL");
-            return;
-        }
-
-        allowedCapability.setIsAllowed(isChecked);
-
-        daoProvider.getModuleAllowedCapsDao().update(allowedCapability);
-
-        Log.d(TAG, "Allowed capability was refreshed: " + isChecked);
-    }
-
     /**
      * If module capability is used by another module
      *
@@ -622,23 +631,19 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
         builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
 
             Log.d(TAG, "User tapped negative button");
-            updateModuleAllowedCapabilitySwitcher(capType, true);
+            updateModuleSensorSwitcher(capType, true);
             dialog.cancel();
         });
 
         builder.setOnCancelListener(dialog -> {
 
             Log.d(TAG, "Negative dialog event invoked");
-            updateModuleAllowedCapabilitySwitcher(capType, true);
+            updateModuleSensorSwitcher(capType, true);
             dialog.cancel();
         });
 
         builder.setTitle(R.string.settings_module_allowed_capability_disable_header);
         builder.setMessage(R.string.settings_module_allowed_capability_disable_message2);
-//        builder.setMessage(getResources()
-//                .getQuantityString(
-//                        R.plurals.settings_module_allowed_capability_disable_message,
-//                        numReqModules));
 
         AlertDialog alertDialog = builder.create();
 
@@ -696,8 +701,22 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
         // update modules state info
         daoProvider.getModuleDao().update(activeModules);
 
-        // update global capability permission state
-        updateModuleAllowedCapabilityDbEntry(capType, false);
+        ModuleRunningSensorsAdapter adapter = (ModuleRunningSensorsAdapter) mPermissionsRecyclerView.getAdapter();
+
+        List<ModuleRunningSensorTypeItem> items = adapter.getData();
+
+        for (ModuleRunningSensorTypeItem item : items) {
+
+            if (capType == item.getType()) {
+                item.setAllowed(false);
+                break;
+            }
+        }
+
+        adapter.swapData(items);
+
+        // update module capability state
+        updateModuleSensorState(SensorApiType.getApiName(capType), false);
 
         // synchronize db active module capabilities with running caps
         SensorProvider.getInstance(getApplicationContext()).synchronizeRunningSensorsWithDb();
@@ -709,18 +728,18 @@ public class ModuleCapabilitiesPermissionActivity extends AppCompatActivity {
      * @param capType
      * @param isChecked
      */
-    private void updateModuleAllowedCapabilitySwitcher(int capType, boolean isChecked) {
+    private void updateModuleSensorSwitcher(int capType, boolean isChecked) {
 
-        ModuleGlobalCapsAdapter adapter = (ModuleGlobalCapsAdapter) mPermissionsRecyclerView.getAdapter();
+        ModuleRunningSensorsAdapter adapter = (ModuleRunningSensorsAdapter) mPermissionsRecyclerView.getAdapter();
 
         if (adapter == null) {
             Log.d(TAG, "Adapter is null");
             return;
         }
 
-        List<ModuleAllowedTypeItem> allowedPermItems = adapter.getData();
+        List<ModuleRunningSensorTypeItem> allowedPermItems = adapter.getData();
 
-        for (ModuleAllowedTypeItem item : allowedPermItems) {
+        for (ModuleRunningSensorTypeItem item : allowedPermItems) {
             if (item.getType() == capType) {
                 item.setAllowed(isChecked);
                 break;

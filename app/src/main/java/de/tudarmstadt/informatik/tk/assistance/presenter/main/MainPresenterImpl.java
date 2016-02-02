@@ -282,20 +282,13 @@ public class MainPresenterImpl extends
                 Log.d(TAG, "Back from permissions request");
 
                 Set<String> declinedPermissions = new HashSet<>();
-                Set<String> grantedPermissions = new HashSet<>();
 
                 for (int i = 0, grantResultsLength = grantResults.length; i < grantResultsLength; i++) {
 
                     // permission denied
                     if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                         declinedPermissions.add(permissions[i]);
-                    } else {
-                        grantedPermissions.add(permissions[i]);
                     }
-                }
-
-                if (grantedPermissions.size() > 0) {
-                    controller.updateAvailabilityOfModuleCapability(grantedPermissions);
                 }
 
                 // ask user about permissions again

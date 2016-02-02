@@ -75,7 +75,7 @@
             android:label="@string/activity_no_play_services_title"
             android:theme="@style/FullscreenTheme" />
         <activity
-            android:name="de.tudarmstadt.informatik.tk.assistance.activity.ModuleCapabilitiesPermissionActivity"
+            android:name=".activity.ModuleRunningSensorsActivity"
             android:configChanges="orientation|screenSize" />
     </application>
 

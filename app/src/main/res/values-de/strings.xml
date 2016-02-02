@@ -19,8 +19,8 @@
     <string name="no_data">keine Daten</string>
     <string name="permission_is_crucial">Diese Berechtigungen sind entscheidend für dieses Modul</string>
     <string name="title_activity_accessibility_tutorial">Erweiterte Zugänglichkeit Service Anleitung</string>
-    <string name="settings_module_allowed_capability_title">Modul-Funktion Berechtigungen</string>
-    <string name="settings_module_allowed_capability_summary">Global aktivieren Sie/deaktivieren Modul Funktion Berechtigungen</string>
+    <string name="settings_module_allowed_capability_title">Laufende Sensoren</string>
+    <string name="settings_module_allowed_capability_summary">Aktivieren/deaktivieren sensoren</string>
     <plurals name="settings_module_allowed_capability_required_by_modules">
         <item quantity="one">Von %1$d-Modul benötigt</item>
         <item quantity="other">Von %1$d-Module benötigt</item>

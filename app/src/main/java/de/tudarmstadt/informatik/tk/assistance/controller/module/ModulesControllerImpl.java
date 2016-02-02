@@ -10,7 +10,6 @@ import java.util.Set;
 import de.tudarmstadt.informatik.tk.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.presenter.module.ModulesPresenter;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
-import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleAllowedCapabilities;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ActivatedModulesResponse;
@@ -180,7 +179,6 @@ public class ModulesControllerImpl extends
         }
 
         SensorProvider sensorProvider = SensorProvider.getInstance(presenter.getContext());
-        List<DbModuleAllowedCapabilities> globalAllowedCaps = daoProvider.getModuleAllowedCapsDao().getAll();
 
         List<ModuleResponseDto> result = new ArrayList<>();
 
@@ -204,20 +202,6 @@ public class ModulesControllerImpl extends
                 if (!sensorProvider.hasUserAbilityToRunSensor(capDto.getType())) {
                     isModuleUsable = false;
                 }
-
-                /**
-                 * Check global banned permission
-                 */
-                // TODO: uncomment this code for real production
-//                for (DbModuleAllowedCapabilities allowedCap : globalAllowedCaps) {
-//                    if (allowedCap.getType().equals(capDto.getType())) {
-//                        if (!allowedCap.getIsAllowed()) {
-//                            isModuleUsable = false;
-//                        }
-//
-//                        break;
-//                    }
-//                }
             }
 
             // user can use this module -> add to list

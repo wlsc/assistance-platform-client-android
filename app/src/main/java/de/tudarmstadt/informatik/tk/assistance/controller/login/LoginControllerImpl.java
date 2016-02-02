@@ -1,10 +1,8 @@
 package de.tudarmstadt.informatik.tk.assistance.controller.login;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import de.tudarmstadt.informatik.tk.assistance.controller.CommonControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
@@ -12,17 +10,13 @@ import de.tudarmstadt.informatik.tk.assistance.handler.OnUserValidHandler;
 import de.tudarmstadt.informatik.tk.assistance.presenter.login.LoginPresenter;
 import de.tudarmstadt.informatik.tk.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbDevice;
-import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleAllowedCapabilities;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.login.LoginRequestDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.login.LoginResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.login.UserDeviceDto;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.sensing.SensorApiType;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.LoginApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.HardwareUtils;
-import de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils;
-import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import retrofit.RetrofitError;
 import rx.Subscriber;
@@ -207,61 +201,5 @@ public class LoginControllerImpl extends
         }
 
         PreferenceUtils.setUserToken(presenter.getContext(), userToken);
-    }
-
-    @Override
-    public void initAllowedModuleCaps(DbUser user) {
-
-        if (user == null) {
-            Log.d(TAG, "user is NULL");
-            return;
-        }
-
-        List<DbModuleAllowedCapabilities> allAllowed = user.getDbModuleAllowedCapabilitiesList();
-
-        // only when nothing found
-        if (allAllowed.isEmpty()) {
-
-            List<String> allAllowedTypesToInsert = SensorApiType.getAllPossibleModuleTypes();
-            List<DbModuleAllowedCapabilities> allAllowedNew = new ArrayList<>(allAllowedTypesToInsert.size());
-
-            PermissionUtils permissionUtils = PermissionUtils
-                    .getInstance(presenter.getContext());
-            Map<String, String[]> dangerousPerms = permissionUtils
-                    .getDangerousPermissionsToDtoMapping();
-
-            String created = DateUtils.dateToISO8601String(new Date(), Locale.getDefault());
-
-            for (String typeStr : allAllowedTypesToInsert) {
-
-                boolean isAllowedByDefault = true;
-
-                if (dangerousPerms.get(typeStr) != null) {
-
-                    String[] perms = dangerousPerms.get(typeStr);
-                    isAllowedByDefault = permissionUtils.isGranted(perms[0]) ? true : false;
-                }
-
-                // special social types
-                if (typeStr.equals(SensorApiType.getApiName(SensorApiType.SOCIAL_FACEBOOK)) ||
-                        typeStr.equals(SensorApiType.getApiName(SensorApiType.UNI_TUCAN))) {
-                    isAllowedByDefault = false;
-                }
-
-                DbModuleAllowedCapabilities newModuleCapPerm = new DbModuleAllowedCapabilities();
-
-                newModuleCapPerm.setDbUser(user);
-                newModuleCapPerm.setType(typeStr);
-                newModuleCapPerm.setIsAllowed(isAllowedByDefault);
-                newModuleCapPerm.setCreated(created);
-
-                allAllowedNew.add(newModuleCapPerm);
-            }
-
-            // insert only when list is not empty
-            if (!allAllowedNew.isEmpty()) {
-                daoProvider.getModuleAllowedCapsDao().insert(allAllowedNew);
-            }
-        }
     }
 }

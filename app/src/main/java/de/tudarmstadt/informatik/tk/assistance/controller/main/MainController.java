@@ -8,14 +8,14 @@ import java.util.Set;
 import de.tudarmstadt.informatik.tk.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnGooglePlayServicesAvailable;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
-import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.profile.ProfileResponseDto;
+import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbNews;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ModuleResponseDto;
-import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
+import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.profile.ProfileResponseDto;
 import rx.Observable;
 
 /**
@@ -59,6 +59,4 @@ public interface MainController extends CommonController {
     void insertModuleCapabilitiesToDb(List<DbModuleCapability> dbRequiredCaps);
 
     boolean insertModuleResponseWithCapabilities(ModuleResponseDto moduleResponseDto);
-
-    void updateAvailabilityOfModuleCapability(Set<String> grantedPermissions);
 }

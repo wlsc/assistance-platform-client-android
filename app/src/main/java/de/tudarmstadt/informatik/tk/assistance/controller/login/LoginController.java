@@ -3,7 +3,6 @@ package de.tudarmstadt.informatik.tk.assistance.controller.login;
 import de.tudarmstadt.informatik.tk.assistance.controller.CommonController;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnUserValidHandler;
-import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.login.LoginResponseDto;
 
 /**
@@ -35,6 +34,4 @@ public interface LoginController extends CommonController {
      * @param response
      */
     void saveLoginIntoDb(LoginResponseDto response);
-
-    void initAllowedModuleCaps(DbUser user);
 }

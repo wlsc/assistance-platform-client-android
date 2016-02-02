@@ -26,7 +26,6 @@ import org.solovyev.android.views.llm.LinearLayoutManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import butterknife.ButterKnife;
@@ -53,7 +52,6 @@ import de.tudarmstadt.informatik.tk.assistance.presenter.module.ModulesPresenter
 import de.tudarmstadt.informatik.tk.assistance.presenter.module.ModulesPresenterImpl;
 import de.tudarmstadt.informatik.tk.assistance.sdk.Config;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
-import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleAllowedCapabilities;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbUser;
 import de.tudarmstadt.informatik.tk.assistance.sdk.event.ShowAccessibilityServiceTutorialEvent;
@@ -65,7 +63,6 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.provider.HarvesterServiceProv
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ModuleProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.ConverterUtils;
-import de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
@@ -614,8 +611,6 @@ public class ModulesActivity extends
                                                             @Override
                                                             protected void call() {
 
-                                                                updateModuleAllowedCapabilityDbEntry(permsOptional, true);
-
                                                                 // TODO: take a look at handleModuleActivationRequest function -> its sometimes buggy
                                                                 presenter.handleModuleActivationRequest(presenter.getSelectedModuleResponse());
                                                                 HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
@@ -630,8 +625,6 @@ public class ModulesActivity extends
                                                         }).ask(Constants.PERM_MODULE_INSTALL_OPT_PERMS);
 
                                     } else {
-
-                                        updateModuleAllowedCapabilityDbEntry(permsRequired, true);
 
                                         // TODO: take a look at handleModuleActivationRequest function -> its sometimes buggy
                                         presenter.handleModuleActivationRequest(presenter.getSelectedModuleResponse());
@@ -652,55 +645,6 @@ public class ModulesActivity extends
             EventBus.getDefault().post(new ModulesListRefreshEvent());
             HarvesterServiceProvider.getInstance(getApplicationContext()).startSensingService();
         }
-    }
-
-    private void updateModuleAllowedCapabilityDbEntry(Set<String> capType, boolean isChecked) {
-
-        Log.d(TAG, "UpdateModuleAllowedCapabilityStateEvent invoked");
-
-        String userToken = PreferenceUtils.getUserToken(getApplicationContext());
-        DbUser user = DaoProvider.getInstance(this).getUserDao().getByToken(userToken);
-
-        if (user == null) {
-            Log.d(TAG, "User is NULL");
-            return;
-        }
-
-        if (capType == null) {
-            return;
-        }
-
-        Map<String, String[]> dangGroup = PermissionUtils.getInstance(this).getDangerousPermissionsToDtoMapping();
-
-        for (Map.Entry<String, String[]> entry : dangGroup.entrySet()) {
-
-            String apiType = entry.getKey();
-            String[] perms = entry.getValue();
-
-            if (perms != null) {
-                for (String perm : perms) {
-                    if (capType.contains(perm)) {
-
-                        DbModuleAllowedCapabilities allowedCapability = DaoProvider.getInstance(this)
-                                .getModuleAllowedCapsDao()
-                                .get(apiType, user.getId());
-
-                        if (allowedCapability == null) {
-                            Log.d(TAG, "allowedCapability is NULL");
-                            break;
-                        }
-
-                        allowedCapability.setIsAllowed(isChecked);
-
-                        DaoProvider.getInstance(this).getModuleAllowedCapsDao().update(allowedCapability);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        Log.d(TAG, "Allowed capability was refreshed: " + isChecked);
     }
 
     @Override

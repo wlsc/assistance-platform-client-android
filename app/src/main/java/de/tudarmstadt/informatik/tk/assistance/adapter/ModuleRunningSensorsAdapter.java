@@ -17,20 +17,20 @@ import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.event.module.ModuleAllowedPermissionStateChangedEvent;
-import de.tudarmstadt.informatik.tk.assistance.model.item.ModuleAllowedTypeItem;
+import de.tudarmstadt.informatik.tk.assistance.model.item.ModuleRunningSensorTypeItem;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 09.01.2016
  */
-public class ModuleGlobalCapsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ModuleRunningSensorsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final String TAG = "ModuleGlobalCapsAdapter";
+    private static final String TAG = "ModuleRunningSensorsAdapter";
 
-    private List<ModuleAllowedTypeItem> mData;
+    private List<ModuleRunningSensorTypeItem> mData;
 
-    public ModuleGlobalCapsAdapter(List<ModuleAllowedTypeItem> data) {
+    public ModuleRunningSensorsAdapter(List<ModuleRunningSensorTypeItem> data) {
 
         if (data == null) {
             mData = Collections.emptyList();
@@ -54,7 +54,7 @@ public class ModuleGlobalCapsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         if (viewHolder instanceof ModuleTypesViewHolder) {
 
-            final ModuleAllowedTypeItem item = getItem(position);
+            final ModuleRunningSensorTypeItem item = getItem(position);
             final ModuleTypesViewHolder holder = (ModuleTypesViewHolder) viewHolder;
 
             holder.title.setText(item != null ? item.getTitle() : "");
@@ -107,7 +107,7 @@ public class ModuleGlobalCapsAdapter extends RecyclerView.Adapter<RecyclerView.V
      *
      * @param newList
      */
-    public void swapData(List<ModuleAllowedTypeItem> newList) {
+    public void swapData(List<ModuleRunningSensorTypeItem> newList) {
 
         if (newList == null) {
             mData = Collections.emptyList();
@@ -118,11 +118,11 @@ public class ModuleGlobalCapsAdapter extends RecyclerView.Adapter<RecyclerView.V
         notifyDataSetChanged();
     }
 
-    public List<ModuleAllowedTypeItem> getData() {
+    public List<ModuleRunningSensorTypeItem> getData() {
         return mData;
     }
 
-    public ModuleAllowedTypeItem getItem(int position) {
+    public ModuleRunningSensorTypeItem getItem(int position) {
 
         if (position < 0 || position >= mData.size()) {
             return null;
