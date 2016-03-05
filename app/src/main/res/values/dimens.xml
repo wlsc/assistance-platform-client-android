@@ -5,7 +5,9 @@
     <dimen name="toolbar_elevation">4dp</dimen>
 
     <dimen name="detail_backdrop_height">150dp</dimen>
-    <dimen name="card_margin">16dp</dimen>
+    <dimen name="card_margin_top">8dp</dimen>
+    <dimen name="card_margin_bottom">8dp</dimen>
+    <dimen name="card_margin_left_right">2dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="list_item_avatar_size">40dp</dimen>
 
