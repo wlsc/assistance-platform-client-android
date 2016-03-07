@@ -81,7 +81,7 @@ public class ModuleRunningSensorsAdapter extends RecyclerView.Adapter<RecyclerVi
                                 isChecked,
                                 item.getRequiredByModules()));
 
-                notifyDataSetChanged();
+//                notifyDataSetChanged();
             });
 
             if (item.getRequiredByModules() == 0) {
