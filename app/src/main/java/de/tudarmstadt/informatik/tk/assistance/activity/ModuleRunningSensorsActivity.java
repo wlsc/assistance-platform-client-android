@@ -192,7 +192,8 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
             }
         }
 
-        List<ModuleRunningSensorTypeItem> runningSensorToBeDisplayed = new ArrayList<>();
+        final List<Integer> existingTypes = new ArrayList<>();
+        final List<ModuleRunningSensorTypeItem> runningSensorToBeDisplayed = new ArrayList<>();
 
         for (DbModule activeModule : activeModules) {
 
@@ -202,12 +203,16 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
 
                 int capType = SensorApiType.getDtoType(cap.getType());
 
-                runningSensorToBeDisplayed.add(
-                        new ModuleRunningSensorTypeItem(
-                                capType,
-                                SensorApiType.getName(capType, resources),
-                                cap.getActive(),
-                                usageCounters.get(capType)));
+                if (!existingTypes.contains(capType)) {
+                    runningSensorToBeDisplayed.add(
+                            new ModuleRunningSensorTypeItem(
+                                    capType,
+                                    SensorApiType.getName(capType, resources),
+                                    cap.getActive(),
+                                    usageCounters.get(capType)));
+
+                    existingTypes.add(capType);
+                }
             }
         }
 
