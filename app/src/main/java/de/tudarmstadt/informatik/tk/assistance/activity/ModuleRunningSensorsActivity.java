@@ -27,6 +27,7 @@ import com.github.kayvannj.permission_utils.PermissionUtil;
 import com.google.gson.Gson;
 
 import org.solovyev.android.views.llm.DividerItemDecoration;
+import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -211,7 +212,7 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
         }
 
         mPermissionsRecyclerView.setHasFixedSize(true);
-        mPermissionsRecyclerView.setLayoutManager(new android.support.v7.widget.LinearLayoutManager(this));
+        mPermissionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mPermissionsRecyclerView.setAdapter(new ModuleRunningSensorsAdapter(runningSensorToBeDisplayed));
         mPermissionsRecyclerView.addItemDecoration(new DividerItemDecoration(this, null));
     }
