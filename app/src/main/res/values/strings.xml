@@ -27,7 +27,7 @@
 
     <!-- SETTINGS: APP SETTINGS -->
     <!-- SETTINGS: APP SETTINGS: ALLOWED CAPABILITIES -->
-    <string name="settings_module_allowed_capability_title">Running sensors</string>
+    <string name="settings_module_allowed_capability_title">Activated sensors</string>
     <string name="settings_module_allowed_capability_summary">Turn on/off module sensors</string>
     <plurals name="settings_module_allowed_capability_required_by_modules">
         <item quantity="one">Required by %1$d module</item>
