@@ -521,11 +521,6 @@ public class ModulesActivity extends
 
                 mSwipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
             }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
         });
 
         mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);
