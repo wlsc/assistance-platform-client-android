@@ -403,15 +403,11 @@ public class ModulesActivity extends
                         R.string.main_activity_undo_uninstall,
                         Snackbar.LENGTH_LONG)
                 .setAction(R.string.main_activity_undo_uninstall_button_title,
-                        new View.OnClickListener() {
+                        v -> {
+                            Log.d(TAG, "User tapped UNDO uninstall of a module!");
 
-                            @Override
-                            public void onClick(View v) {
-                                Log.d(TAG, "User tapped UNDO uninstall of a module!");
-
-                                final ModuleResponseDto moduleResponse = presenter.getSelectedModuleResponse();
-                                presenter.handleModuleActivationRequest(moduleResponse);
-                            }
+                            final ModuleResponseDto moduleResponse = presenter.getSelectedModuleResponse();
+                            presenter.handleModuleActivationRequest(moduleResponse);
                         })
                 .setActionTextColor(Color.RED)
                 .show();
@@ -513,6 +509,24 @@ public class ModulesActivity extends
 
         mAvailableModulesRecyclerView = ButterKnife.findById(this, R.id.moduleListRecyclerView);
         mAvailableModulesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAvailableModulesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                final int topRowVerticalPosition = (recyclerView == null || recyclerView.getChildCount() == 0)
+                        ?
+                        0 :
+                        recyclerView.getChildAt(0).getTop();
+
+                mSwipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
 
         mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(
