@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -251,8 +252,15 @@ public class MainActivity extends
         }
 
         if (ServiceUtils.isHarvesterAbleToRun(getApplicationContext())) {
+            Log.d(TAG, "Requesting new cards...");
             presenter.requestNewNews();
             SensorProvider.getInstance(this).synchronizeRunningSensorsWithDb();
+        } else {
+            RecyclerView.Adapter adapter = mRecyclerView.getAdapter();
+            if (adapter != null) {
+                ((NewsAdapter) adapter).swapData(Collections.emptyList());
+                showNoNews();
+            }
         }
 
         super.onResume();
