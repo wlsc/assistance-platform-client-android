@@ -181,6 +181,8 @@ Email: developer@tk.informatik.tu-darmstadt.de</string>
     <string name="module_uninstall_message">Wollen Sie wirklich das Modul deaktivieren?</string>
     <string name="module_uninstall_successful">Deaktivierung war erfolgreich!</string>
     <string name="module_uninstall_unsuccessful">Aktivierung fehlgeschlagen hat :(</string>
+    <!-- AVAILABLE ACTIVE SENSORS -->
+    <string name="active_sensors_list_no_data">Keine aktive Sensoren</string>
     <string name="user_profile_title">Profil</string>
     <string name="user_profile_firstname">Vorname</string>
     <string name="user_profile_lastname">Nachname</string>

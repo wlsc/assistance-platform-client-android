@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
@@ -55,6 +56,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ToggleModule
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.sensing.SensorApiType;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.DaoProvider;
+import de.tudarmstadt.informatik.tk.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SocialProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.ModuleApiProvider;
@@ -94,6 +96,9 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
 
     @Bind(R.id.permissionRecyclerView)
     protected RecyclerView mPermissionsRecyclerView;
+
+    @Bind(R.id.noData)
+    protected AppCompatTextView mNoData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -675,26 +680,38 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
             return;
         }
 
-        ToggleModuleRequestDto request = new ToggleModuleRequestDto();
-
         String typeStr = SensorApiType.getApiName(capType);
 
         List<DbModule> activeModules = daoProvider.getModuleDao().getAllActive(user.getId());
 
         ModuleApiProvider moduleApiProvider = apiProvider.getModuleApiProvider();
 
+        ModuleRunningSensorsAdapter adapter = (ModuleRunningSensorsAdapter) mPermissionsRecyclerView.getAdapter();
+
+        List<ModuleRunningSensorTypeItem> items = adapter.getData();
+        List<ModuleRunningSensorTypeItem> newItemsList = new ArrayList<>(items.size());
+        newItemsList.addAll(items);
+
         for (DbModule dbModule : activeModules) {
 
-            request.setModulePackageName(dbModule.getPackageName());
+            ToggleModuleRequestDto deactivationRequest = new ToggleModuleRequestDto();
+            deactivationRequest.setModulePackageName(dbModule.getPackageName());
 
             // deactivate module
             subModuleDeactivation = moduleApiProvider
-                    .deactivateModule(userToken, request)
+                    .deactivateModule(userToken, deactivationRequest)
                     .subscribe(new ModuleDeactivationSubscriber());
 
             List<DbModuleCapability> caps = dbModule.getDbModuleCapabilityList();
 
             for (DbModuleCapability cap : caps) {
+
+                // removing disabled perms
+                for (ModuleRunningSensorTypeItem item : items) {
+                    if (typeStr.equals(cap.getType()) && cap.getRequired() && cap.getActive()) {
+                        newItemsList.remove(item);
+                    }
+                }
 
                 // we have a match -> disable that module
                 if (typeStr.equals(cap.getType()) && cap.getRequired() && cap.getActive()) {
@@ -704,28 +721,30 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
             }
         }
 
-        // update modules state info
-        daoProvider.getModuleDao().update(activeModules);
+        adapter.swapData(newItemsList);
 
-        ModuleRunningSensorsAdapter adapter = (ModuleRunningSensorsAdapter) mPermissionsRecyclerView.getAdapter();
-
-        List<ModuleRunningSensorTypeItem> items = adapter.getData();
-
-        for (ModuleRunningSensorTypeItem item : items) {
-
-            if (capType == item.getType()) {
-                item.setAllowed(false);
-                break;
-            }
+        if (newItemsList.isEmpty()) {
+            mNoData.setVisibility(View.VISIBLE);
+            mPermissionsRecyclerView.setVisibility(View.GONE);
+        } else {
+            mNoData.setVisibility(View.GONE);
+            mPermissionsRecyclerView.setVisibility(View.VISIBLE);
         }
 
-        adapter.swapData(items);
+        // update modules state info
+        daoProvider.getModuleDao().update(activeModules);
 
         // update module capability state
         updateModuleSensorState(SensorApiType.getApiName(capType), false);
 
         // synchronize db active module capabilities with running caps
         SensorProvider.getInstance(getApplicationContext()).synchronizeRunningSensorsWithDb();
+
+        List<DbModule> allActive = daoProvider.getModuleDao().getAllActive(user.getId());
+
+        if (allActive.isEmpty()) {
+            HarvesterServiceProvider.getInstance(getApplicationContext()).showHarvestIcon(false);
+        }
     }
 
     /**
@@ -787,6 +806,7 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
         @Override
         public void onNext(Void aVoid) {
             Log.d(TAG, "subModuleDeactivation successfully called");
+            SensorProvider.getInstance(getApplicationContext()).synchronizeRunningSensorsWithDb();
         }
     }
 }
