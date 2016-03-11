@@ -67,7 +67,7 @@ public class SettingsActivity extends PreferenceActivity {
         setTitle(R.string.settings_activity_title);
 
         mToolBar.setTitle(getTitle());
-        mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
+        mToolBar.setNavigationIcon(R.drawable.ic_ab_back_material);
     }
 
     @OnClick(R.id.toolbar)
