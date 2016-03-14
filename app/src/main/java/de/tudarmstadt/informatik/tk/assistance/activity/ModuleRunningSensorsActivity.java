@@ -225,6 +225,14 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
         mPermissionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mPermissionsRecyclerView.setAdapter(new ModuleRunningSensorsAdapter(runningSensorToBeDisplayed));
         mPermissionsRecyclerView.addItemDecoration(new DividerItemDecoration(this, null));
+
+        if (runningSensorToBeDisplayed.isEmpty()) {
+            mNoData.setVisibility(View.VISIBLE);
+            mPermissionsRecyclerView.setVisibility(View.GONE);
+        } else {
+            mNoData.setVisibility(View.GONE);
+            mPermissionsRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
