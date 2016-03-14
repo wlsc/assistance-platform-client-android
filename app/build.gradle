@@ -65,15 +65,9 @@ dependencies {
     // sensor information gathering
     compile project(':AssistanceSDK')
     // support libraries
-    compile 'com.android.support:support-v4:23.2.1'
-    compile 'com.android.support:cardview-v7:23.2.1'
-    //    compile 'com.android.support:gridlayout-v7:23.1.1'
-    compile 'com.android.support:recyclerview-v7:23.2.1'
-    compile 'com.android.support:preference-v7:23.2.1'
     compile 'com.android.support:support-v13:23.2.1'
     compile 'com.android.support:preference-v14:23.2.1'
     compile 'com.android.support:support-annotations:23.2.1'
-    //    compile 'com.android.support:percent:23.1.1'
     compile 'com.android.support:design:23.2.1'
     // show cases (tutorials) lib
     compile 'com.github.amlcurran.showcaseview:library:5.4.1'
