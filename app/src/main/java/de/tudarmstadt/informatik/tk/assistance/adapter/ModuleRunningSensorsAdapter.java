@@ -12,7 +12,7 @@ import com.google.common.collect.Lists;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.R;
@@ -136,13 +136,13 @@ public class ModuleRunningSensorsAdapter extends RecyclerView.Adapter<RecyclerVi
      */
     protected static class ModuleTypesViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.title)
+        @BindView(R.id.title)
         protected AppCompatTextView title;
 
-        @Bind(R.id.switcher)
+        @BindView(R.id.switcher)
         protected SwitchCompat switcher;
 
-        @Bind(R.id.requiredBy)
+        @BindView(R.id.requiredBy)
         protected AppCompatTextView requiredByModules;
 
         public ModuleTypesViewHolder(View view) {

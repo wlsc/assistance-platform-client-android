@@ -12,7 +12,7 @@ import com.google.common.collect.Lists;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.R;
@@ -174,10 +174,10 @@ public class PermissionAdapter extends RecyclerView.Adapter<PermissionAdapter.Vi
      */
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.permission_item_title)
+        @BindView(R.id.permission_item_title)
         protected AppCompatTextView mTitle;
 
-        @Bind(R.id.permission_item_switcher)
+        @BindView(R.id.permission_item_switcher)
         protected SwitchCompat mEnablerSwitch;
 
         public ViewHolder(View view) {

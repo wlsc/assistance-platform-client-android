@@ -7,9 +7,10 @@ import android.support.v7.widget.AppCompatEditText;
 
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
@@ -30,7 +31,9 @@ public class ResetPasswordActivity extends
 
     private static final String TAG = ResetPasswordActivity.class.getSimpleName();
 
-    @Bind(R.id.reset_email)
+    private Unbinder unbinder;
+
+    @BindView(R.id.reset_email)
     protected AppCompatEditText mUserEmailEditText;
 
     private ResetPasswordPresenter presenter;
@@ -45,7 +48,7 @@ public class ResetPasswordActivity extends
 
     @Override
     protected void onDestroy() {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroy();
     }
 
@@ -87,7 +90,7 @@ public class ResetPasswordActivity extends
         setContentView(R.layout.activity_reset_password);
         setTitle(R.string.reset_password_activity_title);
 
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override

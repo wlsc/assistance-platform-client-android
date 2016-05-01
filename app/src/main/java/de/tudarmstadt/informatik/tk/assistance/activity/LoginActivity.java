@@ -21,10 +21,11 @@ import com.google.android.gms.analytics.Tracker;
 
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import butterknife.Unbinder;
 import de.tudarmstadt.informatik.tk.assistance.Constants;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
@@ -83,36 +84,38 @@ public class LoginActivity extends
         return tracker;
     }
 
-    @Bind(R.id.email)
-    protected AppCompatEditText mEmailTextView;
+    @BindView(R.id.email)
+    public AppCompatEditText mEmailTextView;
 
-    @Bind(R.id.password)
-    protected AppCompatEditText mPasswordView;
+    @BindView(R.id.password)
+    public AppCompatEditText mPasswordView;
 
-    @Bind(R.id.login_progress)
-    protected ContentLoadingProgressBar mProgressView;
+    @BindView(R.id.login_progress)
+    public ContentLoadingProgressBar mProgressView;
 
-    @Bind(R.id.login_form)
-    protected NestedScrollView mLoginFormView;
+    @BindView(R.id.login_form)
+    public NestedScrollView mLoginFormView;
 
-    @Bind(R.id.sign_in_button)
-    protected AppCompatButton mLoginButton;
+    @BindView(R.id.sign_in_button)
+    public AppCompatButton mLoginButton;
 
     // SOCIAL BUTTONS
-    @Bind(R.id.ibFacebookLogo)
-    protected AppCompatImageButton mFacebookLogo;
+    @BindView(R.id.ibFacebookLogo)
+    public AppCompatImageButton mFacebookLogo;
 
-    @Bind(R.id.ibGooglePlusLogo)
-    protected AppCompatImageButton mGooglePlusLogo;
+    @BindView(R.id.ibGooglePlusLogo)
+    public AppCompatImageButton mGooglePlusLogo;
 
-    @Bind(R.id.ibLiveLogo)
-    protected AppCompatImageButton mLiveLogo;
+    @BindView(R.id.ibLiveLogo)
+    public AppCompatImageButton mLiveLogo;
 
-    @Bind(R.id.ibTwitterLogo)
-    protected AppCompatImageButton mTwitterLogo;
+    @BindView(R.id.ibTwitterLogo)
+    public AppCompatImageButton mTwitterLogo;
 
-    @Bind(R.id.ibGithubLogo)
-    protected AppCompatImageButton mGithubLogo;
+    @BindView(R.id.ibGithubLogo)
+    public AppCompatImageButton mGithubLogo;
+
+    private Unbinder unbinder;
 
     private boolean mBackButtonPressedOnce;
 
@@ -217,7 +220,7 @@ public class LoginActivity extends
         setContentView(R.layout.activity_login);
         setTitle(R.string.login_activity_title);
 
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override
@@ -323,7 +326,7 @@ public class LoginActivity extends
 
     @Override
     protected void onDestroy() {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         mSplashView = null;
         uiThreadHandler = null;
         super.onDestroy();

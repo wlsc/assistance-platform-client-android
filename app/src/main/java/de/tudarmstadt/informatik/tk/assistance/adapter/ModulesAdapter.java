@@ -7,14 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.common.collect.Lists;
 
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.R;
@@ -202,15 +201,15 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
      */
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.main_title)
+        @BindView(R.id.main_title)
         protected AppCompatTextView mMainTitle;
-        @Bind(R.id.main_short_description)
+        @BindView(R.id.main_short_description)
         protected AppCompatTextView mShortDescription;
-        @Bind(R.id.more_info_module)
+        @BindView(R.id.more_info_module)
         protected AppCompatButton mMoreInfoModule;
-        @Bind(R.id.install_module)
+        @BindView(R.id.install_module)
         protected AppCompatButton mInstallModule;
-        @Bind(R.id.uninstall_module)
+        @BindView(R.id.uninstall_module)
         protected AppCompatButton mUninstallModule;
 
         public ViewHolder(View view) {

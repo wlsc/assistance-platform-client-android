@@ -6,6 +6,7 @@ import android.support.v4.app.ActivityCompat;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import de.tudarmstadt.informatik.tk.assistance.Constants;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
@@ -22,6 +23,8 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 public class AccessibilityTutorialActivity extends BaseActivity {
 
     private static final String TAG = AccessibilityTutorialActivity.class.getSimpleName();
+
+    private Unbinder unbinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +44,13 @@ public class AccessibilityTutorialActivity extends BaseActivity {
 
             setContentView(R.layout.activity_accessibility_tutorial);
 
-            ButterKnife.bind(this);
+            unbinder = ButterKnife.bind(this);
         }
     }
 
     @Override
     protected void onDestroy() {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroy();
     }
 

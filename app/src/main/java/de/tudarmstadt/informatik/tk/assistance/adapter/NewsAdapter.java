@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.R;
@@ -461,13 +461,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
      */
     protected static class NewsViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.title)
+        @BindView(R.id.title)
         protected AppCompatTextView title;
 
-        @Bind(R.id.cardSettings)
+        @BindView(R.id.cardSettings)
         protected AppCompatImageView cardSettings;
 
-        @Bind(R.id.newsContainer)
+        @BindView(R.id.newsContainer)
         protected LinearLayoutCompat mContainer;
 
         public NewsViewHolder(View view) {

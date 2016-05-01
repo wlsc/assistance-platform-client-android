@@ -436,7 +436,6 @@ public class ModulesActivity extends
 
     @Override
     protected void onDestroy() {
-        ButterKnife.unbind(this);
 
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);

@@ -10,9 +10,10 @@ import android.widget.ListView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import de.tudarmstadt.informatik.tk.assistance.Constants;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.fragment.settings.AboutSettingsFragment;
@@ -44,7 +45,9 @@ public class SettingsActivity extends PreferenceActivity {
             SensorListSettingsFragment.class.getName()
     };
 
-    @Bind(R.id.toolbar)
+    private Unbinder unbinder;
+
+    @BindView(R.id.toolbar)
     protected Toolbar mToolBar;
 
     public SettingsActivity() {
@@ -62,7 +65,7 @@ public class SettingsActivity extends PreferenceActivity {
         toolbarContainer.addView(content);
         root.addView(toolbarContainer);
 
-        ButterKnife.bind(this, toolbarContainer);
+        unbinder = ButterKnife.bind(this, toolbarContainer);
 
         setTitle(R.string.settings_activity_title);
 
@@ -140,7 +143,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     @Override
     protected void onDestroy() {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         Log.d(TAG, "onDestroy -> unbound resources");
         super.onDestroy();
     }

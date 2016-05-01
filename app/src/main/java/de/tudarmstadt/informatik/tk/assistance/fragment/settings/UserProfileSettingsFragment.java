@@ -13,9 +13,10 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnTextChanged;
+import butterknife.Unbinder;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
@@ -44,40 +45,42 @@ public class UserProfileSettingsFragment extends Fragment {
 
     private String userToken;
 
+    private Unbinder unbinder;
+
 //    @Bind(R.id.userPicVIew)
 //    protected CircularImageView userPicView;
 
-    @Bind(R.id.firstname)
+    @BindView(R.id.firstname)
     protected AppCompatEditText firstnameText;
 
     private String firstname;
 
-    @Bind(R.id.lastname)
+    @BindView(R.id.lastname)
     protected AppCompatEditText lastnameText;
 
     private String lastname;
 
-    @Bind(R.id.social_account_google)
+    @BindView(R.id.social_account_google)
     protected AppCompatEditText socialAccountGoogleText;
 
     private String socialAccountGoogle;
 
-    @Bind(R.id.social_account_facebook)
+    @BindView(R.id.social_account_facebook)
     protected AppCompatEditText socialAccountFacebookText;
 
     private String socialAccountFacebook;
 
-    @Bind(R.id.social_account_live)
+    @BindView(R.id.social_account_live)
     protected AppCompatEditText socialAccountLiveText;
 
     private String socialAccountLive;
 
-    @Bind(R.id.social_account_twitter)
+    @BindView(R.id.social_account_twitter)
     protected AppCompatEditText socialAccountTwitterText;
 
     private String socialAccountTwitter;
 
-    @Bind(R.id.social_account_github)
+    @BindView(R.id.social_account_github)
     protected AppCompatEditText socialAccountGithubText;
 
     private String socialAccountGithub;
@@ -105,7 +108,7 @@ public class UserProfileSettingsFragment extends Fragment {
 
             view = inflater.inflate(R.layout.fragment_preference_user_profile, container, false);
 
-            ButterKnife.bind(this, view);
+            unbinder = ButterKnife.bind(this, view);
 
 //            String filename = UserUtils.getUserPicFilename(getActivity());
 //
@@ -419,6 +422,6 @@ public class UserProfileSettingsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 }

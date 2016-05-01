@@ -25,9 +25,10 @@ import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.Constants;
 import de.tudarmstadt.informatik.tk.assistance.R;
@@ -72,13 +73,15 @@ public class MainActivity extends
     private static final long FEEDBACK_POLLING_RATE = 10;
     private static final TimeUnit FEEDBACK_TIME_UNIT = TimeUnit.SECONDS;
 
-    @Bind(R.id.toolbar)
+    private Unbinder unbinder;
+
+    @BindView(R.id.toolbar)
     protected Toolbar mToolbar;
 
-    @Bind(R.id.assistance_list)
+    @BindView(R.id.assistance_list)
     protected RecyclerView mRecyclerView;
 
-    @Bind(R.id.show_available_modules)
+    @BindView(R.id.show_available_modules)
     protected FloatingActionButton showAvailableModules;
 
     private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
@@ -102,7 +105,7 @@ public class MainActivity extends
 
         setContentView(R.layout.activity_main);
 
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         try {
 
@@ -280,7 +283,7 @@ public class MainActivity extends
 
     @Override
     protected void onDestroy() {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         RxUtils.unsubscribe(activatedModulesSubscription);
         RxUtils.unsubscribe(modulesFeedbackSubscription);
         super.onDestroy();

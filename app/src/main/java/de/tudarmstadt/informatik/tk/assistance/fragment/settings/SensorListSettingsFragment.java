@@ -15,8 +15,9 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.assistance.adapter.SensorsListAdapter;
@@ -33,7 +34,9 @@ public class SensorListSettingsFragment extends Fragment {
 
     private Toolbar mParentToolbar;
 
-    @Bind(R.id.sensor_list)
+    private Unbinder unbinder;
+
+    @BindView(R.id.sensor_list)
     protected RecyclerView recyclerView;
 
     public SensorListSettingsFragment() {
@@ -52,7 +55,7 @@ public class SensorListSettingsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_preference_sensors_list, container, false);
 
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         recyclerView.setHasFixedSize(true);
 
@@ -67,6 +70,12 @@ public class SensorListSettingsFragment extends Fragment {
         recyclerView.setAdapter(sensorListAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        unbinder.unbind();
+        super.onDestroyView();
     }
 
     /**

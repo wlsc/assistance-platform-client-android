@@ -6,9 +6,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.view.View;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.GcmUtils;
@@ -31,7 +32,9 @@ public class NoPlayServicesActivity extends BaseActivity {
 
     private final Runnable mHidePart2Runnable = () -> CommonUtils.hideSystemUI(getWindow());
 
-    @Bind(R.id.fullscreen_content_controls)
+    private Unbinder unbinder;
+
+    @BindView(R.id.fullscreen_content_controls)
     protected LinearLayoutCompat mControlsView;
 
     private final Runnable mShowPart2Runnable = new Runnable() {
@@ -56,7 +59,7 @@ public class NoPlayServicesActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_no_play_services);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         mVisible = true;
     }
@@ -69,7 +72,7 @@ public class NoPlayServicesActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroy();
     }
 

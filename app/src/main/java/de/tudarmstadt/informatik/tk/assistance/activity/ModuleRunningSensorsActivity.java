@@ -38,8 +38,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.adapter.ModuleRunningSensorsAdapter;
@@ -91,13 +92,15 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
 
     private Subscription subModuleDeactivation;
 
-    @Bind(R.id.toolbar)
+    private Unbinder unbinder;
+
+    @BindView(R.id.toolbar)
     protected Toolbar mToolbar;
 
-    @Bind(R.id.permissionRecyclerView)
+    @BindView(R.id.permissionRecyclerView)
     protected RecyclerView mPermissionsRecyclerView;
 
-    @Bind(R.id.noData)
+    @BindView(R.id.noData)
     protected AppCompatTextView mNoData;
 
     @Override
@@ -138,7 +141,7 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         try {
             setSupportActionBar(mToolbar);
@@ -259,7 +262,7 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         RxUtils.unsubscribe(subModuleDeactivation);
         super.onDestroy();
     }

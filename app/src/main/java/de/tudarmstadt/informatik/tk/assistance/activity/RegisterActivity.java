@@ -13,9 +13,10 @@ import android.widget.TextView;
 
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import de.tudarmstadt.informatik.tk.assistance.R;
 import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
@@ -38,22 +39,24 @@ public class RegisterActivity extends
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
 
-    @Bind(R.id.register_email)
+    private Unbinder unbinder;
+
+    @BindView(R.id.register_email)
     protected AppCompatEditText mUserEmail;
 
-    @Bind(R.id.register_password1)
+    @BindView(R.id.register_password1)
     protected AppCompatEditText mUserPassword1;
 
-    @Bind(R.id.register_password2)
+    @BindView(R.id.register_password2)
     protected AppCompatEditText mUserPassword2;
 
-    @Bind(R.id.disclaimer)
+    @BindView(R.id.disclaimer)
     protected SwitchCompat disclaimerSwitch;
 
-    @Bind(R.id.sign_up_button)
+    @BindView(R.id.sign_up_button)
     protected AppCompatButton signUpButton;
 
-    @Bind(R.id.disclaimerText)
+    @BindView(R.id.disclaimerText)
     protected TextView disclaimerText;
 
     private RegisterPresenter presenter;
@@ -123,7 +126,7 @@ public class RegisterActivity extends
 
     @Override
     protected void onDestroy() {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroy();
     }
 
@@ -180,7 +183,7 @@ public class RegisterActivity extends
         setContentView(R.layout.activity_register);
         setTitle(R.string.register_activity_title);
 
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         Linkify.addLinks(disclaimerText, Linkify.ALL);
     }
