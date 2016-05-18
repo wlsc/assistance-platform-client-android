@@ -27,7 +27,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 07.06.2015
  */
-public class CommonUtils {
+public final class CommonUtils {
 
     private static final String TAG = CommonUtils.class.getSimpleName();
 

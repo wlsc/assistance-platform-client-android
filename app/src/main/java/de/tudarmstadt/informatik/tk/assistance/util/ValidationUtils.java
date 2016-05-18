@@ -9,7 +9,7 @@ import de.tudarmstadt.informatik.tk.assistance.Config;
  * <p/>
  * Created by Wladimir Schmidt on 28.06.2015.
  */
-public class ValidationUtils {
+public final class ValidationUtils {
 
     private ValidationUtils() {
     }
@@ -20,7 +20,7 @@ public class ValidationUtils {
      * @param target
      * @return
      */
-    public final static boolean isValidEmail(CharSequence target) {
+    public static boolean isValidEmail(CharSequence target) {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 

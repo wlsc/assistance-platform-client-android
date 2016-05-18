@@ -12,7 +12,7 @@ import de.tudarmstadt.informatik.tk.assistance.Constants;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 12.07.2015
  */
-public class PreferenceUtils {
+public final class PreferenceUtils {
 
     private PreferenceUtils() {
     }

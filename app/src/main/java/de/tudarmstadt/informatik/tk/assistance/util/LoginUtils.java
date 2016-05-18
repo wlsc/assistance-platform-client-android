@@ -8,7 +8,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.provider.HarvesterServiceProv
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 11.11.2015
  */
-public class LoginUtils {
+public final class LoginUtils {
 
     private LoginUtils() {
     }

@@ -12,7 +12,7 @@ import java.util.Locale;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 04.07.2015
  */
-public class UserUtils {
+public final class UserUtils {
 
     private UserUtils() {
     }

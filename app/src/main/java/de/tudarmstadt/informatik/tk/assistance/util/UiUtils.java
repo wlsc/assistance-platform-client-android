@@ -38,7 +38,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.UrlUtils;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 11.01.2016
  */
-public class UiUtils {
+public final class UiUtils {
 
     private static UiUtils INSTANCE;
 
@@ -199,7 +199,12 @@ public class UiUtils {
             return null;
         }
 
-        Button button = new Button(context, null, 0, R.style.BtnDefault);
+        Button button = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            button = new Button(context, null, 0, R.style.BtnDefault);
+        } else {
+            button = new Button(context, null, 0);
+        }
 
         String caption = buttonDto.getCaption();
 
