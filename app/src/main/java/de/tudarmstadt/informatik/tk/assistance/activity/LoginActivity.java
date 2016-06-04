@@ -326,7 +326,9 @@ public class LoginActivity extends
 
     @Override
     protected void onDestroy() {
-        unbinder.unbind();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
         mSplashView = null;
         uiThreadHandler = null;
         super.onDestroy();
