@@ -1,4 +1,3 @@
-include ':app', ':AssistanceSDK', ':LiveSDK'
+include ':app', ':AssistanceSDK'
 
 project(':AssistanceSDK').projectDir = new File(settingsDir, '../client_android_krakensdk/AssistanceSDK/app')
-project(':LiveSDK').projectDir = new File(settingsDir, '../client_android_krakensdk/AssistanceSDK/libs/LiveSDK/src')
