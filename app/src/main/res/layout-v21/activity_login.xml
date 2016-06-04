@@ -59,8 +59,7 @@
                     android:layout_marginTop="15dp"
                     android:hint="@string/login_prompt_email"
                     android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -74,8 +73,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/login_prompt_password"
                     android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 

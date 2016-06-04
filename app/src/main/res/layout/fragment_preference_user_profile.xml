@@ -61,9 +61,9 @@
                     android:paddingLeft="8dip"
                     android:paddingRight="8dip"
                     android:paddingStart="8dip"
-                    android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -81,9 +81,9 @@
                     android:paddingLeft="8dip"
                     android:paddingRight="8dip"
                     android:paddingStart="8dip"
-                    android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -100,9 +100,9 @@
                     android:paddingLeft="8dip"
                     android:paddingRight="8dip"
                     android:paddingStart="8dip"
-                    android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -119,9 +119,9 @@
                     android:paddingLeft="8dip"
                     android:paddingRight="8dip"
                     android:paddingStart="8dip"
-                    android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -138,9 +138,9 @@
                     android:paddingLeft="8dip"
                     android:paddingRight="8dip"
                     android:paddingStart="8dip"
-                    android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -157,9 +157,9 @@
                     android:paddingLeft="8dip"
                     android:paddingRight="8dip"
                     android:paddingStart="8dip"
-                    android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -176,9 +176,9 @@
                     android:paddingLeft="8dip"
                     android:paddingRight="8dip"
                     android:paddingStart="8dip"
-                    android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
         </android.support.v7.widget.LinearLayoutCompat>
