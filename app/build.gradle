@@ -22,6 +22,7 @@ android {
     }
     signingConfigs {
         release {
+            // see gradle.properties for definitions
             storeFile file(RELEASE_KEYSTORE_FILE)
             storePassword RELEASE_STORE_PASSWORD
             keyAlias RELEASE_KEY_ALIAS
