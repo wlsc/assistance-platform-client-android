@@ -1,4 +1,4 @@
-# Android TUD Personal Assistance Platform
+# Modular Android-based Intelligent Personal Assistant
 
 In the time of rapidly increasing pace of digital lifestyle, there is a pressing need for a better and smarter assistant solution for mobile devices. In order to provide a smarter assistance, we need to collect big data of particular mobile system user as a first step in order to be able to further process, evaluate and present the results in an appropriate user-friendly form. 
 
