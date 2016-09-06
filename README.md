@@ -24,7 +24,7 @@ efﬁcient and generic way without affecting the user experience.
 * [Wladimir Schmidt](https://github.com/wlsc)
 
 ### Dependency
-* [Assistance SDK](https://github.com/Telecooperation/assistance-client-sdk-android)
+* [Assistance SDK](https://github.com/Telecooperation/assistance-platform-client-sdk-android)
 
 ### License
 Licensed under the Apache License, Version 2.0 (the "License");
