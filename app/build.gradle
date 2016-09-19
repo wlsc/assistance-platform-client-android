@@ -46,7 +46,7 @@ android {
         debug {
             debuggable true
             minifyEnabled false
-            shrinkResources true
+            shrinkResources false
         }
     }
     dexOptions {
