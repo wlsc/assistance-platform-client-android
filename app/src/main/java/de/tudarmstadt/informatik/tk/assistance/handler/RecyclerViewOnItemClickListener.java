@@ -2,7 +2,9 @@ package de.tudarmstadt.informatik.tk.assistance.handler;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnItemTouchListener;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -10,7 +12,7 @@ import android.view.View;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.01.2016
  */
-public class RecyclerViewOnItemClickListener implements RecyclerView.OnItemTouchListener {
+public class RecyclerViewOnItemClickListener implements OnItemTouchListener {
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -23,7 +25,7 @@ public class RecyclerViewOnItemClickListener implements RecyclerView.OnItemTouch
     public RecyclerViewOnItemClickListener(Context context, OnItemClickListener listener) {
 
         clickListener = listener;
-        gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+        gestureDetector = new GestureDetector(context, new SimpleOnGestureListener() {
 
             @Override
             public boolean onSingleTapUp(MotionEvent event) {

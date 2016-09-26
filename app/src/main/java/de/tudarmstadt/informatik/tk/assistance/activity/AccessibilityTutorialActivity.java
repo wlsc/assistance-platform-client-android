@@ -8,7 +8,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import de.tudarmstadt.informatik.tk.assistance.Constants;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
 import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
@@ -42,7 +43,7 @@ public class AccessibilityTutorialActivity extends BaseActivity {
 
         } else {
 
-            setContentView(R.layout.activity_accessibility_tutorial);
+            setContentView(layout.activity_accessibility_tutorial);
 
             unbinder = ButterKnife.bind(this);
         }
@@ -54,7 +55,7 @@ public class AccessibilityTutorialActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @OnClick(R.id.ignore_button)
+    @OnClick(id.ignore_button)
     protected void onIgnoreButton() {
         Log.d(TAG, "User has chosen to ignore accessibility service!");
 
@@ -64,7 +65,7 @@ public class AccessibilityTutorialActivity extends BaseActivity {
         finish();
     }
 
-    @OnClick(R.id.activate_now_button)
+    @OnClick(id.activate_now_button)
     protected void onActivateNowButton() {
         Log.d(TAG, "User has chosen to activate accessibility service!");
 

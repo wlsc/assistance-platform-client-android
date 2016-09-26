@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.adapter.ModulesAdapter.ViewHolder;
 import de.tudarmstadt.informatik.tk.assistance.event.module.ModuleInstallEvent;
 import de.tudarmstadt.informatik.tk.assistance.event.module.ModuleShowMoreInfoEvent;
 import de.tudarmstadt.informatik.tk.assistance.event.module.ModuleUninstallEvent;
@@ -26,7 +29,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModule;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 18.10.2015
  */
-public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHolder> {
+public class ModulesAdapter extends Adapter<ViewHolder> {
 
     private static final String TAG = ModulesAdapter.class.getSimpleName();
 
@@ -52,13 +55,13 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
         if (viewType == EMPTY_VIEW_TYPE) {
             // list is empty
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_empty_list_view, parent, false);
+                    .inflate(layout.item_empty_list_view, parent, false);
 
             return new EmptyViewHolder(view);
         } else {
             // list has items
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_module_card, parent, false);
+                    .inflate(layout.item_module_card, parent, false);
 
             return new ViewHolder(view);
         }
@@ -190,7 +193,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
     /**
      * An empty view holder if no items available
      */
-    public static class EmptyViewHolder extends ModulesAdapter.ViewHolder {
+    public static class EmptyViewHolder extends ViewHolder {
         public EmptyViewHolder(View view) {
             super(view);
         }
@@ -201,15 +204,15 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ViewHold
      */
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.main_title)
+        @BindView(id.main_title)
         protected AppCompatTextView mMainTitle;
-        @BindView(R.id.main_short_description)
+        @BindView(id.main_short_description)
         protected AppCompatTextView mShortDescription;
-        @BindView(R.id.more_info_module)
+        @BindView(id.more_info_module)
         protected AppCompatButton mMoreInfoModule;
-        @BindView(R.id.install_module)
+        @BindView(id.install_module)
         protected AppCompatButton mInstallModule;
-        @BindView(R.id.uninstall_module)
+        @BindView(id.uninstall_module)
         protected AppCompatButton mUninstallModule;
 
         public ViewHolder(View view) {

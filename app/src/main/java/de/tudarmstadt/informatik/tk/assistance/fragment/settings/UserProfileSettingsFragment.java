@@ -17,7 +17,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnTextChanged;
 import butterknife.Unbinder;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
 import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.profile.ProfileResponseDto;
@@ -50,50 +52,47 @@ public class UserProfileSettingsFragment extends Fragment {
 //    @Bind(R.id.userPicVIew)
 //    protected CircularImageView userPicView;
 
-    @BindView(R.id.firstname)
+    @BindView(id.firstname)
     protected AppCompatEditText firstnameText;
 
     private String firstname;
 
-    @BindView(R.id.lastname)
+    @BindView(id.lastname)
     protected AppCompatEditText lastnameText;
 
     private String lastname;
 
-    @BindView(R.id.social_account_google)
+    @BindView(id.social_account_google)
     protected AppCompatEditText socialAccountGoogleText;
 
     private String socialAccountGoogle;
 
-    @BindView(R.id.social_account_facebook)
+    @BindView(id.social_account_facebook)
     protected AppCompatEditText socialAccountFacebookText;
 
     private String socialAccountFacebook;
 
-    @BindView(R.id.social_account_live)
+    @BindView(id.social_account_live)
     protected AppCompatEditText socialAccountLiveText;
 
     private String socialAccountLive;
 
-    @BindView(R.id.social_account_twitter)
+    @BindView(id.social_account_twitter)
     protected AppCompatEditText socialAccountTwitterText;
 
     private String socialAccountTwitter;
 
-    @BindView(R.id.social_account_github)
+    @BindView(id.social_account_github)
     protected AppCompatEditText socialAccountGithubText;
 
     private String socialAccountGithub;
-
-    public UserProfileSettingsFragment() {
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
-        mParentToolbar.setTitle(R.string.settings_header_user_profile_title);
+        mParentToolbar.setTitle(string.settings_header_user_profile_title);
     }
 
     @Override
@@ -106,7 +105,7 @@ public class UserProfileSettingsFragment extends Fragment {
 
         if (!userToken.isEmpty()) {
 
-            view = inflater.inflate(R.layout.fragment_preference_user_profile, container, false);
+            view = inflater.inflate(layout.fragment_preference_user_profile, container, false);
 
             unbinder = ButterKnife.bind(this, view);
 
@@ -144,7 +143,7 @@ public class UserProfileSettingsFragment extends Fragment {
                         public void onError(Throwable e) {
                             Log.d(TAG, "Failed while getting full user profile");
                             Toaster.showLong(getActivity(),
-                                    R.string.error_service_not_available);
+                                    string.error_service_not_available);
                         }
 
                         @Override
@@ -221,13 +220,13 @@ public class UserProfileSettingsFragment extends Fragment {
 //        startActivityForResult(intent, R.id.userPicVIew);
 //    }
 
-    @OnTextChanged({R.id.firstname,
-            R.id.lastname,
-            R.id.social_account_google,
-            R.id.social_account_facebook,
-            R.id.social_account_live,
-            R.id.social_account_twitter,
-            R.id.social_account_github})
+    @OnTextChanged({id.firstname,
+            id.lastname,
+            id.social_account_google,
+            id.social_account_facebook,
+            id.social_account_live,
+            id.social_account_twitter,
+            id.social_account_github})
     void onFocusChanged(CharSequence text) {
         Log.d(TAG, text.toString());
         isUserInputOK();
@@ -246,7 +245,7 @@ public class UserProfileSettingsFragment extends Fragment {
         if (!TextUtils.isEmpty(socialAccountGoogle)) {
 
             if (!ValidationUtils.isValidEmail(socialAccountGoogle)) {
-                socialAccountGoogleText.setError(getString(R.string.error_invalid_email));
+                socialAccountGoogleText.setError(getString(string.error_invalid_email));
                 socialAccountGoogleText.requestFocus();
                 return false;
             }
@@ -257,7 +256,7 @@ public class UserProfileSettingsFragment extends Fragment {
         if (!TextUtils.isEmpty(socialAccountFacebook)) {
 
             if (!ValidationUtils.isValidEmail(socialAccountFacebook)) {
-                socialAccountFacebookText.setError(getString(R.string.error_invalid_email));
+                socialAccountFacebookText.setError(getString(string.error_invalid_email));
                 socialAccountFacebookText.requestFocus();
                 return false;
             }
@@ -268,7 +267,7 @@ public class UserProfileSettingsFragment extends Fragment {
         if (!TextUtils.isEmpty(socialAccountLive)) {
 
             if (!ValidationUtils.isValidEmail(socialAccountLive)) {
-                socialAccountLiveText.setError(getString(R.string.error_invalid_email));
+                socialAccountLiveText.setError(getString(string.error_invalid_email));
                 socialAccountLiveText.requestFocus();
                 return false;
             }
@@ -279,7 +278,7 @@ public class UserProfileSettingsFragment extends Fragment {
         if (!TextUtils.isEmpty(socialAccountTwitter)) {
 
             if (!ValidationUtils.isValidEmail(socialAccountTwitter)) {
-                socialAccountTwitterText.setError(getString(R.string.error_invalid_email));
+                socialAccountTwitterText.setError(getString(string.error_invalid_email));
                 socialAccountTwitterText.requestFocus();
                 return false;
             }
@@ -290,7 +289,7 @@ public class UserProfileSettingsFragment extends Fragment {
         if (!TextUtils.isEmpty(socialAccountGithub)) {
 
             if (!ValidationUtils.isValidEmail(socialAccountGithub)) {
-                socialAccountGithubText.setError(getString(R.string.error_invalid_email));
+                socialAccountGithubText.setError(getString(string.error_invalid_email));
                 socialAccountGithubText.requestFocus();
                 return false;
             }

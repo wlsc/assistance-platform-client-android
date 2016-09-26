@@ -2,12 +2,16 @@ package de.tudarmstadt.informatik.tk.assistance.util;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.MapView;
@@ -18,7 +22,8 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.Config;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.drawable;
+import de.tudarmstadt.informatik.tk.assistance.R.style;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.ContentFactory;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ContentDto;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.enums.FeedbackItemType;
@@ -65,7 +70,7 @@ public final class UiUtils {
      * @return
      */
     @Nullable
-    public TextView getText(TextDto textDto, View.OnClickListener onClickListener) {
+    public TextView getText(TextDto textDto, OnClickListener onClickListener) {
 
         if (textDto == null) {
             return null;
@@ -79,9 +84,9 @@ public final class UiUtils {
 
         TextView textView = new TextView(context);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LayoutParams params = new LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.MATCH_PARENT);
 
         textView.setText(StringUtils.isNullOrEmpty(caption) ? "" : caption);
 
@@ -150,7 +155,7 @@ public final class UiUtils {
      * @return
      */
     @Nullable
-    public ImageView getImage(ImageDto imageDto, View.OnClickListener onClickListener) {
+    public ImageView getImage(ImageDto imageDto, OnClickListener onClickListener) {
 
         if (imageDto == null) {
             return null;
@@ -164,7 +169,7 @@ public final class UiUtils {
 
             Picasso.with(context)
                     .load(source)
-                    .placeholder(R.drawable.no_image)
+                    .placeholder(drawable.no_image)
                     .into(imageView);
         }
 
@@ -193,15 +198,15 @@ public final class UiUtils {
      * @return
      */
     @Nullable
-    public Button getButton(ButtonDto buttonDto, View.OnClickListener onClickListener) {
+    public Button getButton(ButtonDto buttonDto, OnClickListener onClickListener) {
 
         if (buttonDto == null) {
             return null;
         }
 
         Button button = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            button = new Button(context, null, 0, R.style.BtnDefault);
+        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+            button = new Button(context, null, 0, style.BtnDefault);
         } else {
             button = new Button(context, null, 0);
         }

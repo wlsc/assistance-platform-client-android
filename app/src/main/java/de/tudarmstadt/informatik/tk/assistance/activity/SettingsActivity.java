@@ -15,7 +15,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import de.tudarmstadt.informatik.tk.assistance.Constants;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.drawable;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
+import de.tudarmstadt.informatik.tk.assistance.R.xml;
 import de.tudarmstadt.informatik.tk.assistance.fragment.settings.AboutSettingsFragment;
 import de.tudarmstadt.informatik.tk.assistance.fragment.settings.AppSettingsFragment;
 import de.tudarmstadt.informatik.tk.assistance.fragment.settings.DevSettingsFragment;
@@ -47,11 +51,8 @@ public class SettingsActivity extends PreferenceActivity {
 
     private Unbinder unbinder;
 
-    @BindView(R.id.toolbar)
+    @BindView(id.toolbar)
     protected Toolbar mToolBar;
-
-    public SettingsActivity() {
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         ViewGroup root = ButterKnife.findById(this, android.R.id.content);
         View content = root.getChildAt(0);
-        LinearLayoutCompat toolbarContainer = (LinearLayoutCompat) View.inflate(this, R.layout.activity_settings, null);
+        LinearLayoutCompat toolbarContainer = (LinearLayoutCompat) View.inflate(this, layout.activity_settings, null);
 
         root.removeAllViews();
         toolbarContainer.addView(content);
@@ -67,35 +68,35 @@ public class SettingsActivity extends PreferenceActivity {
 
         unbinder = ButterKnife.bind(this, toolbarContainer);
 
-        setTitle(R.string.settings_activity_title);
+        setTitle(string.settings_activity_title);
 
         mToolBar.setTitle(getTitle());
-        mToolBar.setNavigationIcon(R.drawable.ic_ab_back_material);
+        mToolBar.setNavigationIcon(drawable.ic_ab_back_material);
     }
 
-    @OnClick(R.id.toolbar)
+    @OnClick(id.toolbar)
     protected void onBackClicked() {
         Log.d(TAG, "On toolbar back pressed");
-        setResult(R.id.menu_settings);
+        setResult(id.menu_settings);
         finish();
     }
 
     @Override
     public void onBackPressed() {
         Log.d(TAG, "On normal back pressed");
-        setResult(R.id.menu_settings);
+        setResult(id.menu_settings);
         finish();
     }
 
     @Override
     public void onBuildHeaders(List<Header> headers) {
 
-        loadHeadersFromResource(R.xml.preference_headers, headers);
+        loadHeadersFromResource(xml.preference_headers, headers);
 
         boolean isUserDeveloper = PreferenceUtils.isUserDeveloper(getApplicationContext());
 
         for (Header header : headers) {
-            if (header.id == R.id.development_settings) {
+            if (header.id == id.development_settings) {
 
                 // user not developer -> remove developer menu entry
                 if (!isUserDeveloper) {
@@ -133,7 +134,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         switch ((int) header.id) {
 
-            case R.id.logout_settings:
+            case id.logout_settings:
                 LoginUtils.doLogout(getApplicationContext());
                 setResult(Constants.INTENT_SETTINGS_LOGOUT_RESULT);
                 finish();

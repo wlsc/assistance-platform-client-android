@@ -11,7 +11,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
 import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.presenter.password.ResetPasswordPresenter;
@@ -33,7 +35,7 @@ public class ResetPasswordActivity extends
 
     private Unbinder unbinder;
 
-    @BindView(R.id.reset_email)
+    @BindView(id.reset_email)
     protected AppCompatEditText mUserEmailEditText;
 
     private ResetPasswordPresenter presenter;
@@ -52,7 +54,7 @@ public class ResetPasswordActivity extends
         super.onDestroy();
     }
 
-    @OnClick(R.id.reset_button)
+    @OnClick(id.reset_button)
     void onResetPasswordButtonClicked() {
         presenter.doResetPassword(mUserEmailEditText.getText().toString().trim());
     }
@@ -70,25 +72,25 @@ public class ResetPasswordActivity extends
 
     @Override
     public void setErrorEmailFieldRequired() {
-        mUserEmailEditText.setError(getString(R.string.error_field_required));
+        mUserEmailEditText.setError(getString(string.error_field_required));
         mUserEmailEditText.requestFocus();
     }
 
     @Override
     public void setErrorEmailInvalid() {
-        mUserEmailEditText.setError(getString(R.string.error_invalid_email));
+        mUserEmailEditText.setError(getString(string.error_invalid_email));
         mUserEmailEditText.requestFocus();
     }
 
     @Override
     public void showRequestSuccessful() {
-        Toaster.showLong(getApplicationContext(), R.string.reset_successful_reset);
+        Toaster.showLong(getApplicationContext(), string.reset_successful_reset);
     }
 
     @Override
     public void initView() {
-        setContentView(R.layout.activity_reset_password);
-        setTitle(R.string.reset_password_activity_title);
+        setContentView(layout.activity_reset_password);
+        setTitle(string.reset_password_activity_title);
 
         unbinder = ButterKnife.bind(this);
     }
@@ -96,7 +98,7 @@ public class ResetPasswordActivity extends
     @Override
     public void startLoginActivity() {
 
-        Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+        Toaster.showLong(getApplicationContext(), string.error_user_login_not_valid);
         PreferenceUtils.clearUserCredentials(getApplicationContext());
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -106,22 +108,22 @@ public class ResetPasswordActivity extends
 
     @Override
     public void showServiceUnavailable() {
-        Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+        Toaster.showLong(getApplicationContext(), string.error_service_not_available);
     }
 
     @Override
     public void showServiceTemporaryUnavailable() {
-        Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
+        Toaster.showLong(getApplicationContext(), string.error_server_temporary_unavailable);
     }
 
     @Override
     public void showUnknownErrorOccurred() {
-        Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+        Toaster.showLong(getApplicationContext(), string.error_unknown);
     }
 
     @Override
     public void showUserForbidden() {
-        Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+        Toaster.showLong(getApplicationContext(), string.error_user_login_not_valid);
     }
 
     @Override
@@ -131,7 +133,7 @@ public class ResetPasswordActivity extends
 
     @Override
     public void showRetryLaterNotification() {
-        Toaster.showLong(getApplicationContext(), R.string.error_service_retry_later);
+        Toaster.showLong(getApplicationContext(), string.error_service_retry_later);
     }
 
     @Override

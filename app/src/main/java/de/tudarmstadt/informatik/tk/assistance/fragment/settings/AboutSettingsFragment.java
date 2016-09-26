@@ -3,10 +3,12 @@ package de.tudarmstadt.informatik.tk.assistance.fragment.settings;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
-import android.support.v4.app.ShareCompat;
+import android.support.v4.app.ShareCompat.IntentBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -16,7 +18,12 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import de.tudarmstadt.informatik.tk.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.assistance.Constants;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.color;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
+import de.tudarmstadt.informatik.tk.assistance.R.style;
+import de.tudarmstadt.informatik.tk.assistance.R.xml;
 import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
@@ -32,10 +39,10 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
     private Toolbar mParentToolbar;
 
-    private static Preference.OnPreferenceClickListener aboutClickHandler;
-    private static Preference.OnPreferenceClickListener legalClickHandler;
-    private static Preference.OnPreferenceClickListener feedbackClickHandler;
-    private static Preference.OnPreferenceClickListener buildNumberClickHandler;
+    private static OnPreferenceClickListener aboutClickHandler;
+    private static OnPreferenceClickListener legalClickHandler;
+    private static OnPreferenceClickListener feedbackClickHandler;
+    private static OnPreferenceClickListener buildNumberClickHandler;
 
     private AlertDialog aboutAppDialog;
     private AlertDialog legalDialog;
@@ -56,10 +63,10 @@ public class AboutSettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.preference_app_about);
+        addPreferencesFromResource(xml.preference_app_about);
 
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
-        mParentToolbar.setTitle(R.string.settings_about_title);
+        mParentToolbar.setTitle(string.settings_about_title);
 
         aboutPref = findPreference("pref_about_app");
         legalPref = findPreference("pref_legal_information");
@@ -143,11 +150,11 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
         if (getActivity() != null && !getActivity().isFinishing()) {
             try {
-                ShareCompat.IntentBuilder.from(getActivity())
+                IntentBuilder.from(getActivity())
                         .setType("message/rfc822")
-                        .addEmailTo(getString(R.string.user_feedback_url))
-                        .setSubject(getString(R.string.user_feedback_subject))
-                        .setText(getString(R.string.user_feedback_body))
+                        .addEmailTo(getString(string.user_feedback_url))
+                        .setSubject(getString(string.user_feedback_subject))
+                        .setText(getString(string.user_feedback_body))
                                 //.setHtmlText(getString(R.string.user_feedback_body));
                         .setChooserTitle("Select an email app")
                         .startChooser();
@@ -170,13 +177,13 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
         if (legalDialog == null) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(
+            Builder builder = new Builder(
                     getActivity(),
-                    R.style.MyAppCompatAlertDialog);
+                    style.MyAppCompatAlertDialog);
 
-            builder.setTitle(getString(R.string.settings_legal_title));
-            builder.setMessage(getString(R.string.settings_legal_dialog_message));
-            builder.setPositiveButton(R.string.button_ok, null);
+            builder.setTitle(getString(string.settings_legal_title));
+            builder.setMessage(getString(string.settings_legal_dialog_message));
+            builder.setPositiveButton(string.button_ok, null);
 
             legalDialog = builder.create();
         }
@@ -185,7 +192,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
             legalDialog.show();
 
             legalDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(getActivity(), R.color.myAccentColor));
+                    .setTextColor(ContextCompat.getColor(getActivity(), color.myAccentColor));
         }
     }
 
@@ -200,7 +207,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
         boolean isDeveloper = PreferenceUtils.isUserDeveloper(getActivity());
 
         if (isDeveloper) {
-            Toaster.showShort(getActivity(), R.string.settings_build_press_already_developer);
+            Toaster.showShort(getActivity(), string.settings_build_press_already_developer);
             return true;
         }
 
@@ -210,7 +217,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
             Log.d(TAG, "You are now a developer.");
 
-            Toaster.showLong(getActivity(), R.string.settings_build_press_now_you_developer);
+            Toaster.showLong(getActivity(), string.settings_build_press_now_you_developer);
             PreferenceUtils.setDeveloperStatus(getActivity(), true);
 
             return true;
@@ -238,23 +245,23 @@ public class AboutSettingsFragment extends PreferenceFragment {
         if (aboutAppDialog == null) {
 
             LayoutInflater inflater = getActivity().getLayoutInflater();
-            View dialogView = inflater.inflate(R.layout.dialog_about_app, null);
+            View dialogView = inflater.inflate(layout.dialog_about_app, null);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.MyAppCompatAlertDialog);
+            Builder builder = new Builder(getActivity(), style.MyAppCompatAlertDialog);
 
-            builder.setTitle(getString(R.string.app_name) + " v" + BuildConfig.VERSION_NAME);
+            builder.setTitle(getString(string.app_name) + " v" + BuildConfig.VERSION_NAME);
             builder.setView(dialogView);
-            builder.setPositiveButton(R.string.button_ok, null);
+            builder.setPositiveButton(string.button_ok, null);
 
             // DEVELOPERS
-            TextView devEmail1 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_developer_email_1);
+            TextView devEmail1 = ButterKnife.findById(dialogView, id.settings_about_dialog_developer_email_1);
             devEmail1.setMovementMethod(LinkMovementMethod.getInstance());
 
-            TextView devWebsite1 = ButterKnife.findById(dialogView, R.id.settings_about_dialog_developer_website_1);
+            TextView devWebsite1 = ButterKnife.findById(dialogView, id.settings_about_dialog_developer_website_1);
             devWebsite1.setMovementMethod(LinkMovementMethod.getInstance());
 
             // FOOTER
-            TextView footer = ButterKnife.findById(dialogView, R.id.settings_about_dialog_tk_lab_footer);
+            TextView footer = ButterKnife.findById(dialogView, id.settings_about_dialog_tk_lab_footer);
             footer.setMovementMethod(LinkMovementMethod.getInstance());
 
             aboutAppDialog = builder.create();
@@ -264,7 +271,7 @@ public class AboutSettingsFragment extends PreferenceFragment {
             aboutAppDialog.show();
 
             aboutAppDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(getActivity(), R.color.myAccentColor));
+                    .setTextColor(ContextCompat.getColor(getActivity(), color.myAccentColor));
         }
     }
 }

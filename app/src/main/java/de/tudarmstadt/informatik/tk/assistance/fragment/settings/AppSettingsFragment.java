@@ -7,7 +7,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
+import de.tudarmstadt.informatik.tk.assistance.R.xml;
 import de.tudarmstadt.informatik.tk.assistance.activity.ModuleRunningSensorsActivity;
 import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
@@ -22,26 +23,23 @@ public class AppSettingsFragment extends PreferenceFragment {
 
     private Toolbar mParentToolbar;
 
-    public AppSettingsFragment() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.preference_application);
+        addPreferencesFromResource(xml.preference_application);
 
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
 
         if (mParentToolbar != null) {
-            mParentToolbar.setTitle(R.string.settings_header_application_title);
+            mParentToolbar.setTitle(string.settings_header_application_title);
         }
     }
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
 
-        if (preference.getKey().equals("pref_module_types_permissions")) {
+        if ("pref_module_types_permissions".equals(preference.getKey())) {
 
             Log.d(TAG, "User clicked launch module types permission list view");
 

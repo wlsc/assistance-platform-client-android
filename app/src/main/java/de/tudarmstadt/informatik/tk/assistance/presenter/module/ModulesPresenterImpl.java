@@ -24,7 +24,6 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ActivatedMod
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ModuleCapabilityResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ToggleModuleRequestDto;
-import de.tudarmstadt.informatik.tk.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.PreferenceProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SensorProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.ConverterUtils;
@@ -128,7 +127,7 @@ public class ModulesPresenterImpl extends
     public void processAvailableModules(List<ModuleResponseDto> availableModulesResponse,
                                         Set<String> activeModules) {
 
-        List<DbModule> convertedModules = new ArrayList<>();
+        List<DbModule> convertedModules = new ArrayList<>(availableModulesResponse.size());
 
         for (ModuleResponseDto response : availableModulesResponse) {
             convertedModules.add(ConverterUtils.convertModule(response));
@@ -571,7 +570,7 @@ public class ModulesPresenterImpl extends
         String userToken = PreferenceProvider.getInstance(getContext()).getUserToken();
         List<DbModule> allActiveModules = controller.getAllActiveModules(userToken);
         List<DbModule> displayedModules = view.getDisplayedModules();
-        List<DbModule> newDisplayedList = new ArrayList<>();
+        List<DbModule> newDisplayedList = new ArrayList<>(displayedModules.size());
 
         for (DbModule displayedModule : displayedModules) {
             for (DbModule activeModule : allActiveModules) {
@@ -623,7 +622,7 @@ public class ModulesPresenterImpl extends
             cap.setRequired(true);
         }
 
-        List<DbModuleCapability> moduleCaps = new ArrayList<>();
+        List<DbModuleCapability> moduleCaps = new ArrayList<>(reqCap.size() + optCap.size());
         moduleCaps.addAll(reqCap);
         moduleCaps.addAll(optCap);
 

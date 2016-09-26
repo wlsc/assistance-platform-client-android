@@ -274,7 +274,7 @@ public class MainPresenterImpl extends
     }
 
     @Override
-    public void presentRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void presentRequestPermissionResult(int requestCode, String[] permissions, int... grantResults) {
 
         switch (requestCode) {
             case Constants.PERM_MODULE_ACTIVATED_REQUEST:
@@ -292,7 +292,7 @@ public class MainPresenterImpl extends
                 }
 
                 // ask user about permissions again
-                if (declinedPermissions.size() > 0) {
+                if (!declinedPermissions.isEmpty()) {
 
                     view.showPermissionsAreCrucialDialog(declinedPermissions);
 

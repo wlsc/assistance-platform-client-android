@@ -1,12 +1,14 @@
 package de.tudarmstadt.informatik.tk.assistance.fragment.settings;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v7.widget.Toolbar;
 
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
+import de.tudarmstadt.informatik.tk.assistance.R.xml;
 import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbDevice;
@@ -22,23 +24,20 @@ import rx.Subscriber;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 29.06.2015
  */
-public class DeviceSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class DeviceSettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
 
     private static final String TAG = DeviceSettingsFragment.class.getSimpleName();
 
     private Toolbar mParentToolbar;
 
-    public DeviceSettingsFragment() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.preference_user_device_info);
+        addPreferencesFromResource(xml.preference_user_device_info);
 
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
-        mParentToolbar.setTitle(R.string.settings_header_user_device_title);
+        mParentToolbar.setTitle(string.settings_header_user_device_title);
 
 //        if (!AppUtils.isDebug(getActivity())) {
 //
@@ -91,7 +90,7 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
         // update user defined device title
-        if (key.equalsIgnoreCase("pref_device_set_title")) {
+        if ("pref_device_set_title".equalsIgnoreCase(key)) {
 
             final String userToken = PreferenceUtils.getUserToken(getActivity());
             final long currentDeviceId = PreferenceUtils.getCurrentDeviceId(getActivity());
@@ -156,13 +155,13 @@ public class DeviceSettingsFragment extends PreferenceFragment implements Shared
 
         @Override
         public void onError(Throwable e) {
-            Toaster.showLong(getActivity(), R.string.error_service_not_available);
+            Toaster.showLong(getActivity(), string.error_service_not_available);
         }
 
         @Override
         public void onNext(Void aVoid) {
             updateDevice(currentDeviceId, deviceName);
-            Toaster.showLong(getActivity(), R.string.changes_were_saved);
+            Toaster.showLong(getActivity(), string.changes_were_saved);
         }
     }
 }

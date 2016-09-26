@@ -11,6 +11,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.error.ApiHttpErrorC
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.HarvesterServiceProvider;
 import de.tudarmstadt.informatik.tk.assistance.view.CommonView;
 import retrofit.RetrofitError;
+import retrofit.RetrofitError.Kind;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 
@@ -58,7 +59,7 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
     @Override
     public void doDefaultErrorProcessing(RetrofitError error) {
 
-        if (error.getKind() == RetrofitError.Kind.NETWORK) {
+        if (error.getKind() == Kind.NETWORK) {
             view.showServiceUnavailable();
             return;
         }

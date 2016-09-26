@@ -1,7 +1,8 @@
 package de.tudarmstadt.informatik.tk.assistance.adapter;
 
 import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.R.plurals;
 import de.tudarmstadt.informatik.tk.assistance.event.module.ModuleAllowedPermissionStateChangedEvent;
 import de.tudarmstadt.informatik.tk.assistance.model.item.ModuleRunningSensorTypeItem;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
@@ -24,7 +27,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 09.01.2016
  */
-public class ModuleRunningSensorsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ModuleRunningSensorsAdapter extends Adapter<ViewHolder> {
 
     private static final String TAG = "ModuleRunningSensorsAdapter";
 
@@ -40,17 +43,17 @@ public class ModuleRunningSensorsAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_module_allowed_capability, parent, false);
+                .inflate(layout.item_module_allowed_capability, parent, false);
         ModuleTypesViewHolder holder = new ModuleTypesViewHolder(view);
 
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(ViewHolder viewHolder, int position) {
 
         if (viewHolder instanceof ModuleTypesViewHolder) {
 
@@ -91,7 +94,7 @@ public class ModuleRunningSensorsAdapter extends RecyclerView.Adapter<RecyclerVi
                 holder.requiredByModules.setText(holder
                         .requiredByModules
                         .getResources()
-                        .getQuantityString(R.plurals.settings_module_allowed_capability_required_by_modules,
+                        .getQuantityString(plurals.settings_module_allowed_capability_required_by_modules,
                                 item.getRequiredByModules(), item.getRequiredByModules()));
             }
         }
@@ -134,15 +137,15 @@ public class ModuleRunningSensorsAdapter extends RecyclerView.Adapter<RecyclerVi
     /**
      * View holder
      */
-    protected static class ModuleTypesViewHolder extends RecyclerView.ViewHolder {
+    protected static class ModuleTypesViewHolder extends ViewHolder {
 
-        @BindView(R.id.title)
+        @BindView(id.title)
         protected AppCompatTextView title;
 
-        @BindView(R.id.switcher)
+        @BindView(id.switcher)
         protected SwitchCompat switcher;
 
-        @BindView(R.id.requiredBy)
+        @BindView(id.requiredBy)
         protected AppCompatTextView requiredByModules;
 
         public ModuleTypesViewHolder(View view) {

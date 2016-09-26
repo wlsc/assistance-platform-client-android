@@ -5,11 +5,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutCompat;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,11 +21,13 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.common.collect.Lists;
 import com.squareup.picasso.Picasso;
@@ -34,7 +39,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.drawable;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
 import de.tudarmstadt.informatik.tk.assistance.event.ShowGoogleMapEvent;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.ContentFactory;
 import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.ClientFeedbackDto;
@@ -58,8 +66,8 @@ import de.tudarmstadt.informatik.tk.assistance.util.UiUtils;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 24.10.2015
  */
-public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
-        OnMapReadyCallback, GoogleMap.OnMapClickListener {
+public class NewsAdapter extends Adapter<ViewHolder> implements
+        OnMapReadyCallback, OnMapClickListener {
 
     private static final String TAG = "NewsAdapter";
 
@@ -120,14 +128,14 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view;
 
         if (viewType == EMPTY_VIEW_TYPE) {
             // list is empty
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_empty_list_view, parent, false);
+                    .inflate(layout.item_empty_list_view, parent, false);
             EmptyViewHolder emptyView = new EmptyViewHolder(view);
 
             return emptyView;
@@ -135,14 +143,14 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
         // list has items
         view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_news_card, parent, false);
+                .inflate(layout.item_news_card, parent, false);
         NewsViewHolder newsHolder = new NewsViewHolder(view);
 
         return newsHolder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
 
         if (holder instanceof NewsViewHolder) {
 
@@ -217,8 +225,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             int size = (int) Math.ceil(Math.sqrt(ICON_SETTINGS_MAX_WIDTH * ICON_SETTINGS_MAX_HEIGHT));
 
             Picasso.with(context)
-                    .load(R.drawable.ic_more_vert_black_48dp)
-                    .placeholder(R.drawable.no_image)
+                    .load(drawable.ic_more_vert_black_48dp)
+                    .placeholder(drawable.no_image)
                     .transform(new ScaledDownTransformation(
                             ICON_SETTINGS_MAX_WIDTH,
                             ICON_SETTINGS_MAX_HEIGHT))
@@ -229,10 +237,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             viewHolder.cardSettings.setOnClickListener(v -> {
                 Log.d(TAG, "User selected more for " + newsCard.getModuleId() + " module");
 
-                Toaster.showShort(v.getContext(), R.string.feature_is_under_construction);
+                Toaster.showShort(v.getContext(), string.feature_is_under_construction);
             });
 
-            ViewGroup.LayoutParams currentLayoutParams = viewHolder.itemView.getLayoutParams();
+            LayoutParams currentLayoutParams = viewHolder.itemView.getLayoutParams();
 
             FeedbackItemType feedbackType = FeedbackItemType.getEnum(cardContent.getType());
 
@@ -294,7 +302,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 case IMAGE:
                     ImageDto imageDto = ContentFactory.getImage(cardContent);
 
-                    ImageView imageView = uiUtils.getImage(imageDto, (View.OnClickListener) v -> {
+                    ImageView imageView = uiUtils.getImage(imageDto, (OnClickListener) v -> {
 
                         if (EventBus.getDefault().hasSubscriberForEvent(OpenBrowserUrlEvent.class)) {
                             EventBus.getDefault().post(new OpenBrowserUrlEvent(imageDto.getTarget()));
@@ -425,7 +433,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         // first clear it
         googleMap.clear();
 
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        Builder builder = new Builder();
 
         for (LatLng point : mapPoints) {
             MarkerOptions marker = new MarkerOptions().position(point);
@@ -450,7 +458,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     /**
      * An empty view holder if no items available
      */
-    protected static class EmptyViewHolder extends RecyclerView.ViewHolder {
+    protected static class EmptyViewHolder extends ViewHolder {
         public EmptyViewHolder(View view) {
             super(view);
         }
@@ -459,15 +467,15 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     /**
      * View holder for available module
      */
-    protected static class NewsViewHolder extends RecyclerView.ViewHolder {
+    protected static class NewsViewHolder extends ViewHolder {
 
-        @BindView(R.id.title)
+        @BindView(id.title)
         protected AppCompatTextView title;
 
-        @BindView(R.id.cardSettings)
+        @BindView(id.cardSettings)
         protected AppCompatImageView cardSettings;
 
-        @BindView(R.id.newsContainer)
+        @BindView(id.newsContainer)
         protected LinearLayoutCompat mContainer;
 
         public NewsViewHolder(View view) {

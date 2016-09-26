@@ -10,7 +10,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
 import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.GcmUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
@@ -34,7 +35,7 @@ public class NoPlayServicesActivity extends BaseActivity {
 
     private Unbinder unbinder;
 
-    @BindView(R.id.fullscreen_content_controls)
+    @BindView(id.fullscreen_content_controls)
     protected LinearLayoutCompat mControlsView;
 
     private final Runnable mShowPart2Runnable = new Runnable() {
@@ -58,7 +59,7 @@ public class NoPlayServicesActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_no_play_services);
+        setContentView(layout.activity_no_play_services);
         unbinder = ButterKnife.bind(this);
 
         mVisible = true;
@@ -76,12 +77,12 @@ public class NoPlayServicesActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @OnClick(R.id.fullscreen_content)
+    @OnClick(id.fullscreen_content)
     void onContentView() {
         toggleView();
     }
 
-    @OnClick(R.id.check_button)
+    @OnClick(id.check_button)
     void onCheckButtonClick() {
 
         if (GcmUtils.isPlayServicesInstalled(this)) {

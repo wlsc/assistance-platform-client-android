@@ -18,7 +18,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
 import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.assistance.adapter.SensorsListAdapter;
 import de.tudarmstadt.informatik.tk.assistance.model.item.SensorsListItem;
@@ -36,24 +38,21 @@ public class SensorListSettingsFragment extends Fragment {
 
     private Unbinder unbinder;
 
-    @BindView(R.id.sensor_list)
+    @BindView(id.sensor_list)
     protected RecyclerView recyclerView;
-
-    public SensorListSettingsFragment() {
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
-        mParentToolbar.setTitle(R.string.settings_list_of_sensors_title);
+        mParentToolbar.setTitle(string.settings_list_of_sensors_title);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_preference_sensors_list, container, false);
+        View view = inflater.inflate(layout.fragment_preference_sensors_list, container, false);
 
         unbinder = ButterKnife.bind(this, view);
 
@@ -87,10 +86,9 @@ public class SensorListSettingsFragment extends Fragment {
 
         boolean isDeveloperEnabled = PreferenceUtils.getPreference(getActivity(), "pref_be_developer", false);
 
-        List<SensorsListItem> sensorsListItems = new ArrayList<>();
         SensorManager manager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         List<Sensor> sensors = manager.getSensorList(Sensor.TYPE_ALL);
-
+        List<SensorsListItem> sensorsListItems = new ArrayList<>(sensors.size());
 
         for (Sensor sensor : sensors) {
             SensorsListItem item = new SensorsListItem(sensor.getName());

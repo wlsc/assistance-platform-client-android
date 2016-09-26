@@ -68,12 +68,11 @@ public class LoginPresenterImpl extends
             view.showErrorEmailRequired();
             view.setLoginButtonEnabled(true);
             return;
-        } else {
-            if (!ValidationUtils.isValidEmail(email)) {
-                view.showErrorEmailInvalid();
-                view.setLoginButtonEnabled(true);
-                return;
-            }
+        }
+        if (!ValidationUtils.isValidEmail(email)) {
+            view.showErrorEmailInvalid();
+            view.setLoginButtonEnabled(true);
+            return;
         }
 
         view.showProgress(true);

@@ -8,7 +8,7 @@ public class PermissionGrantedEvent {
 
     private String[] permissions;
 
-    public PermissionGrantedEvent(String[] permissions) {
+    public PermissionGrantedEvent(String... permissions) {
         this.permissions = permissions;
     }
 
@@ -16,7 +16,7 @@ public class PermissionGrantedEvent {
         return this.permissions;
     }
 
-    public void setPermissions(String[] permissions) {
+    public void setPermissions(String... permissions) {
         this.permissions = permissions;
     }
 }

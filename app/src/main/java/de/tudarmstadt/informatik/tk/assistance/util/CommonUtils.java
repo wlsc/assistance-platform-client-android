@@ -2,15 +2,18 @@ package de.tudarmstadt.informatik.tk.assistance.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Environment;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
 import java.io.File;
@@ -82,7 +85,7 @@ public final class CommonUtils {
         Target target = new Target() {
 
             @Override
-            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            public void onBitmapLoaded(final Bitmap bitmap, LoadedFrom from) {
 
                 new Thread(() -> {
 
@@ -107,7 +110,7 @@ public final class CommonUtils {
 
                         oStream = new FileOutputStream(file);
 
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, oStream);
+                        bitmap.compress(CompressFormat.JPEG, 80, oStream);
 
                     } catch (Exception e) {
                         Log.e(TAG, "Cannot save image to internal file storage! Error: " + e.getMessage());
@@ -154,7 +157,7 @@ public final class CommonUtils {
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                 | View.SYSTEM_UI_FLAG_FULLSCREEN; // hide status bar
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
             visibility |= View.SYSTEM_UI_FLAG_IMMERSIVE;
         }
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.SwitchCompat;
@@ -17,7 +18,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.color;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
+import de.tudarmstadt.informatik.tk.assistance.R.style;
 import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.presenter.register.RegisterPresenter;
@@ -41,22 +46,22 @@ public class RegisterActivity extends
 
     private Unbinder unbinder;
 
-    @BindView(R.id.register_email)
+    @BindView(id.register_email)
     protected AppCompatEditText mUserEmail;
 
-    @BindView(R.id.register_password1)
+    @BindView(id.register_password1)
     protected AppCompatEditText mUserPassword1;
 
-    @BindView(R.id.register_password2)
+    @BindView(id.register_password2)
     protected AppCompatEditText mUserPassword2;
 
-    @BindView(R.id.disclaimer)
+    @BindView(id.disclaimer)
     protected SwitchCompat disclaimerSwitch;
 
-    @BindView(R.id.sign_up_button)
+    @BindView(id.sign_up_button)
     protected AppCompatButton signUpButton;
 
-    @BindView(R.id.disclaimerText)
+    @BindView(id.disclaimerText)
     protected TextView disclaimerText;
 
     private RegisterPresenter presenter;
@@ -74,7 +79,7 @@ public class RegisterActivity extends
     /**
      * Registration button
      */
-    @OnClick(R.id.sign_up_button)
+    @OnClick(id.sign_up_button)
     protected void onUserSignUp() {
 
         Log.d(TAG, "Signup button pressed");
@@ -86,18 +91,18 @@ public class RegisterActivity extends
                 disclaimerSwitch.isChecked());
     }
 
-    @OnClick(R.id.disclaimerText)
+    @OnClick(id.disclaimerText)
     protected void onDisclaimerClick() {
 
         Log.d(TAG, "Terms of Service link pressed");
 
         if (legalDialog == null) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAppCompatAlertDialog);
+            Builder builder = new Builder(this, style.MyAppCompatAlertDialog);
 
-            builder.setTitle(getString(R.string.settings_legal_title));
-            builder.setMessage(getString(R.string.settings_legal_dialog_message));
-            builder.setPositiveButton(R.string.button_ok, null);
+            builder.setTitle(getString(string.settings_legal_title));
+            builder.setMessage(getString(string.settings_legal_dialog_message));
+            builder.setPositiveButton(string.button_ok, null);
 
             legalDialog = builder.create();
         }
@@ -106,7 +111,7 @@ public class RegisterActivity extends
             legalDialog.show();
 
             legalDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+                    .setTextColor(ContextCompat.getColor(this, color.myAccentColor));
         }
     }
 
@@ -121,7 +126,7 @@ public class RegisterActivity extends
 
     @Override
     public void showErrorEmailAreadyExists() {
-        Toaster.showLong(getApplicationContext(), R.string.error_email_exists);
+        Toaster.showLong(getApplicationContext(), string.error_email_exists);
     }
 
     @Override
@@ -138,38 +143,38 @@ public class RegisterActivity extends
 
     @Override
     public void setErrorEmailEmpty() {
-        mUserEmail.setError(getString(R.string.error_field_required));
+        mUserEmail.setError(getString(string.error_field_required));
         mUserEmail.requestFocus();
     }
 
     @Override
     public void setErrorPassword1Empty() {
-        mUserPassword1.setError(getString(R.string.error_field_required));
+        mUserPassword1.setError(getString(string.error_field_required));
         mUserPassword1.requestFocus();
     }
 
     @Override
     public void setErrorPassword2Empty() {
-        mUserPassword2.setError(getString(R.string.error_field_required));
+        mUserPassword2.setError(getString(string.error_field_required));
         mUserPassword2.requestFocus();
     }
 
     @Override
     public void setErrorEmailInvalid() {
-        mUserEmail.setError(getString(R.string.error_invalid_email));
+        mUserEmail.setError(getString(string.error_invalid_email));
         mUserEmail.requestFocus();
     }
 
     @Override
     public void setErrorPasswordsNotSame() {
-        mUserPassword1.setError(getString(R.string.error_not_same_passwords));
-        mUserPassword2.setError(getString(R.string.error_not_same_passwords));
+        mUserPassword1.setError(getString(string.error_not_same_passwords));
+        mUserPassword2.setError(getString(string.error_not_same_passwords));
     }
 
     @Override
     public void setErrorPasswordLengthInvalid() {
-        mUserPassword1.setError(getString(R.string.error_invalid_password));
-        mUserPassword2.setError(getString(R.string.error_invalid_password));
+        mUserPassword1.setError(getString(string.error_invalid_password));
+        mUserPassword2.setError(getString(string.error_invalid_password));
         mUserPassword1.requestFocus();
     }
 
@@ -180,8 +185,8 @@ public class RegisterActivity extends
 
     @Override
     public void initView() {
-        setContentView(R.layout.activity_register);
-        setTitle(R.string.register_activity_title);
+        setContentView(layout.activity_register);
+        setTitle(string.register_activity_title);
 
         unbinder = ButterKnife.bind(this);
 
@@ -207,22 +212,22 @@ public class RegisterActivity extends
 
     @Override
     public void showServiceUnavailable() {
-        Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+        Toaster.showLong(getApplicationContext(), string.error_service_not_available);
     }
 
     @Override
     public void showServiceTemporaryUnavailable() {
-        Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
+        Toaster.showLong(getApplicationContext(), string.error_server_temporary_unavailable);
     }
 
     @Override
     public void showUnknownErrorOccurred() {
-        Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+        Toaster.showLong(getApplicationContext(), string.error_unknown);
     }
 
     @Override
     public void showUserForbidden() {
-        Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+        Toaster.showLong(getApplicationContext(), string.error_user_login_not_valid);
     }
 
     @Override
@@ -232,7 +237,7 @@ public class RegisterActivity extends
 
     @Override
     public void showRetryLaterNotification() {
-        Toaster.showLong(getApplicationContext(), R.string.error_service_retry_later);
+        Toaster.showLong(getApplicationContext(), string.error_service_retry_later);
     }
 
     @Override

@@ -4,16 +4,19 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.ShowcaseView.Builder;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -31,6 +34,10 @@ import butterknife.Unbinder;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.Constants;
 import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
+import de.tudarmstadt.informatik.tk.assistance.R.style;
 import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.assistance.adapter.NewsAdapter;
 import de.tudarmstadt.informatik.tk.assistance.event.ShowGoogleMapEvent;
@@ -74,13 +81,13 @@ public class MainActivity extends
 
     private Unbinder unbinder;
 
-    @BindView(R.id.toolbar)
+    @BindView(id.toolbar)
     protected Toolbar mToolbar;
 
-    @BindView(R.id.assistance_list)
+    @BindView(id.assistance_list)
     protected RecyclerView mRecyclerView;
 
-    @BindView(R.id.show_available_modules)
+    @BindView(id.show_available_modules)
     protected FloatingActionButton showAvailableModules;
 
     private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
@@ -102,7 +109,7 @@ public class MainActivity extends
     @Override
     public void initView() {
 
-        setContentView(R.layout.activity_main);
+        setContentView(layout.activity_main);
 
         unbinder = ButterKnife.bind(this);
 
@@ -115,7 +122,7 @@ public class MainActivity extends
             // fix for Samsung Android 4.2.2 AppCompat ClassNotFoundException
         }
 
-        setTitle(R.string.main_activity_title);
+        setTitle(string.main_activity_title);
 
         showNoNews();
     }
@@ -123,8 +130,8 @@ public class MainActivity extends
     @Override
     public void showNoNews() {
 
-        ButterKnife.findById(this, R.id.assistance_list).setVisibility(View.GONE);
-        ButterKnife.findById(this, R.id.noData).setVisibility(View.VISIBLE);
+        ButterKnife.findById(this, id.assistance_list).setVisibility(View.GONE);
+        ButterKnife.findById(this, id.noData).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -133,7 +140,7 @@ public class MainActivity extends
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new NewsAdapter(assistanceNews, this));
         mRecyclerView.setVisibility(View.VISIBLE);
-        ButterKnife.findById(this, R.id.noData).setVisibility(View.GONE);
+        ButterKnife.findById(this, id.noData).setVisibility(View.GONE);
     }
 
     @Override
@@ -169,8 +176,8 @@ public class MainActivity extends
 
     @Override
     public void showPermissionsAreCrucialDialog(Set<String> declinedPermissions) {
-        Toaster.showLong(getApplicationContext(), R.string.permission_is_crucial);
-        Toaster.showLong(getApplicationContext(), R.string.error_modules_were_disabled);
+        Toaster.showLong(getApplicationContext(), string.permission_is_crucial);
+        Toaster.showLong(getApplicationContext(), string.error_modules_were_disabled);
     }
 
     @Override
@@ -184,12 +191,12 @@ public class MainActivity extends
             return;
         }
 
-        ShowcaseView.Builder showCaseBuilder = new ShowcaseView.Builder(this);
+        Builder showCaseBuilder = new Builder(this);
 
         showCaseBuilder.setTarget(new ViewTarget(showAvailableModules));
-        showCaseBuilder.setContentTitle(R.string.main_activity_tutorial_title);
-        showCaseBuilder.setContentText(R.string.main_activity_tutorial_text);
-        showCaseBuilder.setStyle(R.style.AppTheme);
+        showCaseBuilder.setContentTitle(string.main_activity_tutorial_title);
+        showCaseBuilder.setContentText(string.main_activity_tutorial_text);
+        showCaseBuilder.setStyle(style.AppTheme);
         showCaseBuilder.withNewStyleShowcase();
         showCaseBuilder.singleShot(10);
 
@@ -237,7 +244,7 @@ public class MainActivity extends
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.menu_settings:
+            case id.menu_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 ActivityCompat.startActivityForResult(this, intent, Constants.INTENT_SETTINGS_LOGOUT_RESULT, null);
                 return true;
@@ -258,7 +265,7 @@ public class MainActivity extends
             presenter.requestNewNews();
             SensorProvider.getInstance(this).synchronizeRunningSensorsWithDb();
         } else {
-            RecyclerView.Adapter adapter = mRecyclerView.getAdapter();
+            Adapter adapter = mRecyclerView.getAdapter();
             if (adapter != null) {
                 ((NewsAdapter) adapter).swapData(Collections.emptyList());
                 showNoNews();
@@ -297,7 +304,7 @@ public class MainActivity extends
         presenter.handleRequestCode(requestCode);
     }
 
-    @OnClick(R.id.show_available_modules)
+    @OnClick(id.show_available_modules)
     protected void onShowAvailableModules() {
 
         Intent intent = new Intent(this, ModulesActivity.class);
@@ -321,22 +328,22 @@ public class MainActivity extends
 
     @Override
     public void showServiceUnavailable() {
-        Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+        Toaster.showLong(getApplicationContext(), string.error_service_not_available);
     }
 
     @Override
     public void showServiceTemporaryUnavailable() {
-        Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
+        Toaster.showLong(getApplicationContext(), string.error_server_temporary_unavailable);
     }
 
     @Override
     public void showUnknownErrorOccurred() {
-        Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+        Toaster.showLong(getApplicationContext(), string.error_unknown);
     }
 
     @Override
     public void showUserForbidden() {
-        Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+        Toaster.showLong(getApplicationContext(), string.error_user_login_not_valid);
     }
 
     @Override
@@ -346,7 +353,7 @@ public class MainActivity extends
 
     @Override
     public void showRetryLaterNotification() {
-        Toaster.showLong(getApplicationContext(), R.string.error_service_retry_later);
+        Toaster.showLong(getApplicationContext(), string.error_service_retry_later);
     }
 
     @Override
@@ -378,7 +385,7 @@ public class MainActivity extends
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         presenter.presentRequestPermissionResult(requestCode, permissions, grantResults);
     }
 

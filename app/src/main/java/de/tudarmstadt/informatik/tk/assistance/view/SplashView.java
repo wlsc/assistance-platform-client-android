@@ -6,7 +6,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -23,7 +23,7 @@ public class SplashView extends LinearLayout {
         setDrawingCacheEnabled(false);
         setGravity(Gravity.CENTER);
 
-        LayoutInflater.from(context).inflate(R.layout.splashscreen, this, true);
+        LayoutInflater.from(context).inflate(layout.splashscreen, this, true);
     }
 
     @Override

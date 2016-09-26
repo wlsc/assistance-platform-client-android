@@ -7,7 +7,7 @@ import android.support.multidex.MultiDex;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.xml;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.AppUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.LogWrapper;
@@ -86,7 +86,7 @@ public class App extends Application {
         analytics = GoogleAnalytics.getInstance(this);
 
         // load config from xml file
-        tracker = analytics.newTracker(R.xml.analytics_global_config);
+        tracker = analytics.newTracker(xml.analytics_global_config);
 
     }
 

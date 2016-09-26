@@ -3,16 +3,19 @@ package de.tudarmstadt.informatik.tk.assistance.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -20,6 +23,7 @@ import android.view.View;
 
 import com.github.kayvannj.permission_utils.Func;
 import com.github.kayvannj.permission_utils.PermissionUtil;
+import com.github.kayvannj.permission_utils.PermissionUtil.PermissionRequestObject;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -30,7 +34,12 @@ import java.util.Set;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import de.tudarmstadt.informatik.tk.assistance.Constants;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.color;
+import de.tudarmstadt.informatik.tk.assistance.R.drawable;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
+import de.tudarmstadt.informatik.tk.assistance.R.style;
 import de.tudarmstadt.informatik.tk.assistance.activity.base.BaseActivity;
 import de.tudarmstadt.informatik.tk.assistance.adapter.ModulesAdapter;
 import de.tudarmstadt.informatik.tk.assistance.adapter.PermissionAdapter;
@@ -103,7 +112,7 @@ public class ModulesActivity extends
     private Subscription subModuleActivation;
     private Subscription subModuleDeactivation;
 
-    private PermissionUtil.PermissionRequestObject mRequestObject;
+    private PermissionRequestObject mRequestObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -386,12 +395,12 @@ public class ModulesActivity extends
 
     @Override
     public void showModuleInstallationFailed() {
-        Toaster.showLong(getApplicationContext(), R.string.module_installation_unsuccessful);
+        Toaster.showLong(getApplicationContext(), string.module_installation_unsuccessful);
     }
 
     @Override
     public void showModuleInstallationSuccessful() {
-        Toaster.showLong(getApplicationContext(), R.string.module_installation_successful);
+        Toaster.showLong(getApplicationContext(), string.module_installation_successful);
     }
 
     @Override
@@ -399,9 +408,9 @@ public class ModulesActivity extends
 
         Snackbar
                 .make(findViewById(android.R.id.content),
-                        R.string.main_activity_undo_uninstall,
+                        string.main_activity_undo_uninstall,
                         Snackbar.LENGTH_LONG)
-                .setAction(R.string.main_activity_undo_uninstall_button_title,
+                .setAction(string.main_activity_undo_uninstall_button_title,
                         v -> {
                             Log.d(TAG, "User tapped UNDO uninstall of a module!");
 
@@ -414,7 +423,7 @@ public class ModulesActivity extends
 
     @Override
     public void showModuleUninstallSuccessful() {
-        Toaster.showShort(getApplicationContext(), R.string.module_uninstall_successful);
+        Toaster.showShort(getApplicationContext(), string.module_uninstall_successful);
     }
 
     @Override
@@ -473,7 +482,7 @@ public class ModulesActivity extends
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
@@ -489,9 +498,9 @@ public class ModulesActivity extends
 
         Log.d(TAG, "Init view...");
 
-        setContentView(R.layout.activity_module_list);
+        setContentView(layout.activity_module_list);
 
-        mToolbar = ButterKnife.findById(this, R.id.toolbar);
+        mToolbar = ButterKnife.findById(this, id.toolbar);
 
         try {
             setSupportActionBar(mToolbar);
@@ -501,13 +510,13 @@ public class ModulesActivity extends
             // fix for Samsung Android 4.2.2 AppCompat ClassNotFoundException
         }
 
-        setTitle(R.string.module_list_activity_title);
+        setTitle(string.module_list_activity_title);
 
-        noData = ButterKnife.findById(this, R.id.noData);
+        noData = ButterKnife.findById(this, id.noData);
 
-        mAvailableModulesRecyclerView = ButterKnife.findById(this, R.id.moduleListRecyclerView);
+        mAvailableModulesRecyclerView = ButterKnife.findById(this, id.moduleListRecyclerView);
         mAvailableModulesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAvailableModulesRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mAvailableModulesRecyclerView.addOnScrollListener(new OnScrollListener() {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -521,7 +530,7 @@ public class ModulesActivity extends
             }
         });
 
-        mSwipeRefreshLayout = ButterKnife.findById(this, R.id.module_list_swipe_refresh_layout);
+        mSwipeRefreshLayout = ButterKnife.findById(this, id.module_list_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -569,32 +578,32 @@ public class ModulesActivity extends
 
     @Override
     public void showServiceUnavailable() {
-        Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+        Toaster.showLong(getApplicationContext(), string.error_service_not_available);
     }
 
     @Override
     public void showServiceTemporaryUnavailable() {
-        Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
+        Toaster.showLong(getApplicationContext(), string.error_server_temporary_unavailable);
     }
 
     @Override
     public void showUnknownErrorOccurred() {
-        Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+        Toaster.showLong(getApplicationContext(), string.error_unknown);
     }
 
     @Override
     public void showUserForbidden() {
-        Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+        Toaster.showLong(getApplicationContext(), string.error_user_login_not_valid);
     }
 
     @Override
     public void showActionProhibited() {
-        Toaster.showLong(getApplicationContext(), R.string.error_that_action_is_prohibited);
+        Toaster.showLong(getApplicationContext(), string.error_that_action_is_prohibited);
     }
 
     @Override
     public void showRetryLaterNotification() {
-        Toaster.showLong(getApplicationContext(), R.string.error_service_retry_later);
+        Toaster.showLong(getApplicationContext(), string.error_service_retry_later);
     }
 
     @Override
@@ -668,7 +677,7 @@ public class ModulesActivity extends
     @Override
     public void setNoModulesView() {
 
-        mAvailableModulesRecyclerView.setAdapter(new ModulesAdapter(Collections.EMPTY_LIST));
+        mAvailableModulesRecyclerView.setAdapter(new ModulesAdapter(Collections.<DbModule>emptyList()));
         mAvailableModulesRecyclerView.setVisibility(View.GONE);
         noData.setVisibility(View.VISIBLE);
         setSwipeRefreshing(false);
@@ -745,28 +754,28 @@ public class ModulesActivity extends
     public void showPermissionDialog(ModuleResponseDto selectedModule) {
 
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_permissions, null);
+        View dialogView = inflater.inflate(layout.dialog_permissions, null);
 
         permissionRequiredRecyclerView = ButterKnife.findById(
                 dialogView,
-                R.id.module_permission_required_list);
+                id.module_permission_required_list);
         permissionRequiredRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         permissionOptionalRecyclerView = ButterKnife.findById(
                 dialogView,
-                R.id.module_permission_optional_list);
+                id.module_permission_optional_list);
         permissionOptionalRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAppCompatAlertDialog);
+        Builder builder = new Builder(this, style.MyAppCompatAlertDialog);
         builder.setView(dialogView);
 
-        builder.setPositiveButton(R.string.button_accept, (dialog, which) -> {
+        builder.setPositiveButton(string.button_accept, (dialog, which) -> {
 
             Log.d(TAG, "User tapped accept button");
             presenter.handleModulePermissions();
         });
 
-        builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
+        builder.setNegativeButton(string.button_cancel, (dialog, which) -> {
 
             Log.d(TAG, "User canceled module install");
             dialog.cancel();
@@ -774,24 +783,24 @@ public class ModulesActivity extends
 
         builder.setOnCancelListener(dialog -> presenter.setSelectedModuleId(""));
 
-        AppCompatTextView title = ButterKnife.findById(dialogView, R.id.module_permission_title);
+        AppCompatTextView title = ButterKnife.findById(dialogView, id.module_permission_title);
         title.setText(selectedModule.getTitle());
 
-        AppCompatImageView imageView = ButterKnife.findById(dialogView, R.id.module_permission_icon);
+        AppCompatImageView imageView = ButterKnife.findById(dialogView, id.module_permission_icon);
 
         Picasso.with(this)
                 .load(selectedModule.getLogo())
-                .placeholder(R.drawable.no_image)
+                .placeholder(drawable.no_image)
                 .transform(new CircleTransformation())
                 .into(imageView);
 
         permissionsEmptyRequired = ButterKnife.findById(
                 dialogView,
-                R.id.module_permissions_required_list_empty);
+                id.module_permissions_required_list_empty);
 
         permissionsEmptyOptional = ButterKnife.findById(
                 dialogView,
-                R.id.module_permissions_optional_list_empty);
+                id.module_permissions_optional_list_empty);
 
         List<ModuleCapabilityResponseDto> requiredSensors = selectedModule.getSensorsRequired();
         List<ModuleCapabilityResponseDto> optionalSensors = selectedModule.getSensorsOptional();
@@ -840,9 +849,9 @@ public class ModulesActivity extends
             alertDialog.show();
 
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+                    .setTextColor(ContextCompat.getColor(this, color.myAccentColor));
             alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+                    .setTextColor(ContextCompat.getColor(this, color.myAccentColor));
         }
     }
 
@@ -863,15 +872,15 @@ public class ModulesActivity extends
     @Override
     public void showUninstallDialog(final ModuleResponseDto selectedModule) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAppCompatAlertDialog);
+        Builder builder = new Builder(this, style.MyAppCompatAlertDialog);
 
-        builder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
+        builder.setPositiveButton(string.button_ok, (dialog, which) -> {
 
             Log.d(TAG, "User tapped UNINSTALL " + selectedModule.getTitle() + " module");
             presenter.presentModuleUninstall(ConverterUtils.convertModule(selectedModule));
         });
 
-        builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
+        builder.setNegativeButton(string.button_cancel, (dialog, which) -> {
 
             Log.d(TAG, "User tapped cancel uninstall procedure");
             presenter.setSelectedModuleId("");
@@ -879,8 +888,8 @@ public class ModulesActivity extends
 
         builder.setOnCancelListener(dialog -> presenter.setSelectedModuleId(""));
 
-        builder.setTitle(getString(R.string.module_uninstall_title, selectedModule.getTitle()));
-        builder.setMessage(R.string.module_uninstall_message);
+        builder.setTitle(getString(string.module_uninstall_title, selectedModule.getTitle()));
+        builder.setMessage(string.module_uninstall_message);
 
         AlertDialog alertDialog = builder.create();
 
@@ -889,16 +898,16 @@ public class ModulesActivity extends
             alertDialog.show();
 
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+                    .setTextColor(ContextCompat.getColor(this, color.myAccentColor));
             alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+                    .setTextColor(ContextCompat.getColor(this, color.myAccentColor));
         }
     }
 
     @Override
     public void showPermissionsAreCrucialDialog(Set<String> declinedPermissions) {
 
-        Toaster.showLong(getApplicationContext(), R.string.permission_is_crucial);
+        Toaster.showLong(getApplicationContext(), string.permission_is_crucial);
 
         presenter.presentModuleInstallationHasError(declinedPermissions);
     }
@@ -907,27 +916,27 @@ public class ModulesActivity extends
     public void showMoreModuleInformationDialog(final ModuleResponseDto selectedModule) {
 
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_module_more_info, null);
+        View dialogView = inflater.inflate(layout.dialog_module_more_info, null);
 
         permissionRequiredRecyclerView = ButterKnife.findById(
                 dialogView,
-                R.id.module_permission_required_list
+                id.module_permission_required_list
         );
         permissionRequiredRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         permissionOptionalRecyclerView = ButterKnife.findById(
                 dialogView,
-                R.id.module_permission_optional_list
+                id.module_permission_optional_list
         );
         permissionOptionalRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         permissionsEmptyRequired = ButterKnife.findById(
                 dialogView,
-                R.id.module_permissions_required_list_empty);
+                id.module_permissions_required_list_empty);
 
         permissionsEmptyOptional = ButterKnife.findById(
                 dialogView,
-                R.id.module_permissions_optional_list_empty);
+                id.module_permissions_optional_list_empty);
 
         // check if module active
         String userToken = PreferenceProvider.getInstance(this).getUserToken();
@@ -937,8 +946,8 @@ public class ModulesActivity extends
                 .getByPackageIdUserId(selectedModule.getPackageName(), user.getId());
         boolean isModulesActive = activeModule != null ? activeModule.getActive() : false;
 
-        LinearLayoutCompat modulePermReq = ButterKnife.findById(dialogView, R.id.module_perm_req_view);
-        LinearLayoutCompat modulePermOpt = ButterKnife.findById(dialogView, R.id.module_perm_opt_view);
+        LinearLayoutCompat modulePermReq = ButterKnife.findById(dialogView, id.module_perm_req_view);
+        LinearLayoutCompat modulePermOpt = ButterKnife.findById(dialogView, id.module_perm_opt_view);
 
         if (!isModulesActive) {
             modulePermReq.setVisibility(View.GONE);
@@ -1012,16 +1021,15 @@ public class ModulesActivity extends
                 isModulesActive,
                 false));
 
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this, R.style.MyAppCompatAlertDialog);
+        Builder dialogBuilder = new Builder(this, style.MyAppCompatAlertDialog);
         dialogBuilder.setView(dialogView);
 
-        dialogBuilder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
-            Log.d(TAG, "User tapped more information about the " + selectedModule.getTitle() + " module");
-        });
+        dialogBuilder.setPositiveButton(string.button_ok,
+                (dialog, which) -> Log.d(TAG, "User tapped more information about the " + selectedModule.getTitle() + " module"));
 
         dialogBuilder.setTitle(selectedModule.getTitle());
 
-        AppCompatTextView moreInfoFull = ButterKnife.findById(dialogView, R.id.module_more_info);
+        AppCompatTextView moreInfoFull = ButterKnife.findById(dialogView, id.module_more_info);
         moreInfoFull.setText(selectedModule.getDescriptionFull());
 
         AlertDialog alertDialog = dialogBuilder.create();
@@ -1031,9 +1039,9 @@ public class ModulesActivity extends
             alertDialog.show();
 
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+                    .setTextColor(ContextCompat.getColor(this, color.myAccentColor));
             alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.myAccentColor));
+                    .setTextColor(ContextCompat.getColor(this, color.myAccentColor));
         }
     }
 

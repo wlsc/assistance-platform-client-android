@@ -72,8 +72,8 @@ public class MainControllerImpl extends
             return Collections.emptyList();
         }
 
-        List<ClientFeedbackDto> result = new ArrayList<>();
-        NewsDao newsDao = daoProvider.getNewsDao();
+        final List<ClientFeedbackDto> result = new ArrayList<>(dbNews.size());
+        final NewsDao newsDao = daoProvider.getNewsDao();
 
         for (DbNews entry : dbNews) {
 
@@ -94,7 +94,7 @@ public class MainControllerImpl extends
             return Collections.emptyList();
         }
 
-        List<DbNews> result = new ArrayList<>();
+        List<DbNews> result = new ArrayList<>(feedbackDtos.size());
         NewsDao newsDao = daoProvider.getNewsDao();
 
         for (ClientFeedbackDto entry : feedbackDtos) {

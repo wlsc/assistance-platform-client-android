@@ -1,8 +1,9 @@
 package de.tudarmstadt.informatik.tk.assistance.fragment.settings;
 
-import android.Manifest;
 import android.content.SharedPreferences;
-import android.os.Build;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.EditTextPreference;
@@ -17,7 +18,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import de.greenrobot.event.EventBus;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
+import de.tudarmstadt.informatik.tk.assistance.R.xml;
 import de.tudarmstadt.informatik.tk.assistance.activity.SettingsActivity;
 import de.tudarmstadt.informatik.tk.assistance.event.PermissionGrantedEvent;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
@@ -34,7 +36,7 @@ import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
  */
 public class DevSettingsFragment extends
         PreferenceFragment implements
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        OnSharedPreferenceChangeListener {
 
     private static final String TAG = DevSettingsFragment.class.getSimpleName();
 
@@ -42,19 +44,16 @@ public class DevSettingsFragment extends
 
     private Preference exportDbPref;
 
-    public DevSettingsFragment() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.preference_development);
+        addPreferencesFromResource(xml.preference_development);
 
         Toolbar mParentToolbar = ((SettingsActivity) getActivity()).getToolBar();
 
         if (mParentToolbar != null) {
-            mParentToolbar.setTitle(R.string.settings_header_development_title);
+            mParentToolbar.setTitle(string.settings_header_development_title);
         }
 
         boolean isUserDeveloper = PreferenceUtils.isUserDeveloper(getActivity());
@@ -91,7 +90,7 @@ public class DevSettingsFragment extends
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-        if (key.equals("pref_be_developer")) {
+        if ("pref_be_developer".equals(key)) {
 
             boolean isDeveloperSwitchEnabled = sharedPreferences.getBoolean("pref_be_developer", false);
 
@@ -110,7 +109,7 @@ public class DevSettingsFragment extends
             PreferenceUtils.setDeveloperStatus(getActivity(), isDeveloperSwitchEnabled);
         }
 
-        if (key.equals("pref_edit_endpoint_url")) {
+        if ("pref_edit_endpoint_url".equals(key)) {
 
             Log.d(TAG, "User clicked custom endpoint url");
 
@@ -119,12 +118,12 @@ public class DevSettingsFragment extends
 
             if (customEndpoint.isEmpty()) {
 
-                editEndpointUrlPref.setTitle(getString(R.string.settings_edit_endpoint_url) + ' ' + Config.ASSISTANCE_ENDPOINT);
+                editEndpointUrlPref.setTitle(getString(string.settings_edit_endpoint_url) + ' ' + Config.ASSISTANCE_ENDPOINT);
                 editEndpointUrlPref.setText(Config.ASSISTANCE_ENDPOINT);
 
             } else {
 
-                editEndpointUrlPref.setTitle(getString(R.string.settings_edit_endpoint_url) + ' ' + customEndpoint);
+                editEndpointUrlPref.setTitle(getString(string.settings_edit_endpoint_url) + ' ' + customEndpoint);
                 editEndpointUrlPref.setText(customEndpoint);
             }
 
@@ -135,12 +134,12 @@ public class DevSettingsFragment extends
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
 
-        if (preference.getKey().equals("pref_be_developer")) {
+        if ("pref_be_developer".equals(preference.getKey())) {
 
             Log.d(TAG, "User clicked switch developer ON/OFF");
         }
 
-        if (preference.getKey().equals("pref_export_database")) {
+        if ("pref_export_database".equals(preference.getKey())) {
 
             Log.d(TAG, "User clicked export database menu");
 
@@ -178,7 +177,7 @@ public class DevSettingsFragment extends
 
         boolean isGranted = PermissionUtils
                 .getInstance(getActivity())
-                .isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                .isGranted(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (isGranted) {
 
@@ -192,13 +191,13 @@ public class DevSettingsFragment extends
 
             // check if explanation is needed for this permission
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
-                Toaster.showLong(getActivity(), R.string.permission_is_mandatory);
+                Toaster.showLong(getActivity(), string.permission_is_mandatory);
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+            if (VERSION.SDK_INT >= VERSION_CODES.M) {
+                requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         Config.PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
             }
         }
@@ -218,11 +217,11 @@ public class DevSettingsFragment extends
                             '/' +
                             Config.DATABASE_NAME);
 
-            Toaster.showLong(getActivity(), R.string.settings_export_database_successful);
+            Toaster.showLong(getActivity(), string.settings_export_database_successful);
 
         } catch (IOException e) {
             Log.e(TAG, "Cannot export database to public folder. Error: ", e);
-            Toaster.showLong(getActivity(), R.string.settings_export_database_failed);
+            Toaster.showLong(getActivity(), string.settings_export_database_failed);
         }
     }
 
@@ -241,7 +240,7 @@ public class DevSettingsFragment extends
             return;
         }
 
-        if (permission[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (permission[0].equals(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             exportDatabase();
         }
     }
@@ -261,7 +260,7 @@ public class DevSettingsFragment extends
                     exportDatabase();
                 } else {
                     Toaster.showLong(getActivity(),
-                            R.string.permission_is_mandatory);
+                            string.permission_is_mandatory);
                 }
 
                 break;

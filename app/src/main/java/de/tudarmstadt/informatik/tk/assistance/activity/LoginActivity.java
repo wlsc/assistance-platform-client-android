@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.tk.assistance.activity;
 
+import android.R.integer;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
@@ -27,7 +28,10 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import butterknife.Unbinder;
 import de.tudarmstadt.informatik.tk.assistance.Constants;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
+import de.tudarmstadt.informatik.tk.assistance.R.xml;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.presenter.login.LoginPresenter;
 import de.tudarmstadt.informatik.tk.assistance.presenter.login.LoginPresenterImpl;
@@ -84,35 +88,35 @@ public class LoginActivity extends
         return tracker;
     }
 
-    @BindView(R.id.email)
+    @BindView(id.email)
     public AppCompatEditText mEmailTextView;
 
-    @BindView(R.id.password)
+    @BindView(id.password)
     public AppCompatEditText mPasswordView;
 
-    @BindView(R.id.login_progress)
+    @BindView(id.login_progress)
     public ContentLoadingProgressBar mProgressView;
 
-    @BindView(R.id.login_form)
+    @BindView(id.login_form)
     public NestedScrollView mLoginFormView;
 
-    @BindView(R.id.sign_in_button)
+    @BindView(id.sign_in_button)
     public AppCompatButton mLoginButton;
 
     // SOCIAL BUTTONS
-    @BindView(R.id.ibFacebookLogo)
+    @BindView(id.ibFacebookLogo)
     public AppCompatImageButton mFacebookLogo;
 
-    @BindView(R.id.ibGooglePlusLogo)
+    @BindView(id.ibGooglePlusLogo)
     public AppCompatImageButton mGooglePlusLogo;
 
-    @BindView(R.id.ibLiveLogo)
+    @BindView(id.ibLiveLogo)
     public AppCompatImageButton mLiveLogo;
 
-    @BindView(R.id.ibTwitterLogo)
+    @BindView(id.ibTwitterLogo)
     public AppCompatImageButton mTwitterLogo;
 
-    @BindView(R.id.ibGithubLogo)
+    @BindView(id.ibGithubLogo)
     public AppCompatImageButton mGithubLogo;
 
     private Unbinder unbinder;
@@ -157,7 +161,7 @@ public class LoginActivity extends
     @Override
     public void showProgress(final boolean isShowing) {
 
-        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        int shortAnimTime = getResources().getInteger(integer.config_shortAnimTime);
 
         mLoginFormView.setVisibility(isShowing ? View.GONE : View.VISIBLE);
 
@@ -217,8 +221,8 @@ public class LoginActivity extends
     @Override
     public void setContent() {
 
-        setContentView(R.layout.activity_login);
-        setTitle(R.string.login_activity_title);
+        setContentView(layout.activity_login);
+        setTitle(string.login_activity_title);
 
         unbinder = ButterKnife.bind(this);
     }
@@ -236,23 +240,23 @@ public class LoginActivity extends
 
     @Override
     public void showErrorPasswordInvalid() {
-        mPasswordView.setError(getString(R.string.error_invalid_password));
+        mPasswordView.setError(getString(string.error_invalid_password));
         mPasswordView.requestFocus();
     }
 
     @Override
     public void showErrorEmailRequired() {
-        mEmailTextView.setError(getString(R.string.error_field_required));
+        mEmailTextView.setError(getString(string.error_field_required));
         mEmailTextView.requestFocus();
     }
 
     @Override
     public void showErrorEmailInvalid() {
-        mEmailTextView.setError(getString(R.string.error_invalid_email));
+        mEmailTextView.setError(getString(string.error_invalid_email));
         mEmailTextView.requestFocus();
     }
 
-    @OnClick(R.id.sign_in_button)
+    @OnClick(id.sign_in_button)
     protected void onUserLogin() {
 
         presenter.attemptLogin(
@@ -260,46 +264,46 @@ public class LoginActivity extends
                 mPasswordView.getText().toString().trim());
     }
 
-    @OnClick(R.id.tvRegister)
+    @OnClick(id.tvRegister)
     protected void onRegisterPressed() {
         Intent intent = new Intent(this, RegisterActivity.class);
         ActivityCompat.startActivity(this, intent, null);
     }
 
-    @OnClick(R.id.tvPasswordReset)
+    @OnClick(id.tvPasswordReset)
     protected void onPasswordResetPressed() {
 
-        Toaster.showLong(this, R.string.feature_is_under_construction);
+        Toaster.showLong(this, string.feature_is_under_construction);
 //        Intent intent = new Intent(this, ResetPasswordActivity.class);
 //        ActivityCompat.startActivity(this, intent, null);
     }
 
-    @OnClick(R.id.ibFacebookLogo)
+    @OnClick(id.ibFacebookLogo)
     protected void onFacebookLogoPressed() {
-        Toast.makeText(this, R.string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick(R.id.ibGooglePlusLogo)
+    @OnClick(id.ibGooglePlusLogo)
     protected void onGooglePlusLogoPressed() {
-        Toast.makeText(this, R.string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick(R.id.ibLiveLogo)
+    @OnClick(id.ibLiveLogo)
     protected void onLiveLogoPressed() {
-        Toast.makeText(this, R.string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick(R.id.ibTwitterLogo)
+    @OnClick(id.ibTwitterLogo)
     protected void onTwitterLogoPressed() {
-        Toast.makeText(this, R.string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick(R.id.ibGithubLogo)
+    @OnClick(id.ibGithubLogo)
     protected void onGithubLogoPressed() {
-        Toast.makeText(this, R.string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, string.feature_is_under_construction, Toast.LENGTH_SHORT).show();
     }
 
-    @OnEditorAction(R.id.email)
+    @OnEditorAction(id.email)
     protected boolean onEditorAction(KeyEvent key) {
 
         presenter.attemptLogin(
@@ -319,7 +323,7 @@ public class LoginActivity extends
 
         mBackButtonPressedOnce = true;
 
-        Toaster.showLong(this, R.string.action_back_button_pressed_once);
+        Toaster.showLong(this, string.action_back_button_pressed_once);
 
         new Handler().postDelayed(() -> mBackButtonPressedOnce = false, Constants.BACK_BUTTON_DELAY_MILLIS);
     }
@@ -356,22 +360,22 @@ public class LoginActivity extends
 
     @Override
     public void showServiceUnavailable() {
-        Toaster.showLong(getApplicationContext(), R.string.error_service_not_available);
+        Toaster.showLong(getApplicationContext(), string.error_service_not_available);
     }
 
     @Override
     public void showServiceTemporaryUnavailable() {
-        Toaster.showLong(getApplicationContext(), R.string.error_server_temporary_unavailable);
+        Toaster.showLong(getApplicationContext(), string.error_server_temporary_unavailable);
     }
 
     @Override
     public void showUnknownErrorOccurred() {
-        Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+        Toaster.showLong(getApplicationContext(), string.error_unknown);
     }
 
     @Override
     public void showUserForbidden() {
-        Toaster.showLong(getApplicationContext(), R.string.error_user_login_not_valid);
+        Toaster.showLong(getApplicationContext(), string.error_user_login_not_valid);
     }
 
     @Override
@@ -381,7 +385,7 @@ public class LoginActivity extends
 
     @Override
     public void showRetryLaterNotification() {
-        Toaster.showLong(getApplicationContext(), R.string.error_service_retry_later);
+        Toaster.showLong(getApplicationContext(), string.error_service_retry_later);
     }
 
     @Override
@@ -417,7 +421,7 @@ public class LoginActivity extends
         analytics = GoogleAnalytics.getInstance(this);
 
         // load config from xml file
-        tracker = analytics.newTracker(R.xml.analytics_global_config);
+        tracker = analytics.newTracker(xml.analytics_global_config);
 
     }
 }

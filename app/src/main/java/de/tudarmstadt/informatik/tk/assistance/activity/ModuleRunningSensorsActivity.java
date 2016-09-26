@@ -4,7 +4,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.facebook.CallbackManager;
+import com.facebook.CallbackManager.Factory;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
@@ -26,6 +29,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.github.kayvannj.permission_utils.Func;
 import com.github.kayvannj.permission_utils.PermissionUtil;
+import com.github.kayvannj.permission_utils.PermissionUtil.PermissionRequestObject;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -40,7 +44,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import de.greenrobot.event.EventBus;
-import de.tudarmstadt.informatik.tk.assistance.R;
+import de.tudarmstadt.informatik.tk.assistance.R.id;
+import de.tudarmstadt.informatik.tk.assistance.R.layout;
+import de.tudarmstadt.informatik.tk.assistance.R.string;
+import de.tudarmstadt.informatik.tk.assistance.R.style;
 import de.tudarmstadt.informatik.tk.assistance.adapter.ModuleRunningSensorsAdapter;
 import de.tudarmstadt.informatik.tk.assistance.event.module.ModuleAllowedPermissionStateChangedEvent;
 import de.tudarmstadt.informatik.tk.assistance.model.item.ModuleRunningSensorTypeItem;
@@ -87,25 +94,25 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
     // facebook stuff
     private CallbackManager callbackManager;
 
-    private PermissionUtil.PermissionRequestObject mRequestObject;
+    private PermissionRequestObject mRequestObject;
 
     private Subscription subModuleDeactivation;
 
     private Unbinder unbinder;
 
-    @BindView(R.id.toolbar)
+    @BindView(id.toolbar)
     protected Toolbar mToolbar;
 
-    @BindView(R.id.permissionRecyclerView)
+    @BindView(id.permissionRecyclerView)
     protected RecyclerView mPermissionsRecyclerView;
 
-    @BindView(R.id.noData)
+    @BindView(id.noData)
     protected AppCompatTextView mNoData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_module_types_permission);
+        setContentView(layout.activity_module_types_permission);
 
         initView();
     }
@@ -138,7 +145,7 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
         socialProvider = SocialProvider.getInstance(getApplicationContext());
 
         FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
+        callbackManager = Factory.create();
 
         unbinder = ButterKnife.bind(this);
 
@@ -150,7 +157,7 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
             // fix for Samsung Android 4.2.2 AppCompat ClassNotFoundException
         }
 
-        setTitle(R.string.settings_module_allowed_capability_title);
+        setTitle(string.settings_module_allowed_capability_title);
 
         Resources resources = getResources();
 
@@ -390,31 +397,31 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
      */
     private void showTucanDialog() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAppCompatAlertDialog);
+        Builder builder = new Builder(this, style.MyAppCompatAlertDialog);
 
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_enter_credentials, null);
+        View dialogView = inflater.inflate(layout.dialog_enter_credentials, null);
 
         builder.setView(dialogView);
 
-        AppCompatEditText usernameET = ButterKnife.findById(dialogView, R.id.username);
-        AppCompatEditText passwordET = ButterKnife.findById(dialogView, R.id.password);
+        AppCompatEditText usernameET = ButterKnife.findById(dialogView, id.username);
+        AppCompatEditText passwordET = ButterKnife.findById(dialogView, id.password);
 
-        usernameET.setHint(R.string.dialog_social_tucan_username);
-        passwordET.setHint(R.string.password);
+        usernameET.setHint(string.dialog_social_tucan_username);
+        passwordET.setHint(string.password);
 
-        builder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
+        builder.setPositiveButton(string.button_ok, (dialog, which) -> {
             // dummy
         });
 
-        builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
+        builder.setNegativeButton(string.button_cancel, (dialog, which) -> {
             updateModuleSensorSwitcher(SensorApiType.UNI_TUCAN, false);
             dialog.cancel();
         });
 
         builder.setCancelable(false);
 
-        builder.setTitle(R.string.sensor_uni_tucan);
+        builder.setTitle(string.sensor_uni_tucan);
 
         AlertDialog alertDialog = builder.create();
 
@@ -448,7 +455,7 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
                         }
 
                         if (dialogShouldClose) {
-                            Toaster.showLong(getApplicationContext(), R.string.changes_were_saved);
+                            Toaster.showLong(getApplicationContext(), string.changes_were_saved);
                             alertDialog.dismiss();
                         }
                     });
@@ -506,13 +513,13 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
         passwordET.setError(null);
 
         if (StringUtils.isNullOrEmpty(username)) {
-            usernameET.setError(getString(R.string.error_field_required));
+            usernameET.setError(getString(string.error_field_required));
             usernameET.requestFocus();
             return false;
         }
 
         if (StringUtils.isNullOrEmpty(password)) {
-            passwordET.setError(getString(R.string.error_field_required));
+            passwordET.setError(getString(string.error_field_required));
             passwordET.requestFocus();
             return false;
         }
@@ -550,13 +557,13 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancel() {
-                        Toaster.showShort(getApplicationContext(), R.string.error_unknown);
+                        Toaster.showShort(getApplicationContext(), string.error_unknown);
                         updateModuleSensorSwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
                     }
 
                     @Override
                     public void onError(FacebookException error) {
-                        Toaster.showShort(getApplicationContext(), R.string.error_service_not_available);
+                        Toaster.showShort(getApplicationContext(), string.error_service_not_available);
                         updateModuleSensorSwitcher(SensorApiType.SOCIAL_FACEBOOK, false);
                     }
                 });
@@ -642,14 +649,14 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
      */
     private void handleDisablingCapabilityWithRestriction(int capType, boolean isChecked, int numReqModules) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyAppCompatAlertDialog);
+        Builder builder = new Builder(this, style.MyAppCompatAlertDialog);
 
-        builder.setPositiveButton(R.string.button_disable, (dialog, which) -> {
+        builder.setPositiveButton(string.button_disable, (dialog, which) -> {
             Log.d(TAG, "User tapped positive button");
             disableActiveModulesForType(capType);
         });
 
-        builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
+        builder.setNegativeButton(string.button_cancel, (dialog, which) -> {
 
             Log.d(TAG, "User tapped negative button");
             updateModuleSensorSwitcher(capType, true);
@@ -663,8 +670,8 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
             dialog.cancel();
         });
 
-        builder.setTitle(R.string.settings_module_allowed_capability_disable_header);
-        builder.setMessage(R.string.settings_module_allowed_capability_disable_message2);
+        builder.setTitle(string.settings_module_allowed_capability_disable_header);
+        builder.setMessage(string.settings_module_allowed_capability_disable_message2);
 
         AlertDialog alertDialog = builder.create();
 
@@ -791,7 +798,7 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
@@ -810,7 +817,7 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
 
         @Override
         public void onError(Throwable e) {
-            Toaster.showLong(getApplicationContext(), R.string.error_unknown);
+            Toaster.showLong(getApplicationContext(), string.error_unknown);
         }
 
         @Override
