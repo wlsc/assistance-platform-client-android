@@ -4,7 +4,7 @@ package de.tudarmstadt.informatik.tk.assistance;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class Constants {
+public final class Constants {
 
     private Constants() {
     }

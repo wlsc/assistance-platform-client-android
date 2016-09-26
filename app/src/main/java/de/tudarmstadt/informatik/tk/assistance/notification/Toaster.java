@@ -8,7 +8,7 @@ import android.widget.Toast;
  * <p>
  * Created by Wladimir Schmidt on 28.06.2015.
  */
-public class Toaster {
+public final class Toaster {
 
     private Toaster() {
     }

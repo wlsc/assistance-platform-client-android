@@ -6,7 +6,7 @@ package de.tudarmstadt.informatik.tk.assistance;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 28.06.2015
  */
-public class Config {
+public final class Config {
 
     private Config() {
     }

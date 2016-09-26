@@ -7,7 +7,7 @@ import android.view.View;
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
  * @date 22.07.2015
  */
-public class Snacker {
+public final class Snacker {
 
     private Snacker() {
     }
