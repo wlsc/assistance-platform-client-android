@@ -17,9 +17,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Tracker;
-
 import java.util.Set;
 
 import butterknife.BindView;
@@ -27,18 +24,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import butterknife.Unbinder;
+import de.tudarmstadt.informatik.tk.assistance.App;
 import de.tudarmstadt.informatik.tk.assistance.Constants;
 import de.tudarmstadt.informatik.tk.assistance.R.id;
 import de.tudarmstadt.informatik.tk.assistance.R.layout;
 import de.tudarmstadt.informatik.tk.assistance.R.string;
-import de.tudarmstadt.informatik.tk.assistance.R.xml;
 import de.tudarmstadt.informatik.tk.assistance.notification.Toaster;
 import de.tudarmstadt.informatik.tk.assistance.presenter.login.LoginPresenter;
 import de.tudarmstadt.informatik.tk.assistance.presenter.login.LoginPresenterImpl;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.HarvesterServiceProvider;
-import de.tudarmstadt.informatik.tk.assistance.sdk.util.AppUtils;
-import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
-import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.LogWrapper;
 import de.tudarmstadt.informatik.tk.assistance.util.CommonUtils;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.LoginView;
@@ -55,38 +49,6 @@ public class LoginActivity extends
         LoginView {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-
-    private static boolean wasInitialized = false;
-
-    /**
-     * The Analytics singleton. The field is set in onCreate method override when the application
-     * class is initially created.
-     */
-    private static GoogleAnalytics analytics;
-
-    /**
-     * The default app tracker. The field is from onCreate callback when the application is
-     * initially created.
-     */
-    private static Tracker tracker;
-
-    /**
-     * Access to the global Analytics singleton. If this method returns null you forgot to either
-     * set android:name="&lt;this.class.name&gt;" attribute on your application element in
-     * AndroidManifest.xml or you are not setting this.analytics field in onCreate method override.
-     */
-    public static GoogleAnalytics getAnalytics() {
-        return analytics;
-    }
-
-    /**
-     * The default app tracker. If this method returns null you forgot to either set
-     * android:name="&lt;this.class.name&gt;" attribute on your application element in
-     * AndroidManifest.xml or you are not setting this.tracker field in onCreate method override.
-     */
-    public static Tracker getTracker() {
-        return tracker;
-    }
 
     @BindView(id.email)
     public AppCompatEditText mEmailTextView;
@@ -132,11 +94,9 @@ public class LoginActivity extends
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!wasInitialized) {
+        if (!App.isInitialized) {
             android.util.Log.d(TAG, "Initializing...");
-            initGoogleAnalytics();
-            initLogging();
-            wasInitialized = true;
+            App.init(getApplicationContext());
         }
 
         setPresenter(new LoginPresenterImpl(this));
@@ -396,32 +356,5 @@ public class LoginActivity extends
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    /**
-     * Initializes logging
-     */
-    public void initLogging() {
-
-        boolean isDebugEnabled = AppUtils.isDebug(getApplicationContext());
-
-        LogWrapper logWrapper = new LogWrapper();
-        Log.setDebug(isDebugEnabled);
-        Log.setLogNode(logWrapper);
-
-        Log.i(TAG, "Ready");
-    }
-
-    /**
-     * Initialize Google Analytics
-     */
-    private void initGoogleAnalytics() {
-
-        // initialize Google Analytics
-        analytics = GoogleAnalytics.getInstance(this);
-
-        // load config from xml file
-        tracker = analytics.newTracker(xml.analytics_global_config);
-
     }
 }

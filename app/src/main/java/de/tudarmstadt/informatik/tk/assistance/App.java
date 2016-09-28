@@ -23,6 +23,11 @@ public class App extends Application {
     private static final String TAG = App.class.getSimpleName();
 
     /**
+     * App was successfully initialized flag
+     */
+    public static boolean isInitialized = false;
+
+    /**
      * The Analytics singleton. The field is set in onCreate method override when the application
      * class is initially created.
      */
@@ -39,7 +44,12 @@ public class App extends Application {
      * set android:name="&lt;this.class.name&gt;" attribute on your application element in
      * AndroidManifest.xml or you are not setting this.analytics field in onCreate method override.
      */
-    public static GoogleAnalytics getAnalytics() {
+    public static GoogleAnalytics getAnalytics(Context context) {
+
+        if (analytics == null) {
+            initGoogleAnalytics(context.getApplicationContext());
+        }
+
         return analytics;
     }
 
@@ -48,46 +58,65 @@ public class App extends Application {
      * android:name="&lt;this.class.name&gt;" attribute on your application element in
      * AndroidManifest.xml or you are not setting this.tracker field in onCreate method override.
      */
-    public static Tracker getTracker() {
+    public static Tracker getTracker(Context context) {
+
+        if (tracker == null) {
+            initGoogleAnalytics(context.getApplicationContext());
+        }
+
         return tracker;
-    }
-
-    /**
-     * Initializes logging
-     */
-    public void initLogging() {
-
-        boolean isDebugEnabled = AppUtils.isDebug(getApplicationContext());
-
-        LogWrapper logWrapper = new LogWrapper();
-        Log.setDebug(isDebugEnabled);
-        Log.setLogNode(logWrapper);
-
-        Log.i(TAG, "Ready");
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        init(getApplicationContext());
+    }
 
-        initGoogleAnalytics();
-        initLogging();
-
-        // init of a memory leak finder library
-//        LeakCanary.install(this);
+    public static void init(Context context) {
+        initGoogleAnalytics(context.getApplicationContext());
+        initLogging(context.getApplicationContext());
+        initLeakFinder(context.getApplicationContext());
+        isInitialized = true;
     }
 
     /**
      * Initialize Google Analytics
+     *
+     * @param applicationContext
      */
-    private void initGoogleAnalytics() {
+    private static void initGoogleAnalytics(Context applicationContext) {
 
         // initialize Google Analytics
-        analytics = GoogleAnalytics.getInstance(this);
+        analytics = GoogleAnalytics.getInstance(applicationContext);
 
         // load config from xml file
         tracker = analytics.newTracker(xml.analytics_global_config);
+    }
 
+    /**
+     * Initializes logging
+     *
+     * @param applicationContext
+     */
+    private static void initLogging(Context applicationContext) {
+
+        final boolean isDebugEnabled = AppUtils.isDebug(applicationContext);
+
+        final LogWrapper logWrapper = new LogWrapper();
+        Log.setDebug(isDebugEnabled);
+        Log.setLogNode(logWrapper);
+
+        Log.i(TAG, "Logger is ready");
+    }
+
+    /**
+     * Inits memory leak finder library
+     *
+     * @param applicationContext
+     */
+    private static void initLeakFinder(Context applicationContext) {
+//        LeakCanary.install(applicationContext);
     }
 
     @Override
