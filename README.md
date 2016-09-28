@@ -1,4 +1,5 @@
 # Modular Android-based Intelligent Personal Assistant
+[![codebeat badge](https://codebeat.co/badges/11fd5a2f-af21-4102-bd52-64ad8936e672)](https://codebeat.co/projects/github-com-telecooperation-assistance-platform-client-android)
 
 (Abstract) In the time of rapidly increasing pace of digital lifestyle, users increasingly rely on useful and timely information
 provided by the Intelligent Personal Assistants (IPA). As users get more accustomed to using IPA solutions on a daily
