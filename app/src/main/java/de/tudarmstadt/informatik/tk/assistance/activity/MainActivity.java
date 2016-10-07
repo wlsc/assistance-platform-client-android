@@ -74,7 +74,7 @@ public class MainActivity extends
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private MainPresenter presenter;
+    MainPresenter presenter;
 
     private static final long FEEDBACK_POLLING_RATE = 10;
     private static final TimeUnit FEEDBACK_TIME_UNIT = TimeUnit.SECONDS;
@@ -419,6 +419,9 @@ public class MainActivity extends
 
     private class ActivatedModulesSubscriber extends Subscriber<ActivatedModulesResponse> {
 
+        ActivatedModulesSubscriber() {
+        }
+
         @Override
         public void onCompleted() {
 
@@ -438,6 +441,9 @@ public class MainActivity extends
     }
 
     private class ModulesFeedbackSubscriber extends Subscriber<List<ClientFeedbackDto>> {
+
+        ModulesFeedbackSubscriber() {
+        }
 
         @Override
         public void onCompleted() {

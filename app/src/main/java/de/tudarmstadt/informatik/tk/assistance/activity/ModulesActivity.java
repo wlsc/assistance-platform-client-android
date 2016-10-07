@@ -92,11 +92,11 @@ public class ModulesActivity extends
 
     private static final String TAG = ModulesActivity.class.getSimpleName();
 
-    private ModulesPresenter presenter;
+    ModulesPresenter presenter;
 
     private Toolbar mToolbar;
 
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     private OnRefreshListener onRefreshHandler;
 
@@ -112,7 +112,7 @@ public class ModulesActivity extends
     private Subscription subModuleActivation;
     private Subscription subModuleDeactivation;
 
-    private PermissionRequestObject mRequestObject;
+    PermissionRequestObject mRequestObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1073,6 +1073,9 @@ public class ModulesActivity extends
 
     private class ActivatedModulesSubscriber extends Subscriber<ActivatedModulesResponse> {
 
+        ActivatedModulesSubscriber() {
+        }
+
         @Override
         public void onStart() {
             super.onStart();
@@ -1103,6 +1106,9 @@ public class ModulesActivity extends
 
     private class ModuleActivationSubscriber extends Subscriber<Void> {
 
+        ModuleActivationSubscriber() {
+        }
+
         @Override
         public void onStart() {
             super.onStart();
@@ -1131,6 +1137,9 @@ public class ModulesActivity extends
     }
 
     private class ModuleDeactivationSubscriber extends Subscriber<Void> {
+
+        ModuleDeactivationSubscriber() {
+        }
 
         @Override
         public void onStart() {

@@ -38,7 +38,7 @@ import rx.Subscriber;
  */
 public class UserProfileSettingsFragment extends Fragment {
 
-    private static final String TAG = UserProfileSettingsFragment.class.getSimpleName();
+    static final String TAG = UserProfileSettingsFragment.class.getSimpleName();
 
     private static final String IMAGE_TYPE_FILTER = "image/*";
     private static final String USER_PIC_NAME = "user_pic";
@@ -164,7 +164,7 @@ public class UserProfileSettingsFragment extends Fragment {
      *
      * @param profileResponse
      */
-    private void fillupFullUserProfile(ProfileResponseDto profileResponse) {
+    void fillupFullUserProfile(ProfileResponseDto profileResponse) {
 
         firstnameText.setText(profileResponse.getFirstname());
         lastnameText.setText(profileResponse.getLastname());

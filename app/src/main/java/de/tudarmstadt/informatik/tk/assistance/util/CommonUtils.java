@@ -32,7 +32,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
  */
 public final class CommonUtils {
 
-    private static final String TAG = CommonUtils.class.getSimpleName();
+    static final String TAG = CommonUtils.class.getSimpleName();
 
     private CommonUtils() {
     }

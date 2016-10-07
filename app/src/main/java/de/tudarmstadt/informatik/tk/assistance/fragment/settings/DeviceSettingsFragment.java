@@ -114,7 +114,7 @@ public class DeviceSettingsFragment extends PreferenceFragment implements OnShar
      * @param currentDeviceId
      * @param deviceName
      */
-    private void updateDevice(long currentDeviceId, String deviceName) {
+    void updateDevice(long currentDeviceId, String deviceName) {
 
         Log.d(TAG, "Updating device's user defined name...");
 

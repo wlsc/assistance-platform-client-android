@@ -83,7 +83,7 @@ import rx.Subscription;
  */
 public class ModuleRunningSensorsActivity extends AppCompatActivity {
 
-    private static final String TAG = ModuleRunningSensorsActivity.class.getSimpleName();
+    static final String TAG = ModuleRunningSensorsActivity.class.getSimpleName();
 
     private DaoProvider daoProvider;
 
@@ -345,7 +345,7 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
      * @param type
      * @param isActive
      */
-    private void updateModuleSensorState(String type, boolean isActive) {
+    void updateModuleSensorState(String type, boolean isActive) {
 
         if (type == null) {
             return;
@@ -574,9 +574,9 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
 
     }
 
-    private void storeFacebookCredentials(String oauthToken,
-                                          Set<String> permissions,
-                                          Set<String> deniedPermissions) {
+    void storeFacebookCredentials(String oauthToken,
+                                  Set<String> permissions,
+                                  Set<String> deniedPermissions) {
 
         String userToken = PreferenceUtils.getUserToken(getApplicationContext());
         DbUser user = daoProvider.getUserDao().getByToken(userToken);
@@ -770,7 +770,7 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
      * @param capType
      * @param isChecked
      */
-    private void updateModuleSensorSwitcher(int capType, boolean isChecked) {
+    void updateModuleSensorSwitcher(int capType, boolean isChecked) {
 
         ModuleRunningSensorsAdapter adapter = (ModuleRunningSensorsAdapter) mPermissionsRecyclerView.getAdapter();
 
@@ -808,6 +808,9 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
     }
 
     private class ModuleDeactivationSubscriber extends Subscriber<Void> {
+
+        ModuleDeactivationSubscriber() {
+        }
 
         @Override
         public void onCompleted() {
