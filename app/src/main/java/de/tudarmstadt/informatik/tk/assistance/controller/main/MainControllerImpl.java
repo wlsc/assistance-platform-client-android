@@ -323,7 +323,7 @@ public class MainControllerImpl extends
     public long insertModuleToDb(DbModule module) {
 
         if (module == null) {
-            return -1l;
+            return -1L;
         }
 
         return daoProvider.getModuleDao().insert(module);

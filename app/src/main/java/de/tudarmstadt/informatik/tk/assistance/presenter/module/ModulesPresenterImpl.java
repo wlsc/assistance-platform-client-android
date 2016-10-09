@@ -54,7 +54,7 @@ public class ModulesPresenterImpl extends
 
     public ModulesPresenterImpl(Context context) {
         super(context);
-        setController(new ModulesControllerImpl(this));
+        controller = new ModulesControllerImpl(this);
         permissionUtils = PermissionUtils.getInstance(context);
     }
 
