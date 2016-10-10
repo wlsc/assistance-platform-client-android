@@ -32,7 +32,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.ServiceUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.MainView;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -269,7 +269,7 @@ public class MainPresenterImpl extends
     }
 
     @Override
-    public void onActivatedModulesFailed(RetrofitError error) {
+    public void onActivatedModulesFailed(HttpException error) {
         doDefaultErrorProcessing(error);
     }
 
@@ -340,7 +340,7 @@ public class MainPresenterImpl extends
     }
 
     @Override
-    public void onError(RetrofitError error) {
+    public void onError(HttpException error) {
         doDefaultErrorProcessing(error);
     }
 }

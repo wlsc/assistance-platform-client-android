@@ -3,7 +3,7 @@ package de.tudarmstadt.informatik.tk.assistance.presenter;
 import android.content.Context;
 
 import de.tudarmstadt.informatik.tk.assistance.view.CommonView;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -27,7 +27,7 @@ public interface CommonPresenter {
      */
     void stopHarvester();
 
-    void doDefaultErrorProcessing(RetrofitError error);
+    void doDefaultErrorProcessing(HttpException error);
 
     void presentEMailAlreadyExists();
 }

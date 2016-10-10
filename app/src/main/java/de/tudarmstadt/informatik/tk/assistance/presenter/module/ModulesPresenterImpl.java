@@ -31,7 +31,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.ModulesView;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -558,7 +558,7 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onActivatedModulesFailed(RetrofitError error) {
+    public void onActivatedModulesFailed(HttpException error) {
 
         doDefaultErrorProcessing(error);
         view.setErrorView();
@@ -669,7 +669,7 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onModuleActivateFailed(RetrofitError error) {
+    public void onModuleActivateFailed(HttpException error) {
 
         doDefaultErrorProcessing(error);
         Log.d(TAG, "Installation has failed!");
@@ -706,12 +706,12 @@ public class ModulesPresenterImpl extends
     }
 
     @Override
-    public void onModuleDeactivateFailed(RetrofitError error) {
+    public void onModuleDeactivateFailed(HttpException error) {
 
         doDefaultErrorProcessing(error);
 
         // no such installed module -> remove it immediately
-        if (error.getResponse() == null || error.getResponse().getStatus() == 400) {
+        if (error.response() == null || error.code() == 400) {
 
             String userToken = PreferenceUtils.getUserToken(getContext());
 

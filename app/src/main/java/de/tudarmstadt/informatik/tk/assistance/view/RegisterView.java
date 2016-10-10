@@ -27,4 +27,6 @@ public interface RegisterView extends CommonView {
     void saveUserCredentials();
 
     void showErrorEmailAreadyExists();
+
+    void setDebugViewInformation();
 }

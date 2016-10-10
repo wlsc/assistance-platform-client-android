@@ -6,7 +6,7 @@ import de.tudarmstadt.informatik.tk.assistance.presenter.register.RegisterPresen
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.registration.RegistrationRequestDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.registration.RegistrationResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.UserApiProvider;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
 /**
@@ -40,8 +40,8 @@ public class RegisterControllerImpl extends
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof RetrofitError) {
-                            handler.onError((RetrofitError) e);
+                        if (e instanceof HttpException) {
+                            handler.onError((HttpException) e);
                         }
                     }
 

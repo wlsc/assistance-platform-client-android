@@ -9,7 +9,7 @@ import de.tudarmstadt.informatik.tk.assistance.model.client.feedback.content.Cli
 import de.tudarmstadt.informatik.tk.assistance.presenter.CommonPresenter;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.assistance.view.MainView;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -31,7 +31,7 @@ public interface MainPresenter extends CommonPresenter {
 
     void onActivatedModulesReceived(ActivatedModulesResponse activatedModulesResponse);
 
-    void onActivatedModulesFailed(RetrofitError error);
+    void onActivatedModulesFailed(HttpException error);
 
     void presentRequestPermissionResult(int requestCode, String[] permissions, int... grantResults);
 

@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.tk.assistance.presenter.register;
 import android.content.Context;
 import android.text.TextUtils;
 
+import de.tudarmstadt.informatik.tk.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.assistance.controller.register.RegisterController;
 import de.tudarmstadt.informatik.tk.assistance.controller.register.RegisterControllerImpl;
 import de.tudarmstadt.informatik.tk.assistance.handler.OnResponseHandler;
@@ -12,7 +13,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.registration.R
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.RegisterView;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -119,13 +120,17 @@ public class RegisterPresenterImpl extends
     }
 
     @Override
-    public void onError(RetrofitError error) {
+    public void onError(HttpException error) {
         doDefaultErrorProcessing(error);
     }
 
     @Override
     public void initView() {
         view.initView();
+
+        if (BuildConfig.DEBUG) {
+            view.setDebugViewInformation();
+        }
     }
 
     @Override

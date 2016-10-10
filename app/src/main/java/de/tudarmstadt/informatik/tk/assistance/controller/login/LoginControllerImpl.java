@@ -18,7 +18,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.LoginApiProvider
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.DateUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.HardwareUtils;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
 /**
@@ -97,8 +97,8 @@ public class LoginControllerImpl extends
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof RetrofitError) {
-                            handler.onError((RetrofitError) e);
+                        if (e instanceof HttpException) {
+                            handler.onError((HttpException) e);
                         }
                     }
 

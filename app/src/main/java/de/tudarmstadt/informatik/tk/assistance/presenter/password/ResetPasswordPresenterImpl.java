@@ -11,7 +11,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.resetpassword.
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.ResetPasswordView;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -71,7 +71,7 @@ public class ResetPasswordPresenterImpl extends
     }
 
     @Override
-    public void onError(RetrofitError error) {
+    public void onError(HttpException error) {
         doDefaultErrorProcessing(error);
     }
 

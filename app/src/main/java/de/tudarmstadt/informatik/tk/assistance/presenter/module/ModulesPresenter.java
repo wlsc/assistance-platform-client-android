@@ -10,7 +10,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.db.DbModuleCapability;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ActivatedModulesResponse;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.module.ModuleResponseDto;
 import de.tudarmstadt.informatik.tk.assistance.view.ModulesView;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -82,15 +82,15 @@ public interface ModulesPresenter extends CommonPresenter {
 
     void onActivatedModulesReceived(ActivatedModulesResponse activatedModulesResponse);
 
-    void onActivatedModulesFailed(RetrofitError error);
+    void onActivatedModulesFailed(HttpException error);
 
     void refreshModuleList();
 
     void onModuleActivateSuccess();
 
-    void onModuleActivateFailed(RetrofitError error);
+    void onModuleActivateFailed(HttpException error);
 
     void onModuleDeactivateSuccess();
 
-    void onModuleDeactivateFailed(RetrofitError error);
+    void onModuleDeactivateFailed(HttpException error);
 }

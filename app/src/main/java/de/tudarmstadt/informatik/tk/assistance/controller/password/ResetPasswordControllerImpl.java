@@ -6,7 +6,7 @@ import de.tudarmstadt.informatik.tk.assistance.presenter.password.ResetPasswordP
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.user.resetpassword.ResetPasswordRequestDto;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.ApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.UserApiProvider;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
 /**
@@ -39,8 +39,8 @@ public class ResetPasswordControllerImpl extends
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof RetrofitError) {
-                            handler.onError((RetrofitError) e);
+                        if (e instanceof HttpException) {
+                            handler.onError((HttpException) e);
                         }
                     }
 

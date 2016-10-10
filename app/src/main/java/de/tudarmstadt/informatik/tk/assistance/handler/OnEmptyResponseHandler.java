@@ -1,6 +1,6 @@
 package de.tudarmstadt.informatik.tk.assistance.handler;
 
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -10,5 +10,5 @@ public interface OnEmptyResponseHandler {
 
     void onSuccess();
 
-    void onError(RetrofitError error);
+    void onError(HttpException error);
 }

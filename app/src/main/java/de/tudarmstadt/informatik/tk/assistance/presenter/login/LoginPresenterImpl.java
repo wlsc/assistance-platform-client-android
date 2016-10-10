@@ -14,7 +14,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.util.ValidationUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.LoginView;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -127,7 +127,7 @@ public class LoginPresenterImpl extends
     }
 
     @Override
-    public void onError(RetrofitError error) {
+    public void onError(HttpException error) {
 
         view.setLoginButtonEnabled(true);
         view.showProgress(false);

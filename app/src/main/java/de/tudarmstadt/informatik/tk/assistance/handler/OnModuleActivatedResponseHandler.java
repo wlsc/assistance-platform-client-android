@@ -1,7 +1,8 @@
 package de.tudarmstadt.informatik.tk.assistance.handler;
 
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+
+import retrofit2.Response;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -11,5 +12,5 @@ public interface OnModuleActivatedResponseHandler {
 
     void onModuleActivateSuccess(Response module);
 
-    void onModuleActivateFailed(RetrofitError error);
+    void onModuleActivateFailed(HttpException error);
 }

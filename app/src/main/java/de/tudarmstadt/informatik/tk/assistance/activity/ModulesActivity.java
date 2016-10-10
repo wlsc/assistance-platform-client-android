@@ -75,7 +75,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.ModulesView;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -1093,8 +1093,8 @@ public class ModulesActivity extends
 
             hideLoading();
 
-            if (e instanceof RetrofitError) {
-                presenter.onActivatedModulesFailed((RetrofitError) e);
+            if (e instanceof HttpException) {
+                presenter.onActivatedModulesFailed((HttpException) e);
             }
         }
 
@@ -1125,8 +1125,8 @@ public class ModulesActivity extends
 
             hideLoading();
 
-            if (e instanceof RetrofitError) {
-                presenter.onModuleActivateFailed((RetrofitError) e);
+            if (e instanceof HttpException) {
+                presenter.onModuleActivateFailed((HttpException) e);
             }
         }
 
@@ -1157,9 +1157,9 @@ public class ModulesActivity extends
 
             hideLoading();
 
-            if (e instanceof RetrofitError) {
+            if (e instanceof HttpException) {
 
-                RetrofitError error = (RetrofitError) e;
+                HttpException error = (HttpException) e;
                 presenter.onModuleDeactivateFailed(error);
             }
         }

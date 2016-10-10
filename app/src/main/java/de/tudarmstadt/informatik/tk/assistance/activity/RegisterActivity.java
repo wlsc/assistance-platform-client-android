@@ -130,6 +130,14 @@ public class RegisterActivity extends
     }
 
     @Override
+    public void setDebugViewInformation() {
+        mUserEmail.setText("test123@test.de");
+        mUserPassword1.setText("test123");
+        mUserPassword2.setText("test123");
+        disclaimerSwitch.setChecked(true);
+    }
+
+    @Override
     protected void onDestroy() {
         unbinder.unbind();
         super.onDestroy();

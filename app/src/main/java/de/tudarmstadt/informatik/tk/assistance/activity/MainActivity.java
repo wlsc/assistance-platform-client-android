@@ -57,7 +57,7 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.util.UrlUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
 import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.MainView;
-import retrofit.RetrofitError;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -429,8 +429,8 @@ public class MainActivity extends
 
         @Override
         public void onError(Throwable e) {
-            if (e instanceof RetrofitError) {
-                presenter.doDefaultErrorProcessing((RetrofitError) e);
+            if (e instanceof HttpException) {
+                presenter.doDefaultErrorProcessing((HttpException) e);
             }
         }
 
@@ -453,8 +453,8 @@ public class MainActivity extends
         @Override
         public void onError(Throwable e) {
 
-            if (e instanceof RetrofitError) {
-                presenter.doDefaultErrorProcessing((RetrofitError) e);
+            if (e instanceof HttpException) {
+                presenter.doDefaultErrorProcessing((HttpException) e);
             }
         }
 

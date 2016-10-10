@@ -2,18 +2,13 @@ package de.tudarmstadt.informatik.tk.assistance.presenter;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.error.ApiError;
 import de.tudarmstadt.informatik.tk.assistance.sdk.model.api.error.ApiHttpErrorCodes;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.HarvesterServiceProvider;
+import de.tudarmstadt.informatik.tk.assistance.sdk.util.ConverterUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.CommonView;
-import retrofit.RetrofitError;
-import retrofit.RetrofitError.Kind;
-import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
+import retrofit2.Response;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -57,55 +52,42 @@ public abstract class CommonPresenterImpl implements CommonPresenter {
     }
 
     @Override
-    public void doDefaultErrorProcessing(RetrofitError error) {
+    public void doDefaultErrorProcessing(HttpException error) {
 
-        if (error.getKind() == Kind.NETWORK) {
+        final Response response = error.response();
+
+        if (response == null || !response.isSuccessful()) {
             view.showServiceUnavailable();
             return;
         }
 
-        Response response = error.getResponse();
+        final ApiError apiError = ConverterUtils.parseError(context, response);
 
-        if (response != null) {
+        switch (error.code()) {
+            case 400:
 
-            String jsonError = new String(((TypedByteArray) error
-                    .getResponse()
-                    .getBody())
-                    .getBytes());
-
-            Gson gson = new Gson();
-            JsonParser parser = new JsonParser();
-            JsonObject jObj = parser.parse(jsonError).getAsJsonObject();
-            ApiError apiError = gson.fromJson(jObj, ApiError.class);
-
-            switch (response.getStatus()) {
-                case 400:
-
-                    switch (apiError.getCode()) {
-                        case ApiHttpErrorCodes.EMAIL_ALREADY_EXISTS:
-                            presentEMailAlreadyExists();
-                            break;
-                        default:
-                            view.showRetryLaterNotification();
-                            break;
-                    }
-                    break;
-                case 401:
-                    view.showUserForbidden();
-                    view.startLoginActivity();
-                    break;
-                case 404:
-                    view.showServiceUnavailable();
-                    break;
-                case 503:
-                    view.showServiceTemporaryUnavailable();
-                    break;
-                default:
-                    view.showUnknownErrorOccurred();
-                    break;
-            }
-        } else {
-            view.showServiceUnavailable();
+                switch (apiError.getCode()) {
+                    case ApiHttpErrorCodes.EMAIL_ALREADY_EXISTS:
+                        presentEMailAlreadyExists();
+                        break;
+                    default:
+                        view.showRetryLaterNotification();
+                        break;
+                }
+                break;
+            case 401:
+                view.showUserForbidden();
+                view.startLoginActivity();
+                break;
+            case 404:
+                view.showServiceUnavailable();
+                break;
+            case 503:
+                view.showServiceTemporaryUnavailable();
+                break;
+            default:
+                view.showUnknownErrorOccurred();
+                break;
         }
     }
 
