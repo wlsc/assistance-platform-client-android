@@ -74,9 +74,9 @@ public class App extends Application {
     }
 
     public static void init(Context context) {
-        initGoogleAnalytics(context.getApplicationContext());
-        initLogging(context.getApplicationContext());
-        initLeakFinder(context.getApplicationContext());
+        initGoogleAnalytics(context);
+        initLogging(context);
+        initLeakFinder(context);
         isInitialized = true;
     }
 
