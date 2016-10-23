@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'com.neenbedankt.android-apt'
 
 ext {
     appName = 'assistance-tud-edition'
@@ -85,7 +84,7 @@ dependencies {
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
     // dependency injection on compile
     compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     // effective picture loader
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.infstory:switch-preference-compat:1.0.0'
