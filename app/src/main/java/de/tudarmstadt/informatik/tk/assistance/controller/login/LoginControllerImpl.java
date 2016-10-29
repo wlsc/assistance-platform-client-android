@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.tk.assistance.controller.login;
 
+import java.net.NoRouteToHostException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -99,6 +100,10 @@ public class LoginControllerImpl extends
                     public void onError(Throwable e) {
                         if (e instanceof HttpException) {
                             handler.onError((HttpException) e);
+                        }
+
+                        if(e instanceof NoRouteToHostException){
+                            handler.onError((NoRouteToHostException) e);
                         }
                     }
 

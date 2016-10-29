@@ -3,6 +3,8 @@ package de.tudarmstadt.informatik.tk.assistance.presenter.login;
 import android.content.Context;
 import android.text.TextUtils;
 
+import java.net.NoRouteToHostException;
+
 import de.tudarmstadt.informatik.tk.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.assistance.controller.login.LoginController;
 import de.tudarmstadt.informatik.tk.assistance.controller.login.LoginControllerImpl;
@@ -133,6 +135,15 @@ public class LoginPresenterImpl extends
         view.showProgress(false);
 
         doDefaultErrorProcessing(error);
+    }
+
+    @Override
+    public void onError(NoRouteToHostException error) {
+
+        view.setLoginButtonEnabled(true);
+        view.showProgress(false);
+
+        view.showServiceTemporaryUnavailable();
     }
 
     @Override

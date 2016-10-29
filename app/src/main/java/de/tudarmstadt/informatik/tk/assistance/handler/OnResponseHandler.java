@@ -1,5 +1,7 @@
 package de.tudarmstadt.informatik.tk.assistance.handler;
 
+import java.net.NoRouteToHostException;
+
 import retrofit2.adapter.rxjava.HttpException;
 
 /**
@@ -11,4 +13,6 @@ public interface OnResponseHandler<T> {
     void onSuccess(T apiResponse);
 
     void onError(HttpException error);
+
+    void onError(NoRouteToHostException error);
 }

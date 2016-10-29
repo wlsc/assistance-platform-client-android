@@ -3,6 +3,8 @@ package de.tudarmstadt.informatik.tk.assistance.presenter.register;
 import android.content.Context;
 import android.text.TextUtils;
 
+import java.net.NoRouteToHostException;
+
 import de.tudarmstadt.informatik.tk.assistance.BuildConfig;
 import de.tudarmstadt.informatik.tk.assistance.controller.register.RegisterController;
 import de.tudarmstadt.informatik.tk.assistance.controller.register.RegisterControllerImpl;
@@ -122,6 +124,11 @@ public class RegisterPresenterImpl extends
     @Override
     public void onError(HttpException error) {
         doDefaultErrorProcessing(error);
+    }
+
+    @Override
+    public void onError(NoRouteToHostException error) {
+        view.showServiceTemporaryUnavailable();
     }
 
     @Override

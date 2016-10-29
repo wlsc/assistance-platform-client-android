@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import java.net.NoRouteToHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -342,5 +343,10 @@ public class MainPresenterImpl extends
     @Override
     public void onError(HttpException error) {
         doDefaultErrorProcessing(error);
+    }
+
+    @Override
+    public void onError(NoRouteToHostException error) {
+        view.showServiceTemporaryUnavailable();
     }
 }
