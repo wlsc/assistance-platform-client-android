@@ -83,8 +83,8 @@ dependencies {
     // show cases (tutorials) lib
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
     // dependency injection on compile
-    compile 'com.jakewharton:butterknife:8.4.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     // effective picture loader
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.infstory:switch-preference-compat:1.0.0'
