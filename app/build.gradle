@@ -71,15 +71,15 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    // multidex support
+    // multidex
     compile 'com.android.support:multidex:1.0.1'
     // sensor information gathering
     compile project(':AssistanceSDK')
     // support libraries
-    compile 'com.android.support:support-v13:25.1.0'
-    compile 'com.android.support:preference-v14:25.1.0'
-    compile 'com.android.support:support-annotations:25.1.0'
-    compile 'com.android.support:design:25.1.0'
+    compile 'com.android.support:support-v13:25.3.0'
+    compile 'com.android.support:preference-v14:25.3.0'
+    compile 'com.android.support:support-annotations:25.3.0'
+    compile 'com.android.support:design:25.3.0'
     // show cases (tutorials) lib
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
     // dependency injection on compile
@@ -92,7 +92,7 @@ dependencies {
     //    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     //    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
     // better unit testing for ui
-    androidTestCompile 'com.android.support:support-annotations:25.1.0'
+    androidTestCompile 'com.android.support:support-annotations:25.3.0'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
