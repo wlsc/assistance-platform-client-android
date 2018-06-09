@@ -52,7 +52,6 @@ public class ModulesControllerImpl extends
     public Set<String> getGrantedPermissions() {
 
         Map<String, String[]> mappings = PermissionUtils
-                .getInstance(presenter.getContext())
                 .getDangerousPermissionsToDtoMapping();
 
         Set<String> permissionsToAsk = new HashSet<>();
@@ -93,8 +92,7 @@ public class ModulesControllerImpl extends
                 }
 
                 for (String perm : perms) {
-                    if (!PermissionUtils.getInstance(presenter.getContext())
-                            .isGranted(perm)) {
+                    if (!PermissionUtils.isGranted(perm)) {
 
                         permissionsToAsk.add(perm);
                     }

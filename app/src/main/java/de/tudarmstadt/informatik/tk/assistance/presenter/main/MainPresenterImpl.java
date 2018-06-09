@@ -227,8 +227,7 @@ public class MainPresenterImpl extends
             return;
         }
 
-        PermissionUtils permissionUtils = PermissionUtils.getInstance(getContext());
-        Map<String, String[]> dangerousGroupPerms = permissionUtils.getDangerousPermissionsToDtoMapping();
+        Map<String, String[]> dangerousGroupPerms = PermissionUtils.getDangerousPermissionsToDtoMapping();
         Set<String> permissionsToAsk = new HashSet<>();
 
         for (ModuleResponseDto moduleResponseDto : availableModules) {
@@ -256,7 +255,7 @@ public class MainPresenterImpl extends
                     for (String perm : groupPerm) {
 
                         // NOT granted
-                        if (!permissionUtils.isGranted(perm)) {
+                        if (!PermissionUtils.isGranted(perm)) {
                             permissionsToAsk.add(perm);
                         }
                     }

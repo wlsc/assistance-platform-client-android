@@ -258,8 +258,8 @@ public class MainControllerImpl extends
             return;
         }
 
-        PermissionUtils permissionUtils = PermissionUtils.getInstance(presenter.getContext());
-        Map<String, String[]> dangerousPermissions = permissionUtils.getDangerousPermissionsToDtoMapping();
+        Map<String, String[]> dangerousPermissions = PermissionUtils
+                .getDangerousPermissionsToDtoMapping();
 
         for (DbModule activeModule : activeModules) {
 

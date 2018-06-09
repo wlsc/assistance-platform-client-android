@@ -68,7 +68,6 @@ import de.tudarmstadt.informatik.tk.assistance.sdk.provider.SocialProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.provider.api.ModuleApiProvider;
 import de.tudarmstadt.informatik.tk.assistance.sdk.sensing.ISensor;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.DateUtils;
-import de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.RxUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.StringUtils;
 import de.tudarmstadt.informatik.tk.assistance.sdk.util.logger.Log;
@@ -76,6 +75,8 @@ import de.tudarmstadt.informatik.tk.assistance.util.PreferenceUtils;
 import de.tudarmstadt.informatik.tk.assistance.view.DividerItemDecoration;
 import rx.Subscriber;
 import rx.Subscription;
+
+import static de.tudarmstadt.informatik.tk.assistance.sdk.util.PermissionUtils.getDangerousPermissionsToDtoMapping;
 
 /**
  * @author Wladimir Schmidt (wlsc.dev@gmail.com)
@@ -298,9 +299,7 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
                 return;
             }
 
-            Map<String, String[]> dangerousGroup = PermissionUtils
-                    .getInstance(getApplicationContext())
-                    .getDangerousPermissionsToDtoMapping();
+            Map<String, String[]> dangerousGroup = getDangerousPermissionsToDtoMapping();
 
             String[] perms = dangerousGroup.get(type);
 
@@ -428,9 +427,9 @@ public class ModuleRunningSensorsActivity extends AppCompatActivity {
         if (!isFinishing()) {
             alertDialog.show();
 
-        /*
-         * Modifying behavior of buttons
-         */
+            /*
+             * Modifying behavior of buttons
+             */
             alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
                     .setOnClickListener(v -> {
 

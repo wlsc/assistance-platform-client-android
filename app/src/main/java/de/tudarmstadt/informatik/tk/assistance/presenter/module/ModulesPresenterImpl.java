@@ -46,8 +46,6 @@ public class ModulesPresenterImpl extends
     private ModulesView view;
     private ModulesController controller;
 
-    private final PermissionUtils permissionUtils;
-
     private Map<String, ModuleResponseDto> availableModuleResponseMapping;
 
     private String selectedModuleId;
@@ -55,7 +53,6 @@ public class ModulesPresenterImpl extends
     public ModulesPresenterImpl(Context context) {
         super(context);
         controller = new ModulesControllerImpl(this);
-        permissionUtils = PermissionUtils.getInstance(context);
     }
 
     @Override
@@ -259,7 +256,6 @@ public class ModulesPresenterImpl extends
             for (DbModuleCapability cap : capabilities) {
 
                 String[] perms = PermissionUtils
-                        .getInstance(getContext())
                         .getDangerousPermissionsToDtoMapping()
                         .get(cap.getType());
 
@@ -268,7 +264,7 @@ public class ModulesPresenterImpl extends
                     for (String perm : perms) {
 
                         // not granted -> ask user
-                        if (!permissionUtils.isGranted(perm)) {
+                        if (!PermissionUtils.isGranted(perm)) {
                             permsToAsk.add(perm);
                         }
                     }
@@ -432,7 +428,7 @@ public class ModulesPresenterImpl extends
                 return;
             }
 
-            Map<String, String[]> dangerousPerms = permissionUtils
+            Map<String, String[]> dangerousPerms = PermissionUtils
                     .getDangerousPermissionsToDtoMapping();
 
             // these permissions are crucial for an operation of module
@@ -449,7 +445,7 @@ public class ModulesPresenterImpl extends
                 for (String perm : perms) {
 
                     // check permission was already granted
-                    if (!permissionUtils.isGranted(perm)) {
+                    if (!PermissionUtils.isGranted(perm)) {
                         permsRequiredAccumulator.add(perm);
                     }
                 }
@@ -467,7 +463,7 @@ public class ModulesPresenterImpl extends
             }
 
             String apiType = response.getType();
-            String[] perms = PermissionUtils.getInstance(getContext())
+            String[] perms = PermissionUtils
                     .getDangerousPermissionsToDtoMapping()
                     .get(apiType);
 
@@ -478,7 +474,7 @@ public class ModulesPresenterImpl extends
             for (String perm : perms) {
 
                 // check permission was already granted
-                if (!permissionUtils.isGranted(perm)) {
+                if (!PermissionUtils.isGranted(perm)) {
                     permsOptionalAccumulator.add(perm);
                 }
             }
