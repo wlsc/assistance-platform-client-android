@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/badge/license-Apache-orange.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
 [![codebeat badge](https://codebeat.co/badges/11fd5a2f-af21-4102-bd52-64ad8936e672)](https://codebeat.co/projects/github-com-telecooperation-assistance-platform-client-android)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fwlsc%2Fassistance-platform-client-android.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fwlsc%2Fassistance-platform-client-android?ref=badge_shield)
 
 (Abstract) In the time of rapidly increasing pace of digital lifestyle, users increasingly rely on useful and timely information
 provided by the Intelligent Personal Assistants (IPA). As users get more accustomed to using IPA solutions on a daily
@@ -41,3 +42,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fwlsc%2Fassistance-platform-client-android.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fwlsc%2Fassistance-platform-client-android?ref=badge_large)
